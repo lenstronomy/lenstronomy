@@ -135,9 +135,6 @@ def lens_model_plot(
     :param point_source: If True, illustrates and computes the image positions of
     :type point_source: bool
         the point source
-    :param with_caustics: If True, illustrates the critical curve and caustics of
-    :type with_caustics: bool
-        the system
     :param with_convergence: If True, illustrates the convergence map
     :type with_convergence: bool
     :param coord_center_ra: X-coordinate of the center of the frame
@@ -159,7 +156,7 @@ def lens_model_plot(
     :param color_value: color for critical curves and caustics
     :type color_value: str
     :param kwargs_convergence: keyword arguments for convergence plot
-    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
     :param kwargs_point_source: keyword arguments for point source plot
     :return: matplotlib axis instance with plot
     """
@@ -519,10 +516,9 @@ def arrival_time_surface(
     delta_pix=0.01,
     source_pos_x=0,
     source_pos_y=0,
-    with_caustics=False,
     point_source=False,
     n_levels=10,
-    kwargs_contours=None,
+    kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
     image_color_value=None,
     letter_font_size=20,
     name_list=None,
@@ -542,13 +538,11 @@ def arrival_time_surface(
     :type source_pos_x: float
     :param source_pos_y:
     :type source_pos_y: float
-    :param with_caustics:
-    :type with_caustics: bool
     :param point_source:
     :type point_source: bool
     :param n_levels: number of contour levels to plot for the Fermat potential
     :type n_levels: int
-    :param kwargs_contours: keyword arguments for contour plotting
+    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.
     :param image_color_value: color for image names
     :param letter_font_size: font size for image names
     :param name_list: list of names of images
@@ -574,7 +568,11 @@ def arrival_time_surface(
     if kwargs_contours is None:
         kwargs_contours = {}
         # , cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
-    if with_caustics is True:
+    if kwargs_caustics is not None:
+        kwargs_caustics = dict(kwargs_caustics)
+        kwargs_caustics.setdefault("color", "k")
+        critical_curve_color = kwargs_caustics.pop("critical_curve_color", "r")
+
         ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(
             kwargs_lens,
             compute_window=_frame_size,
@@ -585,10 +583,16 @@ def arrival_time_surface(
             ra_crit_list, dec_crit_list, kwargs_lens
         )
         plot_util.plot_line_set(
-            ax, _coords, ra_caustic_list, dec_caustic_list, origin=origin, color="g"
+            ax,
+            _coords,
+            ra_caustic_list,
+            dec_caustic_list,
+            origin=origin,
+            **kwargs_caustics,
         )
+        kwargs_caustics.setdefault("color", critical_curve_color)
         plot_util.plot_line_set(
-            ax, _coords, ra_crit_list, dec_crit_list, origin=origin, color="r"
+            ax, _coords, ra_crit_list, dec_crit_list, origin=origin, **kwargs_caustics
         )
     if point_source is True:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver

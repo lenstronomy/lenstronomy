@@ -192,9 +192,9 @@ class ModelBandPlot(ModelBand):
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib axis instance
         """
@@ -968,14 +968,12 @@ class ModelBandPlot(ModelBand):
         :param num_pix: number of pixels in plot per axis
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
             plot
-        :param with_caustics: plot the caustics on top of the source reconstruction (may
-            take some time)
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param kwargs_caustics: keyword arguments for caustic plotting. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_caustics: keyword arguments for caustic plotting. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
@@ -1200,8 +1198,6 @@ class ModelBandPlot(ModelBand):
         :type ax: matplotlib.axes.Axes
         :param axis: 0 or 1, specifies the deflection angle axis to be plotted
         :type axis: int
-        :param with_caustics: If True, plots caustics
-        :type with_caustics: bool
         :param image_name_list: Strings for names of the images
         :type image_name_list: list
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
@@ -1209,7 +1205,7 @@ class ModelBandPlot(ModelBand):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. The dictionary takes `"critical_line_color"` as an additional optional key to specify the color of the critical curves.
+        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. The dictionary takes `"critical_curve_color"` as an additional optional key to specify the color of the critical curves.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
@@ -1283,7 +1279,7 @@ class ModelBandPlot(ModelBand):
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
             kwargs_caustics.setdefault("color", "yellow")
-            critical_line_color = kwargs_caustics.pop("critical_line_color", "red")
+            critical_curve_color = kwargs_caustics.pop("critical_curve_color", "red")
             plot_util.plot_line_set(
                 ax,
                 self._coords,
@@ -1292,7 +1288,7 @@ class ModelBandPlot(ModelBand):
                 points_only=self._caustic_points_only,
                 **kwargs_caustics,
             )
-            kwargs_caustics.setdefault("color", critical_line_color)
+            kwargs_caustics.setdefault("color", critical_curve_color)
             plot_util.plot_line_set(
                 ax,
                 self._coords,
@@ -1512,7 +1508,7 @@ class ModelBandPlot(ModelBand):
             )
         return ax
 
-    def plot_main(self, with_caustics=False):
+    def plot_main(self, kwargs_caustics=None):
         """Print the main plots together in a joint frame.
 
         :return:
@@ -1526,7 +1522,7 @@ class ModelBandPlot(ModelBand):
             ax=axes[1, 0],
             delta_pix_source=0.01,
             num_pix=100,
-            with_caustics=with_caustics,
+            kwargs_caustics=kwargs_caustics,
         )
         self.convergence_plot(ax=axes[1, 1])
         self.magnification_plot(ax=axes[1, 2])

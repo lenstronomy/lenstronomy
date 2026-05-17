@@ -265,9 +265,9 @@ class ModelPlot(object):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: plot instance
         """
@@ -535,7 +535,7 @@ class ModelPlot(object):
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
@@ -565,9 +565,9 @@ class ModelPlot(object):
         ax=None,
         num_pix=100,
         delta_pix_source=0.01,
-        with_caustics=False,
         font_size=None,
         point_source_position=True,
+        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -588,7 +588,7 @@ class ModelPlot(object):
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
@@ -600,9 +600,9 @@ class ModelPlot(object):
             ax=ax,
             num_pix=num_pix,
             delta_pix_source=delta_pix_source,
-            with_caustics=with_caustics,
             font_size=font_size,
             point_source_position=point_source_position,
+            kwargs_caustics=kwargs_caustics,
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
@@ -656,9 +656,9 @@ class ModelPlot(object):
         band_index=0,
         ax=None,
         axis=0,
-        with_caustics=False,
         image_name_list=None,
         font_size=None,
+        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -672,14 +672,13 @@ class ModelPlot(object):
         :type ax: matplotlib.axes.Axes
         :param axis: 0 or 1, specifies the deflection angle axis to be plotted
         :type axis: int
-        :param with_caustics: If True, plots caustics
-        :type with_caustics: bool
         :param image_name_list: Strings for names of the images
         :type image_name_list: list
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: Label for the colorbar
         :type label: str
+        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot. The dictionary additionally takes `"ciritial_curve_color"` as a key to specify the color of the critical curve.
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
@@ -690,9 +689,9 @@ class ModelPlot(object):
         return plot_band.deflection_plot(
             ax=ax,
             axis=axis,
-            with_caustics=with_caustics,
             image_name_list=image_name_list,
             font_size=font_size,
+            kwargs_caustics=kwargs_caustics,
             kwargs_colorbar=kwargs_colorbar,
             kwargs_title=kwargs_title,
             kwargs_scale_bar=kwargs_scale_bar,
@@ -804,24 +803,24 @@ class ModelPlot(object):
     def plot_main(
         self,
         band_index=0,
-        with_caustics=False,
         kwargs_data_plot=None,
         kwargs_model_plot=None,
         kwargs_residual_plot=None,
         kwargs_source_plot=None,
         kwargs_convergence_plot=None,
         kwargs_magnification_plot=None,
+        kwargs_caustics: Optional[plot_util.CausticKwargs] = None,
     ):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
-        :param with_caustics: If True, plots caustics in the source panel
         :param kwargs_data_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.data_plot`
         :param kwargs_model_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.model_plot`
         :param kwargs_residual_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot`
         :param kwargs_source_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.source_plot`
         :param kwargs_convergence_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.convergence_plot`
         :param kwargs_magnification_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.magnification_plot`
+        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -848,7 +847,7 @@ class ModelPlot(object):
             ax=axes[1, 0],
             delta_pix_source=0.01,
             num_pix=100,
-            with_caustics=with_caustics,
+            kwargs_caustics=kwargs_caustics,
             **kwargs_source_plot,
         )
         plot_band.convergence_plot(ax=axes[1, 1], **kwargs_convergence_plot)

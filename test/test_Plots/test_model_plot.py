@@ -176,7 +176,7 @@ class TestOutputPlots(object):
             multi_band_type="single-band",
         )
 
-        lensPlot.plot_main(with_caustics=True)
+        lensPlot.plot_main(kwargs_caustics={"color": "b"})
         plt.close()
         cmap = plt.get_cmap("gist_heat")
 
@@ -191,7 +191,7 @@ class TestOutputPlots(object):
         lensPlot.plot_subtract_from_data_all()
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=1)
+        lensPlot.deflection_plot(ax=ax, kwargs_caustics={"color": "b"}, axis=1)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -199,7 +199,7 @@ class TestOutputPlots(object):
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=0)
+        lensPlot.deflection_plot(ax=ax, kwargs_caustics={"color": "b"}, axis=0)
         plt.close()
 
         num_pix = 100
@@ -209,7 +209,7 @@ class TestOutputPlots(object):
             ax=ax,
             num_pix=num_pix,
             delta_pix_source=delta_pix_source,
-            with_caustics=True,
+            kwargs_caustics={"color": "b"},
         )
         plt.close()
 
@@ -388,7 +388,7 @@ class TestOutputPlots(object):
             bands_compute=[True],
             linear_solver=False,
         )
-        lensPlot.plot_main(with_caustics=True)
+        lensPlot.plot_main(kwargs_caustics={"color": "b"})
         plt.close()
         assert kwargs_params["kwargs_source"][0]["amp"] == 2
 
@@ -415,7 +415,7 @@ class TestOutputPlots(object):
         )
         plot_band = lensPlot._select_band(0)
 
-        plot_band.plot_main(with_caustics=True)
+        plot_band.plot_main(kwargs_cuastics={"color": "b"})
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -436,7 +436,6 @@ class TestOutputPlots(object):
             ax=ax,
             num_pix=30,
             delta_pix_source=0.02,
-            with_caustics=True,
             kwargs_caustic={"linewidth": 2},
             plot_scale="linear",
         )
@@ -447,7 +446,6 @@ class TestOutputPlots(object):
             ax=ax,
             num_pix=30,
             delta_pix_source=0.02,
-            with_caustics=True,
             kwargs_caustic={"linewidth": 2},
         )
         plt.close()

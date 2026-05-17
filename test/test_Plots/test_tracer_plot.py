@@ -253,7 +253,7 @@ class TestTracerPlot(object):
             delta_pix_source=0.01,
             num_pix=100,
             plot_scale="log",
-            with_caustics=True,
+            kwargs_caustic={"color": "b"},
         )
         tracer_plot.convergence_plot(ax=axes[1, 1], vmax=1)
         tracer_plot.magnification_plot(ax=axes[1, 2])
@@ -294,7 +294,6 @@ class TestTracerPlot(object):
             num_pix=30,
             delta_pix_source=0.02,
             plot_scale="linear",
-            with_caustics=True,
             kwargs_caustic={"linewidth": 2},
         )
         plt.close()
@@ -314,12 +313,12 @@ class TestTracerPlot(object):
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        tracer_plot.deflection_plot(ax=ax, axis=1, with_caustics=True)
+        tracer_plot.deflection_plot(ax=ax, axis=1, kwargs_caustics={"color": "b"})
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        tracer_plot.deflection_plot(ax=ax, with_caustics=False)
+        tracer_plot.deflection_plot(ax=ax, kwargs_caustics={"color": "b"})
         plt.close()
 
-        tracer_plot.plot_main(with_caustics=True)
+        tracer_plot.plot_main(kwargs_caustics={"color": "b"})
         plt.close()

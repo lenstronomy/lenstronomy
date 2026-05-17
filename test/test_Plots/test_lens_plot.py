@@ -29,7 +29,7 @@ class TestLensPlot(object):
             source_pos_x=0,
             source_pos_y=0,
             point_source=True,
-            with_caustics=True,
+            kwargs_caustics={"color": "b"},
             fast_caustic=False,
         )
         plt.close()
@@ -43,7 +43,7 @@ class TestLensPlot(object):
             source_pos_x=0,
             source_pos_y=0,
             point_source=True,
-            with_caustics=True,
+            kwargs_caustics={"color": "b"},
             fast_caustic=True,
         )
         plt.close()
@@ -57,7 +57,7 @@ class TestLensPlot(object):
             source_pos_x=0,
             source_pos_y=0,
             point_source=True,
-            with_caustics=True,
+            kwargs_caustics={"color": "b"},
             fast_caustic=True,
             coord_inverse=True,
         )
@@ -83,7 +83,7 @@ class TestLensPlot(object):
                 source_pos_y=y_sources[i],
                 name_list=None,
                 point_source=True,
-                with_caustics=True,
+                kwargs_caustics={"color": "b"},
                 fast_caustic=True,
                 coord_inverse=True,
             )
@@ -101,7 +101,7 @@ class TestLensPlot(object):
                 name_list=None,
                 index=i,
                 point_source=True,
-                with_caustics=True,
+                kwargs_caustics={"color": "b"},
                 fast_caustic=True,
                 coord_inverse=True,
             )
@@ -118,25 +118,7 @@ class TestLensPlot(object):
                 source_pos_y=y_sources[i],
                 name_list=name_lists[i],
                 point_source=True,
-                with_caustics=True,
-                fast_caustic=True,
-                coord_inverse=True,
-            )
-        plt.close
-
-        for i in range(len(x_sources)):
-            lens_plot.lens_model_plot(
-                ax,
-                lensModel,
-                kwargs_lens,
-                num_pix=10,
-                delta_pix=0.5,
-                source_pos_x=x_sources[i],
-                source_pos_y=y_sources[i],
-                name_list=name_lists[i],
-                index=i,
-                point_source=True,
-                with_caustics=True,
+                kwargs_caustics={"color": "b"},
                 fast_caustic=True,
                 coord_inverse=True,
             )
@@ -154,7 +136,25 @@ class TestLensPlot(object):
                 name_list=name_lists[i],
                 index=i,
                 point_source=True,
-                with_caustics=True,
+                kwargs_caustics={"color": "b"},
+                fast_caustic=True,
+                coord_inverse=True,
+            )
+        plt.close
+
+        for i in range(len(x_sources)):
+            lens_plot.lens_model_plot(
+                ax,
+                lensModel,
+                kwargs_lens,
+                num_pix=10,
+                delta_pix=0.5,
+                source_pos_x=x_sources[i],
+                source_pos_y=y_sources[i],
+                name_list=name_lists[i],
+                index=i,
+                point_source=True,
+                kwargs_caustics={"color": "b"},
                 fast_caustic=True,
                 coord_inverse=True,
             )
@@ -174,7 +174,7 @@ class TestLensPlot(object):
                 index=i,
                 color_value=color_list[i],
                 point_source=True,
-                with_caustics=True,
+                kwargs_caustics={"color": "b"},
                 fast_caustic=True,
                 coord_inverse=True,
             )
@@ -193,7 +193,7 @@ class TestLensPlot(object):
             source_pos_x=0.02,
             source_pos_y=0,
             point_source=True,
-            with_caustics=True,
+            kwargs_caustics={"color": "b"},
             image_color_value=["k", "k", "k", "r"],
         )
         plt.close()
@@ -206,7 +206,7 @@ class TestLensPlot(object):
             source_pos_x=0.02,
             source_pos_y=0,
             point_source=True,
-            with_caustics=False,
+            kwargs_caustics={"color": "b"},
             image_color_value=None,
         )
         plt.close()
@@ -222,7 +222,7 @@ class TestLensPlot(object):
             source_pos_x=0.02,
             source_pos_y=0,
             point_source=False,
-            with_caustics=False,
+            kwargs_caustics={"color": "b"},
         )
         plt.close()
 

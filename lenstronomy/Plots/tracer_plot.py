@@ -201,9 +201,9 @@ class TracerPlot(object):
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :return: matplotlib axis instance
         """
@@ -686,7 +686,7 @@ class TracerPlot(object):
         :param point_source_position: If True, plots a point at the position of
         :type point_source_position: bool
             the point source
-        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.. Set to None to exclude this element from the plot.
+        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
@@ -885,9 +885,9 @@ class TracerPlot(object):
         self,
         ax,
         axis=0,
-        with_caustics=False,
         image_name_list=None,
         font_size=None,
+        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -900,8 +900,6 @@ class TracerPlot(object):
         :type ax: matplotlib.axes.Axes
         :param axis: 0 or 1, specifies the deflection angle axis to be plotted
         :type axis: int
-        :param with_caustics: If True, plots caustics
-        :type with_caustics: bool
         :param image_name_list: Strings for names of the images
         :type image_name_list: list
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
@@ -977,7 +975,10 @@ class TracerPlot(object):
             font_size=font_size,
             **kwargs_colorbar,
         )
-        if with_caustics is True:
+        if kwargs_caustics is not None:
+            kwargs_caustics = dict(kwargs_caustics)
+            kwargs_caustics.setdefault("color", "b")
+            critical_curve_color = kwargs_caustics.pop("critical_curve_color", "r")
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(
@@ -985,16 +986,17 @@ class TracerPlot(object):
                 self._coords,
                 ra_caustic_list,
                 dec_caustic_list,
-                color="b",
                 points_only=self._caustic_points_only,
+                **kwargs_caustics,
             )
+            kwargs_caustics.setdefault("color", critical_curve_color)
             plot_util.plot_line_set(
                 ax,
                 self._coords,
                 ra_crit_list,
                 dec_crit_list,
-                color="r",
                 points_only=self._caustic_points_only,
+                **kwargs_caustics,
             )
         ra_image, dec_image = self.PointSource.image_position(
             self._kwargs_ps, self._kwargs_lens
@@ -1004,9 +1006,10 @@ class TracerPlot(object):
         )
         return ax
 
-    def plot_main(self, with_caustics=False):
+    def plot_main(self, kwargs_caustics: Optional[plot_util.CausticKwargs] = None):
         """Print the main plots together in a joint frame.
 
+        :kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.
         :return:
         """
 
@@ -1018,7 +1021,7 @@ class TracerPlot(object):
             ax=axes[1, 0],
             delta_pix_source=0.01,
             num_pix=100,
-            with_caustics=with_caustics,
+            kwargs_caustics=kwargs_caustics,
         )
         self.convergence_plot(ax=axes[1, 1])
         self.magnification_plot(ax=axes[1, 2])

@@ -377,7 +377,7 @@ class ModelPlot(object):
         subtract_mean=True,
         font_size=None,
         with_critical_curves=False,
-        crit_curve_color="k",
+        critical_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
@@ -399,7 +399,7 @@ class ModelPlot(object):
         :param label: label for the color bar
         :param with_critical_curves: ; plots the critical curves in the frame
         :type with_critical_curves: bool
-        :param crit_curve_color: color of the critical curves
+        :param critical_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -418,7 +418,7 @@ class ModelPlot(object):
             subtract_mean=subtract_mean,
             font_size=font_size,
             with_critical_curves=with_critical_curves,
-            crit_curve_color=crit_curve_color,
+            critical_curve_color=critical_curve_color,
             image_name_list=image_name_list,
             super_sample_factor=super_sample_factor,
             kwargs_colorbar=kwargs_colorbar,

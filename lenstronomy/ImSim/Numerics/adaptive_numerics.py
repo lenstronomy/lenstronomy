@@ -5,6 +5,7 @@ from lenstronomy.ImSim.Numerics.numba_convolution import (
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import kernel_util
 from lenstronomy.Util import image_util
+import numpy as np
 
 __all__ = ["AdaptiveConvolution"]
 
@@ -18,7 +19,7 @@ class AdaptiveConvolution(object):
     strategy:
     1. lower resolution convolution over full image with FFT
     2. subset of pixels with higher resolution Numba convolution (with smaller kernel)
-    3. the same subset of pixels with low resolution Numba convolution (with same kernel as step 2)
+    3. FFT convolution over the same subset of pixels and same kernel as step 2, in lower resolution
     adaptive solution is 1 + 2 - 3
 
     """
@@ -60,15 +61,11 @@ class AdaptiveConvolution(object):
         kernel_cut = kernel_util.degrade_kernel(
             kernel_super_cut, degrading_factor=supersampling_factor
         )
-
-        self._low_res_partial = NumbaConvolution(
+        if compute_pixels is None:
+            compute_pixels = np.ones_like(conv_supersample_pixels).astype(bool)
+        self._low_res_partial = PixelKernelConvolution(
             kernel_cut,
-            conv_supersample_pixels,
-            compute_pixels=compute_pixels,
-            nopython=nopython,
-            cache=cache,
-            parallel=parallel,
-            memory_raise=True,
+            convolution_type="fft"
         )
         self._hig_res_partial = SubgridNumbaConvolution(
             kernel_super_cut,
@@ -80,6 +77,8 @@ class AdaptiveConvolution(object):
             parallel=parallel,
         )  # , kernel_size=len(kernel_cut))
         self._supersampling_factor = supersampling_factor
+        self._conv_supersample_pixels = conv_supersample_pixels
+        self._compute_pixels = compute_pixels
 
     def re_size_convolve(self, image_low_res, image_high_res):
         """
@@ -89,7 +88,8 @@ class AdaptiveConvolution(object):
         :return: convolved and re-sized image
         """
         image_low_res_conv = self._low_res_conv.convolution2d(image_low_res)
-        image_low_res_partial_conv = self._low_res_partial.convolve2d(image_low_res)
+        image_low_res_partial_conv = self._low_res_partial.convolution2d(image_low_res * self._conv_supersample_pixels)
+        image_low_res_partial_conv *= self._compute_pixels
         image_high_res_partial_conv = self._hig_res_partial.convolve2d(image_high_res)
         return (
             image_low_res_conv

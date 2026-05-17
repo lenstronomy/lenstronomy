@@ -1,4 +1,4 @@
-from typing import Optional, TypedDict
+from typing import Optional
 import sys
 
 if sys.version_info >= (3, 12):  # pragma: no cover
@@ -26,66 +26,6 @@ from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Util.package_util import exporter
 
 export, __all__ = exporter()
-
-
-# TypedDict classes for **kwargs type hints
-class PlotKwargs(TypedDict, total=False):
-    """Keyword arguments for matplotlib plot function."""
-
-    color: str
-    """Line color."""
-    linestyle: str
-    """Line style."""
-    marker: str
-    """Marker style."""
-    markersize: float
-    """Marker size."""
-    linewidth: float
-    """Line width."""
-    alpha: float
-    """Transparency."""
-    label: str
-    """Label for legend."""
-
-
-class QuiverKwargs(TypedDict, total=False):
-    """Keyword arguments for matplotlib quiver function."""
-
-    scale: float
-    """Scale of the arrows."""
-    headaxislength: float
-    """Length of the arrow head."""
-    headlength: float
-    """Length of the arrow head in pixels."""
-    headwidth: float
-    """Width of the arrow head."""
-    linewidth: float
-    """Line width."""
-    width: float
-    """Arrow width."""
-    pivot: str
-    """Arrow pivot point."""
-    color: str
-    """Arrow color."""
-    units: str
-    """Units for arrow dimensions."""
-
-
-class EllipseKwargs(TypedDict, total=False):
-    """Keyword arguments for matplotlib Ellipse patch."""
-
-    linewidth: float
-    """Line width."""
-    fill: bool
-    """Whether to fill the ellipse."""
-    color: str
-    """Color of the ellipse."""
-    alpha: float
-    """Transparency."""
-    edgecolor: str
-    """Edge color."""
-    facecolor: str
-    """Face color."""
 
 
 _NAME_LIST = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
@@ -198,12 +138,12 @@ def lens_model_plot(
         kwargs_caustics.setdefault("color", "k")
         caustics_plot(
             ax,
+            kwargs_caustics=kwargs_caustics,
             pixel_grid=_coords,
             lens_model=lens_model,
             kwargs_lens=kwargs_lens,
             fast_caustic=fast_caustic,
             coord_inverse=coord_inverse,
-            **kwargs_caustics,
         )
     if point_source:
         if kwargs_point_source is None:
@@ -297,10 +237,7 @@ def caustics_plot(
     kwargs_lens,
     fast_caustic=True,
     coord_inverse=False,
-    color_crit="r",
-    color_caustic="g",
-    *args,
-    **kwargs_plot: "Unpack[PlotKwargs]",
+    kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
 ):
     """Plot caustics and critical curves.
 
@@ -318,10 +255,8 @@ def caustics_plot(
     :param coord_inverse: If True, inverts the x-coordinates to go from right-to-
     :type coord_inverse: bool
         left (effectively the RA definition)
-    :param color_crit: Color of critical curve
-    :type color_crit: str
-    :param color_caustic: Color of caustic curve
-    :type color_caustic: str
+    :param kwargs_caustics: keyword arguments for the caustic curve, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`
+    :type kwargs_caustics: dict
     :param args: argument for plotting curve
     :type args: tuple
     :param kwargs_plot: keyword arguments passed to :func:`matplotlib.pyplot.plot`
@@ -363,7 +298,12 @@ def caustics_plot(
         )
         # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
         # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
-    kwargs_plot.setdefault("color", color_caustic)
+    kwargs_caustics = dict(kwargs_caustics)
+    kwargs_caustics.setdefault("color", "g")
+    kwargs_caustics.setdefault("critical_curve_color", "r")
+
+    critical_curve_color = kwargs_caustics.pop("critical_curve_color", "r")
+
     plot_util.plot_line_set(
         ax,
         pixel_grid,
@@ -373,10 +313,9 @@ def caustics_plot(
         flipped_x=coord_inverse,
         points_only=points_only,
         label="caustics",
-        *args,
-        **kwargs_plot,
+        **kwargs_caustics,
     )
-    kwargs_plot.setdefault("color", color_crit)
+    kwargs_caustics.setdefault("color", critical_curve_color)
     plot_util.plot_line_set(
         ax,
         pixel_grid,
@@ -386,8 +325,7 @@ def caustics_plot(
         flipped_x=coord_inverse,
         points_only=points_only,
         label="critical curves",
-        *args,
-        **kwargs_plot,
+        **kwargs_caustics,
     )
     return ax
 
@@ -404,7 +342,7 @@ def point_source_plot(
     solver_type="lenstronomy",
     kwargs_solver={},
     color="k",
-    **kwargs_plot: "Unpack[PlotKwargs]",
+    **kwargs_plot: "Unpack[plot_util.PlotKwargs]",
 ):
     """Plots and illustrates images of a point source. The plotting routine orders the
     image labels according to the arrival time and illustrates a diamond shape of the
@@ -522,7 +460,7 @@ def arrival_time_surface(
     image_color_value=None,
     letter_font_size=20,
     name_list=None,
-    **kwargs_contours: "Unpack[PlotKwargs]",
+    **kwargs_contours: "Unpack[plot_util.PlotKwargs]",
 ):
     """Plot Fermat potential contours and optional images.
 
@@ -590,7 +528,12 @@ def arrival_time_surface(
         )
         kwargs_caustics.setdefault("color", critical_curve_color)
         plot_util.plot_line_set(
-            ax, _coords, ra_crit_list, dec_crit_list, origin=origin, **kwargs_caustics
+            ax,
+            _coords,
+            ra_crit_list,
+            dec_crit_list,
+            origin=origin,
+            **kwargs_caustics,
         )
     if point_source is True:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -661,7 +604,12 @@ def arrival_time_surface(
 
 @export
 def curved_arc_illustration(
-    ax, lens_model, kwargs_lens, with_centroid=True, stretch_scale=0.1, color="k"
+    ax,
+    lens_model,
+    kwargs_lens,
+    with_centroid=True,
+    stretch_scale=0.1,
+    color="k",
 ):
     """Illustrate curved-arc lens model components.
 
@@ -708,6 +656,7 @@ def curved_arc_illustration(
     ax.axis("scaled")
 
     # plot coordinate frame and scale
+    return ax
 
 
 @export
@@ -1044,7 +993,7 @@ def stretch_plot(
     scale=1,
     ellipse_color="k",
     max_stretch=np.inf,
-    **patch_kwargs: "Unpack[EllipseKwargs]",
+    **patch_kwargs: "Unpack[plot_util.EllipseKwargs]",
 ):
     """Plots ellipses at each point on a grid, scaled corresponding to the local
     Jacobian eigenvalues.
@@ -1108,7 +1057,7 @@ def shear_plot(
     scale=5,
     color="k",
     max_stretch=np.inf,
-    **kwargs_quiver: "Unpack[QuiverKwargs]",
+    **kwargs_quiver: "Unpack[plot_util.QuiverKwargs]",
 ):
     """Plots combined internal+external shear at each point on a grid, represented by
     pseudovectors in the direction of local shear with length corresponding to shear

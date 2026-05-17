@@ -108,6 +108,65 @@ class CausticKwargs(TypedDict, total=False):
     """Label for the caustic lines."""
 
 
+class PlotKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib plot function."""
+
+    color: str
+    """Line color."""
+    linestyle: str
+    """Line style."""
+    marker: str
+    """Marker style."""
+    markersize: float
+    """Marker size."""
+    linewidth: float
+    """Line width."""
+    alpha: float
+    """Transparency."""
+    label: str
+    """Label for legend."""
+
+
+class QuiverKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib quiver function."""
+
+    scale: float
+    """Scale of the arrows."""
+    headaxislength: float
+    """Length of the arrow head."""
+    headlength: float
+    """Length of the arrow head in pixels."""
+    headwidth: float
+    """Width of the arrow head."""
+    linewidth: float
+    """Line width."""
+    width: float
+    """Arrow width."""
+    pivot: str
+    """Arrow pivot point."""
+    color: str
+    """Arrow color."""
+    units: str
+    """Units for arrow dimensions."""
+
+
+class EllipseKwargs(TypedDict, total=False):
+    """Keyword arguments for matplotlib Ellipse patch."""
+
+    linewidth: float
+    """Line width."""
+    fill: bool
+    """Whether to fill the ellipse."""
+    color: str
+    """Color of the ellipse."""
+    alpha: float
+    """Transparency."""
+    edgecolor: str
+    """Edge color."""
+    facecolor: str
+    """Face color."""
+
+
 class MatshowKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib.pyplot.matshow."""
 

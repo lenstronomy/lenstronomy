@@ -1186,7 +1186,7 @@ class ModelBandPlot(ModelBand):
         axis=0,
         image_name_list=None,
         font_size=None,
-        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
+        kwargs_caustics: Optional[plot_util.CausticCriticalKwargs] = {},
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -1206,7 +1206,7 @@ class ModelBandPlot(ModelBand):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. The dictionary takes `"critical_curve_color"` as an additional optional key to specify the color of the critical curves.
+        :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`

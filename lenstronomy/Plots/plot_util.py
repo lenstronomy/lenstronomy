@@ -108,6 +108,13 @@ class CausticKwargs(TypedDict, total=False):
     """Label for the caustic lines."""
 
 
+class CausticCriticalKwargs(CausticKwargs, total=False):
+    """Keyword arguments for caustic and critical-curve plotting."""
+
+    critical_curve_color: str
+    """Color of the critical-curve lines."""
+
+
 class PlotKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib plot function."""
 

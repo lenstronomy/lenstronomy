@@ -52,7 +52,7 @@ def lens_model_plot(
     name_list=None,
     index=None,
     kwargs_convergence=None,
-    kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
+    kwargs_caustics: Optional[plot_util.CausticCriticalKwargs] = {},
     kwargs_point_source=None,
 ):
     """Plots a lens model (convergence) and the critical curves and caustics.
@@ -96,7 +96,7 @@ def lens_model_plot(
     :param color_value: color for critical curves and caustics
     :type color_value: str
     :param kwargs_convergence: keyword arguments for convergence plot
-    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+    :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
     :param kwargs_point_source: keyword arguments for point source plot
     :return: matplotlib axis instance with plot
     """
@@ -237,7 +237,7 @@ def caustics_plot(
     kwargs_lens,
     fast_caustic=True,
     coord_inverse=False,
-    kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
+    kwargs_caustics: Optional[plot_util.CausticCriticalKwargs] = {},
 ):
     """Plot caustics and critical curves.
 
@@ -255,7 +255,7 @@ def caustics_plot(
     :param coord_inverse: If True, inverts the x-coordinates to go from right-to-
     :type coord_inverse: bool
         left (effectively the RA definition)
-    :param kwargs_caustics: keyword arguments for the caustic curve, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`
+    :param kwargs_caustics: keyword arguments for the caustic and critical curves, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
     :type kwargs_caustics: dict
     :param args: argument for plotting curve
     :type args: tuple
@@ -456,7 +456,7 @@ def arrival_time_surface(
     source_pos_y=0,
     point_source=False,
     n_levels=10,
-    kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
+    kwargs_caustics: Optional[plot_util.CausticCriticalKwargs] = {},
     image_color_value=None,
     letter_font_size=20,
     name_list=None,
@@ -481,7 +481,7 @@ def arrival_time_surface(
     :type point_source: bool
     :param n_levels: number of contour levels to plot for the Fermat potential
     :type n_levels: int
-    :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.
+    :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
     :param image_color_value: color for image names
     :param letter_font_size: font size for image names
     :param name_list: list of names of images

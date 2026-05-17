@@ -887,7 +887,7 @@ class TracerPlot(object):
         axis=0,
         image_name_list=None,
         font_size=None,
-        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
+        kwargs_caustics: Optional[plot_util.CausticCriticalKwargs] = {},
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},

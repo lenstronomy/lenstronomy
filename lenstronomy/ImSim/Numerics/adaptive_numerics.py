@@ -64,8 +64,7 @@ class AdaptiveConvolution(object):
         if compute_pixels is None:
             compute_pixels = np.ones_like(conv_supersample_pixels).astype(bool)
         self._low_res_partial = PixelKernelConvolution(
-            kernel_cut,
-            convolution_type="fft"
+            kernel_cut, convolution_type="fft"
         )
         self._hig_res_partial = SubgridNumbaConvolution(
             kernel_super_cut,
@@ -88,7 +87,9 @@ class AdaptiveConvolution(object):
         :return: convolved and re-sized image
         """
         image_low_res_conv = self._low_res_conv.convolution2d(image_low_res)
-        image_low_res_partial_conv = self._low_res_partial.convolution2d(image_low_res * self._conv_supersample_pixels)
+        image_low_res_partial_conv = self._low_res_partial.convolution2d(
+            image_low_res * self._conv_supersample_pixels
+        )
         image_low_res_partial_conv *= self._compute_pixels
         image_high_res_partial_conv = self._hig_res_partial.convolve2d(image_high_res)
         return (

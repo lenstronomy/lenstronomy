@@ -28,11 +28,12 @@ class TracerPlot(object):
 
         :param kwargs_data_joint: joint data keyword argument list
         :type kwargs_data_joint: dict
-        :param kwargs_model: model keyword argument list for the full multi-band modeling
+        :param kwargs_model: model keyword argument list for the full multi-band
+            modeling
         :type kwargs_model: dict
-        :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for the imaging
-            band, NOT including linear amplitudes (not required as being overwritten by
-            the param list)
+        :param kwargs_params: keyword argument of keyword argument lists of the
+            different model components selected for the imaging band, NOT including
+            linear amplitudes (not required as being overwritten by the param list)
         :type kwargs_params: dict
         :param kwargs_likelihood: likelihood keyword arguments
         :type kwargs_likelihood: dict or None

@@ -637,8 +637,8 @@ def curved_arc_illustration(
     :param lens_model: LensModel() instance
     :type lens_model: LensModel
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
+        considered)
     :type kwargs_lens: list or dict
-        considered
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
     :param stretch_scale: Relative scale of banana to the tangential and radial
@@ -700,7 +700,8 @@ def plot_arc(
     :type ax: matplotlib.axes.Axes
     :param tangential_stretch: Stretch of intrinsic source in tangential
     :type tangential_stretch: float direction
-    :param radial_stretch: Stretch of intrinsic source in radial direction
+    :param radial_stretch: Stretch of intrinsic source in radial
+        direction
     :type radial_stretch: float
     :param curvature: 1/curvature radius
     :type curvature: float
@@ -712,15 +713,15 @@ def plot_arc(
     :type center_y: float
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
-    :param stretch_scale: Relative scale of banana to the tangential and radial
-        stretches (effectively intrinsic source size)
+    :param stretch_scale: Relative scale of banana to the tangential and
+        radial stretches (effectively intrinsic source size)
     :type stretch_scale: float
     :param linewidth: linewidth
     :type linewidth: float
     :param color: color
     :type color: string in matplotlib color convention
-    :param dtan_dtan: tangential eigenvector differential in tangential direction (not
-        implemented yet as illustration)
+    :param dtan_dtan: tangential eigenvector differential in tangential
+        direction (not implemented yet as illustration)
     :type dtan_dtan: float
     :return:
     """

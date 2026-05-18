@@ -636,8 +636,8 @@ def curved_arc_illustration(
     :type ax: matplotlib.axes.Axes
     :param lens_model: LensModel() instance
     :type lens_model: LensModel
-    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
-    :type kwargs_lens: list or dict considered
+    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered)
+    :type kwargs_lens: list or dict
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
     :param stretch_scale: Relative scale of banana to the tangential and radial

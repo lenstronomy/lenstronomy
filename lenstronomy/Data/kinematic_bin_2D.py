@@ -72,7 +72,7 @@ class KinBin(object):
         """Creates the kwargs needed for the 2D kinematic likelihood."""
         kwargs = {
             "image": self.binned_image(self.data, self.bin_mask),
-            "deltaPix": self.PixelGrid.pixel_width,
+            "delta_pix": self.PixelGrid.pixel_width,
             "transform_pix2angle": self._pix2a,
             "ra_at_xy0": self._ra_at_xy_0,
             "dec_at_xy0": self._dec_at_xy_0,

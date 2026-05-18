@@ -231,7 +231,7 @@ class TestClassCreator(object):
             image_likelihood_mask_list=None,
             band_index=0,
         )
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == "SIS"
+        assert multi_band._image_model_list[0].LensModel.lens_model_list[0] == "SIS"
         multi_band_type = "joint-linear"
         multi_band = class_creator.create_im_sim(
             multi_band_list,
@@ -241,7 +241,7 @@ class TestClassCreator(object):
             image_likelihood_mask_list=None,
             band_index=0,
         )
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == "SIS"
+        assert multi_band._image_model_list[0].LensModel.lens_model_list[0] == "SIS"
         multi_band_type = "single-band"
         multi_band = class_creator.create_im_sim(
             multi_band_list,

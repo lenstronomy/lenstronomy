@@ -20,7 +20,7 @@ class TestNIE(object):
         lens = NIE_lens()
         light = NIE_light()
 
-        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.1)
         e1, e2 = 0.2, 0
         s = 1.0
         kwargs_light = {"amp": 1.0, "e1": e1, "e2": e2, "s_scale": s}

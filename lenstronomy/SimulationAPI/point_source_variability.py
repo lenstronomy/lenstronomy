@@ -22,7 +22,7 @@ class PointSourceVariability(object):
         source_x,
         source_y,
         variability_func,
-        numpix,
+        num_pix,
         kwargs_single_band,
         kwargs_model,
         kwargs_numerics,
@@ -36,7 +36,7 @@ class PointSourceVariability(object):
         :param source_x: RA of source position
         :param source_y: DEC of source position
         :param variability_func: function that returns a brightness (in magnitude) as a function of time t
-        :param numpix: number of pixels per axis
+        :param num_pix: number of pixels per axis
         :param kwargs_single_band:
         :param kwargs_model:
         :param kwargs_numerics:
@@ -47,7 +47,7 @@ class PointSourceVariability(object):
         """
 
         # create background SimAPI class instance
-        sim_api_bkg = SimAPI(numpix, kwargs_single_band, kwargs_model)
+        sim_api_bkg = SimAPI(num_pix, kwargs_single_band, kwargs_model)
         image_model_bkg = sim_api_bkg.image_model_class(kwargs_numerics)
         kwargs_lens_light, kwargs_source, kwargs_ps = sim_api_bkg.magnitude2amplitude(
             kwargs_lens_light_mag, kwargs_source_mag, kwargs_ps_mag
@@ -80,7 +80,7 @@ class PointSourceVariability(object):
         #  times at t>=0
         # add image plane source model
         kwargs_model_ps = {"point_source_model_list": ["LENSED_POSITION"]}
-        self.sim_api_ps = SimAPI(numpix, kwargs_single_band, kwargs_model_ps)
+        self.sim_api_ps = SimAPI(num_pix, kwargs_single_band, kwargs_model_ps)
         self._image_model_ps = self.sim_api_ps.image_model_class(kwargs_numerics)
         self._kwargs_lens = kwargs_lens
         self._dt_days = dt_days

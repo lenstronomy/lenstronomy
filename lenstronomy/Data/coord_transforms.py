@@ -18,12 +18,12 @@ class Coordinates(object):
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         """
-        self._Mpix2a = transform_pix2angle
-        self._Ma2pix = linalg.inv(self._Mpix2a)
+        self._transform_pix2angle = transform_pix2angle
+        self._transform_angle2pix = linalg.inv(self._transform_pix2angle)
         self._ra_at_xy_0 = ra_at_xy_0
         self._dec_at_xy_0 = dec_at_xy_0
         self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(
-            -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._Ma2pix
+            -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._transform_angle2pix
         )
 
     @property
@@ -32,7 +32,7 @@ class Coordinates(object):
 
         :return: transformation matrix from angular to pixel coordinates
         """
-        return self._Ma2pix
+        return self._transform_angle2pix
 
     @property
     def transform_pix2angle(self):
@@ -40,7 +40,7 @@ class Coordinates(object):
 
         :return: transformation matrix from pixel to angular coordinates
         """
-        return self._Mpix2a
+        return self._transform_pix2angle
 
     @property
     def xy_at_radec_0(self):
@@ -68,7 +68,7 @@ class Coordinates(object):
         """
 
         return util.map_coord2pix(
-            ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix
+            ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._transform_angle2pix
         )
 
     def map_pix2coord(self, x, y):
@@ -81,7 +81,7 @@ class Coordinates(object):
         :return: relative (RA, DEC) coordinates of the system
         """
         return util.map_coord2pix(
-            x, y, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a
+            x, y, self._ra_at_xy_0, self._dec_at_xy_0, self._transform_pix2angle
         )
 
     @property
@@ -90,7 +90,7 @@ class Coordinates(object):
 
         :return: area [arcsec^2]
         """
-        return np.abs(linalg.det(self._Mpix2a))
+        return np.abs(linalg.det(self._transform_pix2angle))
 
     @property
     def pixel_width(self):
@@ -108,7 +108,7 @@ class Coordinates(object):
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
         ra_coords, dec_coords = util.grid_from_coordinate_transform(
-            nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0
+            nx, ny, self._transform_pix2angle, self._ra_at_xy_0, self._dec_at_xy_0
         )
         ra_coords = util.array2image(ra_coords, nx, ny)  # new
         dec_coords = util.array2image(dec_coords, nx, ny)  # new
@@ -142,7 +142,7 @@ class Coordinates(object):
         self._ra_at_xy_0 += ra_shift
         self._dec_at_xy_0 += dec_shift
         self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(
-            -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._Ma2pix
+            -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._transform_angle2pix
         )
 
 
@@ -158,6 +158,6 @@ class Coordinates1D(Coordinates):
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
         ra_coords, dec_coords = util.grid_from_coordinate_transform(
-            nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0
+            nx, ny, self._transform_pix2angle, self._ra_at_xy_0, self._dec_at_xy_0
         )
         return ra_coords, dec_coords

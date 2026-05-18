@@ -47,9 +47,9 @@ class TestKDELikelihood(object):
             D_d_samples, D_dt_samples, kde_type="scipy_gaussian", bandwidth=2
         )
         # evaluate the maximum likelihood (arbitrary normalization!)
-        logL_max = kdeLikelihood.logLikelihood(Dd_true, D_dt_true)
+        logL_max = kdeLikelihood.log_likelihood(Dd_true, D_dt_true)
         # evaluate the likelihood 1-sigma away from Dd
-        logL_sigma = kdeLikelihood.logLikelihood(Dd_true + sigma_Dd, D_dt_true)
+        logL_sigma = kdeLikelihood.log_likelihood(Dd_true + sigma_Dd, D_dt_true)
         # compute likelihood ratio
         delta_log = logL_max - logL_sigma
         # check whether likelihood ratio is consistent with input distribution
@@ -57,7 +57,7 @@ class TestKDELikelihood(object):
         npt.assert_almost_equal(delta_log, 0.5, decimal=2)
 
         # test the same in D_dt dimension
-        logL_sigma = kdeLikelihood.logLikelihood(Dd_true, D_dt_true + sigma_Ddt)
+        logL_sigma = kdeLikelihood.log_likelihood(Dd_true, D_dt_true + sigma_Ddt)
         # compute likelihood ratio
         delta_log = logL_max - logL_sigma
         # check whether likelihood ratio is consistent with input distribution
@@ -68,9 +68,9 @@ class TestKDELikelihood(object):
             D_d_samples, D_dt_samples, kde_type="gaussian", bandwidth=20
         )
         # evaluate the maximum likelihood (arbitrary normalization!)
-        logL_max = kdeLikelihood.logLikelihood(Dd_true, D_dt_true)
+        logL_max = kdeLikelihood.log_likelihood(Dd_true, D_dt_true)
         # evaluate the likelihood 1-sigma away from Dd
-        logL_sigma = kdeLikelihood.logLikelihood(Dd_true + sigma_Dd, D_dt_true)
+        logL_sigma = kdeLikelihood.log_likelihood(Dd_true + sigma_Dd, D_dt_true)
         # compute likelihood ratio
         delta_log = logL_max - logL_sigma
         # check whether likelihood ratio is consistent with input distribution
@@ -78,7 +78,7 @@ class TestKDELikelihood(object):
         npt.assert_almost_equal(delta_log, 0.5, decimal=2)
 
         # test the same in D_dt dimension
-        logL_sigma = kdeLikelihood.logLikelihood(Dd_true, D_dt_true + sigma_Ddt)
+        logL_sigma = kdeLikelihood.log_likelihood(Dd_true, D_dt_true + sigma_Ddt)
         # compute likelihood ratio
         delta_log = logL_max - logL_sigma
         # check whether likelihood ratio is consistent with input distribution

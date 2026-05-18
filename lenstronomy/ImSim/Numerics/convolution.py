@@ -214,11 +214,11 @@ class SubgridKernelConvolution(object):
         """
         # n_high = len(kernel_supersampled)
         self._supersampling_factor = supersampling_factor
-        # numPix = int(n_high / self._supersampling_factor)
+        # num_pix = int(n_high / self._supersampling_factor)
         # if self._supersampling_factor % 2 == 0:
         #    self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)
         # else:
-        #    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)
+        #    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, num_pix=num_pix)
         if supersampling_kernel_size is None:
             kernel_low_res, kernel_high_res = np.zeros((3, 3)), kernel_supersampled
             self._low_res_convolution = False
@@ -355,7 +355,7 @@ class MultiGaussianConvolution(object):
         from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
 
         mg = MultiGaussian()
-        x, y = util.make_grid(numPix=num_pix, deltapix=1)
+        x, y = util.make_grid(num_pix=num_pix, delta_pix=1)
         kernel = mg.function(x, y, amp=self._fraction_list, sigma=self._sigmas_scaled)
         kernel = util.array2image(kernel)
         return kernel / np.sum(kernel)

@@ -4,6 +4,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+import sys
+from typing import TYPE_CHECKING
+
+if sys.version_info >= (3, 12):  # pragma: no cover
+    from typing import Unpack
+else:  # pragma: no cover
+    try:  # pragma: no cover
+        from typing_extensions import Unpack
+    except ImportError:  # pragma: no cover
+        pass
+
+if TYPE_CHECKING:  # pragma: no cover
+    from lenstronomy.Plots import plot_util
 
 from lenstronomy.Util.package_util import exporter
 
@@ -16,9 +29,12 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     convergence. This routine is an example and more tests might be appropriate to
     analyse a specific chain.
 
-    :param chain_list: list of chains with arguments [type string, samples etc...]
+    :param chain_list: Chains with arguments [type string, samples etc...]
+    :type chain_list: list
     :param index: index of chain to be plotted
+    :type index: int
     :param num_average: in chains, number of steps to average over in plotting diagnostics
+    :type num_average: int
     :return: plotting instance figure, axes (potentially multiple)
     """
     chain_i = chain_list[index]
@@ -41,6 +57,14 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 
 @export
 def plot_chain(chain, param_list):
+    """Plot PSO chain diagnostics.
+
+    :param chain: chi2, position, and velocity history
+    :type chain: tuple
+    :param param_list: Parameter names
+    :type param_list: list
+    :return: plotting instance figure and axes
+    """
     chi2_list, pos_list, vel_list = chain
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6))
@@ -73,12 +97,17 @@ def plot_chain(chain, param_list):
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """Plots the MCMC behaviour and looks for convergence of the chain.
 
-    :param ax: matplotlib.axis instance
-    :param samples_mcmc: parameters sampled 2d numpy array
-    :param param_mcmc: list of parameters
+    :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
+    :param samples_mcmc: sampled parameters
+    :type samples_mcmc: numpy.ndarray
+    :param param_mcmc: Parameters
+    :type param_mcmc: list
     :param dist_mcmc: log likelihood of the chain
+    :type dist_mcmc: numpy.ndarray or None
     :param num_average: number of samples to average (should coincide with the number of
         samples in the emcee process)
+    :type num_average: int
     :return:
     """
     num_samples = len(samples_mcmc[:, 0])
@@ -108,11 +137,14 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
 
 
 @export
-def psf_iteration_compare(kwargs_psf, **kwargs):
-    """
+def psf_iteration_compare(
+    kwargs_psf, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
+):
+    """Compare initial and iteratively reconstructed PSF kernels.
 
     :param kwargs_psf: keyword arguments that initiate a PSF() class
-    :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+    :type kwargs_psf: dict
+    :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
     :return:
     """
     psf_out = kwargs_psf["kernel_point_source"]
@@ -127,20 +159,17 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     delta_x = n_kernel / 20.0
     delta_y = n_kernel / 10.0
 
-    if "cmap" not in kwargs:
-        kwargs["cmap"] = "seismic"
+    kwargs_matshow.setdefault("cmap", "seismic")
 
     n = 3
     if psf_variance_map is not None:
         n += 1
     f, axes = plt.subplots(1, n, figsize=(5 * n, 5))
     ax = axes[0]
-    im = ax.matshow(np.log10(psf_in), origin="lower", **kwargs)
-    v_min, v_max = im.get_clim()
-    if "vmin" not in kwargs:
-        kwargs["vmin"] = v_min
-    if "vmax" not in kwargs:
-        kwargs["vmax"] = v_max
+    im = ax.matshow(np.log10(psf_in), origin="lower", **kwargs_matshow)
+    vmin, vmax = im.get_clim()
+    kwargs_matshow.setdefault("vmin", vmin)
+    kwargs_matshow.setdefault("vmax", vmax)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -156,7 +185,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     )
 
     ax = axes[1]
-    im = ax.matshow(np.log10(psf_out), origin="lower", **kwargs)
+    im = ax.matshow(np.log10(psf_out), origin="lower", **kwargs_matshow)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -172,10 +201,10 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     )
 
     ax = axes[2]
-    kwargs_new = copy.deepcopy(kwargs)
+    kwargs_new = copy.deepcopy(kwargs_matshow)
 
-    del kwargs_new["vmin"]
-    del kwargs_new["vmax"]
+    kwargs_new.pop("vmin", None)
+    kwargs_new.pop("vmax", None)
 
     im = ax.matshow(
         psf_out - psf_in, origin="lower", vmin=-(10**-3), vmax=10**-3, **kwargs_new
@@ -199,7 +228,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
         im = ax.matshow(
             np.log10(psf_variance_map * psf.kernel_point_source**2),
             origin="lower",
-            **kwargs
+            **kwargs_matshow
         )
         n_kernel = len(psf_variance_map)
         delta_x = n_kernel / 20.0

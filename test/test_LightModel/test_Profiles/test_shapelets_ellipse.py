@@ -12,7 +12,7 @@ class TestShapeletSetEllipse(object):
         self.spherical = ShapeletSet()
 
     def test_function(self):
-        x, y = util.make_grid(numPix=10, deltapix=1)
+        x, y = util.make_grid(num_pix=10, delta_pix=1)
 
         e1, e2 = 0.1, -0.2
         center_x, center_y = 1, -1
@@ -41,7 +41,7 @@ class TestShapeletSetEllipse(object):
         npt.assert_almost_equal(flux_ellipse, flux_spherical, decimal=8)
 
     def test_function_split(self):
-        x, y = util.make_grid(numPix=10, deltapix=1)
+        x, y = util.make_grid(num_pix=10, delta_pix=1)
 
         e1, e2 = 0.1, -0.2
         center_x, center_y = 1, -1

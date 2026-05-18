@@ -25,21 +25,21 @@ class TestImageModel(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 100  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg, inverse=True
+            num_pix, delta_pix, exp_time, sigma_bkg, inverse=True
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
         }
         psf_class = PSF(**kwargs_psf)
         kernel = psf_class.kernel_point_source
@@ -224,7 +224,7 @@ class TestImageModel(object):
 
     def test_update_data(self):
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1, inverse=True
+            num_pix=10, delta_pix=1, exposure_time=1, background_rms=1, inverse=True
         )
         data_class = ImageData(**kwargs_data)
         self.imageModel.update_data(data_class)
@@ -233,10 +233,10 @@ class TestImageModel(object):
     def test_point_source_rendering(self):
         # initialize data
 
-        numPix = 100
-        deltaPix = 0.05
+        num_pix = 100
+        delta_pix = 0.05
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exposure_time=1, background_rms=1
+            num_pix, delta_pix, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
@@ -329,10 +329,10 @@ class TestImageModel(object):
         kwargs_ps = [{"source_amp": 1000, "ra_source": 0.1, "dec_source": 0.1}]
         lensModel = LensModel(lens_model_list=["SIS"])
         kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0}]
-        numPix = 64
-        deltaPix = 0.13
+        num_pix = 64
+        delta_pix = 0.13
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exposure_time=1, background_rms=1
+            num_pix, delta_pix, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
 
@@ -353,7 +353,7 @@ class TestImageModel(object):
         sourceModel = LightModel(light_model_list=["UNIFORM", "UNIFORM"])
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1
+            num_pix=10, delta_pix=1, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
 
@@ -369,7 +369,7 @@ class TestImageModel(object):
             source_model_class=sourceModel,
         )
 
-        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
+        x_grid, y_grid = util.make_grid(num_pix=10, delta_pix=1)
         error_map = imageModel.error_map_source(
             kwargs_source=[{"amp": 1}, {"amp": 1}],
             x_grid=x_grid,
@@ -380,7 +380,7 @@ class TestImageModel(object):
 
     def test_create_empty(self):
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1
+            num_pix=10, delta_pix=1, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
         imageModel_empty = ImageModel(data_class, PSF())
@@ -391,7 +391,7 @@ class TestImageModel(object):
 
     def test_extinction_map(self):
         kwargs_data = sim_util.data_configure_simple(
-            numPix=10, deltaPix=1, exposure_time=1, background_rms=1
+            num_pix=10, delta_pix=1, exposure_time=1, background_rms=1
         )
         data_class = ImageData(**kwargs_data)
         extinction_class = DifferentialExtinction(

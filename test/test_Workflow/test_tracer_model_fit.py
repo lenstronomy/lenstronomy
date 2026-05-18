@@ -7,14 +7,14 @@ class TestTracerModelFit(object):
         # imagng data specifics
         background_rms = 0.005  # background noise per pixel
         exp_time = 500.0  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 60  # cutout pixel size per axis
+        num_pix = 60  # cutout pixel size per axis
         pixel_scale = 0.05  # pixel size in arcsec (area per pixel = pixel_scale**2)
         fwhm = 0.05  # full width at half maximum of PSF
         psf_type = "GAUSSIAN"  # 'GAUSSIAN', 'PIXEL', 'NONE'
 
         # tracer measurements specifics
         tracer_noise_map = np.ones(
-            (numPix, numPix)
+            (num_pix, num_pix)
         )  # variance of metallicity measurement for each pixel
 
         # lensing quantities
@@ -95,11 +95,11 @@ class TestTracerModelFit(object):
             dec_at_xy_0,
             _,
             _,
-            Mpix2coord,
+            transform_pix2coord,
             _,
         ) = util.make_grid_with_coordtransform(
-            numPix=numPix,
-            deltapix=pixel_scale,
+            num_pix=num_pix,
+            delta_pix=pixel_scale,
             center_ra=0,
             center_dec=0,
             subgrid_res=1,
@@ -111,9 +111,9 @@ class TestTracerModelFit(object):
             "exposure_time": exp_time,  # exposure time (or a map per pixel)
             "ra_at_xy_0": ra_at_xy_0,  # RA at (0,0) pixel
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
-            "transform_pix2angle": Mpix2coord,
+            "transform_pix2angle": transform_pix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix)),
+            "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 
@@ -127,7 +127,7 @@ class TestTracerModelFit(object):
         }
 
         # if you are using a PSF estimate from e.g. a star in the FoV of your exposure, you can set
-        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': deltaPix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
+        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': delta_pix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
 
         psf_class = PSF(**kwargs_psf)
         kwargs_numerics = {
@@ -165,9 +165,9 @@ class TestTracerModelFit(object):
             "noise_map": tracer_noise_map,  # variance of pixels
             "ra_at_xy_0": ra_at_xy_0,  # RA at (0,0) pixel
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
-            "transform_pix2angle": Mpix2coord,
+            "transform_pix2angle": transform_pix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix)),
+            "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 

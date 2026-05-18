@@ -343,7 +343,7 @@ class TestLensModel(object):
         methods in the infinitesimal regime."""
         lens_model = LensModel(lens_model_list=["SIS"])
         kwargs = [{"theta_E": 1, "center_x": 0.01, "center_y": 0}]
-        x, y = make_grid(numPix=10, deltapix=0.2)
+        x, y = make_grid(num_pix=10, delta_pix=0.2)
         diff = 0.0000001
         f_xx_sq, f_xy_sq, f_yx_sq, f_yy_sq = lens_model.hessian(
             x, y, kwargs, diff=diff, diff_method="square"

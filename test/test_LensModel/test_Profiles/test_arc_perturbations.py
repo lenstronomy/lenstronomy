@@ -22,7 +22,7 @@ class TestArcPerturbations(object):
         }
 
     def test_function(self):
-        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.1)
         values = self.model.function(x, y, **self.kwargs_lens)
         # import matplotlib.pyplot as plt
         # plt.matshow(util.array2image(values))
@@ -30,7 +30,7 @@ class TestArcPerturbations(object):
         npt.assert_almost_equal(values[0], 0, decimal=5)
 
     def test_derivatives(self):
-        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.1)
         dx = 0.000001
         values = self.model.function(x, y, **self.kwargs_lens)
         alpha_x, alpha_y = self.model.derivatives(x, y, **self.kwargs_lens)
@@ -43,7 +43,7 @@ class TestArcPerturbations(object):
         npt.assert_almost_equal(f_y_num, alpha_y, decimal=3)
 
     def test_hessian(self):
-        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.1)
         delta = 0.0000001
         f_xx, f_xy, f_yx, f_yy = self.model.hessian(x, y, **self.kwargs_lens)
         f_x, f_y = self.model.derivatives(x, y, **self.kwargs_lens)

@@ -94,7 +94,7 @@ class MassSlice(object):
             self._mass_map, self._grid_spacing
         )
         x_grid, y_grid = util.make_grid(
-            numPix=len(self._mass_map), deltapix=self._grid_spacing
+            num_pix=len(self._mass_map), delta_pix=self._grid_spacing
         )
         self._x_axes_mpc, self._y_axes_mpc = util.get_axes(x_grid, y_grid)
 

@@ -23,18 +23,18 @@ class TestPSFIteration(object):
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 100  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.3  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
         sigma = util.fwhm2sigma(fwhm)
-        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=31, delta_pix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         gaussian = Gaussian()
@@ -150,7 +150,7 @@ class TestPSFIteration(object):
     def test_update_psf(self):
         fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
-        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=31, delta_pix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         gaussian = Gaussian()
@@ -265,7 +265,7 @@ class TestPSFIteration(object):
     def test_update_iterative(self):
         fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
-        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=31, delta_pix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         gaussian = Gaussian()
@@ -337,18 +337,18 @@ class TestPSFIterationOld(object):
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 100  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.3  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
         sigma = util.fwhm2sigma(fwhm)
-        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=31, delta_pix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         gaussian = Gaussian()
@@ -464,7 +464,7 @@ class TestPSFIterationOld(object):
     def test_update_psf(self):
         fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
-        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=31, delta_pix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         gaussian = Gaussian()
@@ -495,7 +495,7 @@ class TestPSFIterationOld(object):
     def test_update_iterative(self):
         fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
-        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=31, delta_pix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         gaussian = Gaussian()

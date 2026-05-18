@@ -49,7 +49,7 @@ class TestFastRayShooting(object):
     def test_rayshooting(self):
         solver = LensEquationSolver(self.lensModel)
         source_x, source_y = -0.05, -0.02
-        x_image_true, y_image_true = solver.findBrightImage(
+        x_image_true, y_image_true = solver.find_bright_image(
             source_x, source_y, self.kwargs_epl
         )
 

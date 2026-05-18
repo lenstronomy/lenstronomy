@@ -12,7 +12,7 @@ class TestHernquist(object):
 
     def test_total_flux(self):
         delta_pix = 0.2
-        x, y = make_grid(numPix=1000, deltapix=delta_pix)
+        x, y = make_grid(num_pix=1000, delta_pix=delta_pix)
 
         rs, amp = 1, 1
         total_flux = self.hernquist.total_flux(amp=amp, Rs=rs)

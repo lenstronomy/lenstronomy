@@ -123,7 +123,7 @@ class TestShearReduced(object):
         # test whether inverse ellipticity distrotions can be fully described by reduced shear distortions
 
         # elliptical gaussian
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         gauss = GaussianEllipse()
         shear = ShearReduced()
 

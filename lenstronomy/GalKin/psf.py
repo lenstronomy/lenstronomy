@@ -156,7 +156,7 @@ class PSFMoffat(object):
         :param y: y-coordinate of light ray
         :return: x', y' displaced by the two-dimensional PSF distribution function
         """
-        return velocity_util.displace_PSF_moffat(x, y, self._fwhm, self._moffat_beta)
+        return velocity_util.displace_psf_moffat(x, y, self._fwhm, self._moffat_beta)
 
     def convolution_kernel(self, delta_pix, num_pix=21):
         """Normalized convolution kernel.

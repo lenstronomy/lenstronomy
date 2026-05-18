@@ -113,7 +113,7 @@ def test_transform_e1e2():
 
 
 def test_transform_e1e2_product_average_new():
-    x, y = util.make_grid(numPix=31, deltapix=1)
+    x, y = util.make_grid(num_pix=31, delta_pix=1)
 
     e1, e2 = 0.3, 0.2
     center_x, center_y = 0, 0
@@ -147,7 +147,7 @@ def test_phi_gamma_ellipticity_2():
 
 
 def test_displace_eccentricity():
-    x, y = util.make_grid(numPix=10, deltapix=1)
+    x, y = util.make_grid(num_pix=10, delta_pix=1)
     e1 = 0.1
     e2 = -0
     center_x, center_y = 0, 0
@@ -210,7 +210,7 @@ def test_elliptical_distortion_product_average():
 
     :return:
     """
-    x, y = util.make_grid(numPix=20, deltapix=0.1)
+    x, y = util.make_grid(num_pix=20, delta_pix=0.1)
     center_x, center_y = 1, -1
 
     (

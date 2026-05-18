@@ -169,7 +169,7 @@ def potential_kernel(num_pix, delta_pix):
     :param delta_pix: pixel size (per dimension in units of angle)
     :return: kernel for lensing potential
     """
-    x_shift, y_shift = util.make_grid(numPix=num_pix, deltapix=delta_pix)
+    x_shift, y_shift = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
     r2 = x_shift**2 + y_shift**2
     r2_max = np.max(r2)
     r2[r2 < (delta_pix / 2) ** 2] = (delta_pix / 2) ** 2
@@ -188,7 +188,7 @@ def deflection_kernel(num_pix, delta_pix):
     :param delta_pix: pixel size (per dimension in units of angle)
     :return: kernel for x-direction and kernel of y-direction deflection angles
     """
-    x_shift, y_shift = util.make_grid(numPix=num_pix, deltapix=delta_pix)
+    x_shift, y_shift = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
     r2 = x_shift**2 + y_shift**2
     r2[r2 < (delta_pix / 2) ** 2] = (delta_pix / 2) ** 2
 

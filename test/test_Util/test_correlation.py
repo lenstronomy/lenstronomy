@@ -15,7 +15,7 @@ class TestCorrelation(object):
 
     def test_power_spectrum_2D(self):
         num_pix = 100
-        x, y = util.make_grid(numPix=num_pix, deltapix=1)
+        x, y = util.make_grid(num_pix=num_pix, delta_pix=1)
         I_r = util.array2image(np.cos(x / num_pix / (2 * np.pi)))
         psd2D = correlation.power_spectrum_2d(I_r)
         npt.assert_almost_equal(np.max(psd2D), 1, decimal=1)

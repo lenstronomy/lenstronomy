@@ -6,7 +6,7 @@ import numpy.testing as npt
 
 class TestModelAPI(object):
     def setup_method(self):
-        numpix = 10
+        num_pix = 10
         instrument_name = "LSST"
         observation_name = "LSST_g_band"
         kwargs_single_band = constructor.observation_constructor(
@@ -24,7 +24,7 @@ class TestModelAPI(object):
             "source_redshift_list": None,
         }
         kwargs_numerics = {"supersampling_factor": 2}
-        self.api = SimAPI(numpix, kwargs_single_band, kwargs_model)
+        self.api = SimAPI(num_pix, kwargs_single_band, kwargs_model)
 
     def test_image_model_class(self):
         model = self.api.image_model_class()

@@ -47,7 +47,7 @@ class TestCurvedArcConst(object):
             "center_x": 0,
             "center_y": 0,
         }
-        x, y = util.make_grid(numPix=100, deltapix=0.01)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.01)
         f_x_sis, f_y_sis = self.arc_sis.derivatives(x, y, **kwargs_arc_sis)
         beta_x_sis = x - f_x_sis
         beta_y_sis = y - f_y_sis

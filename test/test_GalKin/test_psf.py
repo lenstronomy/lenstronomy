@@ -39,14 +39,14 @@ class TestPSF(object):
         psf = PSF(psf_type="GAUSSIAN", fwhm=1)
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
         npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
-        x, y = util.make_grid(numPix=21, deltapix=0.3)
+        x, y = util.make_grid(num_pix=21, delta_pix=0.3)
         kernel_direct = psf.convolution_kernel_grid(x, y).reshape(21, 21)
         npt.assert_equal(kernel, kernel_direct)
 
         psf = PSF(psf_type="MOFFAT", fwhm=1, moffat_beta=2.6)
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
         npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
-        x, y = util.make_grid(numPix=21, deltapix=0.3)
+        x, y = util.make_grid(num_pix=21, delta_pix=0.3)
         kernel_direct = psf.convolution_kernel_grid(x, y).reshape(21, 21)
         npt.assert_equal(kernel, kernel_direct)
 
@@ -57,7 +57,7 @@ class TestPSF(object):
         )
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
         npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
-        x, y = util.make_grid(numPix=21, deltapix=0.3)
+        x, y = util.make_grid(num_pix=21, delta_pix=0.3)
         kernel_direct = psf.convolution_kernel_grid(x, y).reshape(21, 21)
         npt.assert_almost_equal(np.sum(kernel_direct), 1, decimal=5)
         npt.assert_allclose(kernel, kernel_direct, rtol=1e-5)
@@ -71,7 +71,7 @@ class TestPSF(object):
         kernel = psf.convolution_kernel(delta_pix=0.3, num_pix=21)
         npt.assert_almost_equal(np.sum(kernel), 1, decimal=5)
         npt.assert_almost_equal(kernel, self.gaussian_kernel, decimal=5)
-        x, y = util.make_grid(numPix=21, deltapix=0.3)
+        x, y = util.make_grid(num_pix=21, delta_pix=0.3)
         kernel_direct = psf.convolution_kernel_grid(
             x.reshape(21, 21), y.reshape(21, 21)
         )
@@ -195,7 +195,7 @@ class TestRaise(unittest.TestCase):
             psf = PSF(
                 psf_type="PIXEL", kernel=kernel, delta_pix=0.3, supersampling_factor=1
             )
-            x, y = util.make_grid(numPix=7, deltapix=0.3)
+            x, y = util.make_grid(num_pix=7, delta_pix=0.3)
             x, y = x.reshape(7, 7), y.reshape(7, 7)
             psf.convolution_kernel_grid(x, y)
 

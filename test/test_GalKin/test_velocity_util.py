@@ -51,7 +51,7 @@ class TestVelocityUtil(object):
         beta = 2.6
         np.random.seed(41)
         x, y = 0, 0
-        x_d, y_d = velocity_util.displace_PSF_moffat(x, y, FWHM, beta)
+        x_d, y_d = velocity_util.displace_psf_moffat(x, y, FWHM, beta)
         assert x_d != x
         assert y_d != y
 

@@ -58,7 +58,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
 
 
 @export
-def azimuthalAverage(image, center=None):
+def azimuthal_average(image, center=None):
     """Calculate the azimuthally averaged radial profile.
 
     image - The 2D image

@@ -114,10 +114,11 @@ class ModelBandPlot(ModelBand):
     def font_size(self):
         """Default font size for all texts in the subplots.
 
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
+        Font size in individual subplots can be adjusted by font_size
+        argument in the plotting methods. Font size for different text
+        elements can be further fine- tuned by kwargs_colorbar,
+        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows
+        arguments in the plotting methods.
         """
         return self._font_size
 
@@ -125,10 +126,11 @@ class ModelBandPlot(ModelBand):
     def font_size(self, value):
         """Set default font size for all texts in the subplots.
 
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
+        Font size in individual subplots can be adjusted by font_size
+        argument in the plotting methods. Font size for different text
+        elements can be further fine- tuned by kwargs_colorbar,
+        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows
+        arguments in the plotting methods.
         """
         self._font_size = value
 
@@ -467,8 +469,9 @@ class ModelBandPlot(ModelBand):
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
-        """Plots the convergence of a full lens model minus the convergence from a few
-        specified lens models to more clearly show the presence of substructure.
+        """Plots the convergence of a full lens model minus the convergence
+        from a few specified lens models to more clearly show the presence of
+        substructure.
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
@@ -813,10 +816,11 @@ class ModelBandPlot(ModelBand):
         :type num_pix: int
         :param delta_pix: pixel size
         :type delta_pix: float
-        :param image_orientation: If True, uses frame in orientation of the image,
+        :param image_orientation: If True, uses frame in orientation of
+            the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
-        :return: 2d surface brightness grid of the reconstructed source and
-            Coordinates() instance of source grid
+        :return: 2d surface brightness grid of the reconstructed source
+            and Coordinates() instance of source grid
         """
         if image_orientation is True:
             transform_pix2coord = (
@@ -1007,12 +1011,12 @@ class ModelBandPlot(ModelBand):
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
-        """Plots the uncertainty in the surface brightness in the source from the linear
-        inversion by taking the diagonal elements of the covariance matrix of the
-        inversion of the basis set to be propagated to the source plane. #TODO
-        illustration of the uncertainties in real space with the full covariance matrix
-        is subtle. # The best way is probably to draw realizations from the covariance
-        matrix.
+        """Plots the uncertainty in the surface brightness in the source from
+        the linear inversion by taking the diagonal elements of the covariance
+        matrix of the inversion of the basis set to be propagated to the source
+        plane. #TODO illustration of the uncertainties in real space with the
+        full covariance matrix is subtle. # The best way is probably to draw
+        realizations from the covariance matrix.
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes

@@ -8,10 +8,10 @@ __all__ = ["SPEMD"]
 
 
 class SPEMD(LensProfileBase):
-    """Class for smooth power law ellipse mass density profile (SPEMD). This class
-    effectively performs the FASTELL calculations by Renan Barkana. The parameters are
-    changed and represent a spherically averaged Einstein radius an a logarithmic 3D
-    mass profile slope.
+    """Class for smooth power law ellipse mass density profile (SPEMD). This
+    class effectively performs the FASTELL calculations by Renan Barkana. The
+    parameters are changed and represent a spherically averaged Einstein radius
+    an a logarithmic 3D mass profile slope.
 
     The SPEMD mass profile is defined as follow:
 
@@ -216,9 +216,10 @@ class SPEMD(LensProfileBase):
 
         :param x: x-coordinate (angle)
         :param y: y-coordinate (angle)
-        :param theta_E: Einstein radius (angle), pay attention to specific definition!
-        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to
-            isothermal
+        :param theta_E: Einstein radius (angle), pay attention to
+            specific definition!
+        :param gamma: logarithmic slope of the power-law profile.
+            gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
         :param s_scale: smoothing scale in the center of the profile
@@ -241,8 +242,8 @@ class SPEMD(LensProfileBase):
 
     @staticmethod
     def convert_params(theta_E, gamma, q, s_scale):
-        """Converts parameter definitions into quantities used by the FASTELL fortran
-        library.
+        """Converts parameter definitions into quantities used by the FASTELL
+        fortran library.
 
         :param theta_E: Einstein radius
         :param gamma: 3D power-law slope of mass profile
@@ -259,8 +260,8 @@ class SPEMD(LensProfileBase):
     def is_not_empty(x1, x2):
         """Check if float or not an empty array.
 
-        :return: True if x1 and x2 are either floats/ints or an non-empty array, False
-            if e.g. objects are []
+        :return: True if x1 and x2 are either floats/ints or an non-
+            empty array, False if e.g. objects are []
         :rtype: bool
         """
         assert type(x1) == type(x2)

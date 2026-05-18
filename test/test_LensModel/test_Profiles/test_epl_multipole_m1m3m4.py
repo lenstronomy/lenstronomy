@@ -13,7 +13,8 @@ from lenstronomy.LensModel.Profiles.epl_multipole_m3m4 import (
 
 
 class TestEPL_MULTIPOLE_M3M4(object):
-    """Test TestEPL_MULTIPOLE_M1M3M4 vs TestEPL_MULTIPOLE_M3M4 with m1 term = 0."""
+    """Test TestEPL_MULTIPOLE_M1M3M4 vs TestEPL_MULTIPOLE_M3M4 with m1 term =
+    0."""
 
     def setup_method(self):
 

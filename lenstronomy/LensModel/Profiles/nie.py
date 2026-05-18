@@ -212,10 +212,11 @@ class NIE(LensProfileBase):
 
     @staticmethod
     def _theta_E_prod_average2major_axis(theta_E, q):
-        """Converts a product averaged Einstein radius (of semi-minor and semi-major
-        axis) to a major axis Einstein radius for an Isothermal ellipse. The standard
-        lenstronomy conventions are product averaged Einstein radii while other codes
-        (such as e.g. gravlens) use the semi-major axis convention.
+        """Converts a product averaged Einstein radius (of semi-minor and semi-
+        major axis) to a major axis Einstein radius for an Isothermal ellipse.
+        The standard lenstronomy conventions are product averaged Einstein
+        radii while other codes (such as e.g. gravlens) use the semi-major axis
+        convention.
 
         .. math::
           \\frac{\\theta_{E, prod ave}}{\\theta_{E, major}} = \\sqrt{(1+q^2) / (2 q) }

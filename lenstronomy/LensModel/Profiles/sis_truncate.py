@@ -103,7 +103,8 @@ class SIS_truncate(LensProfileBase):
         :type r_trunc: float (in arcsec)
         :param center_x: profile center
         :param center_y: profile center
-        :returns: Hessian matrix components (d^2f/dx^2, d^2f/dxdy, d^2f/dydx, d^2f/dy^2)
+        :returns: Hessian matrix components (d^2f/dx^2, d^2f/dxdy,
+            d^2f/dydx, d^2f/dy^2)
         """
         x_shift = x - center_x
         y_shift = y - center_y

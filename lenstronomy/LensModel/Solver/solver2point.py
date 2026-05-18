@@ -58,15 +58,16 @@ class Solver2Point(object):
             self._decoupling = decoupling
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
-        """Constrains lens model parameters by demanding the solution to match the image
-        positions to a single source position.
+        """Constrains lens model parameters by demanding the solution to match
+        the image positions to a single source position.
 
         :param x_pos: list of image positions (x-axis)
         :param y_pos: list of image position (y-axis)
         :param kwargs_list: list of lens model kwargs
-        :param xtol: tolerance level of solution when to stop the non-linear solver
-        :return: updated lens model that satisfies the lens equation for the point
-            sources
+        :param xtol: tolerance level of solution when to stop the non-
+            linear solver
+        :return: updated lens model that satisfies the lens equation for
+            the point sources
         """
         kwargs = copy.deepcopy(kwargs_list)
         init = self._extract_array(kwargs)

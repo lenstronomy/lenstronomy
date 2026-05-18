@@ -7,8 +7,9 @@ __all__ = ["CurvedArcConstMST", "CurvedArcConst"]
 
 
 class CurvedArcConstMST(LensProfileBase):
-    """Lens model that describes a section of a highly magnified deflector region. The
-    parameterization is chosen to describe local observables efficient.
+    """Lens model that describes a section of a highly magnified deflector
+    region. The parameterization is chosen to describe local observables
+    efficient.
 
     Observables are:
     - curvature radius (basically bending relative to the center of the profile)
@@ -158,8 +159,8 @@ class CurvedArcConstMST(LensProfileBase):
 
 
 class CurvedArcConst(LensProfileBase):
-    """Curved arc lensing with orientation of curvature perpendicular to the x-axis with
-    unity radial stretch."""
+    """Curved arc lensing with orientation of curvature perpendicular to the
+    x-axis with unity radial stretch."""
 
     param_names = [
         "tangential_stretch",

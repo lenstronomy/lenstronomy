@@ -16,11 +16,11 @@ __all__ = ["Optimizer"]
 
 
 class Optimizer(object):
-    """Class which executes the optimization routines. Currently implemented as a
-    particle swarm optimization followed by a downhill simplex routine.
+    """Class which executes the optimization routines. Currently implemented as
+    a particle swarm optimization followed by a downhill simplex routine.
 
-    Particle swarm optimizer is modified from the CosmoHammer particle swarm routine
-    with different convergence criteria implemented.
+    Particle swarm optimizer is modified from the CosmoHammer particle
+    swarm routine with different convergence criteria implemented.
     """
 
     def __init__(
@@ -87,8 +87,8 @@ class Optimizer(object):
         tol_simplex_func=1e-3,
         simplex_n_iterations=400,
     ):
-        """Initializes the Optimizer class using the decoupled multi-plane formalism for
-        the lens model and ray shooting methods.
+        """Initializes the Optimizer class using the decoupled multi-plane
+        formalism for the lens model and ray shooting methods.
 
         :param x_image: x_image to fit (should be length 4)
         :param y_image: y_image to fit (should be length 4)
@@ -361,7 +361,8 @@ class Optimizer(object):
     def _penalty_function(self, args_lens, *args, **kwargs):
         """This function evaluates a metric that determines goodness of fit.
 
-        :param args_lens: array of parameters that will be turned into keyword arguments
+        :param args_lens: array of parameters that will be turned into
+            keyword arguments
         :return: log-likelihood.
         """
         source_plane_chi2 = self.source_plane_penalty(args_lens)

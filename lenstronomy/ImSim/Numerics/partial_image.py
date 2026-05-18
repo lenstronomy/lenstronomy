@@ -5,8 +5,9 @@ __all__ = ["PartialImage"]
 
 
 class PartialImage(object):
-    """Class to deal with the use of partial slicing of a 2d data array, to be used for
-    various computations where only a subset of pixels need to be know."""
+    """Class to deal with the use of partial slicing of a 2d data array, to be
+    used for various computations where only a subset of pixels need to be
+    know."""
 
     def __init__(self, partial_read_bools):
         """

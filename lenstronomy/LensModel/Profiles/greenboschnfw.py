@@ -60,10 +60,11 @@ class GreenBoschNFW(LensProfileBase):
     ):
         """Initialization of the GreenBoschNFW class object.
 
-        :param r_min: Minimum 2D radius of integration from subhalo center [arcseconds]
+        :param r_min: Minimum 2D radius of integration from subhalo
+            center [arcseconds]
         :type r_min: Float
-        :param r_max_factor: Maximum 2D radius of integration from subhalo center in
-            units of scale radius [arcseconds/Rs]
+        :param r_max_factor: Maximum 2D radius of integration from
+            subhalo center in units of scale radius [arcseconds/Rs]
         :type r_max_factor: Float
         :param num_bins: Number of log-spaced radial bins to integrate
         :type num_bins: Integer
@@ -84,8 +85,8 @@ class GreenBoschNFW(LensProfileBase):
         :type x: Float
         :param y: Angular position [arcseconds]
         :type y: Float
-        :param f_b: Instantaneous bound mass fraction relative to infall mass (M_bound /
-            M_infall)
+        :param f_b: Instantaneous bound mass fraction relative to infall
+            mass (M_bound / M_infall)
         :type f_b: Float
         :param c_s: Infall NFW concentration (R_virial / R_scale)
         :type c_s: Float
@@ -114,8 +115,8 @@ class GreenBoschNFW(LensProfileBase):
         :type x: Float
         :param y: Angular position [arcseconds]
         :type y: Float
-        :param f_b: Instantaneous bound mass fraction relative to infall mass (M_bound /
-            M_infall)
+        :param f_b: Instantaneous bound mass fraction relative to infall
+            mass (M_bound / M_infall)
         :type f_b: Float
         :param c_s: Infall NFW concentration (R_virial / R_scale)
         :type c_s: Float
@@ -137,15 +138,15 @@ class GreenBoschNFW(LensProfileBase):
         )
 
     def hessian(self, x, y, f_b, c_s, Rs, rho0ang, center_x, center_y):
-        """Returns Hessian matrix/second derivates of the lensing potential, d^2f/dx^2,
-        d^2/dxdy, d^2/dydx, d^f/dy^2.
+        """Returns Hessian matrix/second derivates of the lensing potential,
+        d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
 
         :param x: Angular position [arcseconds]
         :type x: Float
         :param y: Angular position [arcseconds]
         :type y: Float
-        :param f_b: Instantaneous bound mass fraction relative to infall mass (M_bound /
-            M_infall)
+        :param f_b: Instantaneous bound mass fraction relative to infall
+            mass (M_bound / M_infall)
         :type f_b: Float
         :param c_s: Infall NFW concentration (R_virial / R_scale)
         :type c_s: Float
@@ -181,8 +182,8 @@ class GreenBoschNFW(LensProfileBase):
 
         :param r: 3D radius from the halo center
         :type r: Float
-        :param f_b: Instantaneous bound mass fraction relative to infall mass (M_bound /
-            M_infall)
+        :param f_b: Instantaneous bound mass fraction relative to infall
+            mass (M_bound / M_infall)
         :type f_b: Float
         :param c_s: Infall NFW concentration (R_virial / R_scale)
         :type c_s: Float
@@ -212,11 +213,11 @@ class GreenBoschNFW(LensProfileBase):
         )
 
     def rbin_kappa_r(self, f_b, c_s, Rs, rho0ang):
-        """Returns the radial bins and the 2D radial convergence kappa(r), where r is in
-        arcseconds.
+        """Returns the radial bins and the 2D radial convergence kappa(r),
+        where r is in arcseconds.
 
-        :param f_b: Instantaneous bound mass fraction relative to infall mass (M_bound /
-            M_infall)
+        :param f_b: Instantaneous bound mass fraction relative to infall
+            mass (M_bound / M_infall)
         :type f_b: Float
         :param c_s: Infall NFW concentration (R_virial / R_scale)
         :type c_s: Float

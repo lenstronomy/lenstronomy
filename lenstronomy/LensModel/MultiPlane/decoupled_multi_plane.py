@@ -34,38 +34,42 @@ class MultiPlaneDecoupled(MultiPlane):
         z_split=None,
         use_jax=False,
     ):
-        """A class for multiplane lensing in which the deflection angles at certain
-        coordinates are fixed through user-specified interpolation functions. These
-        functions return fixed deflection angles that effectively decouple deflections
-        by a group of deflectors at redshift Z from deflections produced by halos at
-        redshift< Z.
+        """A class for multiplane lensing in which the deflection angles at
+        certain coordinates are fixed through user-specified interpolation
+        functions. These functions return fixed deflection angles that
+        effectively decouple deflections by a group of deflectors at redshift Z
+        from deflections produced by halos at redshift< Z.
 
-        This class breaks the recursive nature of the multi-plane lens equation, and can
-        significantly speed up computations with a large number of line-of-sight halos.
+        This class breaks the recursive nature of the multi-plane lens
+        equation, and can significantly speed up computations with a
+        large number of line-of-sight halos.
 
         :param lens_model_list: list of lens model strings
-        :param lens_redshift_list: list of floats with redshifts of the lens models
-            indicated in lens_model_list
-        :param z_source_convention: float, redshift of a source to define the reduced
-            deflection angles of the lens models. If None, 'z_source' is used.
+        :param lens_redshift_list: list of floats with redshifts of the
+            lens models indicated in lens_model_list
+        :param z_source_convention: float, redshift of a source to
+            define the reduced deflection angles of the lens models. If
+            None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
-        :param profile_kwargs_list: list of dicts, keyword arguments used to initialize
-            profile classes in the same order of the lens_model_list. If any of the
-            profile_kwargs are None, then that profile will be initialized using default
-            settings.
-        :param x0_interp: a function that maps an angular coordinate on the sky to the x
-            coordinate of a physical position [Mpc] at the first lens plane
-        :param y0_interp: same as x0_interp, but returns the y coordinate in Mpc
-        :param alpha_x_interp_list: a list of functions that take as input angular
-            coordinates (x, y) and returns the x-component of the deflection angle at
-            each coorindate
-        :param alpha_y_interp_list: same as alpha_x_interp_list, but returns the
-            y-component of the deflection angle at (x,y)
+        :param profile_kwargs_list: list of dicts, keyword arguments
+            used to initialize profile classes in the same order of the
+            lens_model_list. If any of the profile_kwargs are None, then
+            that profile will be initialized using default settings.
+        :param x0_interp: a function that maps an angular coordinate on
+            the sky to the x coordinate of a physical position [Mpc] at
+            the first lens plane
+        :param y0_interp: same as x0_interp, but returns the y
+            coordinate in Mpc
+        :param alpha_x_interp_list: a list of functions that take as
+            input angular coordinates (x, y) and returns the x-component
+            of the deflection angle at each coorindate
+        :param alpha_y_interp_list: same as alpha_x_interp_list, but
+            returns the y-component of the deflection angle at (x,y)
         :param z_interp_list: a list of redshifts corresponding to the
             alpha_x_interp_list and alpha_y_interp_list entries
-        :param use_jax: bool, if True, uses deflector profiles from jaxtronomy. Can also
-            be a list of bools, selecting which models in the lens_model_list to use
-            from jaxtronomy
+        :param use_jax: bool, if True, uses deflector profiles from
+            jaxtronomy. Can also be a list of bools, selecting which
+            models in the lens_model_list to use from jaxtronomy
         """
         self._alphax_interp_foreground = alpha_x_interp_foreground
         self._alphay_interp_foreground = alpha_y_interp_foreground
@@ -129,10 +133,11 @@ class MultiPlaneDecoupled(MultiPlane):
         )
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, *args, **kwargs):
-        """Ray-shooting through the lens volume with fixed deflection angles at certain
-        lens planes passed through the alpha_x_interp/alpha_y_interp lists. Starts with
-        (x,y) co-moving distance passed through the x0_interp and y0_interp functions,
-        then starts multi-plane ray-tracing through all subsequent lens planes.
+        """Ray-shooting through the lens volume with fixed deflection angles at
+        certain lens planes passed through the alpha_x_interp/alpha_y_interp
+        lists. Starts with (x,y) co-moving distance passed through the
+        x0_interp and y0_interp functions, then starts multi-plane ray-tracing
+        through all subsequent lens planes.
 
         :param theta_x: angular coordinate on the sky
         :param theta_y: angular coordinate on the sky

@@ -3,8 +3,8 @@ from typing import Callable
 
 
 def d_log_evi_d_lambda(l: float, U: np.ndarray, M: np.ndarray, b: np.ndarray) -> float:
-    """Computes the derivative of the logarithm of the Bayesian evidence with respect to
-    the regularization strength (lambda, l).
+    """Computes the derivative of the logarithm of the Bayesian evidence with
+    respect to the regularization strength (lambda, l).
 
     This function calculates the derivative as:
     d(ln(Evidence))/d(lambda) ~ N_s/lambda - tr[(M+lambda*U)^-1 * U] - b^T * (M+lambda*U)^-1 * U * (M+lambda*U)^-1 * b
@@ -55,8 +55,8 @@ def solve_optimal_lambda(
     max_iterations: int = 20,
     check_initial_bounds: bool = True,
 ) -> float:
-    """Finds the optimal regularization strength (lambda) by solving for the root of the
-    log-evidence derivative using a bisection method.
+    """Finds the optimal regularization strength (lambda) by solving for the
+    root of the log-evidence derivative using a bisection method.
 
     The optimal lambda is typically the value where the derivative of the
     log-evidence is zero. This function assumes that the derivative

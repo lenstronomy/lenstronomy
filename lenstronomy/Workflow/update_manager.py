@@ -6,8 +6,8 @@ __all__ = ["UpdateManager"]
 
 
 class UpdateManager(object):
-    """This class manages the parameter constraints as they may evolve through the steps
-    of the modeling.
+    """This class manages the parameter constraints as they may evolve through
+    the steps of the modeling.
 
     This includes: keeping certain parameters fixed during one modelling step
     """
@@ -160,8 +160,8 @@ class UpdateManager(object):
     def init_kwargs(self):
         """Return the initial state of the parameters.
 
-        :return: keyword arguments for all model components of the initial mean model
-            proposition in the sampling
+        :return: keyword arguments for all model components of the
+            initial mean model proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_init,
@@ -194,8 +194,8 @@ class UpdateManager(object):
     def sigma_kwargs(self):
         """Return the sigma values of the parameters.
 
-        :return: keyword arguments for all model components of the initial 1-sigma width
-            proposition in the sampling
+        :return: keyword arguments for all model components of the
+            initial 1-sigma width proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_sigma,
@@ -235,8 +235,8 @@ class UpdateManager(object):
     def lower_kwargs(self):
         """Return the lower bounds of the parameters.
 
-        :return: keyword arguments for all model components of the lower bound
-            proposition in the sampling
+        :return: keyword arguments for all model components of the lower
+            bound proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_lower,
@@ -252,8 +252,8 @@ class UpdateManager(object):
     def upper_kwargs(self):
         """Return the upper bounds of the parameters.
 
-        :return: keyword arguments for all model components of the upper bound
-            proposition in the sampling
+        :return: keyword arguments for all model components of the upper
+            bound proposition in the sampling
         """
         return {
             "kwargs_lens": self._lens_upper,
@@ -286,8 +286,8 @@ class UpdateManager(object):
         return self.param_class.fixed_kwargs_list
 
     def check_initial_state(self):
-        """Checks if initial state is within the bounds in all parameters returns a
-        warning for specific arguments being out of the bounds.
+        """Checks if initial state is within the bounds in all parameters
+        returns a warning for specific arguments being out of the bounds.
 
         #TODO: checks whether parameters match the model definitions
 
@@ -352,12 +352,14 @@ class UpdateManager(object):
     def best_fit(self, bijective=False):
         """Best fit (max likelihood) position for all the model parameters.
 
-        :param bijective: boolean, if True, returns the parameters in the argument of
-            the sampling that might deviate from the convention of the ImSim module. For
-            example, if parameterized in the image position, the parameters remain in
-            the image plane rather than being mapped to the source plane.
-        :return: kwargs_result with all the keyword arguments of the best fit for the
-            model components
+        :param bijective: boolean, if True, returns the parameters in
+            the argument of the sampling that might deviate from the
+            convention of the ImSim module. For example, if
+            parameterized in the image position, the parameters remain
+            in the image plane rather than being mapped to the source
+            plane.
+        :return: kwargs_result with all the keyword arguments of the
+            best fit for the model components
         """
         (
             lens_temp,
@@ -403,8 +405,8 @@ class UpdateManager(object):
         kwargs_extinction=None,
         kwargs_tracer_source=None,
     ):
-        """Updates the temporary state of the parameters being saved. ATTENTION: Any
-        previous knowledge gets lost if you call this function.
+        """Updates the temporary state of the parameters being saved.
+        ATTENTION: Any previous knowledge gets lost if you call this function.
 
         :param kwargs_lens:
         :param kwargs_source:
@@ -457,13 +459,14 @@ class UpdateManager(object):
 
     @property
     def param_class(self):
-        """Creating instance of lenstronomy Param() class. It uses the keyword arguments
-        in self.kwargs_constraints as __init__() arguments, as well as
-        self.kwargs_model, and the set of kwargs_fixed___, kwargs_lower___,
-        kwargs_upper___ arguments for lens, lens_light, source, point source, extinction
-        and special parameters.
+        """Creating instance of lenstronomy Param() class. It uses the keyword
+        arguments in self.kwargs_constraints as __init__() arguments, as well
+        as self.kwargs_model, and the set of kwargs_fixed___, kwargs_lower___,
+        kwargs_upper___ arguments for lens, lens_light, source, point source,
+        extinction and special parameters.
 
-        :return: instance of the Param class with the recent options and bounds
+        :return: instance of the Param class with the recent options and
+            bounds
         """
         (
             kwargs_fixed_lens,
@@ -597,8 +600,8 @@ class UpdateManager(object):
         change_sigma_source=None,
         change_sigma_lens_light=None,
     ):
-        """Updates individual estimated uncertainty levels for the initialization of
-        search and sampling algorithms.
+        """Updates individual estimated uncertainty levels for the
+        initialization of search and sampling algorithms.
 
         :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
         :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
@@ -651,23 +654,30 @@ class UpdateManager(object):
         special_remove_fixed=None,
         tracer_source_remove_fixed=None,
     ):
-        """Adds or removes the values of the keyword arguments that are stated in the
-        _add_fixed to the existing fixed arguments. convention for input arguments are:
-        [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...
-        (optional)], [], ...]
+        """Adds or removes the values of the keyword arguments that are stated
+        in the _add_fixed to the existing fixed arguments. convention for input
+        arguments are: [[i_model, ['param_name1', 'param_name2', ...], [value1,
+        value2, ... (optional)], [], ...]
 
         :param lens_add_fixed: added fixed parameter in lens model
         :param source_add_fixed: added fixed parameter in source model
-        :param lens_light_add_fixed: added fixed parameter in lens light model
+        :param lens_light_add_fixed: added fixed parameter in lens light
+            model
         :param ps_add_fixed: added fixed parameter in point source model
         :param special_add_fixed: added fixed parameter in special model
-        :param tracer_source_add_fixed: added fixed parameter in tracer source model
+        :param tracer_source_add_fixed: added fixed parameter in tracer
+            source model
         :param lens_remove_fixed: remove fixed parameter in lens model
-        :param source_remove_fixed: remove fixed parameter in source model
-        :param lens_light_remove_fixed: remove fixed parameter in lens light model
-        :param ps_remove_fixed: remove fixed parameter in point source model
-        :param special_remove_fixed: remove fixed parameter in special model
-        :param tracer_source_remove_fixed: remove fixed parameter in tracer source model
+        :param source_remove_fixed: remove fixed parameter in source
+            model
+        :param lens_light_remove_fixed: remove fixed parameter in lens
+            light model
+        :param ps_remove_fixed: remove fixed parameter in point source
+            model
+        :param special_remove_fixed: remove fixed parameter in special
+            model
+        :param tracer_source_remove_fixed: remove fixed parameter in
+            tracer source model
         :return: updated kwargs fixed
         """
         lens_fixed = self._add_fixed(
@@ -776,9 +786,9 @@ class UpdateManager(object):
         return kwargs_fixed
 
     def fix_image_parameters(self, image_index=0):
-        """Fixes all parameters that are only assigned to a specific image. This allows
-        to sample only parameters that constraint by the fitting of a sub-set of the
-        images.
+        """Fixes all parameters that are only assigned to a specific image.
+        This allows to sample only parameters that constraint by the fitting of
+        a sub-set of the images.
 
         :param image_index: index
         :return: None
@@ -799,7 +809,8 @@ def _compare_bounds(
     :param init_kwargs: dictionary of initial parameters
     :param lower_kwargs: lower bound dictionary
     :param upper_kwargs: upper bound dictionary
-    :param model_index: integer of the index of the model in a certain model class
+    :param model_index: integer of the index of the model in a certain
+        model class
     :param model_class: string of model class
     :return: None
     """

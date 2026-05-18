@@ -11,8 +11,8 @@ from lenstronomy.GalKin.aperture_types import (
 )
 
 __all__ = ["Aperture", "downsample_values_to_bins"]
-"""Class that defines the aperture of the measurement (e.g. slit, integral field
-spectroscopy regions etc).
+"""Class that defines the aperture of the measurement (e.g. slit, integral
+field spectroscopy regions etc).
 
 Available aperture types:
 -------------------------
@@ -23,7 +23,8 @@ Available aperture types:
 
 
 class Aperture(object):
-    """Defines mask(s) of spectra, can handle IFU and single slit/box type data."""
+    """Defines mask(s) of spectra, can handle IFU and single slit/box type
+    data."""
 
     def __init__(self, aperture_type, **kwargs_aperture):
         """

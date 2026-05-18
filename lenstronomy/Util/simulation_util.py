@@ -18,7 +18,8 @@ def data_configure_simple(
     center_dec=0,
     inverse=False,
 ):
-    """Configures the data keyword arguments with a coordinate grid centered at zero.
+    """Configures the data keyword arguments with a coordinate grid centered at
+    zero.
 
     :param num_pix: number of pixel (num_pix x num_pix)
     :param delta_pix: pixel size (in angular units)
@@ -26,9 +27,10 @@ def data_configure_simple(
     :param background_rms: background noise (Gaussian sigma)
     :param center_ra: RA at the center of the image
     :param center_dec: DEC at the center of the image
-    :param inverse: if True, coordinate system is ra to the left, if False, to the right
-    :return: keyword arguments that can be used to construct a Data() class instance of
-        lenstronomy
+    :param inverse: if True, coordinate system is ra to the left, if
+        False, to the right
+    :return: keyword arguments that can be used to construct a Data()
+        class instance of lenstronomy
     """
 
     # 1d list of coordinates (x,y) of a num_pix x num_pix square grid, centered to zero

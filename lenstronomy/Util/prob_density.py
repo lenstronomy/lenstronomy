@@ -99,7 +99,8 @@ class SkewGaussian(object):
 
 @export
 class KDE1D(object):
-    """Class that allows to compute likelihoods based on a 1-d posterior sample."""
+    """Class that allows to compute likelihoods based on a 1-d posterior
+    sample."""
 
     def __init__(self, values):
         """
@@ -122,8 +123,8 @@ class KDE1D(object):
 
 @export
 def compute_lower_upper_errors(sample, num_sigma=1):
-    """Computes the upper and lower sigma from the median value. This functions gives
-    good error estimates for skewed pdf's.
+    """Computes the upper and lower sigma from the median value. This functions
+    gives good error estimates for skewed pdf's.
 
     :param sample: 1-D sample
     :param num_sigma: integer, number of sigmas to be returned

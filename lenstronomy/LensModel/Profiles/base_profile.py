@@ -2,9 +2,9 @@ __all__ = ["LensProfileBase"]
 
 
 class LensProfileBase(object):
-    """This class acts as the base class of all lens model functions and indicates raise
-    statements and default outputs if these functions are not defined in the specific
-    lens model class.
+    """This class acts as the base class of all lens model functions and
+    indicates raise statements and default outputs if these functions are not
+    defined in the specific lens model class.
 
     To implement a new lens model profile you should:
     1. make a new python file in this folder
@@ -32,8 +32,8 @@ class LensProfileBase(object):
         self._static = False
 
     def function(self, *args, **kwargs):
-        """Lensing potential (only needed for specific calculations, such as time
-        delays)
+        """Lensing potential (only needed for specific calculations, such as
+        time delays)
 
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
@@ -53,7 +53,8 @@ class LensProfileBase(object):
         )
 
     def hessian(self, *args, **kwargs):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2.
 
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
@@ -63,9 +64,9 @@ class LensProfileBase(object):
         )
 
     def density_lens(self, *args, **kwargs):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity. (optional definition)
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity. (optional definition)
 
         .. math::
             \\kappa(x, y) = \\int_{-\\infty}^{\\infty} \\rho(x, y, z) dz
@@ -78,9 +79,9 @@ class LensProfileBase(object):
         )
 
     def mass_3d_lens(self, *args, **kwargs):
-        """Mass enclosed within a 3D sphere or radius r given a lens parameterization
-        with angular units. The input parameter are identical as for the derivatives
-        definition. (optional definition)
+        """Mass enclosed within a 3D sphere or radius r given a lens
+        parameterization with angular units. The input parameter are identical
+        as for the derivatives definition. (optional definition)
 
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
@@ -112,12 +113,13 @@ class LensProfileBase(object):
         )
 
     def set_static(self, **kwargs):
-        """Pre-computes certain computations that do only relate to the lens model
-        parameters and not to the specific position where to evaluate the lens model.
+        """Pre-computes certain computations that do only relate to the lens
+        model parameters and not to the specific position where to evaluate the
+        lens model.
 
         :param kwargs: lens model parameters
-        :return: no return, for certain lens model some private self variables are
-            initiated
+        :return: no return, for certain lens model some private self
+            variables are initiated
         """
         pass
 

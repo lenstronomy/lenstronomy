@@ -3,8 +3,8 @@ import numpy as np
 
 
 class MGESet(object):
-    """Class for Multi Gaussian lens light (2d projected light/mass distribution as a
-    set of Gaussians in logarithmic spacing.
+    """Class for Multi Gaussian lens light (2d projected light/mass
+    distribution as a set of Gaussians in logarithmic spacing.
 
     profile name in LightModel module: 'MGE_SET
     """
@@ -46,9 +46,10 @@ class MGESet(object):
     def _sigma(self, sigma_min, sigma_width):
         """Logarithmically scaled sigmas.
 
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
-            between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being
+            logarithmically scalled between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
+            sigma
         :return: array of sigmas for Multi-Gaussian components
         """
         sigmas = np.logspace(
@@ -65,9 +66,10 @@ class MGESet(object):
         :param x: coordinate on the sky
         :param y: coordinate on the sky
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
-            between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being
+            logarithmically scalled between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
+            sigma
         :param center_x: center of profile
         :param center_y: center of profile
         :return: surface brightness at (x, y)
@@ -82,9 +84,10 @@ class MGESet(object):
         """Total integrated flux of profile.
 
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
-            between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being
+            logarithmically scalled between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
+            sigma
         :param center_x: center of profile
         :param center_y: center of profile
         :return: total flux
@@ -101,9 +104,10 @@ class MGESet(object):
         :param x: coordinate on the sky
         :param y: coordinate on the sky
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
-            between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being
+            logarithmically scalled between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
+            sigma
         :param center_x: center of profile
         :param center_y: center of profile
         :return: list of arrays of surface brightness
@@ -121,9 +125,10 @@ class MGESet(object):
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
-            between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being
+            logarithmically scalled between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
+            sigma
         :return: 3D brightness per angular volume element
         """
         sigma = self._sigma(sigma_min=sigma_min, sigma_width=sigma_width)

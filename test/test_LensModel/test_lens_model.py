@@ -336,8 +336,8 @@ class TestLensModel(object):
         assert curl != 0
 
     def test_hessian_differentials(self):
-        """Routine to test the private numerical differentials, both cross and square
-        methods in the infinitesimal regime."""
+        """Routine to test the private numerical differentials, both cross and
+        square methods in the infinitesimal regime."""
         lens_model = LensModel(lens_model_list=["SIS"])
         kwargs = [{"theta_E": 1, "center_x": 0.01, "center_y": 0}]
         x, y = make_grid(num_pix=10, delta_pix=0.2)

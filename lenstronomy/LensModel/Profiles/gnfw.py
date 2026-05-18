@@ -215,9 +215,9 @@ class GNFW(LensProfileBase):
         return rho0 * (R / Rs) ** -gamma_in * (1 + R / Rs) ** (gamma_in - 3)
 
     def density_lens(self, R, Rs, alpha_Rs, gamma_in):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity.
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -282,8 +282,8 @@ class GNFW(LensProfileBase):
         )
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, gamma_in):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
-        angular units.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization
+        with angular units.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -372,7 +372,8 @@ class GNFW(LensProfileBase):
         return (y + x) ** (gamma_in - 3) * (1 - np.sqrt(1 - y**2)) / y
 
     def _kappa_integrand(self, y, x, gamma_in):
-        """Integrand of the deflection angel integral in eq. (57) of Keeton 2001.
+        """Integrand of the deflection angel integral in eq. (57) of Keeton
+        2001.
 
         :param y: integration variable
         :type y: np.array
@@ -557,8 +558,8 @@ class GNFW(LensProfileBase):
 
     @staticmethod
     def kappa_s_to_rho0(kappa_s, Rs):
-        """Convenience function to compute rho0 from kappa_s. The returned rho_0 is
-        normalized with $\\Sigma_{\\rm crit}$.
+        """Convenience function to compute rho0 from kappa_s. The returned
+        rho_0 is normalized with $\\Sigma_{\\rm crit}$.
 
         :param kappa_s: convergence at `Rs`
         :type kappa_s: float

@@ -19,7 +19,8 @@ class TestCurvedArcTanDiff(object):
         self.mst = Convergence()
 
     def test_curved_arc_round_recovery(self):
-        """Test whether the curved arc parameters are satisfied in differential form."""
+        """Test whether the curved arc parameters are satisfied in differential
+        form."""
 
         center_x, center_y = (
             2,
@@ -63,7 +64,8 @@ class TestCurvedArcTanDiff(object):
         self._test_curved_arc_recovery(kwargs_lens)
 
     def test_curved_arc_recovery(self):
-        """Test whether the curved arc parameters are satisfied in differential form."""
+        """Test whether the curved arc parameters are satisfied in differential
+        form."""
 
         center_x, center_y = (
             3,

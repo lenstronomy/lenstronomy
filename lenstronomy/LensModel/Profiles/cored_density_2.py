@@ -9,8 +9,8 @@ __all__ = ["CoredDensity2"]
 
 
 class CoredDensity2(LensProfileBase):
-    """Class for a uniform cored density dropping steep in the outskirts credits for
-    suggesting this profile goes to Kfir Blum.
+    """Class for a uniform cored density dropping steep in the outskirts
+    credits for suggesting this profile goes to Kfir Blum.
 
     .. math::
       \\rho(r) = 2/\\pi * \\Sigma_{\\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
@@ -148,7 +148,8 @@ class CoredDensity2(LensProfileBase):
 
     @staticmethod
     def kappa_r(r, sigma0, r_core):
-        """Convergence of the cored density profile. This routine is also for testing.
+        """Convergence of the cored density profile. This routine is also for
+        testing.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -169,9 +170,9 @@ class CoredDensity2(LensProfileBase):
         return 1.0 / 2 * sigma0 * r_core**2 * (r_core**2 + r**2) ** (-3.0 / 2)
 
     def density_lens(self, r, sigma0, r_core):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity.
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
@@ -228,8 +229,8 @@ class CoredDensity2(LensProfileBase):
         )
 
     def mass_3d_lens(self, r, sigma0, r_core):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
-        angular units For this profile those are identical.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization
+        with angular units For this profile those are identical.
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core

@@ -91,8 +91,9 @@ class MultiNestSampler(NestedSampler):
     def run(self, kwargs_run):
         """Run the MultiNest nested sampler.
 
-        see https://johannesbuchner.github.io/PyMultiNest/pymultinest.html for content
-        of kwargs_run
+        see
+        https://johannesbuchner.github.io/PyMultiNest/pymultinest.html
+         for content        of kwargs_run
 
         :param kwargs_run: kwargs directly passed to pymultinest.run
         :return: samples, means, logZ, logZ_err, logL, stats

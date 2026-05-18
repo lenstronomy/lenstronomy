@@ -69,8 +69,8 @@ class EPL(LensProfileBase):
         super(EPL, self).__init__()
 
     def param_conv(self, theta_E, gamma, e1, e2):
-        """Converts parameters as defined in this class to the parameters used in the
-        EPLMajorAxis() class.
+        """Converts parameters as defined in this class to the parameters used
+        in the EPLMajorAxis() class.
 
         :param theta_E: Einstein radius as defined in the profile class
         :param gamma: negative power-law slope
@@ -84,14 +84,15 @@ class EPL(LensProfileBase):
 
     @staticmethod
     def _param_conv(theta_E, gamma, e1, e2):
-        """Convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to :math:`R =
-        \\sqrt{q^2 x^2 + y^2}`
+        """Convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to
+        :math:`R = \\sqrt{q^2 x^2 + y^2}`
 
         :param gamma: power law slope
         :param theta_E: Einstein radius
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :return: critical radius b, slope t, axis ratio q, orientation angle phi_G
+        :return: critical radius b, slope t, axis ratio q, orientation
+            angle phi_G
         """
         t = gamma - 1
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
@@ -227,9 +228,9 @@ class EPL(LensProfileBase):
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity.
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius
@@ -242,7 +243,8 @@ class EPL(LensProfileBase):
 
 
 class EPLMajorAxis(LensProfileBase):
-    """This class contains the function and the derivatives of the elliptical power law.
+    """This class contains the function and the derivatives of the elliptical
+    power law.
 
     .. math::
         \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
@@ -261,8 +263,10 @@ class EPLMajorAxis(LensProfileBase):
     def function(self, x, y, b, t, q):
         """Returns the lensing potential.
 
-        :param x: x-coordinate in image plane relative to center (major axis)
-        :param y: y-coordinate in image plane relative to center (minor axis)
+        :param x: x-coordinate in image plane relative to center (major
+            axis)
+        :param y: y-coordinate in image plane relative to center (minor
+            axis)
         :param b: critical radius
         :param t: projected power-law slope
         :param q: axis ratio
@@ -279,8 +283,10 @@ class EPLMajorAxis(LensProfileBase):
     def derivatives(self, x, y, b, t, q):
         """Returns the deflection angles.
 
-        :param x: x-coordinate in image plane relative to center (major axis)
-        :param y: y-coordinate in image plane relative to center (minor axis)
+        :param x: x-coordinate in image plane relative to center (major
+            axis)
+        :param y: y-coordinate in image plane relative to center (minor
+            axis)
         :param b: critical radius
         :param t: projected power-law slope
         :param q: axis ratio
@@ -308,8 +314,10 @@ class EPLMajorAxis(LensProfileBase):
     def hessian(self, x, y, b, t, q):
         """Hessian matrix of the lensing potential.
 
-        :param x: x-coordinate in image plane relative to center (major axis)
-        :param y: y-coordinate in image plane relative to center (minor axis)
+        :param x: x-coordinate in image plane relative to center (major
+            axis)
+        :param y: y-coordinate in image plane relative to center (minor
+            axis)
         :param b: critical radius
         :param t: projected power-law slope
         :param q: axis ratio
@@ -429,9 +437,9 @@ class EPLQPhi(LensProfileBase):
         return self._EPL.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, q=None, phi=None):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity.
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius

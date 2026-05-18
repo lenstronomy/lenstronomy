@@ -123,7 +123,8 @@ class Image2SourceMapping(object):
             )
 
     def set_T_ij_arrays(self):
-        """Sets the transverse distance arrays for the multi-lens-plane case."""
+        """Sets the transverse distance arrays for the multi-lens-plane
+        case."""
         self._T0z_list = []
 
         for z_stop in self._source_redshift_list:
@@ -156,26 +157,26 @@ class Image2SourceMapping(object):
 
     @property
     def T_ij_start_list(self):
-        """List of transverse distances from the observer to the start of the source
-        plane."""
+        """List of transverse distances from the observer to the start of the
+        source plane."""
         return self._T_ij_start_list
 
     @T_ij_start_list.setter
     def T_ij_start_list(self, T_ij_start_list):
-        """List of transverse distances from the observer to the start of the source
-        plane."""
+        """List of transverse distances from the observer to the start of the
+        source plane."""
         self._T_ij_start_list = T_ij_start_list
 
     @property
     def T_ij_end_list(self):
-        """List of transverse distances from the observer to the end of the source
-        plane."""
+        """List of transverse distances from the observer to the end of the
+        source plane."""
         return self._T_ij_end_list
 
     @T_ij_end_list.setter
     def T_ij_end_list(self, T_ij_end_list):
-        """List of transverse distances from the observer to the end of the source
-        plane."""
+        """List of transverse distances from the observer to the end of the
+        source plane."""
         self._T_ij_end_list = T_ij_end_list
 
     def image2source(self, x, y, kwargs_lens, index_source, kwargs_special=None):
@@ -243,16 +244,17 @@ class Image2SourceMapping(object):
     def image_flux_joint(
         self, x, y, kwargs_lens, kwargs_source, kwargs_special=None, k=None
     ):
-        """Computes the surface brightness of all light components at image position (x,
-        y)
+        """Computes the surface brightness of all light components at image
+        position (x, y)
 
         :param x: coordinate in image plane
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
-        :param k: None or int or list of int for partial evaluation of light models
-        :return: surface brightness of all joint light components at image position (x,
-            y)
+        :param k: None or int or list of int for partial evaluation of
+            light models
+        :return: surface brightness of all joint light components at
+            image position (x, y)
         """
         self.update_distances(kwargs_special)
 
@@ -309,15 +311,16 @@ class Image2SourceMapping(object):
             return flux
 
     def image_flux_split(self, x, y, kwargs_lens, kwargs_source, kwargs_special=None):
-        """Computes the surface brightness of all light components at image position (x,
-        y)
+        """Computes the surface brightness of all light components at image
+        position (x, y)
 
         :param x: coordinate in image plane
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
-        :return: list of responses of every single basis component with default
-            amplitude amp=1, in the same order as the light_model_list
+        :return: list of responses of every single basis component with
+            default amplitude amp=1, in the same order as the
+            light_model_list
         """
         self.update_distances(kwargs_special)
 
@@ -385,7 +388,8 @@ class Image2SourceMapping(object):
         """Orders the redshifts in ascending order.
 
         :param redshift_list: list of redshifts
-        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
+        :return: indexes in ascending order to be evaluated (from z=0 to
+            z=z_source)
         """
         redshift_list = np.array(redshift_list)
         sort_index = np.argsort(redshift_list)
@@ -395,8 +399,8 @@ class Image2SourceMapping(object):
         """Reshuffles the response array in order of the function definition.
 
         :param response: splitted functions in order of redshifts
-        :param n_list: list of number of response vectors per model in order of the
-            model list (not redshift ordered)
+        :param n_list: list of number of response vectors per model in
+            order of the model list (not redshift ordered)
         :return: reshuffled array in order of the function definition
         """
         counter_regular = 0

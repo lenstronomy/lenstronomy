@@ -66,8 +66,8 @@ class ParticleSwarmOptimizer(object):
         self.func = _FunctionWrapper(func, args, kwargs)
 
     def __getstate__(self):
-        """In order to be generally pickleable, we need to discard the pool object
-        before trying."""
+        """In order to be generally pickleable, we need to discard the pool
+        object before trying."""
         d = self.__dict__
         d["pool"] = None
         return d
@@ -125,11 +125,12 @@ class ParticleSwarmOptimizer(object):
         :param c1: cognitive weight
         :param c2: social weight
         :param p: stop criterion, percentage of particles to use
-        :param m: stop criterion, difference between mean fitness and global best
-        :param n: stop criterion, difference between norm of the particle vector and
-            norm of the global best
-        :param early_stop_tolerance: will terminate at the given value (should be
-            specified as a chi^2)
+        :param m: stop criterion, difference between mean fitness and
+            global best
+        :param n: stop criterion, difference between norm of the
+            particle vector and norm of the global best
+        :param early_stop_tolerance: will terminate at the given value
+            (should be specified as a chi^2)
         :param verbose: prints when it stopped
         :type verbose: boolean
         """
@@ -412,7 +413,8 @@ class Particle(object):
 
     @classmethod
     def create(cls, param_count):
-        """Creates a new particle without position, velocity and -inf as fitness."""
+        """Creates a new particle without position, velocity and -inf as
+        fitness."""
 
         return Particle(
             np.array([[]] * param_count), np.array([[]] * param_count), -np.inf
@@ -450,8 +452,8 @@ class Particle(object):
 
 
 class _FunctionWrapper(object):
-    """This is a hack to make the likelihood function pickleable when ``args`` or
-    ``kwargs`` are also included.
+    """This is a hack to make the likelihood function pickleable when ``args``
+    or ``kwargs`` are also included.
 
     This hack is copied from
     emcee: https://github.com/dfm/emcee/.

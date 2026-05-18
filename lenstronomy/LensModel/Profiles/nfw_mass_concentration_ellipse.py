@@ -1,5 +1,5 @@
-"""This module contains a class to compute the elliptical Navarro-Frank-White function
-in mass/kappa space."""
+"""This module contains a class to compute the elliptical Navarro-Frank-White
+function in mass/kappa space."""
 
 __author__ = "ajshajib"
 
@@ -8,8 +8,8 @@ from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
 
 
 class NFWMCEllipsePotential(NFWMC):
-    """This class contains functions parameterises the NFW profile with log10 M200 and
-    the concentration rs/r200 relation are: R_200 = c * Rs.
+    """This class contains functions parameterises the NFW profile with log10
+    M200 and the concentration rs/r200 relation are: R_200 = c * Rs.
 
     ATTENTION: the parameterization is cosmology and redshift dependent!
     The cosmology to connect mass and deflection relations is fixed to default H0=70km/s
@@ -91,7 +91,8 @@ class NFWMCEllipsePotential(NFWMC):
         return self._nfw.derivatives(x, y, Rs, alpha_Rs, e1, e2, center_x, center_y)
 
     def hessian(self, x, y, logM, concentration, e1, e2, center_x=0, center_y=0):
-        """Return Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
+        """Return Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2.
 
         :param x: angular position
         :param y: angular position

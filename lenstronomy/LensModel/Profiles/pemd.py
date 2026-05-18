@@ -10,11 +10,11 @@ __all__ = ["PEMD"]
 
 
 class PEMD(LensProfileBase):
-    """Class for power law ellipse mass density profile (PEMD). This class effectively
-    calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale to
-    perform the numerical integral using the FASTELL code by Renan Barkana. An
-    alternative implementation of the same model using pure python with analytical
-    functions is probided as 'EPL' profile.
+    """Class for power law ellipse mass density profile (PEMD). This class
+    effectively calls the class SPEMD_SMOOTH with a fixed and very small
+    central smoothing scale to perform the numerical integral using the FASTELL
+    code by Renan Barkana. An alternative implementation of the same model
+    using pure python with analytical functions is probided as 'EPL' profile.
 
     .. math::
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
@@ -132,9 +132,9 @@ class PEMD(LensProfileBase):
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity.
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity.
 
         :param r: radius within the mass is computed
         :param theta_E: Einstein radius

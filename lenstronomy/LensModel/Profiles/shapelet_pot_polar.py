@@ -13,8 +13,8 @@ __all__ = ["PolarShapelets"]
 
 
 class PolarShapelets(LensProfileBase):
-    """This class contains the function and the derivatives of the Singular Isothermal
-    Sphere."""
+    """This class contains the function and the derivatives of the Singular
+    Isothermal Sphere."""
 
     param_names = ["coeffs", "beta", "center_x", "center_y"]
     lower_limit_default = {"coeffs": [0], "beta": 0, "center_x": -100, "center_y": -100}
@@ -99,7 +99,8 @@ class PolarShapelets(LensProfileBase):
         return shapelets
 
     def _shapelet_output(self, r, phi, beta, shapelets):
-        """Returns the the numerical values of a set of shapelets at polar coordinates.
+        """Returns the the numerical values of a set of shapelets at polar
+        coordinates.
 
         :param shapelets: set of shapelets [l=,r=,a_lr=]
         :type shapelets: array of size (n,3)
@@ -131,8 +132,8 @@ class PolarShapelets(LensProfileBase):
         :type nl: int
         :param nr: right basis
         :type nr: int
-        :param beta: beta --the characteristic scale typically choosen to be close to
-            the size of the object.
+        :param beta: beta --the characteristic scale typically choosen
+            to be close to the size of the object.
         :type beta: float.
         :param coord: coordinates [r,phi]
         :type coord: array(n,2)
@@ -164,8 +165,9 @@ class PolarShapelets(LensProfileBase):
 
     def _kappaShapelets(self, shapelets, beta):
         """Calculates the convergence kappa given lensing potential shapelet
-        coefficients (laplacian/2) :param shapelets: set of shapelets [l=,r=,a_lr=]
-        :type shapelets: array of size (n,3) :returns:  set of kappa shapelets.
+        coefficients (laplacian/2) :param shapelets: set of shapelets
+        [l=,r=,a_lr=] :type shapelets: array of size (n,3) :returns:  set of
+        kappa shapelets.
 
         :raises: AttributeError, KeyError
         """
@@ -184,8 +186,9 @@ class PolarShapelets(LensProfileBase):
 
     def _alphaShapelets(self, shapelets, beta):
         """Calculates the deflection angles given lensing potential shapelet
-        coefficients (laplacian/2) :param shapelets: set of shapelets [l=,r=,a_lr=]
-        :type shapelets: array of size (n,3) :returns:  set of alpha shapelets.
+        coefficients (laplacian/2) :param shapelets: set of shapelets
+        [l=,r=,a_lr=] :type shapelets: array of size (n,3) :returns:  set of
+        alpha shapelets.
 
         :raises: AttributeError, KeyError
         """
@@ -207,9 +210,9 @@ class PolarShapelets(LensProfileBase):
         return output_x / beta, output_y / beta  # attention complex numbers!!!!
 
     def _gammaShapelets(self, shapelets, beta):
-        """Calculates the shear gamma given lensing potential shapelet coefficients
-        :param shapelets: set of shapelets [l=,r=,a_lr=] :type shapelets: array of size
-        (n,3) :returns:  set of alpha shapelets.
+        """Calculates the shear gamma given lensing potential shapelet
+        coefficients :param shapelets: set of shapelets [l=,r=,a_lr=] :type
+        shapelets: array of size (n,3) :returns:  set of alpha shapelets.
 
         :raises: AttributeError, KeyError
         """

@@ -24,9 +24,11 @@ class ProfileIntegrals(object):
         """Computes the mass enclosed within a sphere of radius r.
 
         :param r: radius (arcsec)
-        :param kwargs_profile: keyword argument list with lens model parameters
-        :param lens_param: boolean, if True uses the lens model parameterization in
-            computing the 3d density convention and the return is the convergence
+        :param kwargs_profile: keyword argument list with lens model
+            parameters
+        :param lens_param: boolean, if True uses the lens model
+            parameterization in computing the 3d density convention and
+            the return is the convergence
         :return: 3d mass enclosed of r
         """
         kwargs = copy.deepcopy(kwargs_profile)
@@ -49,9 +51,11 @@ class ProfileIntegrals(object):
         """Computes the projected density along the line-of-sight.
 
         :param r: radius (arcsec)
-        :param kwargs_profile: keyword argument list with lens model parameters
-        :param lens_param: boolean, if True uses the lens model parameterization in
-            computing the 3d density convention and the return is the convergence
+        :param kwargs_profile: keyword argument list with lens model
+            parameters
+        :param lens_param: boolean, if True uses the lens model
+            parameterization in computing the 3d density convention and
+            the return is the convergence
         :param r_max: maximum integration range (in arcsec)
         :return: 2d projected density at projected radius r
         """
@@ -78,9 +82,11 @@ class ProfileIntegrals(object):
         """Computes the mass enclosed the projected line-of-sight.
 
         :param r: radius (arcsec)
-        :param kwargs_profile: keyword argument list with lens model parameters
-        :param lens_param: boolean, if True uses the lens model parameterization in
-            computing the 3d density convention and the return is the convergence
+        :param kwargs_profile: keyword argument list with lens model
+            parameters
+        :param lens_param: boolean, if True uses the lens model
+            parameterization in computing the 3d density convention and
+            the return is the convergence
         :return: projected mass enclosed radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)

@@ -457,7 +457,8 @@ class TestArcDistortions(object):
             npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
 
     def test_analytic_differentials_spp(self):
-        """Test the analytical differentials of the spherical power-law mass profile.
+        """Test the analytical differentials of the spherical power-law mass
+        profile.
 
         :return:
         """

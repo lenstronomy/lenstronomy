@@ -40,8 +40,8 @@ class Unlensed(PSBase):
         """Amplitudes as observed on the sky.
 
         :param kwargs_ps: keyword argument of point source model
-        :param kwargs: keyword arguments of function call (which are not used for this
-            object
+        :param kwargs: keyword arguments of function call (which are not
+            used for this object
         :return: numpy array of amplitudes
         """
         point_amp = kwargs_ps["point_amp"]
@@ -51,8 +51,8 @@ class Unlensed(PSBase):
         """Intrinsic source amplitudes.
 
         :param kwargs_ps: keyword argument of point source model
-        :param kwargs: keyword arguments of function call (which are not used for this
-            object
+        :param kwargs: keyword arguments of function call (which are not
+            used for this object
         :return: numpy array of amplitudes
         """
         point_amp = kwargs_ps["point_amp"]

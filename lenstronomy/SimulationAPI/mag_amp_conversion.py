@@ -5,8 +5,8 @@ import numpy as np
 
 
 class MagAmpConversion(ModelAPI):
-    """Class to convert astronomical magnitudes to lenstronomy amplitudes with given
-    magnitude zero point."""
+    """Class to convert astronomical magnitudes to lenstronomy amplitudes with
+    given magnitude zero point."""
 
     def __init__(self, kwargs_model, magnitude_zero_point):
         """
@@ -21,18 +21,22 @@ class MagAmpConversion(ModelAPI):
     def magnitude2amplitude(
         self, kwargs_lens_light_mag=None, kwargs_source_mag=None, kwargs_ps_mag=None
     ):
-        """'magnitude' definition are in APPARENT magnitudes as observed on the sky, not
-        intrinsic!
+        """'magnitude' definition are in APPARENT magnitudes as observed on the
+        sky, not intrinsic!
 
-        :param kwargs_lens_light_mag: keyword argument list as for LightModel module
-            except that 'amp' parameters are 'magnitude' parameters.
-        :param kwargs_source_mag: keyword argument list as for LightModel module except
-            that 'amp' parameters are 'magnitude' parameters.
-        :param kwargs_ps_mag: keyword argument list as for PointSource module except
-            that 'amp' parameters are 'magnitude' parameters.
-        :return: value of the lenstronomy 'amp' parameter such that the total flux of
-            the profile type results in this magnitude for all the light models. These
-            keyword arguments conform with the lenstronomy LightModel syntax.
+        :param kwargs_lens_light_mag: keyword argument list as for
+            LightModel module except that 'amp' parameters are
+            'magnitude' parameters.
+        :param kwargs_source_mag: keyword argument list as for
+            LightModel module except that 'amp' parameters are
+            'magnitude' parameters.
+        :param kwargs_ps_mag: keyword argument list as for PointSource
+            module except that 'amp' parameters are 'magnitude'
+            parameters.
+        :return: value of the lenstronomy 'amp' parameter such that the
+            total flux of the profile type results in this magnitude for
+            all the light models. These keyword arguments conform with
+            the lenstronomy LightModel syntax.
         """
 
         kwargs_lens_light = copy.deepcopy(kwargs_lens_light_mag)

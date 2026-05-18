@@ -10,12 +10,13 @@ __all__ = ["JAMWrapperBase"]
 
 
 class JAMWrapperBase(object):
-    """Wrapper class to use jampy JAM functionality similar to lenstronomy's Galkin
-    class.
+    """Wrapper class to use jampy JAM functionality similar to lenstronomy's
+    Galkin class.
 
-    :param kwargs_model: keyword arguments describing the model components
-    :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the
-        angular diameter distances involved
+    :param kwargs_model: keyword arguments describing the model
+        components
+    :param kwargs_cosmo: keyword arguments that define the cosmology in
+        terms of the angular diameter distances involved
     """
 
     def __init__(
@@ -81,24 +82,29 @@ class JAMWrapperBase(object):
         black_hole_mass=0,
         jam_kwargs=None,
     ):
-        """Computes the LOS velocity dispersion at given points (not convolved).
+        """Computes the LOS velocity dispersion at given points (not
+        convolved).
 
-        :param x: array of x positions where to compute the dispersion [arcsec]
-        :param y: array of y positions where to compute the dispersion [arcsec]
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model
-            conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen.
+        :param x: array of x positions where to compute the dispersion
+            [arcsec]
+        :param y: array of y positions where to compute the dispersion
+            [arcsec]
+        :param kwargs_mass: mass model parameters (following lenstronomy
+            lens model conventions)
+        :param kwargs_light: deflector light parameters (following
+            lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary
+            according to anisotropy type chosen.
         :param inclination: inclination angle of the system [degrees]
         :param convolved: bool, if True the PSF convolution is applied
-        :param psf_sigmas: float or array with PSF gaussian sigmas [arcsec]
+        :param psf_sigmas: float or array with PSF gaussian sigmas
+            [arcsec]
         :param psf_amplitudes: 1 or array with PSF amplitudes
         :param delta_pix: delta pix
         :param black_hole_mass: mass of the central SMBH [solar masses]
         :param jam_kwargs: keyword arguments for JAM call
-        :return: array of LOS velocity dispersion at each (x,y) position [km/s]
+        :return: array of LOS velocity dispersion at each (x,y) position
+            [km/s]
         """
 
         sigma_lum = np.asarray(kwargs_light[0]["sigma"])

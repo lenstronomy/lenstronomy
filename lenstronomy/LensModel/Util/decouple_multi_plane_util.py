@@ -5,20 +5,24 @@ import numpy as np
 
 
 def setup_lens_model(lens_model, kwargs_lens, index_lens_split, use_jax=False):
-    """A method to split a lens model into a piece to vary or optimize, and fixed lens
-    model whose deflection field will be interpolated. Note that this method currently
-    only supports splitting the lens system at one particular redshift.
+    """A method to split a lens model into a piece to vary or optimize, and
+    fixed lens model whose deflection field will be interpolated. Note that
+    this method currently only supports splitting the lens system at one
+    particular redshift.
 
     :param lens_model: an instance of LensModel
     :param kwargs_lens: keyword arguments for the lens model
-    :param index_lens_split: a list of indexes corresponding to the deflectors that will
-        be left free to vary; every other deflector is assumed to remain static be
-        absorbed into a net deflection field
-    :param use_jax: bool or list of bools to specify which profiles use JAXstronomy
-    :return: an instance of LensModel corresponding to the fixed (static) deflectors, an
-        instance of LensModel corresponding to free deflectors, keyword arguments for
-        each lens model, source redshift, the redshift where the splitting occurs, and
-        the background cosmology
+    :param index_lens_split: a list of indexes corresponding to the
+        deflectors that will be left free to vary; every other deflector
+        is assumed to remain static be absorbed into a net deflection
+        field
+    :param use_jax: bool or list of bools to specify which profiles use
+        JAXstronomy
+    :return: an instance of LensModel corresponding to the fixed
+        (static) deflectors, an instance of LensModel corresponding to
+        free deflectors, keyword arguments for each lens model, source
+        redshift, the redshift where the splitting occurs, and the
+        background cosmology
     """
     z_source = lens_model.z_source
     cosmo = lens_model.cosmo
@@ -85,12 +89,13 @@ def setup_grids(
 ):
     """Creates grids for use in the decoupled multiplane model.
 
-    :param grid_size: The size (diameter of inscribed circle) of the grid
+    :param grid_size: The size (diameter of inscribed circle) of the
+        grid
     :param grid_resolution: pixel scale (units arcsec / pixel)
     :param coordinate_center_x: center of the coordinate grid in arcsec
     :param coordinate_center_y: center of the coordinate grid in arcsec
-    :return: 1d arrays of coordinates, tuple of 1d arrays of points defining the grid,
-        number of pixels per axis
+    :return: 1d arrays of coordinates, tuple of 1d arrays of points
+        defining the grid, number of pixels per axis
     """
     npix = int(grid_size / grid_resolution)
     if npix % 2 == 0:
@@ -116,28 +121,30 @@ def coordinates_and_deflections(
     z_source,
     cosmo_bkg,
 ):
-    """Computes the lensed coordinates and deflection angles for the static lens model.
+    """Computes the lensed coordinates and deflection angles for the static
+    lens model.
 
     :param lens_model_fixed: an instance of LensModel that is static
-    :param lens_model_free: an instance of LensModel that is free to vary. NOTE: this
-        should be a good guess of the "correct" lens model, as it will be used to
-        estimate the coupling between the main deflector and deflectors between the main
-        lens plane and the source plane
+    :param lens_model_free: an instance of LensModel that is free to
+        vary. NOTE: this should be a good guess of the "correct" lens
+        model, as it will be used to estimate the coupling between the
+        main deflector and deflectors between the main lens plane and
+        the source plane
     :param kwargs_lens_fixed: keyword arguments for the fixed lens model
     :param kwargs_lens_free: keyword arguments for the free lens model
-    :param x_coordinate_arcsec: coordinates on which to perform the interpolation;
-        should be either a single coordinate, an array of coordiantes, or a list (or
-        array) or coordinates corresponding to multiple images (see documentation in
-        class_setup)
-    :param y_coordinate_arcsec: coordinates on which to perform the interpolation;
-        should be either a single coordinate, an array of coordiantes, or a list (or
-        array) or coordinates corresponding to multiple images (see documentation in
-        class_setup)
+    :param x_coordinate_arcsec: coordinates on which to perform the
+        interpolation; should be either a single coordinate, an array of
+        coordiantes, or a list (or array) or coordinates corresponding
+        to multiple images (see documentation in class_setup)
+    :param y_coordinate_arcsec: coordinates on which to perform the
+        interpolation; should be either a single coordinate, an array of
+        coordiantes, or a list (or array) or coordinates corresponding
+        to multiple images (see documentation in class_setup)
     :param z_split: the redshift where the free lens model lives
     :param z_source: the source redshift
     :param cosmo_bkg: background cosmology
-    :return: comoving coordinates of light rays at z_split, foreground deflection
-        angles, background deflections
+    :return: comoving coordinates of light rays at z_split, foreground
+        deflection angles, background deflections
     """
 
     Tds = cosmo_bkg.T_xy(z_split, z_source)
@@ -213,8 +220,9 @@ def decoupled_multiplane_class_setup(
     bounds_error=False,
     fill_value=None,
 ):
-    """This funciton creates the keyword arguments for a LensModel instance that is the
-    decoupled multi-plane approxiamtion for the specified lens model.
+    """This funciton creates the keyword arguments for a LensModel instance
+    that is the decoupled multi-plane approxiamtion for the specified lens
+    model.
 
     :param lens_model_free: the lens model with parameters free to vary
     :param x: comoving coordinate at z_split
@@ -362,20 +370,21 @@ def setup_raytracing_lensmodels(
     grid_size,
     grid_resolution,
 ):
-    """This function sets up the lens model used for high-resolution ray tracing with
-    the decoupled multi-plane approximation.
+    """This function sets up the lens model used for high-resolution ray
+    tracing with the decoupled multi-plane approximation.
 
     :param x_image: list of x-coordinates of lensed image
     :param y_image: list of y-coordinates of lensed image
     :param lens_model: an instance of LensModel
     :param kwargs_lens: keyword arguments for the lens model
-    :param index_lens_split: list of integers specifying the lens models to be split
-        from the line-of-sight population (see documentation in the DecoupledMultiplane
-        class)
+    :param index_lens_split: list of integers specifying the lens models
+        to be split from the line-of-sight population (see documentation
+        in the DecoupledMultiplane class)
     :param grid_size: the size of the ray-tracing grid in arcsec
-    :param grid_resolution: the resolution of the ray tracing grid in arcsec/pixel
-    :return: a list of DecoupledMultiPlane lens models and corresponding keyword
-        arguments
+    :param grid_resolution: the resolution of the ray tracing grid in
+        arcsec/pixel
+    :return: a list of DecoupledMultiPlane lens models and corresponding
+        keyword arguments
     """
 
     (

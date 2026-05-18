@@ -15,7 +15,8 @@ import pytest
 
 
 class TestSersicEllipseGaussDec(object):
-    """This class tests the methods for Gauss-decomposed elliptic Sersic convergence."""
+    """This class tests the methods for Gauss-decomposed elliptic Sersic
+    convergence."""
 
     def setup_method(self):
         self.sersic_gauss = SersicEllipseGaussDec()
@@ -24,8 +25,8 @@ class TestSersicEllipseGaussDec(object):
 
     def test_function(self):
         """Test the potential function of Gauss-decomposed elliptical Sersic by
-        asserting that the numerical derivative of the computed potential matches with
-        the analytical derivative values.
+        asserting that the numerical derivative of the computed potential
+        matches with the analytical derivative values.
 
         :return:
         :rtype:
@@ -100,8 +101,8 @@ class TestSersicEllipseGaussDec(object):
             npt.assert_almost_equal(f_y_num, f_y, decimal=4)
 
     def test_derivatives(self):
-        """Test the derivative function of Gauss-decomposed elliptical Sersic by
-        matching with the spherical case.
+        """Test the derivative function of Gauss-decomposed elliptical Sersic
+        by matching with the spherical case.
 
         :return:
         :rtype:
@@ -148,8 +149,8 @@ class TestSersicEllipseGaussDec(object):
         npt.assert_almost_equal(f_y, f_y_s, decimal=3)
 
     def test_hessian(self):
-        """Test the Hessian function of Gauss-decomposed elliptical Sersic by matching
-        with the spherical case.
+        """Test the Hessian function of Gauss-decomposed elliptical Sersic by
+        matching with the spherical case.
 
         :return:
         :rtype:
@@ -195,8 +196,8 @@ class TestSersicEllipseGaussDec(object):
         npt.assert_almost_equal(f_xy_s, f_yx_s, decimal=3)
 
     def test_density_2d(self):
-        """Test the density function of Gauss-decomposed elliptical Sersic by checking
-        with the spherical case.
+        """Test the density function of Gauss-decomposed elliptical Sersic by
+        checking with the spherical case.
 
         :return:
         :rtype:
@@ -247,8 +248,8 @@ class TestSersicEllipseGaussDec(object):
         )
 
     def test_gauss_decompose_sersic(self):
-        """Test that `gauss_decompose_sersic()` decomposes the Sersic profile within 1%
-        Poission noise at R_sersic.
+        """Test that `gauss_decompose_sersic()` decomposes the Sersic profile
+        within 1% Poission noise at R_sersic.
 
         :return:
         :rtype:
@@ -276,7 +277,8 @@ class TestSersicEllipseGaussDec(object):
 
 
 class TestGeneralizedNFWGaussDec(object):
-    """This class tests the methods for Gauss-decomposed generalized NFW profile."""
+    """This class tests the methods for Gauss-decomposed generalized NFW
+    profile."""
 
     def setup_method(self):
         self.gnfw_gauss = GeneralizedNFWEllipseGaussDec()
@@ -307,8 +309,8 @@ class TestGeneralizedNFWGaussDec(object):
 
 
 class TestCTNFWGaussDec(object):
-    """This class tests the methods for Gauss-decomposed spherical cored-truncated NFW
-    profile."""
+    """This class tests the methods for Gauss-decomposed spherical cored-
+    truncated NFW profile."""
 
     def setup_method(self):
         self.ctnfw_gauss = CTNFWGaussDec(n_sigma=15)

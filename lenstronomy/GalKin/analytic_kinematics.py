@@ -15,8 +15,9 @@ __all__ = ["AnalyticKinematics"]
 
 
 class AnalyticKinematics(Anisotropy):
-    """Class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
-    light profile distribution and displacing them with a Gaussian seeing convolution.
+    """Class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering
+    from the light profile distribution and displacing them with a Gaussian
+    seeing convolution.
 
     This class assumes spherical symmetry in light and mass distribution and
         - a Hernquist light profile (parameterised by the half-light radius)
@@ -115,11 +116,12 @@ class AnalyticKinematics(Anisotropy):
 
     @classmethod
     def draw_light(cls, kwargs_light):
-        """Draws a random light tracer particle from the Hernquist light profile.
+        """Draws a random light tracer particle from the Hernquist light
+        profile.
 
         :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate,
-            y-projected coordinate
+        :return: 3d radius (if possible), 2d projected radius,
+            x-projected coordinate, y-projected coordinate
         """
         a = cls._get_hernquist_scale_radius(kwargs_light)
 
@@ -140,20 +142,20 @@ class AnalyticKinematics(Anisotropy):
         )
 
     def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """Returns unweighted los velocity dispersion for a specified projected radius,
-        with weight 1.
+        """Returns unweighted los velocity dispersion for a specified projected
+        radius, with weight 1.
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model
-            conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
-        :return: line-of-sight projected velocity dispersion at projected radius R from
-            3d radius r
+        :param kwargs_mass: mass model parameters (following lenstronomy
+            lens model conventions)
+        :param kwargs_light: deflector light parameters (following
+            lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary
+            according to anisotropy type chosen. We refer to the
+            Anisotropy() class for details on the parameters.
+        :return: line-of-sight projected velocity dispersion at
+            projected radius R from 3d radius r
         """
         a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(
             kwargs_mass, kwargs_light, kwargs_anisotropy
@@ -175,13 +177,14 @@ class AnalyticKinematics(Anisotropy):
         return self._sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
 
     def _read_out_params(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """Reads the relevant parameters out of the keyword arguments and transforms
-        them to the conventions used in this class.
+        """Reads the relevant parameters out of the keyword arguments and
+        transforms them to the conventions used in this class.
 
         :param kwargs_mass: mass profile keyword arguments
         :param kwargs_light: light profile keyword arguments
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :return: a (Rs of Hernquist profile), gamma, rho0_r0_gamma, r_ani
+        :return: a (Rs of Hernquist profile), gamma, rho0_r0_gamma,
+            r_ani
         """
         a = self._get_hernquist_scale_radius(kwargs_light)
 
@@ -236,17 +239,17 @@ class AnalyticKinematics(Anisotropy):
         return self._interp_sigma_r2(np.log(r))
 
     def _I_R_sigma2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """Equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if
-        option is chosen)
+        """Equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral
+        (if option is chosen)
 
         :param R: 2d projected radius (in angular units)
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model
-            conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. See the Anisotropy() class for details on the
-            parameters.
+        :param kwargs_mass: mass model parameters (following lenstronomy
+            lens model conventions)
+        :param kwargs_light: deflector light parameters (following
+            lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary
+            according to anisotropy type chosen. See the Anisotropy()
+            class for details on the parameters.
         :return: integral of A15 in Mamon&Lokas 2005
         """
         R = max(R, self._min_integrate)
@@ -297,13 +300,13 @@ class AnalyticKinematics(Anisotropy):
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model
-            conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light
-            model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to
-            anisotropy type chosen. We refer to the Anisotropy() class for details on
-            the parameters.
+        :param kwargs_mass: mass model parameters (following lenstronomy
+            lens model conventions)
+        :param kwargs_light: deflector light parameters (following
+            lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary
+            according to anisotropy type chosen. We refer to the
+            Anisotropy() class for details on the parameters.
         :return: integrand of Eq. 21 from Suyu et al. (2010)
         """
         a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(
@@ -323,8 +326,8 @@ class AnalyticKinematics(Anisotropy):
         )
 
     def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """Return I(R)*sigma^2 equation 20 in Suyu 2010 as interpolation in log space,
-        and I(R)
+        """Return I(R)*sigma^2 equation 20 in Suyu 2010 as interpolation in log
+        space, and I(R)
 
         :param R: projected radius
         :param kwargs_mass: mass profile keyword arguments

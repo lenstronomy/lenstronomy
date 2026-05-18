@@ -29,9 +29,10 @@ except:
 class TestSinglePlaneLOSFlexion(object):
     """Tests the SinglePlaneLOSFlexion routines.
 
-    These functions are the same as in TestLensModel but with the addition of LOSF and
-    LOSF_MINIMAL as profiles. with all params in self.kwargs_los set to zero, the
-    results should be the same as the non-LOSF cases originally tested.
+    These functions are the same as in TestLensModel but with the
+    addition of LOSF and LOSF_MINIMAL as profiles. with all params in
+    self.kwargs_los set to zero, the results should be the same as the
+    non-LOSF cases originally tested.
     """
 
     def setup_method(self):
@@ -250,13 +251,13 @@ class TestSinglePlaneLOSFlexion(object):
         )
 
     def test_los_versus_multiplane(self):
-        """This function asserts that the outcome from LOS_FLEXION and LOS_FLEXION
-        MINIMAL is the same as MultiPlane.
+        """This function asserts that the outcome from LOS_FLEXION and
+        LOS_FLEXION MINIMAL is the same as MultiPlane.
 
-        Note that the LOS_FLEXION and LOS_FLEXION_MINIMAL models are based on the
-        dominant lens approximation, which means that those models are accurate at the
-        level of the approximation. The error is of order of the square of the flexion
-        parameters magnitude.
+        Note that the LOS_FLEXION and LOS_FLEXION_MINIMAL models are
+        based on the dominant lens approximation, which means that those
+        models are accurate at the level of the approximation. The error
+        is of order of the square of the flexion parameters magnitude.
         """
         # set up the cosmology to convert between flexions
         # the exact numbers don't matter because we are just doing a comparison

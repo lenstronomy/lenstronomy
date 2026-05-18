@@ -42,7 +42,8 @@ class LineProfile(object):
         :param amp: constant surface brightness of line
         :param angle: angle of line to the horizontal (degrees)
         :param length: length of line (arcseconds)
-        :param width: width of line (arcseconds), line width extends symmetrically
+        :param width: width of line (arcseconds), line width extends
+            symmetrically
         :param start_x: ra coordinate of start of line
         :param start_y: dec-coordinate of start of line
         :return: surface brightness, raise as definition is not defined
@@ -60,7 +61,8 @@ class LineProfile(object):
         :param amp: constant surface brightness of line
         :param angle: angle of line to the horizontal (degrees)
         :param length: length of line (arcseconds)
-        :param width: width of line (arcseconds), line width extends symmetrically
+        :param width: width of line (arcseconds), line width extends
+            symmetrically
         :param start_x: ra coordinate of start of line
         :param start_y: dec-coordinate of start of line
         :return: total flux

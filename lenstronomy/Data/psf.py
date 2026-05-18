@@ -10,9 +10,9 @@ __all__ = ["PSF"]
 class PSF(object):
     """Point Spread Function class.
 
-    This class describes and manages products used to perform the PSF modeling
-    (convolution for extended surface brightness and painting of PSF's for point
-    sources).
+    This class describes and manages products used to perform the PSF
+    modeling (convolution for extended surface brightness and painting
+    of PSF's for point sources).
     """
 
     def __init__(
@@ -146,8 +146,8 @@ class PSF(object):
 
     @property
     def kernel_pixel(self):
-        """Returns the convolution kernel for a uniform surface brightness on a pixel
-        size.
+        """Returns the convolution kernel for a uniform surface brightness on a
+        pixel size.
 
         :return: 2d numpy array
         """
@@ -159,14 +159,15 @@ class PSF(object):
         return self._kernel_pixel
 
     def kernel_point_source_supersampled(self, supersampling_factor, updata_cache=True):
-        """Generates (if not already available) a supersampled PSF with odd numbers of
-        pixels centered.
+        """Generates (if not already available) a supersampled PSF with odd
+        numbers of pixels centered.
 
-        :param supersampling_factor: int >=1, supersampling factor relative to pixel
-            resolution
-        :param updata_cache: boolean, if True, updates the cached supersampling PSF if
-            generated. Attention, this will overwrite a previously used supersampled PSF
-            if the resolution is changing.
+        :param supersampling_factor: int >=1, supersampling factor
+            relative to pixel resolution
+        :param updata_cache: boolean, if True, updates the cached
+            supersampling PSF if generated. Attention, this will
+            overwrite a previously used supersampled PSF if the
+            resolution is changing.
         :return: super-sampled PSF as 2d numpy array
         """
         if supersampling_factor == 1:

@@ -4,7 +4,8 @@ __all__ = ["PseudoJaffe", "PseudoJaffeEllipse"]
 
 
 class PseudoJaffe(object):
-    """Class for pseudo Jaffe lens light (2d projected light/mass distribution)"""
+    """Class for pseudo Jaffe lens light (2d projected light/mass
+    distribution)"""
 
     param_names = ["amp", "Ra", "Rs", "center_x", "center_y"]
     lower_limit_default = {

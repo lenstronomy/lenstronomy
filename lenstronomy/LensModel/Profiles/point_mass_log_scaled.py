@@ -70,7 +70,8 @@ class PointMassLogScaled(LensProfileBase):
         )
 
     def mass_3d_lens(self, r, log10_theta_E):
-        """Compute the 3D mass enclosed within radius r for the given log10_theta_E.
+        """Compute the 3D mass enclosed within radius r for the given
+        log10_theta_E.
 
         :param r: radius (in angles)
         :param log10_theta_E: log10 of the Einstein radius (in arcsec)

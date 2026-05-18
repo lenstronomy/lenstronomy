@@ -49,9 +49,9 @@ class CoreBurkert(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
-        """Deflection angles :param x: x coordinate :param y: y coordinate :param Rs:
-        scale radius :param alpha_Rs: deflection angle at Rs :param r_core: core radius
-        :param center_x:
+        """Deflection angles :param x: x coordinate :param y: y coordinate
+        :param Rs: scale radius :param alpha_Rs: deflection angle at Rs :param
+        r_core: core radius :param center_x:
 
         :param center_y:
         :return:

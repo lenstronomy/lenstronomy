@@ -15,7 +15,8 @@ __all__ = ["Numerics"]
 class Numerics(PointSourceRendering):
     """This classes manages the numerical options and computations of an image.
 
-    The class has two main functions, re_size_convolve() and coordinates_evaluate()
+    The class has two main functions, re_size_convolve() and
+    coordinates_evaluate()
     """
 
     def __init__(

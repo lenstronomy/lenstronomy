@@ -10,18 +10,22 @@ __all__ = ["FluxCalibration", "CalibrationLikelihood"]
 
 
 class FluxCalibration(object):
-    """Class to fit coordinate system alignment and flux amplitude calibrations."""
+    """Class to fit coordinate system alignment and flux amplitude
+    calibrations."""
 
     def __init__(self, kwargs_imaging, kwargs_model, kwargs_params, calibrate_bands):
-        """Initialise the classes of the chain and for parameter options for the flux
-        calibration fitting.
+        """Initialise the classes of the chain and for parameter options for
+        the flux calibration fitting.
 
-        :param kwargs_imaging: keyword argument related to imaging data and imaging
-            likelihood. Feeds into ImageLikelihood(\*\*kwargs_imaging)
+        :param kwargs_imaging: keyword argument related to imaging data
+            and imaging likelihood. Feeds into
+            ImageLikelihood(\*\*kwargs_imaging)
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
-        :param calibrate_bands: state which bands the flux calibration is applied to
-        :type calibrate_bands: list of booleans of length of the imaging bands
+        :param calibrate_bands: state which bands the flux calibration
+            is applied to
+        :type calibrate_bands: list of booleans of length of the imaging
+            bands
         """
         multi_band_list = kwargs_imaging["multi_band_list"]
         multi_band_type = kwargs_imaging["multi_band_type"]
@@ -50,15 +54,17 @@ class FluxCalibration(object):
         scaling_upper_limit=1000,
         print_key="flux calibration",
     ):
-        """Returns the best fit for the lens model on catalogue basis with particle
-        swarm optimizer.
+        """Returns the best fit for the lens model on catalogue basis with
+        particle swarm optimizer.
 
         :param n_particles: number of particles in the PSO
         :param n_iterations: number of iterations of the PSO
         :param threadCount: number of threads
         :param mpi: boolean, MPI mode
-        :param scaling_lower_limit: lower limit of the flux_scaling initialization
-        :param scaling_upper_limit: upper limit of the flux_scaling initialization
+        :param scaling_lower_limit: lower limit of the flux_scaling
+            initialization
+        :param scaling_upper_limit: upper limit of the flux_scaling
+            initialization
         :param print_key: string, print statement
         :return: multi_band_list, [chi2_list, pos_list, vel_list]
         """
@@ -98,9 +104,12 @@ class CalibrationLikelihood(object):
 
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
-        :param calibrate_bands: state which bands the flux calibration is applied to
-        :type calibrate_bands: list of booleans of length of the imaging bands
-        :param kwargs_imaging: keyword arguments of the imaging likelihood
+        :param calibrate_bands: state which bands the flux calibration
+            is applied to
+        :type calibrate_bands: list of booleans of length of the imaging
+            bands
+        :param kwargs_imaging: keyword arguments of the imaging
+            likelihood
         """
         self._calibrate_bands = calibrate_bands
         self._kwargs_model = kwargs_model
@@ -109,7 +118,8 @@ class CalibrationLikelihood(object):
         self.multi_band_list = self._kwargs_imaging_likelihood["multi_band_list"]
 
     def _likelihood(self, args):
-        """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""
+        """Routine to compute X2 given variable parameters for a MCMC/PSO
+        chainF."""
         # generate image and computes likelihood
         multi_band_list = self.update_data(args)
         self._kwargs_imaging_likelihood["multi_band_list"] = multi_band_list

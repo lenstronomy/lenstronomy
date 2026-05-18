@@ -21,8 +21,8 @@ class SersicUtil(object):
         self._sersic_major_axis = sersic_major_axis
 
     def k_bn(self, n, Re):
-        """Returns normalisation of the sersic profile such that Re is the half light
-        radius given n_sersic slope."""
+        """Returns normalisation of the sersic profile such that Re is the half
+        light radius given n_sersic slope."""
         bn = self.b_n(n)
         k = bn * Re ** (-1.0 / n)
         return k, bn
@@ -35,8 +35,9 @@ class SersicUtil(object):
 
     @staticmethod
     def b_n(n):
-        """B(n) computation. This is the approximation of the exact solution to the
-        relation, 2*incomplete_gamma_function(2n; b_n) = Gamma_function(2*n).
+        """B(n) computation. This is the approximation of the exact solution to
+        the relation, 2*incomplete_gamma_function(2n; b_n) =
+        Gamma_function(2*n).
 
         :param n: the sersic index
         :return: b(n)
@@ -48,8 +49,8 @@ class SersicUtil(object):
         return bn
 
     def get_distance_from_center(self, x, y, e1, e2, center_x, center_y):
-        """Get the distance from the center of Sersic, accounting for orientation and
-        axis ratio :param x:
+        """Get the distance from the center of Sersic, accounting for
+        orientation and axis ratio :param x:
 
         :param y:
         :param e1: eccentricity
@@ -152,8 +153,8 @@ class SersicUtil(object):
         return d_alpha_dr
 
     def density(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
-        """De-projection of the Sersic profile based on Prugniel & Simien (1997)
-        :return:"""
+        """De-projection of the Sersic profile based on Prugniel & Simien
+        (1997) :return:"""
         raise ValueError(
             "not implemented! Use a Multi-Gaussian-component decomposition."
         )
@@ -162,7 +163,8 @@ class SersicUtil(object):
         """Computes total flux of a round Sersic profile.
 
         :param r_eff: projected half light radius
-        :param I_eff: surface brightness at r_eff (in same units as r_eff)
+        :param I_eff: surface brightness at r_eff (in same units as
+            r_eff)
         :param n_sersic: Sersic index
         :return: integrated flux to infinity
         """
@@ -179,15 +181,17 @@ class SersicUtil(object):
         )
 
     def total_flux(self, amp, R_sersic, n_sersic, e1=0, e2=0, **kwargs):
-        """Computes analytical integral to compute total flux of the Sersic profile.
+        """Computes analytical integral to compute total flux of the Sersic
+        profile.
 
-        :param amp: amplitude parameter in Sersic function (surface brightness at
-            R_sersic
+        :param amp: amplitude parameter in Sersic function (surface
+            brightness at R_sersic
         :param R_sersic: half-light radius in semi-major axis
         :param n_sersic: Sersic index
         :param e1: eccentricity
         :param e2: eccentricity
-        :return: Analytic integral of the total flux of the Sersic profile
+        :return: Analytic integral of the total flux of the Sersic
+            profile
         """
         # compute product average half-light radius
         if self._sersic_major_axis:

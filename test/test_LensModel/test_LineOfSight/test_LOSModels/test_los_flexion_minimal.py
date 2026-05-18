@@ -11,8 +11,8 @@ from lenstronomy.LensModel.LineOfSight.LOSModels.los_flexion_minimal import (
 
 
 class TestLOSFlexionMinimal(object):
-    """Tests the LOSFlexionMinimal profile; inherits from LOS so we can repeat those
-    tests here.
+    """Tests the LOSFlexionMinimal profile; inherits from LOS so we can repeat
+    those tests here.
 
     This is functionally redundant but boosts coverage.
     """

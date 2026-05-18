@@ -6,7 +6,8 @@ __all__ = ["LensModelExtensions"]
 
 
 class LensModelExtensions(object):
-    """Class with extension routines not part of the LensModel core routines."""
+    """Class with extension routines not part of the LensModel core
+    routines."""
 
     def __init__(self, lensModel):
         """
@@ -36,8 +37,8 @@ class LensModelExtensions(object):
         use_largest_eigenvalue=True,
         fixed_aperture_size=False,
     ):
-        """This method computes image magnifications with a finite-size background
-        source.
+        """This method computes image magnifications with a finite-size
+        background source.
 
         This new updates allows for more flexibility in the source light model by requiring the user to specify the source light mode, grid size and grid resolution before calling the function.
 
@@ -182,9 +183,10 @@ class LensModelExtensions(object):
         source_model,
         kwargs_source,
     ):
-        """This function computes the surface brightness of coordinates in 'flux_array'
-        that satisfy r_min < grid_r < r_max, where each coordinate in grid_r corresponds
-        to a certain entry in flux_array. Likewise, grid_x, and grid_y.
+        """This function computes the surface brightness of coordinates in
+        'flux_array' that satisfy r_min < grid_r < r_max, where each coordinate
+        in grid_r corresponds to a certain entry in flux_array. Likewise,
+        grid_x, and grid_y.
 
         :param flux_array: an array that contains the flux in each pixel
         :param x_image: image x coordinate
@@ -192,14 +194,16 @@ class LensModelExtensions(object):
         :param grid_x: an array of x coordinates
         :param grid_y: an array of y coordinates
         :param grid_r: an array of projected distances from the origin
-        :param r_min: sets the inner radius of the annulus where ray tracing happens
-        :param r_max: sets the outer radius of the annulus where ray tracing happens
+        :param r_min: sets the inner radius of the annulus where ray
+            tracing happens
+        :param r_max: sets the outer radius of the annulus where ray
+            tracing happens
         :param lensModel: an instance of LensModel
         :param kwargs_lens: keywords for the lens model
         :param source_model: an instance of LightModel
         :param kwargs_source: keywords for the light model
-        :return: the flux array where the surface brightness has been computed for all
-            pixels with r_min < grid_r < r_max.
+        :return: the flux array where the surface brightness has been
+            computed for all pixels with r_min < grid_r < r_max.
         """
 
         condition1 = grid_r >= r_min
@@ -227,15 +231,16 @@ class LensModelExtensions(object):
         polar_grid=False,
         aspect_ratio=0.5,
     ):
-        """Returns the magnification of an extended source with Gaussian light profile.
+        """Returns the magnification of an extended source with Gaussian light
+        profile.
 
         :param x_pos: x-axis positons of point sources
         :param y_pos: y-axis position of point sources
         :param kwargs_lens: lens model kwargs
         :param source_sigma: Gaussian sigma in arc sec in source
         :param window_size: size of window to compute the finite flux
-        :param grid_number: number of grid cells per axis in the window to numerically
-            compute the flux
+        :param grid_number: number of grid cells per axis in the window
+            to numerically compute the flux
         :return: numerically computed brightness of the sources
         """
 
@@ -293,7 +298,8 @@ class LensModelExtensions(object):
         :param source_sigma: source size (in angular units)
         :param window_size: window size in angular units
         :param grid_number: number of grid points per axis
-        :param shape: string, shape of source, supports 'GAUSSIAN' and 'TORUS
+        :param shape: string, shape of source, supports 'GAUSSIAN' and
+            'TORUS
         :return: 2d numpy array
         """
         delta_pix = float(window_size) / grid_number
@@ -394,10 +400,12 @@ class LensModelExtensions(object):
         """Computes the area inside a connected caustic curve.
 
         :param kwargs_lens: lens model keyword argument list
-        :param kwargs_caustic_num: keyword arguments for the numerical calculation of
-            the caustics, as input of self.critical_curve_caustics()
-        :param index_vertices: integer, index of connected vortex from the output of
-            self.critical_curve_caustics() of disconnected curves.
+        :param kwargs_caustic_num: keyword arguments for the numerical
+            calculation of the caustics, as input of
+            self.critical_curve_caustics()
+        :param index_vertices: integer, index of connected vortex from
+            the output of self.critical_curve_caustics() of disconnected
+            curves.
         :return: area within the caustic curve selected
         """
 
@@ -420,7 +428,8 @@ class LensModelExtensions(object):
         return a
 
     def _tiling_crit(self, edge1, edge2, edge_90, max_order, kwargs_lens):
-        """Tiles a rectangular triangle and compares the signs of the magnification.
+        """Tiles a rectangular triangle and compares the signs of the
+        magnification.
 
         :param edge1: [ra_coord, dec_coord, magnification]
         :param edge2: [ra_coord, dec_coord, magnification]
@@ -652,14 +661,14 @@ class LensModelExtensions(object):
         :param x: x-position
         :param y: y-position
         :param kwargs_lens: lens model keyword arguments
-        :param center_x: x-coord of center towards which the rotation direction is
-            defined
-        :param center_y: x-coord of center towards which the rotation direction is
-            defined
-        :param smoothing_3rd: finite differential length of third order in units of
-            angle
-        :param smoothing_2nd: float or None, finite average differential scale of
-            Hessian
+        :param center_x: x-coord of center towards which the rotation
+            direction is defined
+        :param center_y: x-coord of center towards which the rotation
+            direction is defined
+        :param smoothing_3rd: finite differential length of third order
+            in units of angle
+        :param smoothing_2nd: float or None, finite average differential
+            scale of Hessian
         :return:
         """
         (
@@ -789,20 +798,20 @@ class LensModelExtensions(object):
     def curved_arc_estimate(
         self, x, y, kwargs_lens, smoothing=None, smoothing_3rd=0.001, tan_diff=False
     ):
-        """Performs the estimation of the curved arc description at a particular
-        position of an arbitrary lens profile.
+        """Performs the estimation of the curved arc description at a
+        particular position of an arbitrary lens profile.
 
         :param x: float, x-position where the estimate is provided
         :param y: float, y-position where the estimate is provided
         :param kwargs_lens: lens model keyword arguments
-        :param smoothing: (optional) finite differential of second derivative (radial
-            and tangential stretches)
-        :param smoothing_3rd: differential scale for third derivative to estimate the
-            tangential curvature
-        :param tan_diff: boolean, if True, also returns the relative tangential stretch
-            differential in tangential direction
-        :return: keyword argument list corresponding to a CURVED_ARC profile at (x, y)
-            given the initial lens model
+        :param smoothing: (optional) finite differential of second
+            derivative (radial and tangential stretches)
+        :param smoothing_3rd: differential scale for third derivative to
+            estimate the tangential curvature
+        :param tan_diff: boolean, if True, also returns the relative
+            tangential stretch differential in tangential direction
+        :return: keyword argument list corresponding to a CURVED_ARC
+            profile at (x, y) given the initial lens model
         """
         (
             radial_stretch,
@@ -858,16 +867,16 @@ class LensModelExtensions(object):
         return kwargs_arc
 
     def tangential_average(self, x, y, kwargs_lens, dr, smoothing=None, num_average=9):
-        """Computes average tangential stretch around position (x, y) within dr in
-        radial direction.
+        """Computes average tangential stretch around position (x, y) within dr
+        in radial direction.
 
         :param x: x-position (float)
         :param y: y-position (float)
         :param kwargs_lens: lens model keyword argument list
         :param dr: averaging scale in radial direction
         :param smoothing: smoothing scale of derivative
-        :param num_average: integer, number of points averaged over within dr in the
-            radial direction
+        :param num_average: integer, number of points averaged over
+            within dr in the radial direction
         :return:
         """
         (

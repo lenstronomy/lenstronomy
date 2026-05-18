@@ -94,7 +94,8 @@ class CartShapelets(LensProfileBase):
         return shapelets
 
     def _shapeletOutput(self, x, y, beta, shapelets, precalc=True):
-        """Returns the numerical values of a set of shapelets at polar coordinates.
+        """Returns the numerical values of a set of shapelets at polar
+        coordinates.
 
         :param shapelets: set of shapelets [l=,r=,a_lr=]
         :type shapelets: array of size (n,3)
@@ -141,7 +142,8 @@ class CartShapelets(LensProfileBase):
         return amp * self.phi_n(n1, x_ / beta) * self.phi_n(n2, y_ / beta) / beta
 
     def _dx_shapelets(self, shapelets, beta):
-        """Computes the derivative d/dx of the shapelet coeffs :param shapelets:
+        """Computes the derivative d/dx of the shapelet coeffs :param
+        shapelets:
 
         :param beta:
         :return:
@@ -157,7 +159,8 @@ class CartShapelets(LensProfileBase):
         return dx / beta
 
     def _dy_shapelets(self, shapelets, beta):
-        """Computes the derivative d/dx of the shapelet coeffs :param shapelets:
+        """Computes the derivative d/dx of the shapelet coeffs :param
+        shapelets:
 
         :param beta:
         :return:
@@ -185,7 +188,8 @@ class CartShapelets(LensProfileBase):
         return self._dx_shapelets(dy_shapelets, beta)
 
     def H_n(self, n, x):
-        """Constructs the Hermite polynomial of order n at position x (dimensionless)
+        """Constructs the Hermite polynomial of order n at position x
+        (dimensionless)
 
         :param n: The n'the basis function.
         :type name: int.
@@ -201,7 +205,8 @@ class CartShapelets(LensProfileBase):
         )  # attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
 
     def phi_n(self, n, x):
-        """Constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
+        """Constructs the 1-dim basis function (formula (1) in Refregier et al.
+        2001)
 
         :param n: The n'the basis function.
         :type name: int.
@@ -214,7 +219,8 @@ class CartShapelets(LensProfileBase):
         return prefactor * self.H_n(n, x) * np.exp(-(x**2) / 2.0)
 
     def pre_calc(self, x, y, beta, n_order, center_x, center_y):
-        """Calculates the H_n(x) and H_n(y) for a given x-array and y-array :param x:
+        """Calculates the H_n(x) and H_n(y) for a given x-array and y-array
+        :param x:
 
         :param y:
         :param amp:

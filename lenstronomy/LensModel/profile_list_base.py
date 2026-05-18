@@ -226,11 +226,12 @@ class ProfileListBase(object):
         return func_list
 
     def _bool_list(self, k=None):
-        """Returns a bool list of the length of the lens models if k = None: returns
-        bool list with True's if k is int, returns bool list with False's but k'th is
-        True if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in
-        the integers listed and False elsewhere if k is a boolean list, checks for size
-        to match the numbers of models and returns it.
+        """Returns a bool list of the length of the lens models if k = None:
+        returns bool list with True's if k is int, returns bool list with
+        False's but k'th is True if k is a list of int, e.g. [0, 3, 5], returns
+        a bool list with True's in the integers listed and False elsewhere if k
+        is a boolean list, checks for size to match the numbers of models and
+        returns it.
 
         :param k: None, int, or list of ints
         :return: bool list
@@ -248,9 +249,10 @@ class ProfileListBase(object):
         return kwargs_list
 
     def set_dynamic(self):
-        """Frees cache set by static model (if exists) and re-computes all lensing
-        quantities each time a definition is called assuming different parameters are
-        executed. This is the default mode if not specified as set_static()
+        """Frees cache set by static model (if exists) and re-computes all
+        lensing quantities each time a definition is called assuming different
+        parameters are executed. This is the default mode if not specified as
+        set_static()
 
         :return: None
         """
@@ -258,8 +260,8 @@ class ProfileListBase(object):
             func.set_dynamic()
 
     def model_info(self):
-        """Shows what models are being initialized and what parameters are being
-        requested for.
+        """Shows what models are being initialized and what parameters are
+        being requested for.
 
         :return: None
         """
@@ -279,12 +281,13 @@ class ProfileListBase(object):
         return self._param_name_list
 
     def check_parameters(self, kwargs_list):
-        """Checks whether the parameter list is consistent with the parameters required
-        by the lens (mass) model.
+        """Checks whether the parameter list is consistent with the parameters
+        required by the lens (mass) model.
 
-        :param kwargs_list: keyword argument list as parameterised models
-        :return: None or raise ValueError with error message of what parameter is not
-            supported.
+        :param kwargs_list: keyword argument list as parameterised
+            models
+        :return: None or raise ValueError with error message of what
+            parameter is not supported.
         """
 
         name_list = self.param_name_list
@@ -316,8 +319,9 @@ def lens_class(
     """Generate class instance of single lens.
 
     :param lens_type: string, lens model type
-    :param profile_kwargs: dict, keyword arguments used to initialize profile classes.
-        If None, then the profile is initialized using default settings
+    :param profile_kwargs: dict, keyword arguments used to initialize
+        profile classes. If None, then the profile is initialized using
+        default settings
     :return: class instance of the lens model type
     """
     if profile_kwargs is None:

@@ -8,8 +8,8 @@ __all__ = ["PointMass"]
 
 
 class PointMass(LensProfileBase):
-    """Class to compute the physical deflection angle of a point mass, given as an
-    Einstein radius."""
+    """Class to compute the physical deflection angle of a point mass, given as
+    an Einstein radius."""
 
     param_names = ["theta_E", "center_x", "center_y"]
     lower_limit_default = {"theta_E": 0, "center_x": -100, "center_y": -100}
@@ -84,8 +84,8 @@ class PointMass(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def mass_3d_lens(self, r, theta_E):
-        """Mass enclosed within a 3d sphere of radius r, however it is just the point
-        mass (in angular units).
+        """Mass enclosed within a 3d sphere of radius r, however it is just the
+        point mass (in angular units).
 
         :param r: radius in arcsec
         :type r: float

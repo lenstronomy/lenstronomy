@@ -75,7 +75,8 @@ class NautilusSampler(NestedSampler):
     def run(self, **kwargs):
         """Run the nautilus nested sampler.
 
-        see https://nautilus-sampler.readthedocs.io for content of kwargs
+        see https://nautilus-sampler.readthedocs.io for content of
+        kwargs
 
         :param kwargs: kwargs directly passed to Sampler.run
         :return: samples, means, log_Z, log_Z_err, log_L, results

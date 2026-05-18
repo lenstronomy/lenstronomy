@@ -12,13 +12,13 @@ __all__ = ["TDCosmography"]
 
 
 class TDCosmography(KinematicsAPI):
-    """Class equipped to perform a cosmographic analysis from a lens model with added
-    measurements of time delays and kinematics.
+    """Class equipped to perform a cosmographic analysis from a lens model with
+    added measurements of time delays and kinematics.
 
-    This class does not require any cosmological knowledge and can return angular
-    diameter distance estimates self-consistently integrating the kinematics routines
-    and time delay estimates in the lens modeling. This description follows Birrer et
-    al. 2016, 2019.
+    This class does not require any cosmological knowledge and can
+    return angular diameter distance estimates self-consistently
+    integrating the kinematics routines and time delay estimates in the
+    lens modeling. This description follows Birrer et al. 2016, 2019.
     """
 
     def __init__(
@@ -93,18 +93,21 @@ class TDCosmography(KinematicsAPI):
     def time_delays(
         self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False
     ):
-        """Predicts the time delays of the image positions given the fiducial cosmology
-        relative to a straight line without lensing. Negative values correspond to
-        images arriving earlier, and positive signs correspond to images arriving later.
+        """Predicts the time delays of the image positions given the fiducial
+        cosmology relative to a straight line without lensing. Negative values
+        correspond to images arriving earlier, and positive signs correspond to
+        images arriving later.
 
         :param kwargs_lens: lens model parameters
         :param kwargs_ps: point source parameters
         :param kappa_ext: external convergence (optional)
-        :param original_ps_position: boolean (only applies when first point source model
-            is of type 'LENSED_POSITION'), uses the image positions in the model
-            parameters and does not re-compute images (which might be differently
-            ordered) in case of the lens equation solver
-        :return: time delays at image positions for the fixed cosmology in units of days
+        :param original_ps_position: boolean (only applies when first
+            point source model is of type 'LENSED_POSITION'), uses the
+            image positions in the model parameters and does not re-
+            compute images (which might be differently ordered) in case
+            of the lens equation solver
+        :return: time delays at image positions for the fixed cosmology
+            in units of days
         """
         fermat_pot = self.fermat_potential(
             kwargs_lens, kwargs_ps, original_ps_position=original_ps_position
@@ -117,12 +120,13 @@ class TDCosmography(KinematicsAPI):
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
-        :param original_ps_position: boolean (only applies when first point source model
-            is of type 'LENSED_POSITION'), uses the image positions in the model
-            parameters and does not re-compute images (which might be differently
-            ordered) in case of the lens equation solver
-        :return: Fermat potential of all the image positions in the first point source
-            list entry
+        :param original_ps_position: boolean (only applies when first
+            point source model is of type 'LENSED_POSITION'), uses the
+            image positions in the model parameters and does not re-
+            compute images (which might be differently ordered) in case
+            of the lens equation solver
+        :return: Fermat potential of all the image positions in the
+            first point source list entry
         """
         ra_pos, dec_pos = self.PointSource.image_position(
             kwargs_ps, kwargs_lens, original_position=original_ps_position
@@ -236,13 +240,13 @@ class TDCosmography(KinematicsAPI):
     def ddt_from_time_delay(
         d_fermat_model, dt_measured, kappa_s=0, kappa_ds=0, kappa_d=0
     ):
-        """Time-delay distance in units of Mpc from the modeled Fermat potential and
-        measured time delay from an image pair.
+        """Time-delay distance in units of Mpc from the modeled Fermat
+        potential and measured time delay from an image pair.
 
-        :param d_fermat_model: relative Fermat potential between two images from the
-            same source in units arcsec^2
-        :param dt_measured: measured time delay between the same image pair in units of
-            days
+        :param d_fermat_model: relative Fermat potential between two
+            images from the same source in units arcsec^2
+        :param dt_measured: measured time delay between the same image
+            pair in units of days
         :param kappa_s: external convergence from observer to source
         :param kappa_ds: external convergence from lens to source
         :param kappa_d: external convergence form observer to lens
@@ -261,11 +265,13 @@ class TDCosmography(KinematicsAPI):
 
     @staticmethod
     def ds_dds_from_kinematics(sigma_v, J, kappa_s=0, kappa_ds=0):
-        """Computes the estimate of the ratio of angular diameter distances Ds/Dds from
-        the kinematic estimate of the lens and the measured dispersion.
+        """Computes the estimate of the ratio of angular diameter distances
+        Ds/Dds from the kinematic estimate of the lens and the measured
+        dispersion.
 
         :param sigma_v: velocity dispersion [km/s]
-        :param J: dimensionless kinematic constraint (see Birrer et al. 2016, 2019)
+        :param J: dimensionless kinematic constraint (see Birrer et al.
+            2016, 2019)
         :return: Ds/Dds
         """
         ds_dds_model = (sigma_v * 1000) ** 2 / const.c**2 / J

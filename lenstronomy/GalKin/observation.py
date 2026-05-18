@@ -8,8 +8,8 @@ __all__ = ["GalkinObservation"]
 
 
 class GalkinObservation(PSF, Aperture):
-    """This class sets the base for the observational properties (aperture and seeing
-    condition)"""
+    """This class sets the base for the observational properties (aperture and
+    seeing condition)"""
 
     def __init__(self, kwargs_aperture, kwargs_psf, backend):
         """

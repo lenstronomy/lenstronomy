@@ -70,8 +70,8 @@ class Test_adaptive_boundary_mesh:
     def test_ABM(self):
         """Test function for ABM.
 
-        It sets up the initial parameters and checks if the function returns the
-        expected results.
+        It sets up the initial parameters and checks if the function
+        returns the expected results.
         """
 
         source_position = (0, 0)

@@ -25,14 +25,15 @@ __all__ = ["ModelPlot"]
 
 
 class ModelPlot(object):
-    """Class that manages the summary plots of a lens model The class uses the same
-    conventions as being used in the FittingSequence and interfaces with the ImSim
-    module.
+    """Class that manages the summary plots of a lens model The class uses the
+    same conventions as being used in the FittingSequence and interfaces with
+    the ImSim module.
 
-    The linear inversion is re-done given the likelihood settings in the init of this
-    class (make sure this is the same as you perform the FittingSequence) to make sure
-    the linear amplitude parameters are computed as they are not part of the output of
-    the FittingSequence results.
+    The linear inversion is re-done given the likelihood settings in the
+    init of this class (make sure this is the same as you perform the
+    FittingSequence) to make sure the linear amplitude parameters are
+    computed as they are not part of the output of the FittingSequence
+    results.
     """
 
     def __init__(
@@ -175,25 +176,27 @@ class ModelPlot(object):
     def font_size(self):
         """Default font size for all texts in the subplots.
 
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
+        Font size in individual subplots can be adjusted by font_size
+        argument in the plotting methods. Font size for different text
+        elements can be further fine- tuned by kwargs_colorbar,
+        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows
+        arguments in the plotting methods.
         """
         return self._font_size
 
     @font_size.setter
     def font_size(self, font_size):
-        """Set default font size for all texts in the subplots. Font size in individual
-        subplots can be adjusted by font_size argument in the plotting methods. Font
-        size for different text elements can be further fine-tuned by kwargs_colorbar,
-        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the
-        plotting methods.
+        """Set default font size for all texts in the subplots. Font size in
+        individual subplots can be adjusted by font_size argument in the
+        plotting methods. Font size for different text elements can be further
+        fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
+        kwargs_coordinate_arrows arguments in the plotting methods.
 
-        :param font_size: int, default font size for all texts in the subplots. Font
-            size in individual subplots can be adjusted by font_size argument in the
-            plotting methods. Font size for different text elements can be further fine-
-            tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
+        :param font_size: int, default font size for all texts in the
+            subplots. Font size in individual subplots can be adjusted
+            by font_size argument in the plotting methods. Font size for
+            different text elements can be further fine- tuned by
+            kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
             kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :return: None
@@ -208,7 +211,8 @@ class ModelPlot(object):
 
         :param band_index: index of imaging band to be plotted
         :type band_index: int
-        :return: bandplot() instance of selected band, raises when band is not computed
+        :return: bandplot() instance of selected band, raises when band
+            is not computed
         """
         i = self._index_list[band_index]
         if i == -1:
@@ -629,8 +633,8 @@ class ModelPlot(object):
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
-        """Illustrates surface brightness variance in the reconstruction in the source
-        plane.
+        """Illustrates surface brightness variance in the reconstruction in the
+        source plane.
 
         :param band_index: index of band
         :type band_index: int
@@ -685,7 +689,8 @@ class ModelPlot(object):
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
-        """Illustrates lensing magnification in the field of view of the data frame.
+        """Illustrates lensing magnification in the field of view of the data
+        frame.
 
         :param band_index: index of band
         :type band_index: int
@@ -734,7 +739,8 @@ class ModelPlot(object):
         kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
         **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
     ):
-        """Illustrates lensing deflections on the field of view of the data frame.
+        """Illustrates lensing deflections on the field of view of the data
+        frame.
 
         :param band_index: index of band
         :type band_index: int
@@ -1007,8 +1013,8 @@ class ModelPlot(object):
         :type delta_pix: float
         :param center: center position of source
         :type center: list or None
-        :param image_orientation: If True, uses frame in orientation of the image,
-            otherwise in RA-DEC coordinates
+        :param image_orientation: If True, uses frame in orientation of
+            the image, otherwise in RA-DEC coordinates
         :type image_orientation: bool
         :return: 2d array of source surface brightness
         """

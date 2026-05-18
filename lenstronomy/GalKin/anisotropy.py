@@ -175,7 +175,8 @@ class Isotropic(object):
 
     @staticmethod
     def anisotropy_solution(r, **kwargs):
-        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A3 in Mamon & Lokas.
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A3 in Mamon &
+        Lokas.
 
         :param r: 3d radius
         :param kwargs: parameters of the specified anisotropy model
@@ -190,7 +191,8 @@ class Isotropic(object):
 
 @export
 class Radial(object):
-    """Class for radial (beta=1) stellar orbits See Mamon & Lokas 2005 for details."""
+    """Class for radial (beta=1) stellar orbits See Mamon & Lokas 2005 for
+    details."""
 
     def __init__(self):
         self.use_logistic = False
@@ -223,7 +225,8 @@ class Radial(object):
 
     @staticmethod
     def anisotropy_solution(r):
-        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A4 in Mamon & Lokas.
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A4 in Mamon &
+        Lokas.
 
         :param r: 3d radius
         :return: f(r)
@@ -237,7 +240,8 @@ class Radial(object):
 
 @export
 class OsipkovMerritt(object):
-    """Class for Osipkov&Merrit stellar orbits See Mamon & Lokas 2005 for details."""
+    """Class for Osipkov&Merrit stellar orbits See Mamon & Lokas 2005 for
+    details."""
 
     def __init__(self):
         self.use_logistic = True
@@ -275,7 +279,8 @@ class OsipkovMerritt(object):
 
     @staticmethod
     def anisotropy_solution(r, r_ani):
-        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A5 in Mamon & Lokas.
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A5 in Mamon &
+        Lokas.
 
         :param r: 3d radius
         :param r_ani: anisotropy radius
@@ -327,8 +332,8 @@ class GeneralizedOM(object):
 
     @staticmethod
     def anisotropy_solution(r, r_ani, beta_inf):
-        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A5 in Mamon & Lokas
-        with a scaling (nominator of Agnello et al. 2014 Equation (12)
+        """The solution to d ln(f)/ d ln(r) = 2 beta(r) See e.g. A5 in Mamon &
+        Lokas with a scaling (nominator of Agnello et al. 2014 Equation (12)
 
         :param r: 3d radius
         :param r_ani: anisotropy radius
@@ -338,8 +343,8 @@ class GeneralizedOM(object):
         return (r**2 + r_ani**2) ** beta_inf
 
     def delete_cache(self):
-        """Deletes the interpolation function of the hypergeometic function for a
-        specific beta_inf.
+        """Deletes the interpolation function of the hypergeometic function for
+        a specific beta_inf.
 
         :return: deleted self variables
         """

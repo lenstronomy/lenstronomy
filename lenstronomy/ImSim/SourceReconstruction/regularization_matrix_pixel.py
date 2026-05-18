@@ -1,7 +1,7 @@
-"""This module provides functions to construct regularization matrices for pixelated
-source plane reconstructions in gravitational lensing. These matrices are used to
-constrain the pixel amplitudes in linear inversion problems, promoting desired
-properties such as smoothness.
+"""This module provides functions to construct regularization matrices for
+pixelated source plane reconstructions in gravitational lensing. These matrices
+are used to constrain the pixel amplitudes in linear inversion problems,
+promoting desired properties such as smoothness.
 
 Currently supported regularization types include:
 - Zeroth-order (L2 norm on pixel amplitudes)
@@ -15,7 +15,8 @@ __all__ = ["pixelated_regularization_matrix"]
 
 
 def pixelated_regularization_matrix(xlen, ylen, regularization_type):
-    """Constructs the regularization matrix for a rectangular pixelated source region.
+    """Constructs the regularization matrix for a rectangular pixelated source
+    region.
 
     The regularization term for pixel amplitudes :math:`\\mathbf{a}` (flattened into a 1D vector)
     is generally expressed as :math:`\\mathbf{a}^T U \\mathbf{a}`, where :math:`U` is the

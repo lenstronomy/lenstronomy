@@ -95,7 +95,8 @@ class AdaptiveGrid(Coordinates1D):
         """Adds/overwrites the supersampled values on the image.
 
         :param low_res_values: 1d array of image with low resolution
-        :param supersampled_values: values of the supersampled sub-pixels
+        :param supersampled_values: values of the supersampled sub-
+            pixels
         :return: 2d image
         """
 
@@ -171,8 +172,8 @@ class AdaptiveGrid(Coordinates1D):
         return np.mean(values_2d, axis=1)
 
     def _array2image_subset(self, array):
-        """Maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask
-        indices :param array: 1d array :return: 2d array."""
+        """Maps a 1d array into a (nx, ny) 2d grid with array populating the
+        idex_mask indices :param array: 1d array :return: 2d array."""
         grid1d = np.zeros(self._nx * self._ny)
         grid1d[self._high_res_indexes1d] = array
         grid2d = util.array2image(grid1d, self._nx, self._ny)
@@ -290,8 +291,8 @@ class RegularGrid(Coordinates1D):
         return idex_sub
 
     def _array2image(self, array):
-        """Maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask
-        indices.
+        """Maps a 1d array into a (nx, ny) 2d grid with array populating the
+        idex_mask indices.
 
         :param array: 1d array
         :return:

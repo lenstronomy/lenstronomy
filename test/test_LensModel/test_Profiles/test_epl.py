@@ -160,8 +160,8 @@ class TestEPLvsNIE(object):
 
 
 class TestEPLvsPEMD(object):
-    """Test EPL model vs PEMD with FASTELL This tests get only executed if fastell is
-    installed."""
+    """Test EPL model vs PEMD with FASTELL This tests get only executed if
+    fastell is installed."""
 
     def setup_method(self):
         try:
@@ -181,7 +181,8 @@ class TestEPLvsPEMD(object):
         self.pemd = PEMD(suppress_fastell=True)
 
     def test_epl_pemd_convention(self):
-        """Tests convention of EPL and PEMD model on the deflection angle basis."""
+        """Tests convention of EPL and PEMD model on the deflection angle
+        basis."""
         if self._fastell4py_bool is False:
             assert True
         else:

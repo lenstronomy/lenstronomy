@@ -12,10 +12,11 @@ __all__ = ["ModelAPI"]
 class ModelAPI(object):
     """This class manages the model choices.
 
-    The role is to return instances of the lenstronomy LightModel, LensModel,
-    PointSource modules according to the options chosen by the user. Currently, all
-    other model choices are equivalent to the ones provided by LightModel, LensModel,
-    PointSource. The current options of the class instance only describe a subset of
+    The role is to return instances of the lenstronomy LightModel,
+    LensModel, PointSource modules according to the options chosen by
+    the user. Currently, all other model choices are equivalent to the
+    ones provided by LightModel, LensModel, PointSource. The current
+    options of the class instance only describe a subset of
     possibilities.
     """
 
@@ -36,8 +37,8 @@ class ModelAPI(object):
         z_source_convention=None,
         observed_convention_index=None,
     ):
-        """# TODO: make inputs follow the kwargs_model of the class_creator instances of
-        'kwargs_model', # i.e. multi-plane options, perhaps others
+        """# TODO: make inputs follow the kwargs_model of the class_creator
+        instances of 'kwargs_model', # i.e. multi-plane options, perhaps others
 
         :param lens_model_list: list of strings with lens model names
         :param lens_profile_kwargs_list: list of dicts, keyword arguments used to

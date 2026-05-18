@@ -8,8 +8,8 @@ export, __all__ = exporter()
 
 @export
 def cart2polar(x, y, center_x=0, center_y=0):
-    """Transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the
-    lens center.
+    """Transforms cartesian coords [x,y] into polar coords [r,phi] in the frame
+    of the lens center.
 
     :param x: set of x-coordinates
     :type x: array of size (n)
@@ -30,8 +30,8 @@ def cart2polar(x, y, center_x=0, center_y=0):
 
 @export
 def polar2cart(r, phi, center):
-    """Transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the
-    lense center.
+    """Transforms polar coords [r,phi] into cartesian coords [x,y] in the frame
+    of the lense center.
 
     :param r: radial coordinate (distance) to the center
     :type r: array of size n or float
@@ -75,8 +75,8 @@ def shear_cartesian2polar(gamma1, gamma2):
 @export
 @jit()
 def phi_q2_ellipticity(phi, q):
-    """Transforms orientation angle and axis ratio into complex ellipticity moduli e1,
-    e2.
+    """Transforms orientation angle and axis ratio into complex ellipticity
+    moduli e1, e2.
 
     :param phi: angle of orientation (in radian)
     :param q: axis ratio minor axis / major axis
@@ -90,7 +90,8 @@ def phi_q2_ellipticity(phi, q):
 @export
 @jit()
 def ellipticity2phi_q(e1, e2):
-    """Transforms complex ellipticity moduli in orientation angle and axis ratio.
+    """Transforms complex ellipticity moduli in orientation angle and axis
+    ratio.
 
     :param e1: eccentricity in x-direction
     :param e2: eccentricity in xy-direction
@@ -105,8 +106,8 @@ def ellipticity2phi_q(e1, e2):
 
 @export
 def transform_e1e2_product_average_old(x, y, e1, e2, center_x, center_y):
-    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
-    coordinate system such that R = sqrt(R_major * R_minor)
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new
+    elliptical coordinate system such that R = sqrt(R_major * R_minor)
 
     :param x: x-coordinate
     :param y: y-coordinate
@@ -130,8 +131,8 @@ def transform_e1e2_product_average_old(x, y, e1, e2, center_x, center_y):
 
 @export
 def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
-    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
-    coordinate system such that R = sqrt(R_major * R_minor)
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new
+    elliptical coordinate system such that R = sqrt(R_major * R_minor)
 
     :param x: x-coordinate
     :param y: y-coordinate
@@ -152,8 +153,8 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
 
 @export
 def elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y):
-    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
-    coordinate system such with same coordinate orientation.
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new
+    elliptical coordinate system such with same coordinate orientation.
 
     :param x: x-coordinate
     :param y: y-coordinate
@@ -180,8 +181,8 @@ def elliptical_distortion_product_average(x, y, e1, e2, center_x, center_y):
 
 @export
 def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
-    """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
-    coordinate system such that R = sqrt(R_major**2 + R_minor**2)
+    """Maps the coordinates x, y with eccentricities e1 e2 into a new
+    elliptical coordinate system such that R = sqrt(R_major**2 + R_minor**2)
 
     :param x: x-coordinate
     :param y: y-coordinate

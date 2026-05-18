@@ -504,8 +504,8 @@ class TestKinematicsAPI(object):
         assert kin_api._kwargs_mge_light["n_comp"] == 10
 
     def test_velocity_dispersion_map_direct_convolved_against_jampy(self):
-        """Test the computed velocity dispersion map through the Kinematics_API with PSF
-        convolution against `jampy` computed values.
+        """Test the computed velocity dispersion map through the Kinematics_API
+        with PSF convolution against `jampy` computed values.
 
         The `jampy` values are computed using the same model, grid, and PSF used for
         Galkin using the code below:
@@ -1376,7 +1376,8 @@ class TestRaise(unittest.TestCase):
             )
 
     def test_dispersion_map_grid_convolved_numeric_vs_analytical(self):
-        """Test numerical vs analytical computation of IFU_grid velocity dispersion."""
+        """Test numerical vs analytical computation of IFU_grid velocity
+        dispersion."""
         r_eff = 1.85
         theta_e = 1.63
         gamma = 2
@@ -1385,12 +1386,13 @@ class TestRaise(unittest.TestCase):
         def get_v_rms(
             theta_e, gamma, r_eff, a_ani=1, z_d=0.295, z_s=0.657, analytic=False
         ):
-            """Compute v_rms for power-law mass and Hernquist light using Galkin's
-            numerical approach.
+            """Compute v_rms for power-law mass and Hernquist light using
+            Galkin's numerical approach.
 
-            :param hernquist_mass: if mass in M_sun provided, uses Hernquist mass
-                  profile. For debugging purpose.
-            :param do_mge: True will use lenstronomy's own MGE implementation
+            :param hernquist_mass: if mass in M_sun provided, uses
+                  Hernquist mass profile. For debugging purpose.
+            :param do_mge: True will use lenstronomy's own MGE
+                  implementation
             """
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 

@@ -6,8 +6,8 @@ __all__ = ["PixelGrid"]
 
 
 class PixelGrid(Coordinates, AngularSensitivity):
-    """Class that manages a specified pixel grid (rectangular at the moment) and its
-    coordinates."""
+    """Class that manages a specified pixel grid (rectangular at the moment)
+    and its coordinates."""
 
     def __init__(
         self,
@@ -77,7 +77,8 @@ class PixelGrid(Coordinates, AngularSensitivity):
 
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
-        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
+        :param pixel_unit: bool, if True, units of pixels in input,
+            otherwise RA/DEC
         :return: updated data class with change in coordinate system.
         """
         self._shift_coordinates(x_shift, y_shift, pixel_unit=pixel_unit)

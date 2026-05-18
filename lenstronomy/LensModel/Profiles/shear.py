@@ -121,8 +121,8 @@ class ShearGammaPsi(LensProfileBase):
 
 class ShearReduced(LensProfileBase):
     """Reduced shear distortions :math:`\\gamma' = \\gamma / (1-\\kappa)`. This
-    distortion keeps the magnification as unity and, thus, does not change the size of
-    apparent objects. To keep the magnification at unity, it requires.
+    distortion keeps the magnification as unity and, thus, does not change the
+    size of apparent objects. To keep the magnification at unity, it requires.
 
     .. math::
         (1-\\kappa)^2) - \\gamma_1^2 - \\gamma_2^ = 1

@@ -6,7 +6,8 @@ from lenstronomy.Util.numba_util import jit
 
 @jit()
 def min_approx(x1, x2, x3, y1, y2, y3):
-    """Get the x-value of the minimum of the parabola through the points (x1,y1), ...
+    """Get the x-value of the minimum of the parabola through the points
+    (x1,y1), ...
 
     :param x1: x-coordinate point 1
     :param x2: x-coordinate point 2
@@ -23,14 +24,19 @@ def min_approx(x1, x2, x3, y1, y2, y3):
 
 @jit()
 def rotmat(th):
-    """Calculates the rotation matrix :param th: angle :return: rotation matrix."""
+    """Calculates the rotation matrix :param th: angle :return: rotation
+    matrix."""
     return np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
 
 
 @jit()
 def cdot(a, b):
-    """Calculates some complex dot-product that simplifies the math :param a: complex
-    number :param b: complex number :return: dot-product."""
+    """Calculates some complex dot-product that simplifies the math :param a:
+
+    complex number
+    :param b: complex number
+    :return: dot-product.
+    """
     return a.real * b.real + a.imag * b.imag
 
 
@@ -43,8 +49,11 @@ def ps(x, p):
 
 @jit()
 def cart_to_pol(x, y):
-    """Convert from cartesian to polar :param x: x-coordinate :param y: y-coordinate
-    :return: tuple of (r, theta)"""
+    """Convert from cartesian to polar :param x: x-coordinate :param y:
+
+    y-coordinate
+    :return: tuple of (r, theta)
+    """
     return np.sqrt(x**2 + y**2), np.arctan2(y, x) % (2 * np.pi)
 
 
@@ -72,8 +81,8 @@ def ell_to_pol(rell, theta, q):
 
 
 def geomlinspace(a, b, N):
-    """Constructs a geomspace from a to b, with a linspace prepended to it from 0 to a,
-    with the same spacing as the geomspace would have at a."""
+    """Constructs a geomspace from a to b, with a linspace prepended to it from
+    0 to a, with the same spacing as the geomspace would have at a."""
     delta = a * ((b / a) ** (1 / (N - 1)) - 1)
     return np.concatenate(
         (np.linspace(0, a, int(a / delta), endpoint=False), np.geomspace(a, b, N))
@@ -105,15 +114,16 @@ def brentq_nojit(
     """A numba-compatible implementation of brentq (largely copied from
     scipy.optimize.brentq).
 
-    Unfortunately, the scipy verison is not compatible with numba, hence this
-    reimplementation :(
+    Unfortunately, the scipy verison is not compatible with numba, hence
+    this reimplementation :(
     :param f: function to optimize
     :param xa: left bound
     :param xb: right bound
     :param xtol: x-coord root tolerance
     :param rtol: x-coord relative tolerance
     :param maxiter: maximum num of iterations
-    :param args: additional arguments to pass to function in the form f(x, args)
+    :param args: additional arguments to pass to function in the form
+        f(x, args)
     :return:
     """
     xpre = xa

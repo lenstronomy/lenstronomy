@@ -38,8 +38,8 @@ def ddt2h0(ddt, z_lens, z_source, cosmo):
     :param z_lens: deflector redshift
     :param z_source: source redshift
     :param cosmo: astropy.cosmology class instance
-    :return: h0 value which matches the cosmology class effectively replacing the h0
-        value used in the creation of this class
+    :return: h0 value which matches the cosmology class effectively
+        replacing the h0 value used in the creation of this class
     """
     h0_fiducial = cosmo.H0.value
     lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
@@ -87,8 +87,8 @@ class SolverFlatLCDM(object):
 
 @export
 class InvertCosmo(object):
-    """Class to do an interpolation and call the inverse of this interpolation to get
-    H_0 and omega_m."""
+    """Class to do an interpolation and call the inverse of this interpolation
+    to get H_0 and omega_m."""
 
     def __init__(self, z_d, z_s, H0_range=None, omega_m_range=None):
         self.z_d = z_d
@@ -101,8 +101,8 @@ class InvertCosmo(object):
         self._omega_m_range = omega_m_range
 
     def _make_interpolation(self):
-        """Creates an interpolation grid in H_0, omega_m and computes quantities in Dd
-        and Ds_Dds.
+        """Creates an interpolation grid in H_0, omega_m and computes
+        quantities in Dd and Ds_Dds.
 
         :return:
         """

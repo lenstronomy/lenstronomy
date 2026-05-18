@@ -312,8 +312,8 @@ class TestMultiPlaneOrganizer(object):
         assert self.multi_plane_organizer._start_condition(False, 1.0, 1.0) == False
 
     def test_distance_computations(self):
-        """Test the distance computations between with and without distance ratio
-        sampling."""
+        """Test the distance computations between with and without distance
+        ratio sampling."""
         kwargs_lens = [
             {"center_x": 0, "center_y": 0, "theta_E": 1.0},
             {"center_x": 0, "center_y": 0, "theta_E": 0.0},

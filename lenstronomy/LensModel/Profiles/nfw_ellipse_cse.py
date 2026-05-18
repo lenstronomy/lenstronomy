@@ -191,7 +191,8 @@ class NFW_ELLIPSE_CSE(LensProfileBase):
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param Rs: turn over point in the slope of the NFW profile in
+            angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param e1: eccentricity component in x-direction
         :param e2: eccentricity component in y-direction
@@ -214,12 +215,13 @@ class NFW_ELLIPSE_CSE(LensProfileBase):
         return const * f_
 
     def derivatives(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function, calculated as an elliptically
-        distorted deflection angle of the spherical NFW profile.
+        """Returns df/dx and df/dy of the function, calculated as an
+        elliptically distorted deflection angle of the spherical NFW profile.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param Rs: turn over point in the slope of the NFW profile in
+            angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param e1: eccentricity component in x-direction
         :param e2: eccentricity component in y-direction
@@ -244,12 +246,13 @@ class NFW_ELLIPSE_CSE(LensProfileBase):
 
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy the
-        calculation is performed as a numerical differential from the deflection field.
-        Analytical relations are possible.
+        calculation is performed as a numerical differential from the
+        deflection field. Analytical relations are possible.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param Rs: turn over point in the slope of the NFW profile in
+            angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param e1: eccentricity component in x-direction
         :param e2: eccentricity component in y-direction
@@ -293,7 +296,8 @@ class NFW_ELLIPSE_CSE(LensProfileBase):
         return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
 
     def _normalization(self, alpha_Rs, Rs, q):
-        """Applying to eqn 7 and 8 in Oguri 2021 from phenomenological definition.
+        """Applying to eqn 7 and 8 in Oguri 2021 from phenomenological
+        definition.
 
         :param alpha_Rs: deflection at Rs
         :param Rs: scale radius

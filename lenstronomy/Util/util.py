@@ -11,8 +11,8 @@ export, __all__ = exporter()
 
 @export
 def merge_dicts(*dict_args):
-    """Given any number of dicts, shallow copy and merge into a new dict, precedence
-    goes to key value pairs in latter dicts."""
+    """Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts."""
     result = {}
     for dictionary in dict_args:
         result.update(dictionary)
@@ -99,14 +99,16 @@ def rotate(xcoords, ycoords, angle):
 
 @export
 def map_coord2pix(ra, dec, x_0, y_0, transform_matrix):
-    """This routines performs a linear transformation between two coordinate systems.
-    Mainly used to transform angular into pixel coordinates in an image.
+    """This routines performs a linear transformation between two coordinate
+    systems. Mainly used to transform angular into pixel coordinates in an
+    image.
 
     :param ra: ra coordinates
     :param dec: dec coordinates
     :param x_0: pixel value in x-axis of ra,dec = 0,0
     :param y_0: pixel value in y-axis of ra,dec = 0,0
-    :param transform_matrix: 2x2 matrix to transform angular to pixel coordinates
+    :param transform_matrix: 2x2 matrix to transform angular to pixel
+        coordinates
     :return: transformed coordinate systems of input ra and dec
     """
     x, y = transform_matrix.dot(np.array([ra, dec]))
@@ -115,8 +117,8 @@ def map_coord2pix(ra, dec, x_0, y_0, transform_matrix):
 
 @export
 def array2image(array, nx=0, ny=0):
-    """Returns the information contained in a 1d array into an n*n 2d array (only works
-    when length of array is n**2, or nx and ny are provided)
+    """Returns the information contained in a 1d array into an n*n 2d array
+    (only works when length of array is n**2, or nx and ny are provided)
 
     :param array: image values
     :type array: array of size n**2
@@ -151,8 +153,8 @@ def image2array(image):
 
 @export
 def array2cube(array, n_1, n_23):
-    """Returns the information contained in a 1d array of shape (n_1*n_23*n_23) into 3d
-    array with shape (n_1, sqrt(n_23), sqrt(n_23))
+    """Returns the information contained in a 1d array of shape (n_1*n_23*n_23)
+    into 3d array with shape (n_1, sqrt(n_23), sqrt(n_23))
 
     :param array: image values
     :type array: 1d array
@@ -175,8 +177,8 @@ def array2cube(array, n_1, n_23):
 
 @export
 def cube2array(cube):
-    """Returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d
-    array with shape (n_1*n_2*n_3)
+    """Returns the information contained in a 3d array of shape (n_1, n_2, n_3)
+    into 1d array with shape (n_1*n_2*n_3)
 
     :param cube: image values
     :type cube: 3d array
@@ -189,11 +191,13 @@ def cube2array(cube):
 
 @export
 def make_grid(num_pix, delta_pix, subgrid_res=1, left_lower=False):
-    """Creates pixel grid (in 1d arrays of x- and y- positions) default coordinate frame
-    is such that (0,0) is in the center of the coordinate grid.
+    """Creates pixel grid (in 1d arrays of x- and y- positions) default
+    coordinate frame is such that (0,0) is in the center of the coordinate
+    grid.
 
-    :param num_pix: number of pixels per axis Give an integers for a square grid, or a
-        2-length sequence (first, second axis length) for a non-square grid.
+    :param num_pix: number of pixels per axis Give an integers for a
+        square grid, or a 2-length sequence (first, second axis length)
+        for a non-square grid.
     :param delta_pix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
@@ -235,7 +239,8 @@ def make_grid_transformed(num_pix, transform_pix2angle):
     """Returns grid with linear transformation (delta_pix and rotation)
 
     :param num_pix: number of Pixels
-    :param transform_pix2angle: 2-by-2 matrix to map a pixel to a coordinate
+    :param transform_pix2angle: 2-by-2 matrix to map a pixel to a
+        coordinate
     :return: coordinate grid
     """
     x_grid, y_grid = make_grid(num_pix, delta_pix=1)
@@ -244,13 +249,13 @@ def make_grid_transformed(num_pix, transform_pix2angle):
 
 
 def centered_coordinate_system(num_pix, transform_pix2angle):
-    """Returns dictionary for Coordinate Grid such that (0,0) is centered with given
-    input orientation coordinate transformation matrix.
+    """Returns dictionary for Coordinate Grid such that (0,0) is centered with
+    given input orientation coordinate transformation matrix.
 
     :param num_pix: number of pixels
     :type num_pix: int
-    :param transform_pix2angle: transformation matrix (2x2) of pixels into coordinate
-        displacements
+    :param transform_pix2angle: transformation matrix (2x2) of pixels
+        into coordinate displacements
     :return: dict with ra_at_xy_0, dec_at_xy_0, transfrom_pix2angle
     """
     pix_center = (num_pix - 1) / 2
@@ -279,18 +284,21 @@ def make_grid_with_coordtransform(
     left_lower=False,
     inverse=True,
 ):
-    """Same as make_grid routine, but returns the transformation matrix and shift
-    between coordinates and pixel.
+    """Same as make_grid routine, but returns the transformation matrix and
+    shift between coordinates and pixel.
 
     :param num_pix: number of pixels per axis
     :param delta_pix: pixel scale per axis
-    :param subgrid_res: super-sampling resolution relative to the stated pixel size
+    :param subgrid_res: super-sampling resolution relative to the stated
+        pixel size
     :param center_ra: center of the grid
     :param center_dec: center of the grid
-    :param left_lower: sets the zero point at the lower left corner of the pixels
-    :param inverse: bool, if true sets East as left, otherwise East is righrt
-    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0,
-        transform_pix2coord, transform_coord2pix
+    :param left_lower: sets the zero point at the lower left corner of
+        the pixels
+    :param inverse: bool, if true sets East as left, otherwise East is
+        righrt
+    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0,
+        y_at_radec_0, transform_pix2coord, transform_coord2pix
     """
     num_pix_eff = num_pix * subgrid_res
     delta_pix_eff = delta_pix / float(subgrid_res)
@@ -337,8 +345,8 @@ def grid_from_coordinate_transform(
 
     :param nx: number of pixels in x-axis
     :param ny: number of pixels in y-axis
-    :param transform_pix2coord: transformation matrix (2x2) of pixels into coordinate
-        displacements
+    :param transform_pix2coord: transformation matrix (2x2) of pixels
+        into coordinate displacements
     :param ra_at_xy_0: RA coordinate at (x,y) = (0,0)
     :param dec_at_xy_0: DEC coordinate at (x,y) = (0,0)
     :return: RA coordinate grid, DEC coordinate grid
@@ -384,12 +392,14 @@ def get_axes(x, y):
 
 @export
 def averaging(grid, num_grid, num_pix):
-    """Resize 2d pixel grid with numGrid to num_pix and averages over the pixels.
+    """Resize 2d pixel grid with numGrid to num_pix and averages over the
+    pixels.
 
     :param grid: higher resolution pixel grid
-    :param numGrid: number of pixels per axis in the high resolution input image
-    :param num_pix: lower number of pixels per axis in the output image (numGrid/num_pix
-        is integer number)
+    :param numGrid: number of pixels per axis in the high resolution
+        input image
+    :param num_pix: lower number of pixels per axis in the output image
+        (numGrid/num_pix is integer number)
     :return: averaged pixel grid
     """
 
@@ -544,7 +554,8 @@ def points_on_circle(radius, num_points, connect_ends=True):
 
     :param radius: radius of the circle
     :param num_points: number of points on the circle
-    :param connect_ends: boolean, if True, start and end point are the same
+    :param connect_ends: boolean, if True, start and end point are the
+        same
     :return: x-coords, y-coords of points on the circle
     """
     if connect_ends:
@@ -559,8 +570,8 @@ def points_on_circle(radius, num_points, connect_ends=True):
 @export
 @jit()
 def local_minima_2d(a, x, y):
-    """Finds (local) minima in a 2d grid applies less rigid criteria for maximum without
-    second-order tangential minima criteria.
+    """Finds (local) minima in a 2d grid applies less rigid criteria for
+    maximum without second-order tangential minima criteria.
 
     :param a: 1d array of displacements from the source positions
     :type a: numpy array with length num_pix**2 in float
@@ -595,11 +606,11 @@ def local_minima_2d(a, x, y):
 @export
 @jit()
 def neighbor_select(a, x, y):
-    """#TODO replace by from scipy.signal import argrelextrema for speed up >>> from
-    scipy.signal import argrelextrema >>> x = np.array([2, 1, 2, 3, 2, 0, 1, 0]) >>>
-    argrelextrema(x, np.greater) (array([3, 6]),) >>> y = np.array([[1, 2, 1, 2], ...
-    [2, 2, 0, 0], ...               [5, 3, 4, 4]]) ... >>> argrelextrema(y, np.less,
-    axis=1) (array([0, 2]), array([2, 1]))
+    """#TODO replace by from scipy.signal import argrelextrema for speed up >>>
+    from scipy.signal import argrelextrema >>> x = np.array([2, 1, 2, 3, 2, 0,
+    1, 0]) >>> argrelextrema(x, np.greater) (array([3, 6]),) >>> y =
+    np.array([[1, 2, 1, 2], ... [2, 2, 0, 0], ...               [5, 3, 4, 4]])
+    ... >>> argrelextrema(y, np.less, axis=1) (array([0, 2]), array([2, 1]))
 
     finds (local) minima in a 2d grid
 
@@ -731,10 +742,11 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
 def convert_bool_list(n, k=None):
     """Returns a bool list of the length of the lens models.
 
-    if k = None: returns bool list with True's if k is int, returns bool list with
-    False's but k'th is True if k is a list of int, e.g. [0, 3, 5], returns a bool list
-    with True's in the integers listed and False elsewhere if k is a boolean list,
-    checks for size to match the numbers of models and returns it
+    if k = None: returns bool list with True's if k is int, returns bool
+    list with False's but k'th is True if k is a list of int, e.g. [0,
+    3, 5], returns a bool list with True's in the integers listed and
+    False elsewhere if k is a boolean list, checks for size to match the
+    numbers of models and returns it
 
     :param n: integer, total length of output boolean list
     :param k: None, int, or list of ints

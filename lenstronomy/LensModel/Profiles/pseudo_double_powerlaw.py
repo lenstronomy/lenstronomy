@@ -9,8 +9,8 @@ __all__ = ["PseudoDoublePowerlaw"]
 
 
 class PseudoDoublePowerlaw(LensProfileBase):
-    """This class contains a double power law profile with flexible inner and outer
-    logarithmic slopes g and n.
+    """This class contains a double power law profile with flexible inner and
+    outer logarithmic slopes g and n.
 
     .. math::
         \\rho(r) = \\frac{\\rho_0}{r^{\\gamma}} \\frac{Rs^{n}}{\\left(r^2 + Rs^2 \\right)^{(n - \\gamma)/2}}
@@ -52,11 +52,13 @@ class PseudoDoublePowerlaw(LensProfileBase):
     def derivatives(
         self, x, y, Rs, alpha_Rs, gamma_inner, gamma_outer, center_x=0, center_y=0
     ):
-        """Returns df/dx and df/dy of the function which are the deflection angles.
+        """Returns df/dx and df/dy of the function which are the deflection
+        angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param Rs: turn over point in the slope of the NFW profile in
+            angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param gamma_inner: logarithmic profile slope interior to Rs
         :param gamma_outer: logarithmic profile slope outside Rs
@@ -115,9 +117,9 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return rho0 / (x**gamma_inner * (1 + x**2) ** outer_slope)
 
     def density_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity.
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity.
 
         :param r: 3d radios
         :param Rs: scale radius
@@ -136,7 +138,8 @@ class PseudoDoublePowerlaw(LensProfileBase):
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param Rs: turn over point in the slope of the NFW profile in
+            angular unit
         :param rho0: density normalization at Rs
         :param gamma_inner: logarithmic profile slope interior to Rs
         :param gamma_outer: logarithmic profile slope outside Rs
@@ -177,8 +180,8 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
-        """Mass enclosed a 3d sphere or radius r. This function takes as input the
-        lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r. This function takes as input
+        the lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -208,8 +211,8 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return m_2d
 
     def alpha(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
-        """Deflection angle of NFW profile (times Sigma_crit D_OL) along the projection
-        to coordinate 'axis'.
+        """Deflection angle of NFW profile (times Sigma_crit D_OL) along the
+        projection to coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -227,8 +230,8 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return a * ax_x, a * ax_y
 
     def gamma(self, R, Rs, rho0, gamma_inner, gamma_outer, ax_x, ax_y):
-        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
-        coordinate 'axis'.
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection
+        to coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -266,8 +269,8 @@ class PseudoDoublePowerlaw(LensProfileBase):
 
     @staticmethod
     def _g(X, g, n):
-        """Analytic solution of integral for NFW profile to compute deflection angel and
-        gamma.
+        """Analytic solution of integral for NFW profile to compute deflection
+        angel and gamma.
 
         :param X: R/Rs
         :type X: float >0

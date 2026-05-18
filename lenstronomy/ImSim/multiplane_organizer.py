@@ -6,8 +6,8 @@ __all__ = ["MultiPlaneOrganizer"]
 
 
 class MultiPlaneOrganizer(object):
-    """This class organizes the lens and source planes in multi-lens plane and multi-
-    source plane setting.
+    """This class organizes the lens and source planes in multi-lens plane and
+    multi- source plane setting.
 
     In the multi-lens-plane setting with :math:`P` lens planes (and the last source plane
     being the :math:`P+1`-th plane), the effective Fermat potential is defined as (eq. 9 of Shajib et al. 2020):
@@ -44,9 +44,11 @@ class MultiPlaneOrganizer(object):
         :type lens_redshift_list: list
         :param source_redshift_list: list of source redshifts
         :type source_redshift_list: list
-        :param sorted_lens_redshift_index: sorted index of lens redshifts
+        :param sorted_lens_redshift_index: sorted index of lens
+            redshifts
         :type sorted_lens_redshift_index: list
-        :param sorted_source_redshift_index: sorted index of source redshifts
+        :param sorted_source_redshift_index: sorted index of source
+            redshifts
         :type sorted_source_redshift_index: list
         :param z_lens_convention: lens convention redshift
         :type z_lens_convention: float
@@ -144,7 +146,8 @@ class MultiPlaneOrganizer(object):
         return beta_factors
 
     def update_lens_T_lists(self, lens_model, kwargs_special):
-        """Updates the lens model's `T_ij`, `T_ij_start`, `T_ij_stop`, and `T_z lists`.
+        """Updates the lens model's `T_ij`, `T_ij_start`, `T_ij_stop`, and `T_z
+        lists`.
 
         :param lens_model: instance of LensModel class
         :type lens_model: lenstronomy.LensModel.lens_model.LensModel
@@ -163,7 +166,8 @@ class MultiPlaneOrganizer(object):
         lens_model.lens_model._T_ij_stop = T_ij_stop
 
     def update_source_mapping_T_lists(self, source_mapping_class, kwargs_special):
-        """Updates the source mapping class's `T_ij_start_list` and `T_ij_end_list`.
+        """Updates the source mapping class's `T_ij_start_list` and
+        `T_ij_end_list`.
 
         :param source_mapping_class: instance of SourceMapping class
         :type source_mapping_class: lenstronomy.LensModel.Solver.source_mapping.SourceMapping
@@ -222,8 +226,8 @@ class MultiPlaneOrganizer(object):
         return T_z_list, T_ij_list
 
     def _get_D_ij(self, z_i, z_j, kwargs_special):
-        """Returns the transverse distance between two redshifts for a given set of
-        beta_factors.
+        """Returns the transverse distance between two redshifts for a given
+        set of beta_factors.
 
         :param z_i: redshift of first plane
         :type z_i: float
@@ -283,14 +287,15 @@ class MultiPlaneOrganizer(object):
     def _transverse_distance_start_stop(
         self, z_start, z_stop, kwargs_special, include_z_start=False
     ):
-        """Computes the transverse distance (T_ij) that is required by the ray-tracing
-        between the starting redshift and the first deflector afterwards and the last
-        deflector before the end of the ray-tracing.
+        """Computes the transverse distance (T_ij) that is required by the ray-
+        tracing between the starting redshift and the first deflector
+        afterwards and the last deflector before the end of the ray-tracing.
 
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
-        :param include_z_start: boolean, if True includes the computation of the
-            starting position if the first deflector is at z_start
+        :param include_z_start: boolean, if True includes the
+            computation of the starting position if the first deflector
+            is at z_start
         :return: T_ij_start, T_ij_end
         """
         z_lens_last = z_start
@@ -333,8 +338,8 @@ class MultiPlaneOrganizer(object):
     def _start_condition(inclusive, z_lens, z_start):
         """Boolean condition if the starting redshift is met.
 
-        :param inclusive: boolean, if True selects z_lens including z_start, else only
-            selects z_lens > z_start
+        :param inclusive: boolean, if True selects z_lens including
+            z_start, else only selects z_lens > z_start
         :param z_lens: deflector redshift
         :param z_start: starting redshift (lowest redshift)
         :return: boolean of condition

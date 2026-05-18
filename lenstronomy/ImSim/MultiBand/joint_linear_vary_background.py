@@ -7,9 +7,9 @@ __all__ = ["JointLinear_VaryBG"]
 
 
 class JointLinear_VaryBG(MultiLinear):
-    """Class to model multiple exposures and makes a joint linear fit across all bands
-    simultaneously, with shared surface brightness constraints and a free per-band
-    background level.
+    """Class to model multiple exposures and makes a joint linear fit across
+    all bands simultaneously, with shared surface brightness constraints and a
+    free per-band background level.
 
     Like JointLinear, the same surface brightness models must be called in all bands.
     Unlike JointLinear, each band has an additional free constant background parameter
@@ -75,24 +75,28 @@ class JointLinear_VaryBG(MultiLinear):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """Computes the image (lens and source surface brightness with a given lens
-        model). The linear parameters are computed with a weighted linear least square
-        optimization (i.e. flux normalization of the brightness profiles)
+        """Computes the image (lens and source surface brightness with a given
+        lens model). The linear parameters are computed with a weighted linear
+        least square optimization (i.e. flux normalization of the brightness
+        profiles)
 
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition
-            of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the
-            superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different
-            lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
-            external shear and point source image positions
-        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
-            purpose of the covariance matrix.
-        :return: list of best-fit 2D model images (one per band), list of model error
-            maps, covariance matrix of shape (N_params + N_bands, N_params + N_bands) or
-            None if inv_bool is False, and 1D parameter array of length N_params +
-            N_bands (last N_bands entries are the per-band background levels)
+        :param kwargs_lens: list of keyword arguments corresponding to
+            the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to
+            the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments
+            corresponding to different lens light surface brightness
+            profiles
+        :param kwargs_ps: keyword arguments corresponding to "other"
+            parameters, such as external shear and point source image
+            positions
+        :param inv_bool: if True, invert the full linear solver Matrix
+            Ax = y for the purpose of the covariance matrix.
+        :return: list of best-fit 2D model images (one per band), list
+            of model error maps, covariance matrix of shape (N_params +
+            N_bands, N_params + N_bands) or None if inv_bool is False,
+            and 1D parameter array of length N_params + N_bands (last
+            N_bands entries are the per-band background levels)
         """
         A = self.linear_response_matrix(
             kwargs_lens,
@@ -153,8 +157,8 @@ class JointLinear_VaryBG(MultiLinear):
 
     @property
     def data_response(self):
-        """Returns the 1d array of the data element that is fitted for (including
-        masking)
+        """Returns the 1d array of the data element that is fitted for
+        (including masking)
 
         :return: 1d numpy array
         """
@@ -169,7 +173,8 @@ class JointLinear_VaryBG(MultiLinear):
         return d
 
     def _array2image_list(self, array):
-        """Maps 1d vector of joint exposures in list of 2d images of single exposures.
+        """Maps 1d vector of joint exposures in list of 2d images of single
+        exposures.
 
         :param array: 1d numpy array
         :return: list of 2d numpy arrays of size  of exposures
@@ -189,8 +194,8 @@ class JointLinear_VaryBG(MultiLinear):
         """Returns the 1d array of the error estimate corresponding to the data
         response.
 
-        :return: 1d numpy array of response, 2d array of additonal errors (e.g. point
-            source uncertainties)
+        :return: 1d numpy array of response, 2d array of additonal
+            errors (e.g. point source uncertainties)
         """
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
@@ -217,18 +222,19 @@ class JointLinear_VaryBG(MultiLinear):
         linear_prior=None,
         check_positive_flux=False,
     ):
-        """Computes the likelihood of the data given a model This is specified with the
-        non-linear parameters and a linear inversion and prior marginalisation.
+        """Computes the likelihood of the data given a model This is specified
+        with the non-linear parameters and a linear inversion and prior
+        marginalisation.
 
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :param check_positive_flux: bool, if True, checks whether the linear inversion
-            resulted in non-negative flux components and applies a punishment in the
-            likelihood if so.
-        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
-            individual images)
+        :param check_positive_flux: bool, if True, checks whether the
+            linear inversion resulted in non-negative flux components
+            and applies a punishment in the likelihood if so.
+        :return: log likelihood (natural logarithm) (sum of the log
+            likelihoods of the individual images)
         """
         # generate image
         im_sim_list, model_error_list, cov_matrix, param = self.image_linear_solve(

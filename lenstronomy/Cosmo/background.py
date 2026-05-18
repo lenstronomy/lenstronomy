@@ -113,8 +113,8 @@ class Background(object):
         return beta
 
     def ddt_scaling(self, z_lens, z_source_1, z_source_2):
-        """Scales the time-delay distance Ddt when given for one source redshift to a
-        second source redshift.
+        """Scales the time-delay distance Ddt when given for one source
+        redshift to a second source redshift.
 
         :param z_lens: deflector redshift
         :param z_source_1: source redshift of original Ddt

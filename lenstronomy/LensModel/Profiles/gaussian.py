@@ -11,8 +11,8 @@ __all__ = ["Gaussian"]
 
 
 class Gaussian(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian convergence and calculates
-    its derivative and hessian matrix."""
+    """This class contains functions to evaluate a Gaussian convergence and
+    calculates its derivative and hessian matrix."""
 
     param_names = ["amp", "sigma", "center_x", "center_y"]
     lower_limit_default = {"amp": 0, "sigma": 0, "center_x": -100, "center_y": -100}
@@ -85,7 +85,8 @@ class Gaussian(LensProfileBase):
         return alpha / R * x_, alpha / R * y_
 
     def hessian(self, x, y, amp, sigma, center_x=0, center_y=0):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
+        d^f/dy^2.
 
         :param x: x position
         :param y: y position
@@ -121,9 +122,9 @@ class Gaussian(LensProfileBase):
         return self.gaussian.function(r, 0, amp, sigma_x, sigma_y)
 
     def density_lens(self, r, amp, sigma):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
-        quantity. (optional definition)
+        """Computes the density at 3d radius r given lens model
+        parameterization. The integral in the LOS projection of this quantity
+        results in the convergence quantity. (optional definition)
 
         .. math::
             \\kappa(x, y) = \\int_{-\\infty}^{\\infty} \\rho(x, y, z) dz
@@ -224,8 +225,8 @@ class Gaussian(LensProfileBase):
 
     def mass_3d_lens(self, R, amp, sigma):
         """Mass enclosed within a 3D sphere of projected radius R given a lens
-        parameterization with angular units. The input parameters are identical as for
-        the derivatives definition. (optional definition)
+        parameterization with angular units. The input parameters are identical
+        as for the derivatives definition. (optional definition)
 
         :param R: radius projected into 2d
         :param amp: 2d amplitude of Gaussian

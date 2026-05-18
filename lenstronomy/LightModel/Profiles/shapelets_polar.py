@@ -35,8 +35,8 @@ class ShapeletsPolar(object):
     }
 
     def __init__(self):
-        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
-        n<= 150 :return:"""
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in
+        order n<= 150 :return:"""
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
@@ -104,8 +104,8 @@ class ShapeletsPolar(object):
         return n
 
     def index2poly(self, index):
-        """Manages the convention from an iterative index to the specific polynomial n,
-        m, (real/imaginary part)
+        """Manages the convention from an iterative index to the specific
+        polynomial n, m, (real/imaginary part)
 
         :param index: int, index of list
         :return: n, m bool
@@ -201,8 +201,8 @@ class ShapeletsPolarExp(object):
     }
 
     def __init__(self):
-        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
-        n<= 150 :return:"""
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in
+        order n<= 150 :return:"""
         pass
 
     def function(self, x, y, amp, beta, n, m, complex_bool, center_x, center_y):
@@ -402,8 +402,8 @@ class ShapeletSetPolar(object):
 
     @staticmethod
     def _pre_calc_function(L_list, i):
-        """Evaluates the shapelet function based on the pre-calculated components in
-        _pre_calc()
+        """Evaluates the shapelet function based on the pre-calculated
+        components in _pre_calc()
 
         :param L_list: pre-calculated components
         :param i: index conventions of the sequence of basis components
@@ -414,8 +414,8 @@ class ShapeletSetPolar(object):
     def decomposition(
         self, image, x, y, n_max, beta, delta_pix, center_x=0, center_y=0
     ):
-        """Decomposes an image into the shapelet coefficients in same order as for the
-        function call :param image:
+        """Decomposes an image into the shapelet coefficients in same order as
+        for the function call :param image:
 
         :param x:
         :param y:

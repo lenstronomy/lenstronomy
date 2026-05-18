@@ -13,15 +13,15 @@ export, __all__ = exporter()
 
 @export
 def unit2uniform(x, vmin, vmax):
-    """Mapping from uniform distribution on parameter space to uniform distribution on
-    unit hypercube."""
+    """Mapping from uniform distribution on parameter space to uniform
+    distribution on unit hypercube."""
     return vmin + (vmax - vmin) * x
 
 
 @export
 def uniform2unit(theta, vmin, vmax):
-    """Mapping from uniform distribution on unit hypercube to uniform distribution on
-    parameter space."""
+    """Mapping from uniform distribution on unit hypercube to uniform
+    distribution on parameter space."""
     return (theta - vmin) / (vmax - vmin)
 
 
@@ -34,7 +34,8 @@ def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
     :param lowers: lower bounds for each parameter
     :param uppers: upper bounds for each parameter
     :param num_dims: parameter space dimension (= number of parameters)
-    :param copy: If False, this function modifies 'cube' in-place. Default to False.
+    :param copy: If False, this function modifies 'cube' in-place.
+        Default to False.
     :return: hypercube mapped to parameters space
     """
     if copy:
@@ -49,8 +50,9 @@ def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
 
 @export
 def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False):
-    """Mapping from uniform distribution on unit hypercube 'cube' to truncated gaussian
-    distribution on parameter space, with mean 'mu' and std dev 'sigma'.
+    """Mapping from uniform distribution on unit hypercube 'cube' to truncated
+    gaussian distribution on parameter space, with mean 'mu' and std dev
+    'sigma'.
 
     :param cube: list or 1D-array of parameter values on unit hypercube
     :param lowers: lower bounds for each parameter
@@ -58,7 +60,8 @@ def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False
     :param means: gaussian mean for each parameter
     :param sigmas: gaussian std deviation for each parameter
     :param num_dims: parameter space dimension (= number of parameters)
-    :param copy: If False, this function modifies 'cube' in-place. Default to False.
+    :param copy: If False, this function modifies 'cube' in-place.
+        Default to False.
     :return: hypercube mapped to parameters space
     """
     if copy:
@@ -85,14 +88,14 @@ def scale_limits(lowers, uppers, scale):
 
 @export
 def sample_ball(p0, std, size=1, dist="uniform"):
-    """Produce a ball of walkers around an initial parameter value. this routine is from
-    the emcee package as it became deprecated there.
+    """Produce a ball of walkers around an initial parameter value. this
+    routine is from the emcee package as it became deprecated there.
 
     :param p0: The initial parameter values (array).
     :param std: The axis-aligned standard deviation (array).
     :param size: The number of samples to produce.
-    :param dist: string, specifies the distribution being sampled, supports 'uniform'
-        and 'normal'
+    :param dist: string, specifies the distribution being sampled,
+        supports 'uniform' and 'normal'
     """
     assert len(p0) == len(std)
     if dist == "uniform":
@@ -122,11 +125,13 @@ def sample_ball_truncated(mean, sigma, lower_limit, upper_limit, size):
 
     :param mean: numpy array, mean of the distribution to be sampled
     :param sigma: numpy array, sigma of the distribution to be sampled
-    :param lower_limit: numpy array, lower bound of to be sampled distribution
-    :param upper_limit: numpy array, upper bound of to be sampled distribution
+    :param lower_limit: numpy array, lower bound of to be sampled
+        distribution
+    :param upper_limit: numpy array, upper bound of to be sampled
+        distribution
     :param size: number of tuples to be sampled
-    :return: realization of truncated normal distribution with shape (size,
-        dim(parameters))
+    :return: realization of truncated normal distribution with shape
+        (size, dim(parameters))
     """
     a, b = (lower_limit - mean) / sigma, (upper_limit - mean) / sigma
     draws = np.vstack(

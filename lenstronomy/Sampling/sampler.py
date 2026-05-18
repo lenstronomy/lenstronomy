@@ -35,7 +35,8 @@ class Sampler(object):
         set_sampler_likelihood_module(self.chain)
 
     def _pool_and_logl(self, mpi, threadCount):
-        """Build a pool and return the corresponding worker-safe logL callable."""
+        """Build a pool and return the corresponding worker-safe logL
+        callable."""
         if mpi:
             pool = choose_pool(mpi=mpi, processes=threadCount)
             return pool, sampler_logl_worker
@@ -95,23 +96,26 @@ class Sampler(object):
         print_key="PSO",
         verbose=True,
     ):
-        """Return the best fit for the lens model on catalogue basis with particle swarm
-        optimizer.
+        """Return the best fit for the lens model on catalogue basis with
+        particle swarm optimizer.
 
         :param n_particles: number of particles in the sampling process
         :param n_iterations: number of iterations of the swarm
-        :param lower_start: numpy array, lower end parameter of the values of the
-            starting particles
-        :param upper_start: numpy array, upper end parameter of the values of the
-            starting particles
-        :param threadCount: number of threads in the computation (only applied if
-            mpi=False)
-        :param init_pos: numpy array, position of the initial best guess model
-        :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
-        :param print_key: string, prints the process name in the progress bar (optional)
+        :param lower_start: numpy array, lower end parameter of the
+            values of the starting particles
+        :param upper_start: numpy array, upper end parameter of the
+            values of the starting particles
+        :param threadCount: number of threads in the computation (only
+            applied if mpi=False)
+        :param init_pos: numpy array, position of the initial best guess
+            model
+        :param mpi: bool, if True, makes instance of MPIPool to allow
+            for MPI execution
+        :param print_key: string, prints the process name in the
+            progress bar (optional)
         :param verbose: suppress or turn on print statements
-        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
-            samples, velocity of samples])
+        :return: kwargs_result (of best fit), [lnlikelihood of samples,
+            positions of samples, velocity of samples])
         """
         if lower_start is None or upper_start is None:
             lower_start, upper_start = np.array(self.lower_limit), np.array(
@@ -175,8 +179,8 @@ class Sampler(object):
         backend_filename=None,
         start_from_backend=False,
     ):
-        """Run MCMC with emcee. For details, please have a look at the documentation of
-        the emcee packager.
+        """Run MCMC with emcee. For details, please have a look at the
+        documentation of the emcee packager.
 
         :param n_walkers: number of walkers in the emcee process
         :type n_walkers: integer

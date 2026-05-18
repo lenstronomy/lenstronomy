@@ -151,8 +151,8 @@ class Multipole(LensProfileBase):
 
 
 class EllipticalMultipole(LensProfileBase):
-    """This class contains a multipole contribution that encode deviations from the
-    elliptical isodensity contours of a SIE with any axis ratio q.
+    """This class contains a multipole contribution that encode deviations from
+    the elliptical isodensity contours of a SIE with any axis ratio q.
 
     This uses the definitions from Paugnat & Gilman (2025): "Elliptical multipoles for gravitational lenses"
 
@@ -183,8 +183,8 @@ class EllipticalMultipole(LensProfileBase):
     }
 
     def function(self, x, y, m, a_m, phi_m, q, center_x=0, center_y=0, r_E=1):
-        """Lensing potential of multipole contribution (for 1 component with m=1, m=3 or
-        m=4)
+        """Lensing potential of multipole contribution (for 1 component with
+        m=1, m=3 or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
@@ -193,8 +193,8 @@ class EllipticalMultipole(LensProfileBase):
         :param phi_m: float, multipole orientation in radian
         :param center_x: x-position
         :param center_y: y-position
-        :param r_E: float, normalizing radius (only used for odd m, Einstein radius by
-            default)
+        :param r_E: float, normalizing radius (only used for odd m,
+            Einstein radius by default)
         :return: lensing potential
         """
 
@@ -253,7 +253,8 @@ class EllipticalMultipole(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, m, a_m, phi_m, q, center_x=0, center_y=0, r_E=1):
-        """Deflection of a multipole contribution (for 1 component with m=1, m=3 or m=4)
+        """Deflection of a multipole contribution (for 1 component with m=1,
+        m=3 or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
@@ -262,8 +263,8 @@ class EllipticalMultipole(LensProfileBase):
         :param phi_m: float, multipole orientation in radian
         :param center_x: x-position
         :param center_y: y-position
-        :param r_E: float, normalizing radius (only used for odd m, Einstein radius by
-            default)
+        :param r_E: float, normalizing radius (only used for odd m,
+            Einstein radius by default)
         :return: deflection angles alpha_x, alpha_y
         """
 
@@ -337,7 +338,8 @@ class EllipticalMultipole(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, m, a_m, phi_m, q, center_x=0, center_y=0, r_E=1):
-        """Hessian of a multipole contribution (for 1 component with m=1, m=3 or m=4)
+        """Hessian of a multipole contribution (for 1 component with m=1, m=3
+        or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function

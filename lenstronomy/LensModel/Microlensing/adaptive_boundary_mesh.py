@@ -59,14 +59,15 @@ def within_distance(x, y, test_point, threshold, threshold_2):
     :type x: float
     :param y: y source coordrate of grid
     :type y: float
-    :param test_point: Coordinates of the test point (x, y). Source position
+    :param test_point: Coordinates of the test point (x, y). Source
+        position
     :type test_point: nparray
     :param threshold: delta_beta value.
     :type threshold: float
     :param threshold_2: beta_s value.
     :type threshold: float
-    :return: Boolean array indicating whether each point is within both threshold and
-        threshold_2 distances.
+    :return: Boolean array indicating whether each point is within both
+        threshold and threshold_2 distances.
     :rtype: nparray
     """
 

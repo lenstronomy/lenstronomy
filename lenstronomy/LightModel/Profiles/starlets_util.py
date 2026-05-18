@@ -79,10 +79,10 @@ def transform(img, n_scales, second_gen=False):
 def inverse_transform(wave, fast=True, second_gen=False):
     """Reconstructs an image fron its starlet decomposition coefficients.
 
-    :param wave: input coefficients, with shape (n_scales, np.sqrt(n_pixel),
-        np.sqrt(n_pixel))
-    :param fast: if True, and only with second_gen is False, simply sums up all scales
-        to reconstruct the image
+    :param wave: input coefficients, with shape (n_scales,
+        np.sqrt(n_pixel), np.sqrt(n_pixel))
+    :param fast: if True, and only with second_gen is False, simply sums
+        up all scales to reconstruct the image
     :param second_gen: if True, 'second generation' starlets are used
     """
     if fast and not second_gen:

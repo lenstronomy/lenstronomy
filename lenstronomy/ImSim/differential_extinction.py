@@ -7,8 +7,9 @@ __all__ = ["DifferentialExtinction"]
 class DifferentialExtinction(object):
     """Class to compute an extinction (for a specific band/wavelength).
 
-    This class uses the functionality available in the LightModel module to describe an
-    optical depth tau_ext to compute the extinction on the sky/image.
+    This class uses the functionality available in the LightModel module
+    to describe an optical depth tau_ext to compute the extinction on
+    the sky/image.
     """
 
     def __init__(

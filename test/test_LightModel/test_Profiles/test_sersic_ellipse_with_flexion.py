@@ -10,7 +10,8 @@ import numpy.testing as npt
 
 
 class TestSersicEllipticWithFlexion(object):
-    """Tests the elliptic flexed Sersic in the same way as the other Sersic profiles."""
+    """Tests the elliptic flexed Sersic in the same way as the other Sersic
+    profiles."""
 
     def setup_method(self):
         self.flexed_sersic = SersicEllipseWithFlexion(

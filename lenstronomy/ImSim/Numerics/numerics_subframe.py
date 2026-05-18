@@ -7,9 +7,10 @@ __all__ = ["NumericsSubFrame"]
 
 
 class NumericsSubFrame(PointSourceRendering):
-    """This class finds the optimal rectangular sub-frame of a data to be modelled that
-    contains all the flux_evaluate_indexes and performs the numerical calculations only
-    in this frame and then patches zeros around it to match the full data size."""
+    """This class finds the optimal rectangular sub-frame of a data to be
+    modelled that contains all the flux_evaluate_indexes and performs the
+    numerical calculations only in this frame and then patches zeros around it
+    to match the full data size."""
 
     def __init__(
         self,

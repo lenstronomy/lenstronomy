@@ -356,9 +356,10 @@ def point_source_plot(
     color="k",
     **kwargs_plot: "Unpack[plot_util.PlotKwargs]",
 ):
-    """Plots and illustrates images of a point source. The plotting routine orders the
-    image labels according to the arrival time and illustrates a diamond shape of the
-    size of the magnification. The coordinates are chosen in pixel coordinates.
+    """Plots and illustrates images of a point source. The plotting routine
+    orders the image labels according to the arrival time and illustrates a
+    diamond shape of the size of the magnification. The coordinates are chosen
+    in pixel coordinates.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
@@ -636,13 +637,13 @@ def curved_arc_illustration(
     :type ax: matplotlib.axes.Axes
     :param lens_model: LensModel() instance
     :type lens_model: LensModel
-    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
-    :type kwargs_lens: list or dict
-        considered
+    :param kwargs_lens: list of lens model keyword arguments (only those
+        of CURVED_ARC
+    :type kwargs_lens: list or dict considered
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
-    :param stretch_scale: Relative scale of banana to the tangential and radial
-        stretches (effectively intrinsic source size)
+    :param stretch_scale: Relative scale of banana to the tangential and
+        radial stretches (effectively intrinsic source size)
     :type stretch_scale: float
     :param color: Matplotlib color for plot
     :type color: str
@@ -700,7 +701,8 @@ def plot_arc(
     :type ax: matplotlib.axes.Axes
     :param tangential_stretch: Stretch of intrinsic source in tangential
     :type tangential_stretch: float direction
-    :param radial_stretch: Stretch of intrinsic source in radial direction
+    :param radial_stretch: Stretch of intrinsic source in radial
+        direction
     :type radial_stretch: float
     :param curvature: 1/curvature radius
     :type curvature: float
@@ -712,15 +714,15 @@ def plot_arc(
     :type center_y: float
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
-    :param stretch_scale: Relative scale of banana to the tangential and radial
-        stretches (effectively intrinsic source size)
+    :param stretch_scale: Relative scale of banana to the tangential and
+        radial stretches (effectively intrinsic source size)
     :type stretch_scale: float
     :param linewidth: linewidth
     :type linewidth: float
     :param color: color
     :type color: string in matplotlib color convention
-    :param dtan_dtan: tangential eigenvector differential in tangential direction (not
-        implemented yet as illustration)
+    :param dtan_dtan: tangential eigenvector differential in tangential
+        direction (not implemented yet as illustration)
     :type dtan_dtan: float
     :return:
     """
@@ -809,10 +811,11 @@ def distortions(
     :type center_ra: float
     :param center_dec: center of the grid
     :type center_dec: float
-    :param differential_scale: scale of the finite derivative length in units of angles
+    :param differential_scale: scale of the finite derivative length in
+        units of angles
     :type differential_scale: float
-    :param smoothing_scale: Or None, Gaussian FWHM of a smoothing kernel applied before
-        plotting
+    :param smoothing_scale: Or None, Gaussian FWHM of a smoothing kernel
+        applied before plotting
     :type smoothing_scale: float
     :return: matplotlib instance with different panels
     """
@@ -1016,8 +1019,8 @@ def stretch_plot(
     max_stretch=np.inf,
     **patch_kwargs: "Unpack[plot_util.EllipseKwargs]",
 ):
-    """Plots ellipses at each point on a grid, scaled corresponding to the local
-    Jacobian eigenvalues.
+    """Plots ellipses at each point on a grid, scaled corresponding to the
+    local Jacobian eigenvalues.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
@@ -1025,15 +1028,18 @@ def stretch_plot(
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
     :type kwargs_lens: list or dict
-    :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
+    :param plot_grid: pixelgrid instance at which to draw ellipses.
+        'None' uses default.
     :type plot_grid: PixelGrid or None
     :param scale: scales sizes of drawn ellipses, bigger number=larger
     :type scale: float
     :param ellipse_color: color of ellipses, defaults to black
     :type ellipse_color: str
-    :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
+    :param max_stretch: optional max amount to stretch ellipses which
+        sometimes diverge
     :type max_stretch: float
-    :param patch_kwargs: additional keyword arguments for creating ellipse patch
+    :param patch_kwargs: additional keyword arguments for creating
+        ellipse patch
     :type patch_kwargs: dict
     :return: matplotlib axis instance with figure
     """
@@ -1081,9 +1087,9 @@ def shear_plot(
     max_stretch=np.inf,
     **kwargs_quiver: "Unpack[plot_util.QuiverKwargs]",
 ):
-    """Plots combined internal+external shear at each point on a grid, represented by
-    pseudovectors in the direction of local shear with length corresponding to shear
-    magnitude.
+    """Plots combined internal+external shear at each point on a grid,
+    represented by pseudovectors in the direction of local shear with length
+    corresponding to shear magnitude.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes

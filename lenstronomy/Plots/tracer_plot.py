@@ -28,16 +28,18 @@ class TracerPlot(object):
 
         :param kwargs_data_joint: joint data keyword argument list
         :type kwargs_data_joint: dict
-        :param kwargs_model: model keyword argument list for the full multi-band
-        :type kwargs_model: dict
-            modeling
-        :param kwargs_params: keyword argument of keyword argument lists of the
-        :type kwargs_params: dict
-            different model components selected for the imaging band, NOT including
-            linear amplitudes (not required as being overwritten by the param list)
+        :param kwargs_model: model keyword argument list for the full
+            multi-band
+        :type kwargs_model: dict modeling
+        :param kwargs_params: keyword argument of keyword argument lists
+            of the
+        :type kwargs_params: dict different model components selected
+            for the imaging band, NOT including linear amplitudes (not
+            required as being overwritten by the param list)
         :param kwargs_likelihood: likelihood keyword arguments
         :type kwargs_likelihood: dict or None
-        :param fast_caustic: ; if True, uses fast (but less accurate) caustic
+        :param fast_caustic: ; if True, uses fast (but less accurate)
+            caustic
         :type fast_caustic: bool calculation method
         """
 
@@ -124,10 +126,11 @@ class TracerPlot(object):
     def font_size(self):
         """Default font size for all texts in the subplots.
 
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
+        Font size in individual subplots can be adjusted by font_size
+        argument in the plotting methods. Font size for different text
+        elements can be further fine- tuned by kwargs_colorbar,
+        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows
+        arguments in the plotting methods.
         """
         return self._font_size
 
@@ -135,10 +138,11 @@ class TracerPlot(object):
     def font_size(self, value):
         """Set default font size for all texts in the subplots.
 
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
+        Font size in individual subplots can be adjusted by font_size
+        argument in the plotting methods. Font size for different text
+        elements can be further fine- tuned by kwargs_colorbar,
+        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows
+        arguments in the plotting methods.
         """
         self._font_size = value
 
@@ -636,10 +640,11 @@ class TracerPlot(object):
         :type num_pix: int
         :param delta_pix: pixel size
         :type delta_pix: float
-        :param image_orientation: If True, uses frame in orientation of the image,
+        :param image_orientation: If True, uses frame in orientation of
+            the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
-        :return: 2d surface brightness grid of the reconstructed source and
-            Coordinates() instance of source grid
+        :return: 2d surface brightness grid of the reconstructed source
+            and Coordinates() instance of source grid
         """
         if image_orientation is True:
             transform_pix2coord = (

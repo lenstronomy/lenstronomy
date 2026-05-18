@@ -47,13 +47,17 @@ class ModelBandPlot(ModelBand):
         :param multi_band_list: Imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :type multi_band_list: list
         :param kwargs_model: model keyword argument list for the full multi-band modeling
+        :type kwargs_model: dict
         :param model: Of modeled image for the specified band
         :type model: numpy.ndarray
         :param error_map: Of size of the image, additional error in the pixels coming from PSF uncertainties
         :type error_map: numpy.ndarray
         :param cov_param: covariance matrix of the linear inversion
+        :type cov_param: numpy.ndarray
         :param param: 1d numpy array of the linear coefficients of this imaging band
+        :type param: numpy.ndarray or list
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
+        :type kwargs_params: dict
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
         :param likelihood_mask_list: 2d numpy arrays of likelihood masks (for all bands)
         :type likelihood_mask_list: list
@@ -196,9 +200,13 @@ class ModelBandPlot(ModelBand):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -271,6 +279,7 @@ class ModelBandPlot(ModelBand):
         """Plot reconstructed imaging model.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param image_names: If True, prints image names
         :type image_names: bool
         :param label: Label for the colorbar
@@ -282,9 +291,13 @@ class ModelBandPlot(ModelBand):
         :param image_name_list: Names for images
         :type image_name_list: list
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -368,14 +381,19 @@ class ModelBandPlot(ModelBand):
         """Plot lensing convergence in the data frame.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: convergence plot in ax instance
         """
         if font_size is None:
@@ -453,21 +471,31 @@ class ModelBandPlot(ModelBand):
         specified lens models to more clearly show the presence of substructure.
 
         :param ax: Matplotlib axes instance
-        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :type ax: matplotlib.axes.Axes
+        :param index_macromodel: a list of indices corresponding to the lens models with convergence to be subtracted
+        :type index_macromodel: list
         :param subtract_mean: ; displays the substructure convergence relative to the mean convergence in the frame
         :type subtract_mean: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param with_critical_curves: ; plots the critical curves in the frame
         :type with_critical_curves: bool
         :param critical_curve_color: color of the critical curves
+        :type critical_curve_color: str
         :param image_name_list: labels the images, default is A, B, C, ...
+        :type image_name_list: list
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
+        :type super_sample_factor: int
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotib axis and colorbar
         """
         if font_size is None:
@@ -627,10 +655,15 @@ class ModelBandPlot(ModelBand):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -708,10 +741,15 @@ class ModelBandPlot(ModelBand):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -772,7 +810,9 @@ class ModelBandPlot(ModelBand):
         """Compute source surface brightness on a source grid.
 
         :param num_pix: number of pixels per axes
+        :type num_pix: int
         :param delta_pix: pixel size
+        :type delta_pix: float
         :param image_orientation: If True, uses frame in orientation of the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
         :return: 2d surface brightness grid of the reconstructed source and
@@ -841,9 +881,12 @@ class ModelBandPlot(ModelBand):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
+        :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
+        :type delta_pix_source: float
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
+        :type center: list or None
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param plot_scale: Log or linear, scale of surface brightness plot
@@ -854,10 +897,15 @@ class ModelBandPlot(ModelBand):
         :type point_source_position: bool
             the point source
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -969,7 +1017,9 @@ class ModelBandPlot(ModelBand):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
+        :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
+        :type delta_pix_source: float
             plot
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
@@ -977,10 +1027,15 @@ class ModelBandPlot(ModelBand):
         :type point_source_position: bool
             the point source
         :param kwargs_caustics: keyword arguments for caustic plotting. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
         """
@@ -1096,6 +1151,7 @@ class ModelBandPlot(ModelBand):
         """Plot magnification map in the data frame.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param image_name_list: Strings for names of the images in the same
         :type image_name_list: list
             order as the positions
@@ -1104,9 +1160,13 @@ class ModelBandPlot(ModelBand):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -1209,10 +1269,15 @@ class ModelBandPlot(ModelBand):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
+        :type kwargs_caustics: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -1332,6 +1397,7 @@ class ModelBandPlot(ModelBand):
         """Make a plot displaying all or a subset of light components.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param unconvolved: If True, does not perform PSF convolution on the image
         :type unconvolved: bool
         :param point_source_add: If True, includes the lensed point source(s) in
@@ -1348,9 +1414,13 @@ class ModelBandPlot(ModelBand):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: the instance of matplotlib.axes.Axes
         """
         if font_size is None:
@@ -1433,6 +1503,7 @@ class ModelBandPlot(ModelBand):
         """Plot data after subtracting selected model components.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param point_source_add: If True, includes the lensed point source(s) in
         :type point_source_add: bool
             the plot
@@ -1444,10 +1515,15 @@ class ModelBandPlot(ModelBand):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: the instance of matplotlib.axes.Axes
         """
         if font_size is None:
@@ -1633,6 +1709,7 @@ class ModelBandPlot(ModelBand):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         model = ImageModel.extinction_map(

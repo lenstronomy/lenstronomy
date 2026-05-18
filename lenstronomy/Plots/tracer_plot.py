@@ -27,12 +27,16 @@ class TracerPlot(object):
         """Initialize the tracer plotting class.
 
         :param kwargs_data_joint: joint data keyword argument list
+        :type kwargs_data_joint: dict
         :param kwargs_model: model keyword argument list for the full multi-band
+        :type kwargs_model: dict
             modeling
         :param kwargs_params: keyword argument of keyword argument lists of the
+        :type kwargs_params: dict
             different model components selected for the imaging band, NOT including
             linear amplitudes (not required as being overwritten by the param list)
         :param kwargs_likelihood: likelihood keyword arguments
+        :type kwargs_likelihood: dict or None
         :param fast_caustic: ; if True, uses fast (but less accurate) caustic
         :type fast_caustic: bool calculation method
         """
@@ -202,9 +206,13 @@ class TracerPlot(object):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -281,6 +289,7 @@ class TracerPlot(object):
         """Plot reconstructed tracer model.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param image_names: If True, prints image names
         :type image_names: bool
         :param label: Label for the colorbar
@@ -292,9 +301,13 @@ class TracerPlot(object):
         :param image_name_list: Names for images
         :type image_name_list: list
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -377,14 +390,19 @@ class TracerPlot(object):
         """Plot lensing convergence in the tracer frame.
 
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: convergence plot in ax instance
         """
         if font_size is None:
@@ -462,10 +480,15 @@ class TracerPlot(object):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -541,10 +564,15 @@ class TracerPlot(object):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -605,7 +633,9 @@ class TracerPlot(object):
         """Compute tracer source surface brightness on a source grid.
 
         :param num_pix: number of pixels per axes
+        :type num_pix: int
         :param delta_pix: pixel size
+        :type delta_pix: float
         :param image_orientation: If True, uses frame in orientation of the image,
         :type image_orientation: bool otherwise in RA-DEC coordinates
         :return: 2d surface brightness grid of the reconstructed source and
@@ -674,9 +704,12 @@ class TracerPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
+        :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
+        :type delta_pix_source: float
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
+        :type center: list or None
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param plot_scale: Log or linear, scale of surface brightness plot
@@ -687,10 +720,15 @@ class TracerPlot(object):
         :type point_source_position: bool
             the point source
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -805,9 +843,13 @@ class TracerPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:
@@ -907,9 +949,13 @@ class TracerPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """
         if font_size is None:

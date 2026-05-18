@@ -59,21 +59,23 @@ class ModelPlot(object):
          - 'linear-joint': linear amplitudes ae jointly inferred
          - 'single-band': single band
         :param kwargs_model: model keyword arguments
+        :type kwargs_model: dict
         :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
-        :param image_likelihood_mask_list: Image likelihood mask
-        :type image_likelihood_mask_list: list
-         (same size as image_data with 1 indicating being evaluated and 0 being left out)
-        :param kwargs_params: keyword arguments of 'kwargs_lens', 'kwargs_source' etc. as coming as kwargs_result from
-         FittingSequence class
+        :type bands_compute: list
+        :param image_likelihood_mask_list: Image likelihood mask (same size as image_data with 1 indicating being evaluated and 0 being left out)
+        :type image_likelihood_mask_list: lis
+        :param kwargs_params: keyword arguments of 'kwargs_lens', 'kwargs_source' etc. as coming as kwargs_result from :class:`~lenstronomy.Workflow.fitting_sequence.FittingSequence`
+        :type kwargs_params: dict
         :param source_marg:
+        :type source_marg: bool
         :param linear_prior:
+        :type linear_prior: object
         :param fast_caustic: ; if True, uses fast (but less accurate) caustic calculation method
         :type fast_caustic: bool
         :param linear_solver: If True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
         :type linear_solver: bool
          that they get overwritten by the linear solver solution.
         """
-
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == "single-band":
@@ -205,6 +207,7 @@ class ModelPlot(object):
         """Select a computed imaging band for plotting.
 
         :param band_index: index of imaging band to be plotted
+        :type band_index: int
         :return: bandplot() instance of selected band, raises when band is not computed
         """
         i = self._index_list[band_index]
@@ -219,6 +222,7 @@ class ModelPlot(object):
         """Plot data, model, and normalized residuals for all computed bands.
 
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: 3 x n_data plot with data, model, reduced residual plots of all the
             images/bands that are being modeled
         """
@@ -263,15 +267,21 @@ class ModelPlot(object):
         """Illustrates data.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -302,6 +312,7 @@ class ModelPlot(object):
         """Illustrates model.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param image_names: If True, prints image names
@@ -315,10 +326,15 @@ class ModelPlot(object):
         :param image_name_list: Names for images
         :type image_name_list: list
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -349,6 +365,7 @@ class ModelPlot(object):
         """Illustrates lensing convergence in data frame.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
@@ -356,9 +373,13 @@ class ModelPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -392,23 +413,33 @@ class ModelPlot(object):
         """Illustrates substructure in the lens system.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :param index_macromodel: a list of indices corresponding to the lens models with convergence to be subtracted
+        :type index_macromodel: list
         :param subtract_mean: ; displays the substructure convergence relative to the mean convergence in the frame
         :type subtract_mean: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param with_critical_curves: ; plots the critical curves in the frame
         :type with_critical_curves: bool
         :param critical_curve_color: color of the critical curves
+        :type critical_curve_color: str
         :param image_name_list: labels the images, default is A, B, C, ...
+        :type image_name_list: list
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
+        :type super_sample_factor: int
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -445,15 +476,21 @@ class ModelPlot(object):
         """Illustrates normalized residuals between data and model fit.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -481,15 +518,21 @@ class ModelPlot(object):
         """Illustrates absolute residuals between data and model fit.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: label for the color bar
+        :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -523,12 +566,16 @@ class ModelPlot(object):
         """Illustrates reconstructed source (de-lensed de-convolved)
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
+        :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
+        :type delta_pix_source: float
             plot
         :param center: [center_x, center_y], if specified, uses this as the center
+        :type center: list or None
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param plot_scale: Log or linear, scale of surface brightness plot
@@ -539,10 +586,15 @@ class ModelPlot(object):
         :type point_source_position: bool
             the point source
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -581,10 +633,13 @@ class ModelPlot(object):
         plane.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param num_pix: number of pixels in plot per axis
+        :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
+        :type delta_pix_source: float
             plot
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
@@ -592,10 +647,15 @@ class ModelPlot(object):
         :type point_source_position: bool
             the point source
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -628,7 +688,9 @@ class ModelPlot(object):
         """Illustrates lensing magnification in the field of view of the data frame.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param image_name_list: Strings for names of the images in the same
         :type image_name_list: list
             order as the positions
@@ -637,9 +699,13 @@ class ModelPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -671,6 +737,7 @@ class ModelPlot(object):
         """Illustrates lensing deflections on the field of view of the data frame.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param axis: 0 or 1, specifies the deflection angle axis to be plotted
@@ -682,10 +749,15 @@ class ModelPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary additionally takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
+        :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -720,7 +792,9 @@ class ModelPlot(object):
         """Illustrates decomposition of model components.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param unconvolved: If True, does not perform PSF convolution on the image
         :type unconvolved: bool
         :param point_source_add: If True, includes the lensed point source(s) in
@@ -735,9 +809,13 @@ class ModelPlot(object):
         :type lens_light_add: bool
             from the plot
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -772,7 +850,9 @@ class ModelPlot(object):
         """Subtracts individual model components from the data.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param point_source_add: If True, includes the lensed point source(s) in
         :type point_source_add: bool
             the plot
@@ -784,9 +864,13 @@ class ModelPlot(object):
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -817,13 +901,21 @@ class ModelPlot(object):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
+        :type band_index: int
         :param kwargs_data_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.data_plot`
+        :type kwargs_data_plot: dict or None
         :param kwargs_model_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.model_plot`
+        :type kwargs_model_plot: dict or None
         :param kwargs_residual_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot`
+        :type kwargs_residual_plot: dict or None
         :param kwargs_source_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.source_plot`
+        :type kwargs_source_plot: dict or None
         :param kwargs_convergence_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.convergence_plot`
+        :type kwargs_convergence_plot: dict or None
         :param kwargs_magnification_plot: keyword arguments passed to :meth:`~lenstronomy.Plots.model_band_plot.ModelBandPlot.magnification_plot`
+        :type kwargs_magnification_plot: dict or None
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+        :type kwargs_caustics: dict
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -865,6 +957,7 @@ class ModelPlot(object):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
+        :type band_index: int
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -874,6 +967,7 @@ class ModelPlot(object):
         """Plot a set of 'main' modelling diagnostics.
 
         :param band_index: index of band
+        :type band_index: int
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -885,8 +979,11 @@ class ModelPlot(object):
         """Plot differential extinction map for one band.
 
         :param band_index: index of band
+        :type band_index: int
         :param ax: Matplotlib axes instance
+        :type ax: matplotlib.axes.Axes
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :type kwargs_matshow: dict
         :return: plot instance of differential extinction map
         """
         plot_band = self._select_band(band_index)
@@ -909,6 +1006,7 @@ class ModelPlot(object):
         :param delta_pix: pixel size
         :type delta_pix: float
         :param center: center position of source
+        :type center: list or None
         :param image_orientation: If True, uses frame in orientation of the image,
             otherwise in RA-DEC coordinates
         :type image_orientation: bool
@@ -925,6 +1023,7 @@ class ModelPlot(object):
         """Return reduced chi-square for one band.
 
         :param band_index: index of band
+        :type band_index: int
         :return: the reduced chi-square value of the band as a float
         """
         plot_band = self._select_band(band_index)

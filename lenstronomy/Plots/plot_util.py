@@ -231,6 +231,7 @@ def show_title_text(ax, **kwargs_title: "Unpack[TitleKwargs]"):
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+    :type kwargs_title: dict
     :return: None, updates the axis in place
     """
     text = kwargs_title.get("text")
@@ -273,7 +274,9 @@ def show_scale_bar(ax, d, **kwargs_scale_bar: "Unpack[ScaleBarKwargs]"):
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
     :param d: diameter of frame
+    :type d: float
     :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+    :type kwargs_scale_bar: dict
     :return: None, updated ax instance
     """
     scale_size = kwargs_scale_bar.get("scale_size", 1.0)
@@ -323,8 +326,11 @@ def show_colorbar(
     """Apply a label and tick styling to a matplotlib colorbar.
 
     :param cb: matplotlib colorbar instance
+    :type cb: matplotlib.colorbar.Colorbar
     :param font_size: default font size used when bundle entries are omitted
+    :type font_size: int
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+    :type kwargs_colorbar: dict
     :return: None, updates the colorbar in place
     """
     label = kwargs_colorbar.get("label", None)
@@ -346,9 +352,13 @@ def show_coordinate_arrows(
     """Plot East and North coordinate arrows.
 
     :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param d: diameter of frame in ax
+    :type d: float
     :param coords: lenstronomy.Data.coord_transforms Coordinates() instance
+    :type coords: Coordinates
     :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+    :type kwargs_coordinate_arrows: dict
     :return: updated ax instance
     """
     font_size = kwargs_coordinate_arrows.get("font_size", font_size)
@@ -491,8 +501,11 @@ def plot_line_set(
     accordance with the matplotlib.matshow() routine.
 
     :param ax: Matplotlib axes instance
+    :type ax: matplotlib.axes.Axes
     :param coords: Coordinates() class instance
+    :type coords: Coordinates
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
+    :type origin: list or None
     :param line_set_list_x: S corresponding of different disconnected regions
     :type line_set_list_x: numpy.ndarray of the line (e.g. caustic or critical curve)
     :param line_set_list_y: S corresponding of different disconnected regions
@@ -504,6 +517,7 @@ def plot_line_set(
     :param points_only: If True, sets plotting keywords to plot single points
     :type points_only: bool without connecting lines
     :param kwargs_plot: keyword arguments for the plot, see :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
+    :type kwargs_plot: dict
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
@@ -556,14 +570,19 @@ def image_position_plot(
     :type ax: matplotlib.axes.Axes
     :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
         or Data())
+    :type coords: Coordinates
     :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular
         units)
+    :type ra_image: list or numpy.ndarray
     :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular
         units)
+    :type dec_image: list or numpy.ndarray
     :param color: color of ticks and text
+    :type color: str
     :param image_name_list: Strings for names of the images in the same order as
     :type image_name_list: list the positions
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
+    :type origin: list or None
     :param flipped_x: If True, flips x-axis
     :type flipped_x: bool
     :param plot_out_of_image: if True, plots images even appearing out of the Coordinate
@@ -617,13 +636,17 @@ def source_position_plot(
     :type ax: matplotlib.axes.Axes
     :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
         or Data())
+    :type coords: Coordinates
     :param ra_source: Source position in angular units
     :type ra_source: list
     :param dec_source: Source position in angular units
     :type dec_source: list
     :param marker: marker style for matplotlib
+    :type marker: str
     :param markersize: marker size for matplotlib
+    :type markersize: float
     :param kwargs_plot: keyword arguments for the plot, see :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
+    :type kwargs_plot: dict
     :return: matplotlib axis instance with images plotted on
     """
     delta_pix = coords.pixel_width
@@ -645,8 +668,11 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     """Format posterior summary string.
 
     :param x: marginalized 1-d posterior
+    :type x: numpy.ndarray
     :param weights: weights of posteriors (optional)
+    :type weights: numpy.ndarray or None
     :param title_fmt: format to what digit the results are presented
+    :type title_fmt: str
     :param label: Of parameter label (optional)
     :type label: str
     :return: string with mean :math:`\\pm` quartile

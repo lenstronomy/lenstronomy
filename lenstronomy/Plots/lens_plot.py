@@ -65,6 +65,7 @@ def lens_model_plot(
     :param lens_model: LensModel() class instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param num_pix: total number of pixels (for convergence map)
     :type num_pix: int
     :param delta_pix: width of pixel (total frame size is delta_pix x num_pix)
@@ -99,8 +100,11 @@ def lens_model_plot(
     :param color_value: color for critical curves and caustics
     :type color_value: str
     :param kwargs_convergence: keyword arguments for convergence plot
+    :type kwargs_convergence: dict
     :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
+    :type kwargs_caustics: dict
     :param kwargs_point_source: keyword arguments for point source plot
+    :type kwargs_point_source: dict
     :return: matplotlib axis instance with plot
     """
     kwargs_data = sim_util.data_configure_simple(
@@ -196,12 +200,15 @@ def convergence_plot(
     :param lens_model: LensModel() class instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param extent: [[min, max] [min, max]] of frame
     :type extent: list or None
     :param font_size: Default font size for all texts in the plot. Font size for different text elements can be further fine-tuned by kwargs_colorbar arguments in the plotting methods.
     :type font_size: int
     :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+    :type kwargs_colorbar: dict
     :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+    :type kwargs_matshow: dict
     :return: matplotlib axis instance with convergence plot
     """
     kwargs_matshow.setdefault("cmap", "gist_heat")
@@ -252,6 +259,7 @@ def caustics_plot(
     :param lens_model: LensModel() class instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param fast_caustic: If True, uses faster but less precise caustic
     :type fast_caustic: bool
         calculation (might have troubles for the outer caustic (inner critical curve)
@@ -263,6 +271,7 @@ def caustics_plot(
     :param args: argument for plotting curve
     :type args: tuple
     :param kwargs_plot: keyword arguments passed to :func:`matplotlib.pyplot.plot`
+    :type kwargs_plot: dict
     :return: updated matplotlib axis instance
     """
     lens_model_ext = LensModelExtensions(lens_model)
@@ -359,6 +368,7 @@ def point_source_plot(
     :param lens_model: LensModel() class instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param source_x: x-position of source
     :type source_x: float
     :param source_y: y-position of source
@@ -374,7 +384,9 @@ def point_source_plot(
     :param solver_type: Type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
     :type solver_type: str
     :param kwargs_solver: keyword arguments for the solver
+    :type kwargs_solver: dict
     :param kwargs_plot: additional plotting keyword arguments
+    :type kwargs_plot: dict
     :return: matplotlib axis instance with figure
     """
     from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -472,6 +484,7 @@ def arrival_time_surface(
     :param lens_model: LensModel() class instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param num_pix:
     :type num_pix: int
     :param delta_pix:
@@ -485,8 +498,11 @@ def arrival_time_surface(
     :param n_levels: number of contour levels to plot for the Fermat potential
     :type n_levels: int
     :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
+    :type kwargs_caustics: dict
     :param image_color_value: color for image names
+    :type image_color_value: str
     :param letter_font_size: font size for image names
+    :type letter_font_size: float
     :param name_list: list of names of images
     :type name_list: list of strings, longer or equal the number of point sources
     :return:
@@ -621,6 +637,7 @@ def curved_arc_illustration(
     :param lens_model: LensModel() instance
     :type lens_model: LensModel
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC
+    :type kwargs_lens: list or dict
         considered
     :param with_centroid: plots the center of the curvature radius
     :type with_centroid: bool
@@ -783,6 +800,7 @@ def distortions(
     :param lensModel: LensModel instance
     :type lensModel: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param num_pix: number of pixels per axis
     :type num_pix: int
     :param delta_pix: pixel scale per axis
@@ -1006,6 +1024,7 @@ def stretch_plot(
     :param lens_model: LensModel instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param plot_grid: pixelgrid instance at which to draw ellipses. 'None' uses default.
     :type plot_grid: PixelGrid or None
     :param scale: scales sizes of drawn ellipses, bigger number=larger
@@ -1071,6 +1090,7 @@ def shear_plot(
     :param lens_model: LensModel instance
     :type lens_model: LensModel
     :param kwargs_lens: lens model keyword argument list
+    :type kwargs_lens: list or dict
     :param plot_grid: pixelgrid instance at which to draw pseudovectors
     :type plot_grid: PixelGrid or None
     :param scale: scales sizes of drawn pseudovectors, smaller number=larger vectors
@@ -1080,6 +1100,7 @@ def shear_plot(
     :param max_stretch: optional max amount to stretch ellipses which sometimes diverge
     :type max_stretch: float
     :param kwargs_quiver: keyword arguments passed to :func:`matplotlib.pyplot.quiver`
+    :type kwargs_quiver: dict
     :return: matplotlib axis instance with figure
     """
 

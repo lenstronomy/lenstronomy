@@ -32,7 +32,9 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     :param chain_list: Chains with arguments [type string, samples etc...]
     :type chain_list: list
     :param index: index of chain to be plotted
+    :type index: int
     :param num_average: in chains, number of steps to average over in plotting diagnostics
+    :type num_average: int
     :return: plotting instance figure, axes (potentially multiple)
     """
     chain_i = chain_list[index]
@@ -57,7 +59,8 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 def plot_chain(chain, param_list):
     """Plot PSO chain diagnostics.
 
-    :param chain: tuple/list with chi2, position, and velocity history
+    :param chain: chi2, position, and velocity history
+    :type chain: tuple
     :param param_list: Parameter names
     :type param_list: list
     :return: plotting instance figure and axes
@@ -95,12 +98,16 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
     """Plots the MCMC behaviour and looks for convergence of the chain.
 
     :param ax: Matplotlib axes instance
-    :param samples_mcmc: parameters sampled 2d numpy array
+    :type ax: matplotlib.axes.Axes
+    :param samples_mcmc: sampled parameters
+    :type samples_mcmc: numpy.ndarray
     :param param_mcmc: Parameters
     :type param_mcmc: list
     :param dist_mcmc: log likelihood of the chain
+    :type dist_mcmc: numpy.ndarray or None
     :param num_average: number of samples to average (should coincide with the number of
         samples in the emcee process)
+    :type num_average: int
     :return:
     """
     num_samples = len(samples_mcmc[:, 0])
@@ -136,6 +143,7 @@ def psf_iteration_compare(
     """Compare initial and iteratively reconstructed PSF kernels.
 
     :param kwargs_psf: keyword arguments that initiate a PSF() class
+    :type kwargs_psf: dict
     :param kwargs_matshow: kwargs to send to matplotlib.pyplot.matshow()
     :return:
     """

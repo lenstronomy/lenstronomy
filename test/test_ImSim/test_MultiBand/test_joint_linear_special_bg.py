@@ -18,8 +18,8 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 
 class TestJointLinear_VaryBG(object):
-    """Tests JointLinear_VaryBG, which extends JointLinear with a per-band
-    constant background as an additional free linear parameter."""
+    """Tests JointLinear_VaryBG, which extends JointLinear with a per-band constant
+    background as an additional free linear parameter."""
 
     def setup_method(self):
         sigma_bkg = 0.05
@@ -157,9 +157,8 @@ class TestJointLinear_VaryBG(object):
         assert ny == 100**2 * self.num_bands
 
     def test_image_linear_solve(self):
-        """image_linear_solve should return a single cov_param matrix and a
-        flat param array (not per-band lists), with length = num_joint_params +
-        num_bands."""
+        """image_linear_solve should return a single cov_param matrix and a flat param
+        array (not per-band lists), with length = num_joint_params + num_bands."""
         wls_list, model_error_list, cov_param, param = (
             self.imageModel.image_linear_solve(
                 self.kwargs_lens,
@@ -179,9 +178,8 @@ class TestJointLinear_VaryBG(object):
         assert len(param) == self.num_params_total
 
     def test_background_params(self):
-        """The per-band background parameters (last num_bands entries in param)
-        should recover the known constant backgrounds injected into each band's
-        data."""
+        """The per-band background parameters (last num_bands entries in param) should
+        recover the known constant backgrounds injected into each band's data."""
         _, _, _, param = self.imageModel.image_linear_solve(
             self.kwargs_lens,
             self.kwargs_source,
@@ -206,8 +204,8 @@ class TestJointLinear_VaryBG(object):
         npt.assert_almost_equal(chi2_reduced, -1, 1)
 
     def test_likelihood_source_marg(self):
-        """Test source_marg=True branch, which computes the marginalization
-        constant from the covariance matrix."""
+        """Test source_marg=True branch, which computes the marginalization constant
+        from the covariance matrix."""
         logL_marg, param = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,
             self.kwargs_source,
@@ -218,8 +216,7 @@ class TestJointLinear_VaryBG(object):
         assert np.isfinite(logL_marg)
 
     def test_likelihood_check_positive_flux(self):
-        """Test check_positive_flux=True branch, which penalises negative
-        fluxes."""
+        """Test check_positive_flux=True branch, which penalises negative fluxes."""
         logL, param = self.imageModel.likelihood_data_given_model(
             self.kwargs_lens,
             self.kwargs_source,
@@ -231,8 +228,8 @@ class TestJointLinear_VaryBG(object):
         assert np.isfinite(logL)
 
     def test_update_linear_kwargs(self):
-        """Test that update_linear_kwargs runs without error and returns
-        updated kwargs."""
+        """Test that update_linear_kwargs runs without error and returns updated
+        kwargs."""
         _, _, _, param = self.imageModel.image_linear_solve(
             self.kwargs_lens,
             self.kwargs_source,

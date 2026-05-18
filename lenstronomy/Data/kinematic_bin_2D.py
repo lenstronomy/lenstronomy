@@ -61,8 +61,7 @@ class KinBin(object):
         """Creates the binned image of the data.
 
         :param data: data value in each bin
-        :param bin_mask: mask indicating which pixels belong to which
-            bin
+        :param bin_mask: mask indicating which pixels belong to which bin
         """
         binned_image = np.zeros_like(bin_mask)
         for idx, value in enumerate(data):
@@ -81,7 +80,6 @@ class KinBin(object):
         return kwargs
 
     def kin_grid(self):
-        """Creates a pixel grid that satisfy the kinematics coordinates
-        system."""
+        """Creates a pixel grid that satisfy the kinematics coordinates system."""
         x_grid, y_grid = self.PixelGrid.pixel_coordinates
         return x_grid, y_grid

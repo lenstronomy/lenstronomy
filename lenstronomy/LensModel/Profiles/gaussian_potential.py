@@ -8,8 +8,8 @@ __all__ = ["GaussianPotential"]
 
 
 class GaussianPotential(LensProfileBase):
-    """This class contains functions to evaluate a Gaussian potential and
-    calculates its derivative and hessian matrix."""
+    """This class contains functions to evaluate a Gaussian potential and calculates its
+    derivative and hessian matrix."""
 
     param_names = ["amp", "sigma_x", "sigma_y", "center_x", "center_y"]
     lower_limit_default = {

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""This module contains the class to compute lensing properties of a multi-
-Gaussian convergence profile with the ellipticity defined in the
-convergence."""
+"""This module contains the class to compute lensing properties of a multi- Gaussian
+convergence profile with the ellipticity defined in the convergence."""
 
 __author__ = "ajshajib"
 
@@ -18,8 +17,8 @@ __all__ = ["MultiGaussianEllipseKappa"]
 
 @export
 class MultiGaussianEllipseKappa(LensProfileBase):
-    """This class computes the lensing properties of a set of concentric
-    elliptical Gaussian convergences."""
+    """This class computes the lensing properties of a set of concentric elliptical
+    Gaussian convergences."""
 
     param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y", "scale_factor"]
     lower_limit_default = {
@@ -57,8 +56,8 @@ class MultiGaussianEllipseKappa(LensProfileBase):
     def function(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
     ):
-        """Compute the potential function for a set of concentric elliptical
-        Gaussian convergence profiles.
+        """Compute the potential function for a set of concentric elliptical Gaussian
+        convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -105,9 +104,9 @@ class MultiGaussianEllipseKappa(LensProfileBase):
     def derivatives(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
     ):
-        """Compute the derivatives of function angles :math:`\\partial
-        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a
-        set of concentric elliptic Gaussian convergence profiles.
+        """Compute the derivatives of function angles :math:`\\partial f/\\partial x`,
+        :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a set of concentric
+        elliptic Gaussian convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -156,10 +155,9 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
-        """Compute Hessian matrix of function :math:`\\partial^2f/\\partial
-        x^2`, :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2
-        f/\\partial x\\partial y` for a set of concentric elliptic Gaussian
-        convergence profiles.
+        """Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
+        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial x\\partial
+        y` for a set of concentric elliptic Gaussian convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
@@ -214,9 +212,8 @@ class MultiGaussianEllipseKappa(LensProfileBase):
     def density_2d(
         self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1
     ):
-        """Compute the density of a set of concentric elliptical Gaussian
-        convergence profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-(
-        x^2+y^2/q^2)/2\\sigma^2)`.
+        """Compute the density of a set of concentric elliptical Gaussian convergence
+        profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-( x^2+y^2/q^2)/2\\sigma^2)`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``

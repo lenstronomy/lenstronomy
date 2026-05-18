@@ -126,8 +126,8 @@ class ImageNoise(object):
 
 @export
 def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=None):
-    """Returns a diagonal matrix for the covariance estimation which describes
-    the error.
+    """Returns a diagonal matrix for the covariance estimation which describes the
+    error.
 
     Notes:
 

@@ -21,13 +21,10 @@ class LinearBasis(LightModelBase):
     def functions_split(self, x, y, kwargs_list, k=None):
         """Split model in different components.
 
-        :param x: coordinate in units of arcsec relative to the center
-            of the image
-        :param y: coordinate in units of arcsec relative to the center
-            of the image
+        :param x: coordinate in units of arcsec relative to the center of the image
+        :param y: coordinate in units of arcsec relative to the center of the image
         :param kwargs_list: keyword argument list of light profile
-        :param k: integer or list of integers for selecting subsets of
-            light profiles
+        :param k: integer or list of integers for selecting subsets of light profiles
         """
         response = []
         n = 0
@@ -116,11 +113,10 @@ class LinearBasis(LightModelBase):
         return n_list
 
     def num_param_linear_list(self, kwargs_list):
-        """Returns the list (in order of the light profiles) of the number of
-        linear components per model.
+        """Returns the list (in order of the light profiles) of the number of linear
+        components per model.
 
-        :param kwargs_list: list of keyword arguments of the light
-            profiles
+        :param kwargs_list: list of keyword arguments of the light profiles
         :return: number of linear basis set coefficients
         """
         n_list = []
@@ -262,11 +258,10 @@ class LinearBasis(LightModelBase):
         return kwargs_fixed_list
 
     def linear_param_from_kwargs(self, kwargs_list):
-        """Inverse function of update_linear() returning the linear amplitude
-        list for the keyword argument list.
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
-        :param kwargs_list: model parameters including the linear
-            amplitude parameters
+        :param kwargs_list: model parameters including the linear amplitude parameters
         :type kwargs_list: list of keyword arguments
         :return: list of linear amplitude parameters
         :rtype: list
@@ -283,9 +278,8 @@ class LinearBasis(LightModelBase):
         return param
 
     def check_positive_flux_profile(self, kwargs_list):
-        """Check whether linear amplitude parameter are non-negative for
-        specified list of lens models that have a physical amplitude
-        interpretation.
+        """Check whether linear amplitude parameter are non-negative for specified list
+        of lens models that have a physical amplitude interpretation.
 
         :param kwargs_list: light model parameter keyword argument list
         :return: bool, if True, no specified model has negative flux

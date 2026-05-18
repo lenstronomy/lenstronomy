@@ -247,14 +247,11 @@ class LightModelBase(object):
 
     def light_3d(self, r, kwargs_list, k=None):
         """Computes 3d density at radius r (3D radius) such that integrated in
-        projection in units of angle results in the projected surface
-        brightness.
+        projection in units of angle results in the projected surface brightness.
 
-        :param r: 3d radius units of arcsec relative to the center of
-            the light profile
+        :param r: 3d radius units of arcsec relative to the center of the light profile
         :param kwargs_list: keyword argument list of light profile
-        :param k: integer or list of integers for selecting subsets of
-            light profiles.
+        :param k: integer or list of integers for selecting subsets of light profiles.
         :return: flux density
         """
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
@@ -292,14 +289,13 @@ class LightModelBase(object):
         return flux
 
     def total_flux(self, kwargs_list, norm=False, k=None):
-        """Computes the total flux of each individual light profile. This
-        allows to estimate the total flux as well as lenstronomy amp to
-        magnitude conversions. Not all models are supported. The units are
-        linked to the data to be modelled with associated noise properties
-        (default is count/s).
+        """Computes the total flux of each individual light profile. This allows to
+        estimate the total flux as well as lenstronomy amp to magnitude conversions. Not
+        all models are supported. The units are linked to the data to be modelled with
+        associated noise properties (default is count/s).
 
-        :param kwargs_list: list of keyword arguments corresponding to
-            the light profiles. The 'amp' parameter can be missing.
+        :param kwargs_list: list of keyword arguments corresponding to the light
+            profiles. The 'amp' parameter can be missing.
         :param norm: bool, if True, computes the flux for amp=1
         :param k: int, if set, only evaluates the specific light model
         :return: list of (total) flux values attributed to each profile
@@ -355,8 +351,7 @@ class LightModelBase(object):
     def param_name_list(self):
         """Returns the list of all parameter names.
 
-        :return: list of lists of strings (for each light model
-            separately)
+        :return: list of lists of strings (for each light model separately)
         """
         name_list = []
         for i, func in enumerate(self.func_list):
@@ -367,8 +362,7 @@ class LightModelBase(object):
     def param_name_list_latex(self):
         """Returns the list of all parameter names in LateX style.
 
-        :return: list of lists of strings (for each light model
-            separately)
+        :return: list of lists of strings (for each light model separately)
         """
         name_list = []
         for i, func in enumerate(self.func_list):
@@ -379,13 +373,12 @@ class LightModelBase(object):
         return name_list
 
     def check_parameters(self, kwargs_list):
-        """Checks whether the parameter list is consistent with the parameters
-        required by the light model.
+        """Checks whether the parameter list is consistent with the parameters required
+        by the light model.
 
-        :param kwargs_list: keyword argument list as parameterised
-            models
-        :return: None or raise ValueError with error message of what
-            parameter is not supported.
+        :param kwargs_list: keyword argument list as parameterised models
+        :return: None or raise ValueError with error message of what parameter is not
+            supported.
         """
 
         name_list = self.param_name_list
@@ -424,12 +417,11 @@ class LightModelBase(object):
         return kwargs_list
 
     def _bool_list(self, k=None):
-        """Returns a bool list of the length of the lens models if k = None:
-        returns bool list with True's if k is int, returns bool list with
-        False's but k'th is True if k is a list of int, e.g. [0, 3, 5], returns
-        a bool list with True's in the integers listed and False elsewhere if k
-        is a boolean list, checks for size to match the numbers of models and
-        returns it.
+        """Returns a bool list of the length of the lens models if k = None: returns
+        bool list with True's if k is int, returns bool list with False's but k'th is
+        True if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in
+        the integers listed and False elsewhere if k is a boolean list, checks for size
+        to match the numbers of models and returns it.
 
         :param k: None, int, or list of ints
         :return: bool list

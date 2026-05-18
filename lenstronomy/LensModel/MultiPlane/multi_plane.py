@@ -11,12 +11,11 @@ export, __all__ = exporter()
 
 @export
 class MultiPlane(object):
-    """Multi-plane lensing class with option to assign positions of a selected
-    set of lens models in the observed plane.
+    """Multi-plane lensing class with option to assign positions of a selected set of
+    lens models in the observed plane.
 
-    The lens model deflection angles are in units of reduced deflections
-    from the specified redshift of the lens to the source redshift of
-    the class instance.
+    The lens model deflection angles are in units of reduced deflections from the
+    specified redshift of the lens to the source redshift of the class instance.
     """
 
     def __init__(
@@ -160,8 +159,8 @@ class MultiPlane(object):
         self.ignore_observed_positions = ignore_observed_positions
 
     def update_source_redshift(self, z_source):
-        """Update instance of this class to compute reduced lensing quantities
-        and time delays to a specific source redshift.
+        """Update instance of this class to compute reduced lensing quantities and time
+        delays to a specific source redshift.
 
         :param z_source: float; source redshift
         :return: self variables update to new redshift
@@ -204,8 +203,8 @@ class MultiPlane(object):
         self._T_ij_stop = T_ij_stop
 
     def model_info(self):
-        """Shows what models are being initialized and what parameters are
-        being requested for.
+        """Shows what models are being initialized and what parameters are being
+        requested for.
 
         :return: None
         """
@@ -259,8 +258,8 @@ class MultiPlane(object):
         T_ij_end=None,
     ):
         """Ray-tracing through parts of the cone, starting with (x,y) co-moving
-        distances and angles (alpha_x, alpha_y) at redshift z_start and then
-        backwards to redshift z_stop.
+        distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
+        to redshift z_stop.
 
         :param x: co-moving position [Mpc] / angle definition
         :param y: co-moving position [Mpc] / angle definition
@@ -307,15 +306,13 @@ class MultiPlane(object):
     ):
         """Ray-tracing (backwards light cone) to the default z_source redshift.
 
-        :param theta_x: angle in x-direction on the image (usually arc
-            seconds, in the same convention as lensing deflection
-            angles)
-        :param theta_y: angle in y-direction on the image (usually arc
-            seconds, in the same convention as lensing deflection
-            angles)
+        :param theta_x: angle in x-direction on the image (usually arc seconds, in the
+            same convention as lensing deflection angles)
+        :param theta_y: angle in y-direction on the image (usually arc seconds, in the
+            same convention as lensing deflection angles)
         :param kwargs_lens: lens model keyword argument list
-        :param check_convention: flag to check the image position
-            convention (leave this alone)
+        :param check_convention: flag to check the image position convention (leave this
+            alone)
         :return: angles in the source plane
         """
         self._check_raise(k=k)
@@ -355,10 +352,9 @@ class MultiPlane(object):
         T_ij_end=None,
         check_convention=True,
     ):
-        """Ray-tracing through parts of the cone, starting with (x,y) in
-        angular units as seen on the sky without lensing and angles (alpha_x,
-        alpha_y) as seen at redshift z_start and then backwards to redshift
-        z_stop.
+        """Ray-tracing through parts of the cone, starting with (x,y) in angular units
+        as seen on the sky without lensing and angles (alpha_x, alpha_y) as seen at
+        redshift z_start and then backwards to redshift z_stop.
 
         :param theta_x: angular position on the sky [arcsec]
         :param theta_y: angular position on the sky [arcsec]
@@ -411,10 +407,9 @@ class MultiPlane(object):
         T_ij_end=None,
         check_convention=True,
     ):
-        """Ray-tracing through parts of the cone, starting with (x,y) in
-        angular units as seen on the sky without lensing and angles (alpha_x,
-        alpha_y) as seen at redshift z_start and then backwards to redshift
-        z_stop.
+        """Ray-tracing through parts of the cone, starting with (x,y) in angular units
+        as seen on the sky without lensing and angles (alpha_x, alpha_y) as seen at
+        redshift z_start and then backwards to redshift z_stop.
 
         :param theta_x: angular position on the sky [arcsec]
         :param theta_y: angular position on the sky [arcsec]
@@ -455,9 +450,9 @@ class MultiPlane(object):
         )
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
-        """Computes the transverse distance (T_ij) that is required by the ray-
-        tracing between the starting redshift and the first deflector
-        afterwards and the last deflector before the end of the ray-tracing.
+        """Computes the transverse distance (T_ij) that is required by the ray- tracing
+        between the starting redshift and the first deflector afterwards and the last
+        deflector before the end of the ray-tracing.
 
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
@@ -469,8 +464,8 @@ class MultiPlane(object):
         )
 
     def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True):
-        """Light travel time relative to a straight path through the coordinate
-        (0,0) Negative sign means earlier arrival time.
+        """Light travel time relative to a straight path through the coordinate (0,0)
+        Negative sign means earlier arrival time.
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
@@ -484,16 +479,15 @@ class MultiPlane(object):
         return dt_geo + dt_grav
 
     def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, check_convention=True):
-        """Geometric and Shapiro (gravitational) light travel time relative to
-        a straight path through the coordinate (0,0) Negative sign means
-        earlier arrival time.
+        """Geometric and Shapiro (gravitational) light travel time relative to a
+        straight path through the coordinate (0,0) Negative sign means earlier arrival
+        time.
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
-        :param check_convention: boolean, if True goes through the lens
-            model list and checks whether the positional conventions are
-            satisfied.
+        :param check_convention: boolean, if True goes through the lens model list and
+            checks whether the positional conventions are satisfied.
         :return: geometric delay, gravitational delay [days]
         """
         if check_convention and not self.ignore_observed_positions:
@@ -513,8 +507,8 @@ class MultiPlane(object):
         :param theta_x: angle in x-direction
         :param theta_y: angle in y-direction
         :param kwargs_lens: lens model kwargs
-        :param check_convention: flag to check the image position
-            convention (leave this alone)
+        :param check_convention: flag to check the image position convention (leave this
+            alone)
         :return: deflection angles in x and y directions
         """
         self._check_raise(k=k)
@@ -536,19 +530,18 @@ class MultiPlane(object):
         diff=0.00000001,
         check_convention=True,
     ):
-        """Computes the hessian components f_xx, f_yy, f_xy from f_x and f_y
-        with numerical differentiation.
+        """Computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with
+        numerical differentiation.
 
         :param theta_x: x-position (preferentially arcsec)
         :type theta_x: numpy array
         :param theta_y: y-position (preferentially arcsec)
         :type theta_y: numpy array
-        :param kwargs_lens: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
         :param diff: numerical differential step (float)
-        :param check_convention: boolean, if True goes through the lens
-            model list and checks whether the positional conventions are
-            satisfied.
+        :param check_convention: boolean, if True goes through the lens model list and
+            checks whether the positional conventions are satisfied.
         :return: f_xx, f_xy, f_yx, f_yy
         """
         self._check_raise(k=k)
@@ -578,15 +571,15 @@ class MultiPlane(object):
         return f_xx, f_xy, f_yx, f_yy
 
     def hessian_z1z2(self, z1, z2, theta_x, theta_y, kwargs_lens, diff=0.00000001):
-        """Computes Hessian matrix when Observed at z1 with rays going to z2
-        with z1 < z2.
+        """Computes Hessian matrix when Observed at z1 with rays going to z2 with z1 <
+        z2.
 
         :param z1: Observer redshift
         :param z2: source redshift
         :param theta_x: angular position and direction of the ray
         :param theta_y: angular position and direction of the ray
-        :param kwargs_lens: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
         :param diff: numerical differential step (float)
         :return: f_xx, f_xy, f_yx, f_yy
         """
@@ -671,8 +664,7 @@ class MultiPlane(object):
         return theta_x, theta_y
 
     def co_moving2angle_source(self, x, y):
-        """Special case of the co_moving2angle definition at the source
-        redshift.
+        """Special case of the co_moving2angle definition at the source redshift.
 
         :param x: co-moving distance
         :param y: co-moving distance
@@ -704,12 +696,11 @@ class MultiPlane(object):
 
     @staticmethod
     def _check_raise(k=None):
-        """Checks whether no option to select a specific subset of deflector
-        models is selected, as this feature is not yet supported in multi-
-        plane.
+        """Checks whether no option to select a specific subset of deflector models is
+        selected, as this feature is not yet supported in multi- plane.
 
-        :param k: parameter that optionally indicates a sub-set of lens
-            models being executed for single plane
+        :param k: parameter that optionally indicates a sub-set of lens models being
+            executed for single plane
         :return: None, optional raise
         """
         if k is not None:
@@ -721,8 +712,8 @@ class MultiPlane(object):
 
 @export
 class PhysicalLocation(object):
-    """center_x and center_y kwargs correspond to angular location of
-    deflectors without lensing along the LOS."""
+    """center_x and center_y kwargs correspond to angular location of deflectors without
+    lensing along the LOS."""
 
     def __call__(self, kwargs_lens):
         return kwargs_lens
@@ -730,10 +721,9 @@ class PhysicalLocation(object):
 
 @export
 class LensedLocation(object):
-    """center_x and center_y kwargs correspond to observed (lensed) locations
-    of deflectors given a model for the line of sight structure, compute the
-    angular position of the deflector without lensing contribution along the
-    LOS."""
+    """center_x and center_y kwargs correspond to observed (lensed) locations of
+    deflectors given a model for the line of sight structure, compute the angular
+    position of the deflector without lensing contribution along the LOS."""
 
     def __init__(self, multiplane_instance, observed_convention_index):
         """

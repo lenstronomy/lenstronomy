@@ -205,8 +205,8 @@ def test_transform_e1e2_square_average():
 
 
 def test_elliptical_distortion_product_average():
-    """Tests that elliptical distortions in product average is the same as
-    distortions under reduced shear.
+    """Tests that elliptical distortions in product average is the same as distortions
+    under reduced shear.
 
     :return:
     """

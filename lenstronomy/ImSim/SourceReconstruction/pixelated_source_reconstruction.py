@@ -7,11 +7,11 @@ __all__ = ["PixelatedSourceReconstruction"]
 
 
 class PixelatedSourceReconstruction(object):
-    """This class defines useful functions for pixelated source plane
-    reconstruction in gravitational lensing. It handles initialization of data,
-    lens model, and PSF kernel, and provides methods for generating the M and b
-    matrices (definition see 'placeholder for Nan Zhang's paper) for source
-    reconstruction based on different likelihood methods.
+    """This class defines useful functions for pixelated source plane reconstruction in
+    gravitational lensing. It handles initialization of data, lens model, and PSF
+    kernel, and provides methods for generating the M and b matrices (definition see
+    'placeholder for Nan Zhang's paper) for source reconstruction based on different
+    likelihood methods.
 
     All sparse matrices (sp) in this class are represented as a list of lists:
     [[y_coord, x_coord, pixel_value], ...], where [y_coord, x_coord] are
@@ -21,9 +21,9 @@ class PixelatedSourceReconstruction(object):
     def __init__(
         self, data_class, psf_class, lens_model_class, source_pixel_grid_class
     ):
-        """Initializes the PixelatedSourceReconstruction class. This sets up
-        the necessary data, PSF, lens model, and source grid for subsequent
-        source reconstruction matrix generation.
+        """Initializes the PixelatedSourceReconstruction class. This sets up the
+        necessary data, PSF, lens model, and source grid for subsequent source
+        reconstruction matrix generation.
 
         :param data_class: ImageData() class instance (for the observed image data)
         :param psf_class: PSF() class instance (for the observed image data)
@@ -80,18 +80,16 @@ class PixelatedSourceReconstruction(object):
                     )
 
     def generate_M_b(self, kwargs_lens, verbose=False, show_progress=True):
-        """Generates the M matrix and the b vector for source reconstruction
-        based on the selected likelihood method. Definitions of the M and b is
-        given by (placeholder for Nan Zhang's paper).
+        """Generates the M matrix and the b vector for source reconstruction based on
+        the selected likelihood method. Definitions of the M and b is given by
+        (placeholder for Nan Zhang's paper).
 
-        :param kwargs_lens: List of keyword arguments for the
-            lens_model_class.
-        :param verbose: If True, print progress messages during matrix
-            generation steps. Defaults to False.
-        :param show_progress: If True, show progress bar of generating
-            the M matrix. Defaults to True.
-        :returns: (M, b) tuple, where M is the matrix and b is the
-            vector.
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
+        :param verbose: If True, print progress messages during matrix generation steps.
+            Defaults to False.
+        :param show_progress: If True, show progress bar of generating the M matrix.
+            Defaults to True.
+        :returns: (M, b) tuple, where M is the matrix and b is the vector.
         """
         if verbose:
             # Print the total number of source pixels in the defined rectangular source region.
@@ -119,21 +117,17 @@ class PixelatedSourceReconstruction(object):
     def generate_M_b_diagonal_likelihood(
         self, kwargs_lens, verbose=False, show_progress=True
     ):
-        """Generates M and b matrices assuming spatially uncorrelated noise
-        with uniform RMS across the image. This approach is typically used for
-        CCD image data.
+        """Generates M and b matrices assuming spatially uncorrelated noise with uniform
+        RMS across the image. This approach is typically used for CCD image data.
 
-        This method performs lensing, convolution, and then computes M
-        and b.
+        This method performs lensing, convolution, and then computes M and b.
 
-        :param kwargs_lens: List of keyword arguments for the
-            lens_model_class.
-        :param verbose: If True, print progress messages during matrix
-            generation steps. Defaults to False.
-        :param show_progress: If True, show progress bar of generating
-            the M matrix. Defaults to True.
-        :returns: (M, b) tuple, where M is the matrix and b is the
-            vector.
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
+        :param verbose: If True, print progress messages during matrix generation steps.
+            Defaults to False.
+        :param show_progress: If True, show progress bar of generating the M matrix.
+            Defaults to True.
+        :returns: (M, b) tuple, where M is the matrix and b is the vector.
         """
         if verbose:
             print("Step 1: Lensing the source pixels")
@@ -180,17 +174,15 @@ class PixelatedSourceReconstruction(object):
         """Generates the M and b matrices for interferometric data with natural
         weighting.
 
-        This method integrates the convolution step implicitly via
-        specialized sparse product functions.
+        This method integrates the convolution step implicitly via specialized sparse
+        product functions.
 
-        :param kwargs_lens: List of keyword arguments for the
-            lens_model_class.
-        :param verbose: If True, print progress messages during matrix
-            generation steps. Defaults to False.
-        :param show_progress: If True, show progress bar of generating
-            the M matrix. Defaults to True.
-        :returns: (M, b) tuple, where M is the matrix and b is the
-            vector.
+        :param kwargs_lens: List of keyword arguments for the lens_model_class.
+        :param verbose: If True, print progress messages during matrix generation steps.
+            Defaults to False.
+        :param show_progress: If True, show progress bar of generating the M matrix.
+            Defaults to True.
+        :returns: (M, b) tuple, where M is the matrix and b is the vector.
         """
         if verbose:
             print("Step 1: Lensing the source pixels")
@@ -229,9 +221,9 @@ class PixelatedSourceReconstruction(object):
         return M, b
 
     def lens_pixel_source_of_a_rectangular_region(self, kwargs_lens):
-        """Maps image plane pixels to source plane pixels within a specified
-        rectangular source grid, considering lensing deflections and applying
-        bilinear interpolation.
+        """Maps image plane pixels to source plane pixels within a specified rectangular
+        source grid, considering lensing deflections and applying bilinear
+        interpolation.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
         :returns: A list of lists. Each element in the outer list corresponds to a single source pixel
@@ -331,9 +323,9 @@ class PixelatedSourceReconstruction(object):
         return lensed_pixel_sp
 
     def lens_an_image_by_rayshooting(self, kwargs_lens, source_image):
-        """Lenses a pixelated source plane image to the image plane using ray-
-        shooting and bilinear interpolation. The imput image should have the
-        same dimension and coordinates defined by source_pixel_grid_class.
+        """Lenses a pixelated source plane image to the image plane using ray- shooting
+        and bilinear interpolation. The imput image should have the same dimension and
+        coordinates defined by source_pixel_grid_class.
 
         This method works by iterating through each pixel in the image plane, ray-shooting back to the source
         plane to find the corresponding source coordinate, and then interpolating the flux from the input
@@ -486,11 +478,10 @@ class PixelatedSourceReconstruction(object):
         return lensed_image
 
     def sparse_to_array(self, sparse):
-        """Converts a sparse image representation (list of `[y_coord, x_coord,
-        value]` tuples) to a 2D NumPy array.
+        """Converts a sparse image representation (list of `[y_coord, x_coord, value]`
+        tuples) to a 2D NumPy array.
 
-        :param sparse: A list representing non-zero elements of the
-            sparse image.
+        :param sparse: A list representing non-zero elements of the sparse image.
         :returns: A 2D NumPy array representing the full image.
         :rtype: numpy.ndarray
         """
@@ -501,11 +492,11 @@ class PixelatedSourceReconstruction(object):
         return image
 
     def sum_sparse_elementwise_product(self, sparse, ordinary):
-        """Computes the element-wise sum of products between a sparse matrix
-        and a dense 2D NumPy array image.
+        """Computes the element-wise sum of products between a sparse matrix and a dense
+        2D NumPy array image.
 
-        :param sparse: Sparse matrix representation (list of `[y_coord,
-            x_coord, value]` tuples).
+        :param sparse: Sparse matrix representation (list of `[y_coord, x_coord, value]`
+            tuples).
         :param ordinary: A 2D NumPy array (dense matrix).
         :returns: The sum of the element-wise products.
         :rtype: float
@@ -517,9 +508,9 @@ class PixelatedSourceReconstruction(object):
         return sum_temp
 
     def sparse_convolve_and_dot_product(self, sp1, sp2, kernel=None):
-        """Computes the convolution product of two sparse matrices using a
-        given kernel. Equivalent to `(sp1 * kernel) . (sp2)` where '*' is
-        convolution and '.' is dot product.
+        """Computes the convolution product of two sparse matrices using a given kernel.
+        Equivalent to `(sp1 * kernel) . (sp2)` where '*' is convolution and '.' is dot
+        product.
 
         :param sp1: First sparse matrix representation.
         :param sp2: Second sparse matrix representation.

@@ -5,13 +5,12 @@ import numpy as np
 
 
 class MultiplaneFast(object):
-    """This class accelerates ray tracing computations in multi plane lensing
-    for quadruple image lenses by only computing the deflection from objects in
-    front of the main deflector at z_lens one time.
+    """This class accelerates ray tracing computations in multi plane lensing for
+    quadruple image lenses by only computing the deflection from objects in front of the
+    main deflector at z_lens one time.
 
-    The first ray tracing computation through the foreground is saved
-    and re-used, but it will always have the same shape as the initial
-    x_image, y_image arrays.
+    The first ray tracing computation through the foreground is saved and re-used, but
+    it will always have the same shape as the initial x_image, y_image arrays.
     """
 
     def __init__(
@@ -83,16 +82,14 @@ class MultiplaneFast(object):
         self._foreground_rays = foreground_rays
 
     def ray_shooting_fast(self, x_image, y_image, kwargs_lens):
-        """Performs a ray tracing computation through observed coordinates on
-        the sky (self._x_image, self._y_image) to the source plane, returning
-        the final coordinates of each ray on the source plane.
+        """Performs a ray tracing computation through observed coordinates on the sky
+        (self._x_image, self._y_image) to the source plane, returning the final
+        coordinates of each ray on the source plane.
 
-        :param args_lens: An array of parameters being optimized. The
-            array is computed from a set of key word arguments by an
-            instance of ParamClass (see documentation in
-            QuadOptimizer.param_manager)
-        :return: the xy coordinate of each ray traced back to the source
-            plane
+        :param args_lens: An array of parameters being optimized. The array is computed
+            from a set of key word arguments by an instance of ParamClass (see
+            documentation in QuadOptimizer.param_manager)
+        :return: the xy coordinate of each ray traced back to the source plane
         """
         index = self._param_class.to_vary_index
         # these do not depend on kwargs_lens_array

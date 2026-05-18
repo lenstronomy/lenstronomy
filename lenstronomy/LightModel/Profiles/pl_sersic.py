@@ -15,8 +15,8 @@ export, __all__ = exporter()
 
 @export
 class PL_Sersic(object):
-    """This class contains functions to evaluate a 2D PL-Sérsic surface
-    brightness profile.
+    """This class contains functions to evaluate a 2D PL-Sérsic surface brightness
+    profile.
 
     The surface luminosity density profile corresponding to the 3D PL-Sérsic profile is written as (see Wei, Du 2020)):
 
@@ -73,8 +73,8 @@ class PL_Sersic(object):
         return u, nu
 
     def calculate_param(self, R_sersic, n_sersic):
-        """Calculate the scale radius s from the 2D effective radius R_sersic
-        and the Sérsic index n.
+        """Calculate the scale radius s from the 2D effective radius R_sersic and the
+        Sérsic index n.
 
         :param R_sersic: 2D effective radius
         :param n_sersic: Sérsic index
@@ -183,8 +183,7 @@ class PL_Sersic(object):
         return I_array
 
     def _s_u_nu_j0(self, amp, R_sersic, n_sersic, r_c):
-        """Return (s, u, nu, j0, x_c) consistent with the definitions in
-        function().
+        """Return (s, u, nu, j0, x_c) consistent with the definitions in function().
 
         x_c = (r_c/s)^nu
         """

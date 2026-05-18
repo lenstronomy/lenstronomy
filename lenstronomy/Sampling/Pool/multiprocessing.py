@@ -38,8 +38,8 @@ class CallbackWrapper(object):
 
 
 class MultiPool(Pool):
-    """A modified version of :class:`multiprocessing.pool.Pool` that has better
-    behavior with regard to ``KeyboardInterrupts`` in the :func:`map` method.
+    """A modified version of :class:`multiprocessing.pool.Pool` that has better behavior
+    with regard to ``KeyboardInterrupts`` in the :func:`map` method.
 
     (Original author: `Peter K. G. Williams <peter@newton.cx>`_)
     """
@@ -86,8 +86,7 @@ class MultiPool(Pool):
 
     def map(self, func, iterable, chunksize=None, callback=None):
         """Equivalent to the built-in ``map()`` function and
-        :meth:`multiprocessing.pool.Pool.map()`, without catching
-        ``KeyboardInterrupt``.
+        :meth:`multiprocessing.pool.Pool.map()`, without catching ``KeyboardInterrupt``.
 
         :param func: A function or callable object that is executed on each element of
             the specified ``tasks`` iterable. This object must be picklable

@@ -9,8 +9,8 @@ from lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal import LOSMinimal
 
 
 class TestLOSMinimal(object):
-    """Tests the LOSMinimal profile; inherits from LOS so we can repeat those
-    tests here.
+    """Tests the LOSMinimal profile; inherits from LOS so we can repeat those tests
+    here.
 
     This is functionally redundant but boosts coverage.
     """

@@ -127,11 +127,10 @@ class CNFW(LensProfileBase):
         return (M0 / 4 / np.pi) * ((r_core + R) * (R + Rs) ** 2) ** -1
 
     def density_lens(self, R, Rs, alpha_Rs, r_core):
-        """Computes the density at 3d radius r given lens model
-        parameterization.
+        """Computes the density at 3d radius r given lens model parameterization.
 
-        The integral in the LOS projection of this quantity results in
-        the convergence quantity.
+        The integral in the LOS projection of this quantity results in the convergence
+        quantity.
         """
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         return self.density(R, Rs, rho0, r_core)
@@ -176,8 +175,8 @@ class CNFW(LensProfileBase):
         )
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, r_core):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization
-        with angular units.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :return:
         """
@@ -203,8 +202,8 @@ class CNFW(LensProfileBase):
         return a
 
     def cnfw_gamma(self, R, Rs, rho0, r_core, ax_x, ax_y):
-        """Shear gamma of NFW profile (times Sigma_crit) along the projection
-        to coordinate 'axis'.
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -333,8 +332,8 @@ class CNFW(LensProfileBase):
         return output
 
     def _G(self, X, b, c=0.000001):
-        """Analytic solution of integral for NFW profile to compute deflection
-        angel and gamma.
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param X: R/Rs
         :type X: float >0

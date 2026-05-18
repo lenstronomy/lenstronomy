@@ -34,11 +34,11 @@ class MultiPlaneDecoupled(MultiPlane):
         z_split=None,
         use_jax=False,
     ):
-        """A class for multiplane lensing in which the deflection angles at
-        certain coordinates are fixed through user-specified interpolation
-        functions. These functions return fixed deflection angles that
-        effectively decouple deflections by a group of deflectors at redshift Z
-        from deflections produced by halos at redshift< Z.
+        """A class for multiplane lensing in which the deflection angles at certain
+        coordinates are fixed through user-specified interpolation functions. These
+        functions return fixed deflection angles that effectively decouple deflections
+        by a group of deflectors at redshift Z from deflections produced by halos at
+        redshift< Z.
 
         This class breaks the recursive nature of the multi-plane lens
         equation, and can significantly speed up computations with a
@@ -133,11 +133,10 @@ class MultiPlaneDecoupled(MultiPlane):
         )
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, *args, **kwargs):
-        """Ray-shooting through the lens volume with fixed deflection angles at
-        certain lens planes passed through the alpha_x_interp/alpha_y_interp
-        lists. Starts with (x,y) co-moving distance passed through the
-        x0_interp and y0_interp functions, then starts multi-plane ray-tracing
-        through all subsequent lens planes.
+        """Ray-shooting through the lens volume with fixed deflection angles at certain
+        lens planes passed through the alpha_x_interp/alpha_y_interp lists. Starts with
+        (x,y) co-moving distance passed through the x0_interp and y0_interp functions,
+        then starts multi-plane ray-tracing through all subsequent lens planes.
 
         :param theta_x: angular coordinate on the sky
         :param theta_y: angular coordinate on the sky

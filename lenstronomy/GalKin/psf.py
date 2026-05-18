@@ -72,8 +72,7 @@ class PSF(object):
 
     @property
     def psf_multi_gauss_amplitudes(self):
-        """Amplitudes of a multi gaussian expansion of the PSF used in
-        jampy."""
+        """Amplitudes of a multi gaussian expansion of the PSF used in jampy."""
         return self._psf.multi_gauss_amplitudes
 
 

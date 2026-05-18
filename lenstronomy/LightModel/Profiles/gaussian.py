@@ -8,8 +8,8 @@ export, __all__ = exporter()
 
 @export
 class Gaussian(object):
-    """Class for Gaussian light profile The two-dimensional Gaussian profile
-    amplitude is defined such that the 2D integral leads to the 'amp' value.
+    """Class for Gaussian light profile The two-dimensional Gaussian profile amplitude
+    is defined such that the 2D integral leads to the 'amp' value.
 
     profile name in LightModel module: 'GAUSSIAN'
     """
@@ -144,8 +144,7 @@ class GaussianEllipse(object):
 
 @export
 class MultiGaussian(object):
-    """Class for Multi Gaussian lens light (2d projected light/mass
-    distribution.
+    """Class for Multi Gaussian lens light (2d projected light/mass distribution.
 
     profile name in LightModel module: 'MULTI_GAUSSIAN'
     """

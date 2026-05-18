@@ -21,9 +21,9 @@ from scipy.interpolate import interp1d
 
 
 class CosmoInterp(object):
-    """Class which interpolates the comoving transfer distance and then
-    computes angular diameter distances from it This class is modifying the
-    astropy.cosmology routines."""
+    """Class which interpolates the comoving transfer distance and then computes angular
+    diameter distances from it This class is modifying the astropy.cosmology
+    routines."""
 
     def __init__(
         self,
@@ -194,8 +194,8 @@ class CosmoInterp(object):
             return 1.0 / self._abs_sqrt_k * np.sin(self._abs_sqrt_k.value * dc.value)
 
     def _comoving_distance_z1z2(self, z1, z2):
-        """Comoving line-of-sight distance in Mpc between objects at redshifts
-        z1 and z2.
+        """Comoving line-of-sight distance in Mpc between objects at redshifts z1 and
+        z2.
 
         The comoving distance along the line-of-sight between two
         objects remains constant with time for objects in the Hubble
@@ -222,8 +222,7 @@ class CosmoInterp(object):
         """Interpolates the comoving distance.
 
         :param z_start: starting redshift range (should be zero)
-        :param z_stop: highest redshift to which to compute the comoving
-            distance
+        :param z_stop: highest redshift to which to compute the comoving distance
         :param num_interp: number of steps uniformly spread in redshift
         :return: interpolation object in this class
         """
@@ -239,8 +238,7 @@ class CosmoInterp(object):
         return interp1d(z_steps, ang_dist, assume_sorted=True)
 
     def _interpolate_ang_dist(self, ang_dist_list, z_list, Ok0, K):
-        """Translates angular diameter distances to transversal comoving
-        distances.
+        """Translates angular diameter distances to transversal comoving distances.
 
         :param ang_dist_list: angular diameter distances in units Mpc
         :type ang_dist_list: numpy array
@@ -248,8 +246,7 @@ class CosmoInterp(object):
         :type z_list: numpy array
         :param Ok0: Omega_k(z=0)
         :param K: Omega_k / (hubble distance)^2 in Mpc^-2
-        :return: interpolation function of transversal comoving diameter
-            distance [Mpc]
+        :return: interpolation function of transversal comoving diameter distance [Mpc]
         """
         ang_dist_list = np.asanyarray(ang_dist_list)
         z_list = np.asanyarray(z_list)

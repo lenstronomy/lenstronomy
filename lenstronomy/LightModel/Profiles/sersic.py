@@ -131,8 +131,8 @@ class SersicElliptic(SersicUtil):
 
 @export
 class SersicElliptic_qPhi(SersicUtil):
-    """This class is the same as SersicElliptic except sampling over q and phi
-    instead of e1 and e2."""
+    """This class is the same as SersicElliptic except sampling over q and phi instead
+    of e1 and e2."""
 
     param_names = ["amp", "R_sersic", "n_sersic", "q", "phi", "center_x", "center_y"]
     lower_limit_default = {
@@ -193,8 +193,8 @@ class SersicElliptic_qPhi(SersicUtil):
 
 @export
 class CoreSersic(SersicUtil):
-    """This class contains the Core-Sersic function introduced by e.g. Trujillo
-    et al. 2004.
+    """This class contains the Core-Sersic function introduced by e.g. Trujillo et al.
+    2004.
 
     .. math::
 

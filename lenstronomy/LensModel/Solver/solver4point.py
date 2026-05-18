@@ -308,8 +308,8 @@ class Solver4Point(object):
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
-        """Updates kwargs_fixed_lens_list with the values of kwargs_lens_init
-        for the parameters that are getting solved for.
+        """Updates kwargs_fixed_lens_list with the values of kwargs_lens_init for the
+        parameters that are getting solved for.
 
         :param kwargs_fixed_lens_list:
         :param kwargs_lens_init:

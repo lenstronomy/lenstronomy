@@ -7,8 +7,7 @@ __all__ = ["SinglePlane"]
 
 
 class SinglePlane(ProfileListBase):
-    """Class to handle an arbitrary list of lens models in a single lensing
-    plane."""
+    """Class to handle an arbitrary list of lens models in a single lensing plane."""
 
     def __init__(
         self,
@@ -46,11 +45,10 @@ class SinglePlane(ProfileListBase):
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
-        :return: source plane positions corresponding to (x, y) in the
-            image plane
+        :return: source plane positions corresponding to (x, y) in the image plane
         """
 
         dx, dy = self.alpha(x, y, kwargs, k=k)
@@ -65,11 +63,11 @@ class SinglePlane(ProfileListBase):
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching
+            the lens model classes
         :param k:
-        :return: fermat potential in arcsec**2 without geometry term
-            (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn
+            1 in Suyu et al. 2013) as a list
         """
 
         potential = self.potential(x_image, y_image, kwargs_lens, k=k)
@@ -85,8 +83,8 @@ class SinglePlane(ProfileListBase):
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """
@@ -110,8 +108,8 @@ class SinglePlane(ProfileListBase):
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
@@ -141,8 +139,8 @@ class SinglePlane(ProfileListBase):
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param k: only evaluate the k-th lens model
         :return: f_xx, f_xy, f_yx, f_yy components
         """
@@ -254,15 +252,14 @@ class SinglePlane(ProfileListBase):
         return mass_2d
 
     def density(self, r, kwargs, bool_list=None):
-        """3d mass density at radius r The integral in the LOS projection of
-        this quantity results in the convergence quantity.
+        """3d mass density at radius r The integral in the LOS projection of this
+        quantity results in the convergence quantity.
 
         :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model
-            parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the
+            lens model classes
         :param bool_list: list of bools that are part of the output
-        :return: mass density at radius r (in angular units, modulo
-            epsilon_crit)
+        :return: mass density at radius r (in angular units, modulo epsilon_crit)
         """
         bool_list = self._bool_list(bool_list)
         density = 0

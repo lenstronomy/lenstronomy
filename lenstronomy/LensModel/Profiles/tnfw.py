@@ -11,8 +11,8 @@ __all__ = ["TNFW"]
 
 
 class TNFW(LensProfileBase):
-    """This class contains functions concerning the truncated NFW profile with
-    a truncation function (r_trunc^2)*(r^2+r_trunc^2)
+    """This class contains functions concerning the truncated NFW profile with a
+    truncation function (r_trunc^2)*(r^2+r_trunc^2)
 
     density equation is:
 
@@ -109,13 +109,12 @@ class TNFW(LensProfileBase):
                 return (x**2 - 1) ** -0.5 * np.arctan((x**2 - 1) ** 0.5)
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function (integral of TNFW), which
-        are the deflection angles.
+        """Returns df/dx and df/dy of the function (integral of TNFW), which are the
+        deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in
-            angular unit
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param r_trunc: truncation radius (angular units)
         :param center_x: center of halo (in angular units)
@@ -131,19 +130,16 @@ class TNFW(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
-        """Returns d^2f/dx^2, d^2f/dxdy, d^2f/dydx, d^2f/dy^2 of the TNFW
-        potential f.
+        """Returns d^2f/dx^2, d^2f/dxdy, d^2f/dydx, d^2f/dy^2 of the TNFW potential f.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in
-            angular unit
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param r_trunc: truncation radius (angular units)
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2,
-            d^2/dxdy
+        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
 
         rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
@@ -245,8 +241,7 @@ class TNFW(LensProfileBase):
         return 2 * rho0 * Rs**3 * hx
 
     def tnfw_alpha(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
-        """Deflection angle of TNFW profile along the projection to coordinate
-        axis.
+        """Deflection angle of TNFW profile along the projection to coordinate axis.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -269,8 +264,8 @@ class TNFW(LensProfileBase):
         return a * ax_x, a * ax_y
 
     def tnfw_gamma(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
-        """Shear gamma of TNFW profile (times Sigma_crit) along the projection
-        to coordinate 'axis'.
+        """Shear gamma of TNFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -344,8 +339,8 @@ class TNFW(LensProfileBase):
         return result
 
     def _g(self, x, tau):
-        """Analytic solution of integral for NFW profile to compute deflection
-        angel and gamma.
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param x: R/Rs
         :type x: float >0

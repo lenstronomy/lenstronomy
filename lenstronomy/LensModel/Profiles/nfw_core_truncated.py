@@ -10,8 +10,8 @@ __all__ = ["TNFWC"]
 
 
 class TNFWC(LensProfileBase):
-    """This class contains an pseudo NFW profile with a core radius and a
-    truncation radius. The density in 3D is given by.
+    """This class contains an pseudo NFW profile with a core radius and a truncation
+    radius. The density in 3D is given by.
 
     .. math::
         \\rho(r) = \\frac{\\rho_0 r_s^3}{\\left(r^2+r_c^2\\right)^{1/2} \\left(r_s^2+r^2\\right)} \\left(\\frac{r_t^2}{r^2+r_t^2}\\right)
@@ -43,13 +43,11 @@ class TNFWC(LensProfileBase):
     }
 
     def derivatives(self, x, y, Rs, alpha_Rs, r_core, r_trunc, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function which are the deflection
-        angles.
+        """Returns df/dx and df/dy of the function which are the deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in
-            angular unit
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param r_core: core radius [arcsec]
         :param r_trunc: truncation radius [arcsec]
@@ -111,9 +109,9 @@ class TNFWC(LensProfileBase):
         return rho0 / denom
 
     def density_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
-        """Computes the density at 3d radius r given lens model
-        parameterization. The integral in the LOS projection of this quantity
-        results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: 3d radios
         :param Rs: scale radius
@@ -130,8 +128,7 @@ class TNFWC(LensProfileBase):
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param Rs: turn over point in the slope of the NFW profile in
-            angular unit
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
         :param rho0: density normalization at Rs
         :param r_core: core radius [arcsec]
         :param r_trunc: truncation radius [arcsec]
@@ -162,8 +159,8 @@ class TNFWC(LensProfileBase):
         return 4 * np.pi * quad(integrand, 0, r)[0]
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
-        """Mass enclosed a 3d sphere or radius r. This function takes as input
-        the lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r. This function takes as input the
+        lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -195,8 +192,8 @@ class TNFWC(LensProfileBase):
         return m_2d
 
     def nfw_alpha(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
-        """Deflection angle of the profile (times Sigma_crit D_OL) along the
-        projection to coordinate 'axis'.
+        """Deflection angle of the profile (times Sigma_crit D_OL) along the projection
+        to coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -216,8 +213,8 @@ class TNFWC(LensProfileBase):
         return a * ax_x, a * ax_y
 
     def nfw_gamma(self, R, Rs, rho0, r_core, r_trunc, ax_x, ax_y):
-        """Shear gamma of NFW profile (times Sigma_crit) along the projection
-        to coordinate 'axis'.
+        """Shear gamma of NFW profile (times Sigma_crit) along the projection to
+        coordinate 'axis'.
 
         :param R: 3d radius
         :param Rs: scale radius
@@ -251,8 +248,8 @@ class TNFWC(LensProfileBase):
         return prefactor * (self._u1(x, b, 1.0) - self._u1(x, b, t))
 
     def _g(self, x, b, t):
-        """Analytic solution of integral for NFW profile to compute deflection
-        angle and gamma.
+        """Analytic solution of integral for NFW profile to compute deflection angle and
+        gamma.
 
         :param X: R/Rs
         :type X: float >0

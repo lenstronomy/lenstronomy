@@ -14,8 +14,8 @@ __all__ = ["Param"]
 
 
 class Param(object):
-    """Class that handles the parameter constraints. In particular when
-    different model profiles share joint constraints.
+    """Class that handles the parameter constraints. In particular when different model
+    profiles share joint constraints.
 
     Options between same model classes:
 
@@ -652,14 +652,12 @@ class Param(object):
         """Inverse of getParam function.
 
         :param kwargs_lens: keyword arguments depending on model options
-        :param kwargs_source: keyword arguments depending on model
-            options
+        :param kwargs_source: keyword arguments depending on model options
         :param kwargs_lens_light: lens light model keyword argument list
         :param kwargs_ps: point source model keyword argument list
         :param kwargs_special: special keyword arguments
         :param kwargs_extinction: extinction model keyword argument list
-        :param kwargs_tracer_source: tracer of the source light keyword
-            argument list
+        :param kwargs_tracer_source: tracer of the source light keyword argument list
         :return: numpy array of parameters
         """
         args = self.lens_params.set_params(kwargs_lens)
@@ -740,10 +738,10 @@ class Param(object):
 
         :param kwargs_source: source light model keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param image_plane: boolean, if True, does not up map image
-            plane parameters to source plane
-        :return: source light model keyword arguments with mapped
-            position arguments from image to source plane
+        :param image_plane: boolean, if True, does not up map image plane parameters to
+            source plane
+        :return: source light model keyword arguments with mapped position arguments
+            from image to source plane
         """
         kwargs_source_copy = copy.deepcopy(kwargs_source)
         for i, kwargs in enumerate(kwargs_source_copy):
@@ -768,16 +766,14 @@ class Param(object):
         kwargs_special,
         image_plane=False,
     ):
-        """Update the source light model parameters with the point source
-        position.
+        """Update the source light model parameters with the point source position.
 
         :param kwargs_lens_list: lens model keyword argument list
-        :param kwargs_source_list: source light model keyword argument
-            list
+        :param kwargs_source_list: source light model keyword argument list
         :param kwargs_ps: point source model keyword argument list
         :param kwargs_special: special keyword arguments
-        :param image_plane: boolean, if True, does not up map image
-            plane parameters to source plane
+        :param image_plane: boolean, if True, does not up map image plane parameters to
+            source plane
         :return: updated source light model keyword arguments
         """
         kwargs_source_list = self.image2source_plane(
@@ -895,11 +891,10 @@ class Param(object):
     def update_lens_scaling(self, kwargs_special, kwargs_lens, inverse=False):
         """Multiplies the scaling parameters of the profiles.
 
-        :param kwargs_special: keyword arguments of the 'special'
-            arguments
+        :param kwargs_special: keyword arguments of the 'special' arguments
         :param kwargs_lens: lens model keyword argument list
-        :param inverse: bool, if True, performs the inverse lens scaling
-            for bijective transforms
+        :param inverse: bool, if True, performs the inverse lens scaling for bijective
+            transforms
         :return: updated lens model keyword argument list
         """
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
@@ -962,10 +957,9 @@ class Param(object):
     def update_kwargs_model(self, kwargs_special):
         """Updates model keyword arguments with redshifts being sampled.
 
-        :param kwargs_special: keyword arguments from SpecialParam()
-            class return of sampling arguments
-        :return: kwargs_model, bool (True if kwargs_model has changed,
-            else False)
+        :param kwargs_special: keyword arguments from SpecialParam() class return of
+            sampling arguments
+        :return: kwargs_model, bool (True if kwargs_model has changed, else False)
         """
         if self._num_z_sampling == 0:
             return self._kwargs_model, False
@@ -997,12 +991,12 @@ class Param(object):
         return kwargs_model, True
 
     def _update_lens_model(self, kwargs_special):
-        """Updates lens model instance of this class (and all class instances
-        related to it) when an update to the modeled redshifts of the deflector
-        and/or source planes are made.
+        """Updates lens model instance of this class (and all class instances related to
+        it) when an update to the modeled redshifts of the deflector and/or source
+        planes are made.
 
-        :param kwargs_special: keyword arguments from SpecialParam()
-            class return of sampling arguments
+        :param kwargs_special: keyword arguments from SpecialParam() class return of
+            sampling arguments
         :return: None, internal calls instance updated
         """
         kwargs_model, update_bool = self.update_kwargs_model(kwargs_special)

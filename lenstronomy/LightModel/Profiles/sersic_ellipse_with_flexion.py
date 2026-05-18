@@ -12,8 +12,8 @@ export, __all__ = exporter()
 
 @export
 class SersicEllipseWithFlexion(SersicUtil):
-    """This class contains functions to evaluate an elliptical Sersic function
-    which contains flexion.
+    """This class contains functions to evaluate an elliptical Sersic function which
+    contains flexion.
 
     .. math::
 

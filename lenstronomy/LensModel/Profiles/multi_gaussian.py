@@ -9,8 +9,8 @@ from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import (
 
 
 class MultiGaussian(LensProfileBase):
-    """This class implements a sum of multiple circular Gaussian profiles for
-    use in gravitational lensing.
+    """This class implements a sum of multiple circular Gaussian profiles for use in
+    gravitational lensing.
 
     Each component in the sum is a circular Gaussian potential profile defined
     by its amplitude (`amp`) and standard deviation (`sigma`). The Gaussian
@@ -42,22 +42,18 @@ class MultiGaussian(LensProfileBase):
         super(MultiGaussian, self).__init__()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """Returns the summed Gaussian potential evaluated at coordinates (x,
-        y).
+        """Returns the summed Gaussian potential evaluated at coordinates (x, y).
 
-        Each component is a circular 2D Gaussian profile centered at
-        (center_x, center_y), with its own amplitude and width (sigma).
-        The total potential is the sum of all such Gaussian components.
-        A scale factor is optional.
+        Each component is a circular 2D Gaussian profile centered at (center_x,
+        center_y), with its own amplitude and width (sigma). The total potential is the
+        sum of all such Gaussian components. A scale factor is optional.
 
         :param x: x-coordinate(s) of the evaluation grid (array-like)
         :param y: y-coordinate(s) of the evaluation grid (array-like)
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each Gaussian component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
         :return: total potential evaluated at (x, y)
         """
@@ -77,8 +73,8 @@ class MultiGaussian(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """Returns the gradient in both angular directions of the summed
-        Gaussian potential evaluated at (x, y).
+        """Returns the gradient in both angular directions of the summed Gaussian
+        potential evaluated at (x, y).
 
         .. math::
             \\frac{df}{dx}, \\frac{df}{dy}
@@ -110,20 +106,17 @@ class MultiGaussian(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
-        """Returns the second derivatives of the summed Gaussian potential
-        evaluated at (x, y).
+        """Returns the second derivatives of the summed Gaussian potential evaluated at
+        (x, y).
 
         :param x: x-coordinate(s) where the gradient is evaluated
         :param y: y-coordinate(s) where the gradient is evaluated
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
-        :return: :math:`\\frac{df}{dx}, \\frac{df}{dy}` of the same
-            shape as x and y
+        :return: :math:`\\frac{df}{dx}, \\frac{df}{dy}` of the same shape as x and y
         """
         # Initialize hessian
         f_xx, f_yy, f_xy = (
@@ -148,8 +141,8 @@ class MultiGaussian(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma, scale_factor=1):
-        """Returns the 3D density profile evaluated at radius `r` for a sum of
-        Gaussian components.
+        """Returns the 3D density profile evaluated at radius `r` for a sum of Gaussian
+        components.
 
         :param r: radial coordinate to evaluate the density
         :param amp: amplitudes for each Gaussian component
@@ -172,10 +165,8 @@ class MultiGaussian(LensProfileBase):
         :param y: y-coordinate(s) where the gradient is evaluated
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
         :return: total 2D surface density
         """
@@ -251,10 +242,8 @@ class MultiGaussianEllipsePotential(LensProfileBase):
         :param y: y-coordinate(s) where the gradient is evaluated
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
         :return: potential
         """
@@ -283,10 +272,8 @@ class MultiGaussianEllipsePotential(LensProfileBase):
         :param y: y-coordinate(s) where the gradient is evaluated
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
         :return: gradient of potential
         """
@@ -314,10 +301,8 @@ class MultiGaussianEllipsePotential(LensProfileBase):
         :param y: y-coordinate(s) where the gradient is evaluated
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
         :return: hessian of potential
         """
@@ -370,10 +355,8 @@ class MultiGaussianEllipsePotential(LensProfileBase):
         :param y: y-coordinate(s) where the gradient is evaluated
         :param amp: amplitudes for each Gaussian component
         :param sigma: standard deviations for each component
-        :param center_x: x-coordinate of the shared center (default is
-            0)
-        :param center_y: y-coordinate of the shared center (default is
-            0)
+        :param center_x: x-coordinate of the shared center (default is 0)
+        :param center_y: y-coordinate of the shared center (default is 0)
         :param scale_factor: global factor applied to each amplitude
         :return: total 2D surface density
         """

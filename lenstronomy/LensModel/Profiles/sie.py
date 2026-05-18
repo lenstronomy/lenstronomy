@@ -129,8 +129,8 @@ class SIE(LensProfileBase):
 
     @staticmethod
     def theta2rho(theta_E):
-        """Converts projected density parameter (in units of deflection) into
-        3d density parameter.
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter.
 
         :param theta_E:
         :return:
@@ -151,8 +151,8 @@ class SIE(LensProfileBase):
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, e1=0, e2=0):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization
-        with angular units.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :param r: radius in angular units
         :param theta_E: Einstein radius
@@ -187,8 +187,7 @@ class SIE(LensProfileBase):
         return self.mass_2d(r, rho0)
 
     def grav_pot(self, x, y, rho0, e1=0, e2=0, center_x=0, center_y=0):
-        """Gravitational potential (modulo 4 pi G and rho0 in appropriate
-        units)
+        """Gravitational potential (modulo 4 pi G and rho0 in appropriate units)
 
         :param x:
         :param y:
@@ -207,9 +206,9 @@ class SIE(LensProfileBase):
         return pot
 
     def density_lens(self, r, theta_E, e1=0, e2=0):
-        """Computes the density at 3d radius r given lens model
-        parameterization. The integral in the LOS projection of this quantity
-        results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: radius in angles
         :param theta_E: Einstein radius

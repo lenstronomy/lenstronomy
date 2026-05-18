@@ -34,8 +34,8 @@ class TestClass:
         return a * cos, a * sin
 
     def _g(self, X):
-        """Analytic solution of integral for NFW profile to compute deflection
-        angel and gamma.
+        """Analytic solution of integral for NFW profile to compute deflection angel and
+        gamma.
 
         :param x: R/Rs
         :type x: float >0

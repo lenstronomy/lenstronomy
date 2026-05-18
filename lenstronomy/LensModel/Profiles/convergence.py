@@ -46,10 +46,8 @@ class Convergence(LensProfileBase):
         :param x: x-coordinate
         :param y: y-coordinate
         :param kappa: external convergence
-        :param ra_0: zero point of polynomial expansion (no deflection
-            added)
-        :param dec_0: zero point of polynomial expansion (no deflection
-            added)
+        :param ra_0: zero point of polynomial expansion (no deflection added)
+        :param dec_0: zero point of polynomial expansion (no deflection added)
         :return: second order derivatives f_xx, f_xy, f_yx, f_yy
         """
         gamma1 = 0

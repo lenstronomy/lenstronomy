@@ -249,12 +249,10 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_num_lin_proj / sigma_v_analytic, 1, decimal=2)
 
     def test_log_vs_linear_integral(self):
-        """Here we test logarithmic vs linear integral in an end-to-end
-        fashion.
+        """Here we test logarithmic vs linear integral in an end-to-end fashion.
 
-        We do not demand the highest level of precisions here!!! We are
-        using the luminosity-weighted velocity dispersion integration
-        calculation in this test.
+        We do not demand the highest level of precisions here!!! We are using the
+        luminosity-weighted velocity dispersion integration calculation in this test.
         """
 
         # light profile
@@ -573,8 +571,8 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
 
     def test_dispersion_map_grid_convolved(self):
-        """Test whether the old and new version using direct PSF convolution
-        provide the same answer."""
+        """Test whether the old and new version using direct PSF convolution provide the
+        same answer."""
         # light profile
         light_profile_list = ["HERNQUIST"]
         r_eff = 1.0

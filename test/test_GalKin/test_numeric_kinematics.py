@@ -31,9 +31,9 @@ class TestMassProfile(object):
         npt.assert_almost_equal(mass_3d / mass_3d_exact, 1.0, decimal=3)
 
     def test_sigma_r2(self):
-        """Tests the solution of the Jeans equation for sigma**2(r), where r is
-        the 3d radius. Test is compared to analytic OM solution with power-law
-        and Hernquist light profile.
+        """Tests the solution of the Jeans equation for sigma**2(r), where r is the 3d
+        radius. Test is compared to analytic OM solution with power-law and Hernquist
+        light profile.
 
         :return:
         """
@@ -144,8 +144,8 @@ class TestMassProfile(object):
         npt.assert_almost_equal(vel_disp, 244, decimal=-1)
 
     def test_sigma_s2(self):
-        """Test LOS projected velocity dispersion at 3d ratios (numerical Jeans
-        equation solution vs analytic one)"""
+        """Test LOS projected velocity dispersion at 3d ratios (numerical Jeans equation
+        solution vs analytic one)"""
         light_profile_list = ["HERNQUIST"]
         r_eff = 0.5
         Rs = 0.551 * r_eff

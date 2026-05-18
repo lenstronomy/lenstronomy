@@ -51,8 +51,8 @@ class TestChameleon(object):
         npt.assert_almost_equal(flux, flux1 - flux2, decimal=5)
 
     def test_lens_model_correspondence(self):
-        """Here we test the proportionality of the convergence of the lens
-        model with the surface brightness of the light model."""
+        """Here we test the proportionality of the convergence of the lens model with
+        the surface brightness of the light model."""
         chameleon_lens = ChameleonLens()
         chameleon = Chameleon()
 

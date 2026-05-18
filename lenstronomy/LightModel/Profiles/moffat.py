@@ -6,8 +6,7 @@ __all__ = ["Moffat"]
 
 
 class Moffat(object):
-    """This class contains functions to evaluate a Moffat surface brightness
-    profile.
+    """This class contains functions to evaluate a Moffat surface brightness profile.
 
     .. math::
 

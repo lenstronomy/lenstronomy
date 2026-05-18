@@ -5,9 +5,9 @@ __all__ = ["GalkinModel"]
 
 
 class GalkinModel(object):
-    """This class handles all the kinematic modeling aspects of Galkin Excluded
-    are observational conditions (seeing, aperture etc) Major class to compute
-    velocity dispersion measurements given light and mass models.
+    """This class handles all the kinematic modeling aspects of Galkin Excluded are
+    observational conditions (seeing, aperture etc) Major class to compute velocity
+    dispersion measurements given light and mass models.
 
     The class supports any mass and light distribution (and superposition thereof) that has a 3d correspondance in their
     2d lens model distribution. For models that do not have this correspondence, you may want to apply a

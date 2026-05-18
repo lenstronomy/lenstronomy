@@ -732,12 +732,11 @@ class TestSolver4Point(object):
         )
 
     def test_solver_custom(self):
-        """This demonstrates functionality of the CUSTOM solver_type option
-        with a solver enforcing a fixed axis ratio.
+        """This demonstrates functionality of the CUSTOM solver_type option with a
+        solver enforcing a fixed axis ratio.
 
-        The test is the same as test_multiplane, but the solution for
-        the lens model is found for a fixed axis ratio while still
-        sampling in e1/e2 basis
+        The test is the same as test_multiplane, but the solution for the lens model is
+        found for a fixed axis ratio while still sampling in e1/e2 basis
         """
         lens_model_list = ["SPEP", "SHEAR", "SIS"]
         lensModel = LensModel(

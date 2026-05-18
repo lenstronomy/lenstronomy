@@ -19,11 +19,10 @@ __all__ = ["FittingSequence"]
 
 
 class FittingSequence(object):
-    """Class to define a sequence of fitting applied, inherit the Fitting class
-    this is a Workflow manager that allows to update model configurations
-    before executing another step in the modelling The user can take this
-    module as an example of how to create their own workflows or build their
-    own around the FittingSequence."""
+    """Class to define a sequence of fitting applied, inherit the Fitting class this is
+    a Workflow manager that allows to update model configurations before executing
+    another step in the modelling The user can take this module as an example of how to
+    create their own workflows or build their own around the FittingSequence."""
 
     def __init__(
         self,
@@ -235,8 +234,7 @@ class FittingSequence(object):
         return self._updateManager.best_fit(bijective=bijective)
 
     def update_state(self, kwargs_update):
-        """Updates current best fit state to the input model keywords
-        specified.
+        """Updates current best fit state to the input model keywords specified.
 
         :param kwargs_update: format of kwargs_result
         :return: None
@@ -244,8 +242,8 @@ class FittingSequence(object):
         self._updateManager.update_param_state(**kwargs_update)
 
     def best_fit_likelihood(self, verbose=False):
-        """Returns the log likelihood of the best fit model of the current
-        state of this class.
+        """Returns the log likelihood of the best fit model of the current state of this
+        class.
 
         :param verbose: bool, if True, prints likelihood statements
         :return: log likelihood, float
@@ -298,8 +296,8 @@ class FittingSequence(object):
         """Downhill simplex optimization using the Nelder-Mead algorithm.
 
         :param n_iterations: maximum number of iterations to perform
-        :param method: the optimization method used, see documentation
-            in scipy.optimize.minimize
+        :param method: the optimization method used, see documentation in
+            scipy.optimize.minimize
         :return: result of the best fit
         """
 
@@ -419,19 +417,15 @@ class FittingSequence(object):
     ):
         """Particle Swarm Optimization.
 
-        :param n_particles: number of particles in the Particle Swarm
-            Optimization
-        :param n_iterations: number of iterations in the optimization
-            process
-        :param sigma_scale: scaling of the initial parameter spread
-            relative to the width in the initial settings
-        :param print_key: string, printed text when executing this
-            routine
-        :param threadCount: number of CPU threads. If MPI option is set,
-            threadCount=1
-        :return: result of the best fit, the PSO chain of the best fit
-            parameter after each iteration [lnlikelihood, parameters,
-            velocities], list of parameters in same order as in chain
+        :param n_particles: number of particles in the Particle Swarm Optimization
+        :param n_iterations: number of iterations in the optimization process
+        :param sigma_scale: scaling of the initial parameter spread relative to the
+            width in the initial settings
+        :param print_key: string, printed text when executing this routine
+        :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
+        :return: result of the best fit, the PSO chain of the best fit parameter after
+            each iteration [lnlikelihood, parameters, velocities], list of parameters in
+            same order as in chain
         """
 
         param_class = self.param_class
@@ -481,8 +475,7 @@ class FittingSequence(object):
         dynesty_bound="multi",
         dynesty_sample="auto",
     ):
-        """Run (Dynamic) Nested Sampling algorithms, depending on the type of
-        algorithm.
+        """Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
 
         :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
         :param kwargs_run: keywords passed to the core sampling method
@@ -597,10 +590,10 @@ class FittingSequence(object):
     def psf_iteration(self, compute_bands=None, **kwargs_psf_iter):
         """Iterative PSF reconstruction.
 
-        :param compute_bands: bool list, if multiple bands, this process
-            can be limited to a subset of bands
-        :param kwargs_psf_iter: keyword arguments as used or available
-            in PSFIteration.update_iterative() definition
+        :param compute_bands: bool list, if multiple bands, this process can be limited
+            to a subset of bands
+        :param kwargs_psf_iter: keyword arguments as used or available in
+            PSFIteration.update_iterative() definition
         :return: 0, updated PSF is stored in self.multi_band_list
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -649,24 +642,21 @@ class FittingSequence(object):
         delta_shift=0.2,
         delta_rot=0.1,
     ):
-        """Aligns the coordinate systems of different exposures within a fixed
-        model parameterisation by executing a PSO with relative coordinate
-        shifts as free parameters.
+        """Aligns the coordinate systems of different exposures within a fixed model
+        parameterisation by executing a PSO with relative coordinate shifts as free
+        parameters.
 
-        :param n_particles: number of particles in the Particle Swarm
-            Optimization
-        :param n_iterations: number of iterations in the optimization
-            process
+        :param n_particles: number of particles in the Particle Swarm Optimization
+        :param n_iterations: number of iterations in the optimization process
         :param align_offset: aligns shift in Ra and Dec
         :type align_offset: boolean
         :param align_rotation: aligns coordinate rotation
         :type align_rotation: boolean
         :param delta_shift: astrometric shift tolerance
         :param delta_rot: rotation angle tolerance [in radian]
-        :param compute_bands: bool list, if multiple bands, this process
-            can be limited to a subset of bands for which the coordinate
-            system is being fit for best alignment to the model
-            parameters
+        :param compute_bands: bool list, if multiple bands, this process can be limited
+            to a subset of bands for which the coordinate system is being fit for best
+            alignment to the model parameters
         :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
@@ -720,20 +710,14 @@ class FittingSequence(object):
         scaling_lower_limit=0,
         scaling_upper_limit=1000,
     ):
-        """Calibrates flux_scaling between multiple images. This routine only
-        works in 'join-linear' model when fluxes are meant to be identical for
-        different bands.
+        """Calibrates flux_scaling between multiple images. This routine only works in
+        'join-linear' model when fluxes are meant to be identical for different bands.
 
-        :param n_particles: number of particles in the Particle Swarm
-            Optimization
-        :param n_iterations: number of iterations in the optimization
-            process
-        :param calibrate_bands: state which bands the flux calibration
-            is applied to
-        :type calibrate_bands: list of booleans of length of the imaging
-            bands
-        :param threadCount: number of CPU threads. If MPI option is set,
-            threadCount=1
+        :param n_particles: number of particles in the Particle Swarm Optimization
+        :param n_iterations: number of iterations in the optimization process
+        :param calibrate_bands: state which bands the flux calibration is applied to
+        :type calibrate_bands: list of booleans of length of the imaging bands
+        :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :type threadCount: integer
         :param scaling_lower_limit: lower limit of flux_scaling
         :param scaling_upper_limit: upper limit of flux scaling
@@ -862,12 +846,12 @@ class FittingSequence(object):
         self._updateManager.update_param_value(**kwargs)
 
     def fix_not_computed(self, free_bands):
-        """Fixes lens model parameters of imaging bands/frames that are not
-        computed and frees the parameters of the other lens models to the
-        initial kwargs_fixed options.
+        """Fixes lens model parameters of imaging bands/frames that are not computed and
+        frees the parameters of the other lens models to the initial kwargs_fixed
+        options.
 
-        :param free_bands: bool list of length of imaging bands in order
-            of imaging bands, if False: set fixed lens model
+        :param free_bands: bool list of length of imaging bands in order of imaging
+            bands, if False: set fixed lens model
         :return: None
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
@@ -905,8 +889,7 @@ class FittingSequence(object):
         return self.best_fit_from_samples(samples, logL_values)
 
     def best_fit_from_samples(self, samples, logl):
-        """Return best fit (max likelihood) value of samples in lenstronomy
-        conventions.
+        """Return best fit (max likelihood) value of samples in lenstronomy conventions.
 
         :param samples: samples of multi-dimensional parameter space
         :param logl: likelihood values for each sample

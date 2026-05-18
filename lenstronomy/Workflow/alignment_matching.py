@@ -50,8 +50,8 @@ class AlignmentFitting(object):
         print_key="default",
         verbose=False,
     ):
-        """Returns the best fit for the lens model on catalogue basis with
-        particle swarm optimizer.
+        """Returns the best fit for the lens model on catalogue basis with particle
+        swarm optimizer.
 
         :param n_particles:
         :param n_iterations:
@@ -124,8 +124,7 @@ class AlignmentLikelihood(object):
         self._kwargs_params.pop("kwargs_tracer_source", None)
 
     def _likelihood(self, args):
-        """Routine to compute X2 given variable parameters for a MCMC/PSO
-        chainF."""
+        """Routine to compute X2 given variable parameters for a MCMC/PSO chainF."""
         # generate image and computes likelihood
         multi_band_list = self.update_multi_band(args)
         image_model = SingleBandMultiModel(

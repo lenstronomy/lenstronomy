@@ -103,8 +103,8 @@ class DipoleUtil(object):
 
     @staticmethod
     def mass_ratio(theta_E, theta_E_sub):
-        """Computes mass ration of the two clumps with given Einstein radius
-        and power law slope (clump1/sub-clump) :param theta_E:
+        """Computes mass ration of the two clumps with given Einstein radius and power
+        law slope (clump1/sub-clump) :param theta_E:
 
         :param theta_E_sub:
         :return:

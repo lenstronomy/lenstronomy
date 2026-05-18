@@ -9,13 +9,12 @@ __all__ = ["GNFWParam"]
 
 
 class GNFWParam(object):
-    """Class which contains a halo model parameters dependent on cosmology for
-    gNFW profile. All distances are given in physical units.
+    """Class which contains a halo model parameters dependent on cosmology for gNFW
+    profile. All distances are given in physical units.
 
-    Mass definitions are relative to 200 crit including redshift
-    evolution. The redshift evolution is cosmology dependent (dark
-    energy). The H0 dependence is propagated into the input and return
-    units.
+    Mass definitions are relative to 200 crit including redshift evolution. The redshift
+    evolution is cosmology dependent (dark energy). The H0 dependence is propagated into
+    the input and return units.
     """
 
     rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
@@ -32,13 +31,13 @@ class GNFWParam(object):
         self.nfw_param = NFWParam(cosmo)
 
     def rhoc_z(self, z):
-        """Compute the critical density of the universe at redshift z in
-        physical units [h^2 M_sun Mpc^-3].
+        """Compute the critical density of the universe at redshift z in physical units
+        [h^2 M_sun Mpc^-3].
 
         :param z: redshift
         :type z: float
-        :return: critical density of the universe at redshift z in
-            physical units [h^2 M_sun Mpc^-3]
+        :return: critical density of the universe at redshift z in physical units [h^2
+            M_sun Mpc^-3]
         :rtype: float
         """
         return self.nfw_param.rhoc_z(z)
@@ -73,8 +72,7 @@ class GNFWParam(object):
         )
 
     def r200_M(self, M, z):
-        """Compute the radius R_200 crit of a halo of mass M in physical mass
-        M/h.
+        """Compute the radius R_200 crit of a halo of mass M in physical mass M/h.
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array
@@ -98,8 +96,7 @@ class GNFWParam(object):
         return self.nfw_param.M_r200(r200, z)
 
     def rho0_c(self, c, z, gamma_in):
-        """Computes density normalization as a function of concentration
-        parameter.
+        """Computes density normalization as a function of concentration parameter.
 
         :param c: concentration
         :type c: float
@@ -120,8 +117,8 @@ class GNFWParam(object):
         )
 
     def c_rho0(self, rho0, z, gamma_in):
-        """Computes the concentration given density normalization rho_0 in
-        h^2/Mpc^3 (physical) (inverse of function rho0_c)
+        """Computes the concentration given density normalization rho_0 in h^2/Mpc^3
+        (physical) (inverse of function rho0_c)
 
         :param rho0: density normalization in h^2/Mpc^3 (physical)
         :type rho0: float
@@ -169,9 +166,9 @@ class GNFWParam(object):
         return self.nfw_param.c_M_z(M, z)
 
     def gnfw_Mz(self, M, z, gamma_in):
-        """Returns all needed parameter (in physical units modulo h) to draw
-        the profile of the main halo r200 in physical Mpc/h rho_s in  h^2/Mpc^3
-        (physical) Rs in Mpc/h physical c unit less.
+        """Returns all needed parameter (in physical units modulo h) to draw the profile
+        of the main halo r200 in physical Mpc/h rho_s in  h^2/Mpc^3 (physical) Rs in
+        Mpc/h physical c unit less.
 
         :param M: Mass in physical M_sun/h
         :type M: float

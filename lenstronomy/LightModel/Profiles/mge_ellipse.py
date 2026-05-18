@@ -86,12 +86,10 @@ class MGEEllipse(object):
 
         :param x: x-coordinates
         :param y: y-coordinates
-        :param amp: array of amplitudes in pre-defined order of shapelet
-            basis functions
-        :param sigma_min: minimum Gaussian sigma (sigmas being
-            logarithmically scalled between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
-            sigma
+        :param amp: array of amplitudes in pre-defined order of shapelet basis functions
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
         :param e1: eccentricity component 1
         :param e2: eccentricity component 2
         :param center_x: MGE center x
@@ -115,10 +113,9 @@ class MGEEllipse(object):
         """Total integrated flux of profile.
 
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being
-            logarithmically scalled between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
-            sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
         :param e1: eccentricity component 1
         :param e2: eccentricity component 2
         :param center_x: center of profile
@@ -138,10 +135,9 @@ class MGEEllipse(object):
 
         :param r: 3d distance from center of profile
         :param amp: list of amplitudes of individual Gaussian profiles
-        :param sigma_min: minimum Gaussian sigma (sigmas being
-            logarithmically scalled between min and max)
-        :param sigma_width: sigma_min + sigma_width is maximum Gaussian
-            sigma
+        :param sigma_min: minimum Gaussian sigma (sigmas being logarithmically scalled
+            between min and max)
+        :param sigma_width: sigma_min + sigma_width is maximum Gaussian sigma
         :param e1: eccentricity component 1
         :param e2: eccentricity component 2
         :return: 3D brightness per angular volume element

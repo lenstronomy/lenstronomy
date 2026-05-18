@@ -9,8 +9,8 @@ __all__ = ["Galkin"]
 
 
 class Galkin(GalkinModel, GalkinObservation):
-    """Major class to compute velocity dispersion measurements given light and
-    mass models.
+    """Major class to compute velocity dispersion measurements given light and mass
+    models.
 
     The class supports any mass and light distribution (and superposition thereof) that has a 3d correspondance in their
     2d lens model distribution. For models that do not have this correspondance, you may want to apply a
@@ -85,18 +85,17 @@ class Galkin(GalkinModel, GalkinObservation):
     def dispersion(
         self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000
     ):
-        """Computes the averaged LOS velocity dispersion in the slit
-        (convolved)
+        """Computes the averaged LOS velocity dispersion in the slit (convolved)
 
-        :param kwargs_mass: mass model parameters (following lenstronomy
-            lens model conventions)
-        :param kwargs_light: deflector light parameters (following
-            lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary
-            according to anisotropy type chosen. We refer to the
-            Anisotropy() class for details on the parameters.
-        :param sampling_number: int, number of spectral sampling of the
-            light distribution
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model
+            conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light
+            model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to
+            anisotropy type chosen. We refer to the Anisotropy() class for details on
+            the parameters.
+        :param sampling_number: int, number of spectral sampling of the light
+            distribution
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_IR_sum = 0
@@ -125,12 +124,11 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param num_kin_sampling: int, number of draws from a kinematic
-            prediction of a LOS
-        :param num_psf_sampling: int, number of displacements/render
-            from a spectra to be displaced on the IFU
-        :return: ordered array of velocity dispersions [km/s] for each
-            unit
+        :param num_kin_sampling: int, number of draws from a kinematic prediction of a
+            LOS
+        :param num_psf_sampling: int, number of displacements/render from a spectra to
+            be displaced on the IFU
+        :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)
         # compute kinematics of it (analytic or numerical)
@@ -188,8 +186,8 @@ class Galkin(GalkinModel, GalkinObservation):
         """Compute the grid to compute the dispersion map on.
 
         :param kwargs_mass: keyword arguments of the mass model
-        :param supersampling_factor: sampling factor for the grid to do
-            the 2D convolution on
+        :param supersampling_factor: sampling factor for the grid to do the 2D
+            convolution on
         :return: x_grid, y_grid, log10_radial_distance_from_center
         """
         mass_center_x, mass_center_y = self._extract_center(kwargs_mass)
@@ -231,8 +229,7 @@ class Galkin(GalkinModel, GalkinObservation):
         :param delta_x: pixel scale of kernel
         :param delta_y: pixel scale of kernel
         :param fwhm_factor: number of FWHM to compute the kernel on
-        :param supersampling_factor: number of sub-pixels to compute the
-            kernel on
+        :param supersampling_factor: number of sub-pixels to compute the kernel on
         """
         delta_x, delta_y = self._delta_pix_xy()
 
@@ -275,12 +272,11 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param supersampling_factor: sampling factor for the grid to do
-            the 2D convolution on
-        :param voronoi_bins: mapping of the voronoi bins, bin indices
-            should start from 0, -1 values for pixels not binned
-        :return: ordered array of velocity dispersions [km/s] for each
-            unit
+        :param supersampling_factor: sampling factor for the grid to do the 2D
+            convolution on
+        :param voronoi_bins: mapping of the voronoi bins, bin indices should start from
+            0, -1 values for pixels not binned
+        :return: ordered array of velocity dispersions [km/s] for each unit
         """
         if hasattr(self.numerics, "lum_weight_int_method"):
             if not self.numerics.lum_weight_int_method:

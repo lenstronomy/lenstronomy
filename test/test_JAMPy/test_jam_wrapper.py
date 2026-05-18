@@ -12,8 +12,7 @@ from scipy.signal import convolve2d
 
 
 class TestJAMWrapperSpherical(object):
-    """Test JAMWrapper against Lenstronomy Galkin module for spherical
-    symmetry."""
+    """Test JAMWrapper against Lenstronomy Galkin module for spherical symmetry."""
 
     def setup_method(self):
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
@@ -301,9 +300,8 @@ class TestJAMWrapperSpherical(object):
 
 
 class TestJAMWrapperAxiSph(object):
-    """Test JAMWrapper with axisymmetric-spherical symmetry but in the
-    spherical limit q=1, against Lenstronomy Galkin module for spherical
-    symmetry."""
+    """Test JAMWrapper with axisymmetric-spherical symmetry but in the spherical limit
+    q=1, against Lenstronomy Galkin module for spherical symmetry."""
 
     def setup_method(self):
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
@@ -479,9 +477,9 @@ class TestJAMWrapperAxiSph(object):
 
 
 class TestJAMWrapperAxiCyl(object):
-    """Test JAMWrapper with axisymmetric-cylindrical symmetry but in the
-    spherical and isotropic limit q=1, beta=0, against Lenstronomy Galkin
-    module for spherical symmetry."""
+    """Test JAMWrapper with axisymmetric-cylindrical symmetry but in the spherical and
+    isotropic limit q=1, beta=0, against Lenstronomy Galkin module for spherical
+    symmetry."""
 
     def setup_method(self):
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)

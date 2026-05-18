@@ -10,10 +10,9 @@ __all__ = ["SingleBandMultiModel"]
 
 
 class SingleBandMultiModel(ImageLinearFit, ImageModel):
-    """Class to simulate/reconstruct images in multi-band option. This class
-    calls functions of image_model.py with different bands with decoupled
-    linear parameters and the option to pass/select different light models for
-    the different bands.
+    """Class to simulate/reconstruct images in multi-band option. This class calls
+    functions of image_model.py with different bands with decoupled linear parameters
+    and the option to pass/select different light models for the different bands.
 
     the class supports keyword arguments 'index_lens_model_list', 'index_source_light_model_list',
     'index_lens_light_model_list', 'index_point_source_model_list', 'index_optical_depth_model_list' in kwargs_model
@@ -120,26 +119,21 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     ):
         """Make an image with a realisation of linear parameter values "param".
 
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param kwargs_ps: keyword arguments corresponding to "other"
-            parameters, such as external shear and point source image
-            positions
-        :param kwargs_extinction: list of keyword arguments for
-            extinction model
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
-        :param unconvolved: if True: returns the unconvolved light
-            distribution (prefect seeing)
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
         :param source_add: if True, compute source, otherwise without
-        :param lens_light_add: if True, compute lens light, otherwise
-            without
-        :param point_source_add: if True, add point sources, otherwise
-            without
+        :param lens_light_add: if True, compute lens light, otherwise without
+        :param point_source_add: if True, add point sources, otherwise without
         :return: 2d array of surface brightness pixels of the simulation
         """
         (
@@ -178,19 +172,17 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     ):
         """Computes the source surface brightness distribution.
 
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_extinction: list of keyword arguments of
-            extinction model
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
         :param kwargs_special: list of special keyword arguments
-        :param unconvolved: if True: returns the unconvolved light
-            distribution (prefect seeing)
-        :param de_lensed: if True: returns the un-lensed source surface
-            brightness profile, otherwise the lensed.
-        :param k: integer, if set, will only return the model of the
-            specific index
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
         kwargs_lens_i, kwargs_source_i, _, _, kwargs_extinction_i = self.select_kwargs(
@@ -215,12 +207,10 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
         """Computes the lens surface brightness distribution.
 
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param unconvolved: if True, returns unconvolved surface
-            brightness (perfect seeing), otherwise convolved with PSF
-            kernel
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect
+            seeing), otherwise convolved with PSF kernel
         :return: 2d array of surface brightness pixels
         """
         _, _, kwargs_lens_light_i, kwargs_ps_i, _ = self.select_kwargs(
@@ -242,18 +232,13 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         unconvolved=False,
         k=None,
     ):
-        """Computes the point source positions and paints PSF convolutions on
-        them.
+        """Computes the point source positions and paints PSF convolutions on them.
 
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
-        :param kwargs_lens: list of dicts containing lens model keyword
-            arguments
-        :param kwargs_special: list of dicts containing "special"
-            keywords
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_special: list of dicts containing "special" keywords
         :param unconvolved: bool, if False, applies convolution
-        :param k: int or tuple, only evaluate the k-th point source
-            model
+        :param k: int or tuple, only evaluate the k-th point source model
         :return: image of point source
         """
         kwargs_lens_i, _, _, kwargs_ps_i, _ = self.select_kwargs(
@@ -282,31 +267,26 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """Computes the image (lens and source surface brightness with a given
-        lens model).
+        """Computes the image (lens and source surface brightness with a given lens
+        model).
 
-        The linear parameters are computed with a weighted linear least
-        square optimization (i.e. flux normalization of the brightness
-        profiles)
+        The linear parameters are computed with a weighted linear least square
+        optimization (i.e. flux normalization of the brightness profiles)
 
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param kwargs_ps: keyword arguments corresponding to "other"
-            parameters, such as external shear and point source image
-            positions
-        :param kwargs_extinction: keyword arguments corresponding to
-            dust extinction
-        :param kwargs_special: keyword arguments corresponding to
-            "special" parameters
-        :param inv_bool: if True, invert the full linear solver Matrix
-            Ax = y for the purpose of the covariance matrix.
-        :return: 1d array of surface brightness pixels of the optimal
-            solution of the linear parameters to match the data
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param kwargs_extinction: keyword arguments corresponding to dust extinction
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
+        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the
+            purpose of the covariance matrix.
+        :return: 1d array of surface brightness pixels of the optimal solution of the
+            linear parameters to match the data
         """
         (
             kwargs_lens_i,
@@ -346,30 +326,23 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         check_positive_flux=False,
         linear_solver=None,
     ):
-        """Computes the likelihood of the data given a model This is specified
-        with the non-linear parameters and a linear inversion and prior
-        marginalisation.
+        """Computes the likelihood of the data given a model This is specified with the
+        non-linear parameters and a linear inversion and prior marginalisation.
 
-        :param kwargs_lens: list of dicts containing lens model keyword
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
             arguments
-        :param kwargs_source: list of dicts containing source model
-            keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light
-            model keyword arguments
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
-        :param kwargs_extinction: keyword arguments corresponding to
-            dust extinction
-        :param kwargs_special: keyword arguments corresponding to
-            "special" parameters
-        :param check_positive_flux: bool, if True, checks whether the
-            linear inversion resulted in non-negative flux components
-            and applies a punishment in the likelihood if so.
-        :param linear_solver: bool or None. If None, uses
-            self.linear_solver by default. Allows the user to deactivate
-            or activate linear solve if desired.
-        :return: log likelihood (natural logarithm) (sum of the log
-            likelihoods of the individual images)
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_extinction: keyword arguments corresponding to dust extinction
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
+        :param check_positive_flux: bool, if True, checks whether the linear inversion
+            resulted in non-negative flux components and applies a punishment in the
+            likelihood if so.
+        :param linear_solver: bool or None. If None, uses self.linear_solver by default.
+            Allows the user to deactivate or activate linear solve if desired.
+        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the
+            individual images)
         """
         (
             kwargs_lens_i,
@@ -419,16 +392,12 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     ):
         """Links linear parameters to kwargs arguments.
 
-        :param param: linear parameter vector corresponding to the
-            response matrix
-        :param kwargs_lens: list of dicts containing lens model keyword
+        :param param: linear parameter vector corresponding to the response matrix
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
             arguments
-        :param kwargs_source: list of dicts containing source model
-            keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light
-            model keyword arguments
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
         :return: updated list of kwargs with linear parameter values
         """
         (
@@ -496,22 +465,17 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         kwargs_extinction=None,
         kwargs_special=None,
     ):
-        """Computes the linear response matrix (m x n), with n being the data
-        size and m being the coefficients.
+        """Computes the linear response matrix (m x n), with n being the data size and m
+        being the coefficients.
 
-        :param kwargs_lens: list of dicts containing lens model keyword
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
             arguments
-        :param kwargs_source: list of dicts containing source model
-            keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light
-            model keyword arguments
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
-        :param kwargs_extinction: list of keyword arguments
-            corresponding to the optical depth models tau, such that
-            extinction is exp(-tau)
-        :param kwargs_special: keyword arguments corresponding to
-            "special" parameters
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical
+            depth models tau, such that extinction is exp(-tau)
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
         :return:
         """
         (
@@ -537,20 +501,18 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     def error_map_source(
         self, kwargs_source, x_grid, y_grid, cov_param, model_index_select=True
     ):
-        """Variance of the linear source reconstruction in the source plane
-        coordinates, computed by the diagonal elements of the covariance matrix
-        of the source reconstruction as a sum of the errors of the basis set.
+        """Variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source
+        reconstruction as a sum of the errors of the basis set.
 
         :param kwargs_source: keyword arguments of source model
         :param x_grid: x-axis of positions to compute error map
         :param y_grid: y-axis of positions to compute error map
-        :param cov_param: covariance matrix of liner inversion
-            parameters
-        :param model_index_select: boolean, if True, selects the model
-            components of this band (default). If False, assumes input
-            kwargs_source is already selected list.
-        :return: diagonal covariance errors at the positions (x_grid,
-            y_grid)
+        :param cov_param: covariance matrix of liner inversion parameters
+        :param model_index_select: boolean, if True, selects the model components of
+            this band (default). If False, assumes input kwargs_source is already
+            selected list.
+        :return: diagonal covariance errors at the positions (x_grid, y_grid)
         """
         if self._index_source is None or model_index_select is False:
             kwargs_source_i = kwargs_source
@@ -567,14 +529,11 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         """Returns the 1d array of the error estimate corresponding to the data
         response.
 
-        :param kwargs_lens: list of dicts containing lens model keyword
-            arguments
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
-        :param kwargs_special: keyword arguments corresponding to
-            "special" parameters
-        :return: 1d numpy array of response, 2d array of additional
-            errors (e.g. point source uncertainties)
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
+        :return: 1d numpy array of response, 2d array of additional errors (e.g. point
+            source uncertainties)
         """
         (
             kwargs_lens_i,
@@ -596,11 +555,9 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
         """Differential extinction per pixel.
 
-        :param kwargs_extinction: list of keyword arguments
-            corresponding to the optical depth models tau, such that
-            extinction is exp(-tau)
-        :param kwargs_special: keyword arguments corresponding to
-            "special" parameters
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical
+            depth models tau, such that extinction is exp(-tau)
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
         :return: 2d array of size of the image
         """
         _, _, _, _, kwargs_extinction_i = self.select_kwargs(
@@ -609,15 +566,13 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
         return ImageModel.extinction_map(self, kwargs_extinction_i, kwargs_special)
 
     def linear_param_from_kwargs(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """Inverse function of update_linear() returning the linear amplitude
-        list for the keyword argument list.
+        """Inverse function of update_linear() returning the linear amplitude list for
+        the keyword argument list.
 
-        :param kwargs_source: list of dicts containing source model
-            keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light
-            model keyword arguments
-        :param kwargs_ps: list of dicts containing point source keyword
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
             arguments
+        :param kwargs_ps: list of dicts containing point source keyword arguments
         :return: list of linear coefficients
         """
         _, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, _ = self.select_kwargs(
@@ -645,18 +600,13 @@ class SingleBandMultiModel(ImageLinearFit, ImageModel):
     ):
         """Select subset of kwargs lists referenced to this imaging band.
 
-        :param kwargs_lens: list of dicts containing lens model keyword
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_source: list of dicts containing source model keyword arguments
+        :param kwargs_lens_light: list of dicts containing lens light model keyword
             arguments
-        :param kwargs_source: list of dicts containing source model
-            keyword arguments
-        :param kwargs_lens_light: list of dicts containing lens light
-            model keyword arguments
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
-        :param kwargs_extinction: list of keyword arguments of
-            extinction model
-        :return: downselected list of kwargs corresponding to the index
-            lists
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_extinction: list of keyword arguments of extinction model
+        :return: downselected list of kwargs corresponding to the index lists
         """
         if self._index_lens_model is None or kwargs_lens is None:
             kwargs_lens_i = kwargs_lens

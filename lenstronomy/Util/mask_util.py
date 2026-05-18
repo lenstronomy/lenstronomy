@@ -37,8 +37,7 @@ def mask_azimuthal(x, y, center_x, center_y, r):
     :param center_x: center of azimuthal mask in x
     :param center_y: center of azimuthal mask in y
     :param r: radius of azimuthal mask
-    :return: array with zeros outside r and ones inside azimuthal radius
-        r
+    :return: array with zeros outside r and ones inside azimuthal radius r
     :rtype: array of size of input grid with integers 0 or 1
     """
     x_shift = x - center_x

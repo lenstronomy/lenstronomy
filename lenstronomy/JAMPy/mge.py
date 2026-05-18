@@ -9,10 +9,10 @@ from copy import deepcopy
 
 class MGEMass:
     def __init__(self, profile_list, kwargs_mge=None):
-        """Class to do the MGE fitting of the mass profile, which is needed for
-        the JAM modelling. It uses LensProfileAnalysis to obtain the radial
-        convergence, and mgefit.mge_fit_1d for the MGE, which is more accurate
-        than the one implemented in lenstronomy.
+        """Class to do the MGE fitting of the mass profile, which is needed for the JAM
+        modelling. It uses LensProfileAnalysis to obtain the radial convergence, and
+        mgefit.mge_fit_1d for the MGE, which is more accurate than the one implemented
+        in lenstronomy.
 
         :param profile_list: list of lens profile names.
         :param kwargs_mge: dictionary with options for the MGE fitting:
@@ -35,10 +35,10 @@ class MGEMass:
         """Convergence radial profile.
 
         :param r: projected radius in angular units
-        :param kwargs_list: list of keyword arguments of lens model
-            parameters matching the lens model classes
-        :return: surface mass density at radius r (in angular units,
-            modulo epsilon_crit)
+        :param kwargs_list: list of keyword arguments of lens model parameters matching
+            the lens model classes
+        :return: surface mass density at radius r (in angular units, modulo
+            epsilon_crit)
         """
         kwargs_list = self._parse_kwargs(kwargs_list)
         if self.profile_list[0] in ["INTERPOL", "INTERPOL_SCLAED"]:
@@ -137,10 +137,10 @@ class MGEMass:
 
 class MGELight:
     def __init__(self, profile_list, kwargs_mge=None):
-        """Class to do the MGE fitting of the light profile, which is needed
-        for the JAM modelling. It uses LightProfileAnalysis to obtain the
-        radial surface brightness, and mgefit.mge_fit_1d for the MGE, which is
-        more accurate than the one implemented in lenstronomy.
+        """Class to do the MGE fitting of the light profile, which is needed for the JAM
+        modelling. It uses LightProfileAnalysis to obtain the radial surface brightness,
+        and mgefit.mge_fit_1d for the MGE, which is more accurate than the one
+        implemented in lenstronomy.
 
         :param profile_list: list of light profile names.
         :param kwargs_mge: dictionary with options for the MGE fitting:
@@ -172,8 +172,8 @@ class MGELight:
         return np.asarray(surf)
 
     def effective_radius(self, kwargs_list):
-        """Half-light radius of the light profile, used to scale the radial
-        range where the MGE is fitted."""
+        """Half-light radius of the light profile, used to scale the radial range where
+        the MGE is fitted."""
         if len(self.profile_list) == 1:
             if self.profile_list[0] == "SERSIC":
                 return kwargs_list[0]["R_sersic"]

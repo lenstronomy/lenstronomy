@@ -50,16 +50,16 @@ class NIE_POTENTIAL(LensProfileBase):
         return self._param_conv(theta_E, theta_c, e1, e2)
 
     def _param_conv(self, theta_E, theta_c, e1, e2):
-        """Convert the spherical averaged Einstein radius to an elliptical
-        (major axis) Einstein radius and the individual eccentricities to the
-        modulus of the eccentricity.
+        """Convert the spherical averaged Einstein radius to an elliptical (major axis)
+        Einstein radius and the individual eccentricities to the modulus of the
+        eccentricity.
 
         :param theta_E: Einstein radius
         :param theta_c: core radius
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :return: transformed Einstein radius, core radius, ellipticity
-            modulus, orientation angle phi_G
+        :return: transformed Einstein radius, core radius, ellipticity modulus,
+            orientation angle phi_G
         """
 
         eps = np.sqrt(e1**2 + e2**2)
@@ -204,15 +204,13 @@ class NIE_POTENTIAL(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def _theta_q_convert(self, theta_E, q):
-        """Converts a spherical averaged Einstein radius/core radius to an
-        elliptical (major axis) Einstein radius. This then follows the
-        convention of the SPEMD profile in lenstronomy. (theta_E /
-        theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+        """Converts a spherical averaged Einstein radius/core radius to an elliptical
+        (major axis) Einstein radius. This then follows the convention of the SPEMD
+        profile in lenstronomy. (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
 
         :param theta_E: Einstein radius in lenstronomy conventions
         :param q: axis ratio minor/major
-        :return: theta_E in convention of kappa= b *(q2(s2 + x2) +
-            y2􏰉)−1/2
+        :return: theta_E in convention of kappa= b *(q2(s2 + x2) + y2􏰉)−1/2
         """
         theta_E_new = theta_E / (np.sqrt((1.0 + q**2) / (2.0 * q)))  # / (1+(1-q)/2.)
         return theta_E_new

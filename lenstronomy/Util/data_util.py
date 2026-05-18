@@ -17,8 +17,7 @@ def bkg_noise(
     :param exposure_time: exposure time per exposure (in seconds)
     :param sky_brightness: counts per second per unit arcseconds square
     :param pixel_scale: size of pixel in units arcseonds
-    :param num_exposures: number of exposures (with same exposure time)
-        to be co-added
+    :param num_exposures: number of exposures (with same exposure time) to be co-added
     :return: estimated Gaussian noise sqrt(variance)
     """
     exposure_time_tot = num_exposures * exposure_time
@@ -31,12 +30,12 @@ def bkg_noise(
 
 @export
 def flux_noise(cps_pixel, exposure_time):
-    """Computes the variance of the shot noise Gaussian approximation of
-    Poisson noise term.
+    """Computes the variance of the shot noise Gaussian approximation of Poisson noise
+    term.
 
     :param cps_pixel: counts per second of the intensity per pixel unit
-    :param exposure_time: total exposure time (in units seconds or
-        equivalent unit as cps_pixel)
+    :param exposure_time: total exposure time (in units seconds or equivalent unit as
+        cps_pixel)
     :return: sqrt(variance) of pixel value
     """
     return cps_pixel / np.sqrt(exposure_time)
@@ -90,8 +89,7 @@ def adu2electrons(adu, ccd_gain):
     """Converts analog-to-digital units into electron counts.
 
     :param adu: counts in analog-to-digital unit
-    :param ccd_gain: CCD gain, meaning how many electrons are counted
-        per unit ADU
+    :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU
     :return: counts in electrons
     """
     return adu * ccd_gain
@@ -102,21 +100,19 @@ def electrons2adu(electrons, ccd_gain):
     """Converts electron counts into analog-to-digital unit.
 
     :param electrons: number of electrons received on detector
-    :param ccd_gain: CCD gain, meaning how many electrons are counted
-        per unit ADU
-    :return: adu value in Analog-to-digital units corresponding to
-        electron count
+    :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU
+    :return: adu value in Analog-to-digital units corresponding to electron count
     """
     return electrons / ccd_gain
 
 
 def magnitude2amplitude(light_model_class, kwargs_light_mag, magnitude_zero_point):
-    """Translates astronomical magnitudes to lenstronomy linear 'amp'
-    parameters for LightModel objects.
+    """Translates astronomical magnitudes to lenstronomy linear 'amp' parameters for
+    LightModel objects.
 
     :param light_model_class: LightModel() class instance
-    :param kwargs_light_mag: list of light model parameter dictionary
-        with 'magnitude' instead of 'amp'
+    :param kwargs_light_mag: list of light model parameter dictionary with 'magnitude'
+        instead of 'amp'
     :param magnitude_zero_point: magnitude zero point
     :return: list of light model parameter dictionary with 'amp'
     """

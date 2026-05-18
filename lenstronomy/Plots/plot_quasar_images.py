@@ -13,14 +13,13 @@ def plot_quasar_images(
     grid_resolution,
     grid_radius_arcsec,
 ):
-    """This function plots the surface brightness in the image plane of a
-    background source. The flux is computed inside a circular aperture with
-    radius grid_radius_arcsec. This new updates allows for more flexibility in
-    the source light model by requiring the user to specify the source light
-    mode, grid size and grid resolution before calling the function. The
-    functions auto_raytrracing_grid_size and auto_raytracing_grid_resolution
-    give good estimates for appropriate parameter choices for
-    grid_radius_arcsec and grid_resolution.
+    """This function plots the surface brightness in the image plane of a background
+    source. The flux is computed inside a circular aperture with radius
+    grid_radius_arcsec. This new updates allows for more flexibility in the source light
+    model by requiring the user to specify the source light mode, grid size and grid
+    resolution before calling the function. The functions auto_raytrracing_grid_size and
+    auto_raytracing_grid_resolution give good estimates for appropriate parameter
+    choices for grid_radius_arcsec and grid_resolution.
 
     :param lens_model: an instance of LensModel
     :type lens_model: LensModel
@@ -32,13 +31,11 @@ def plot_quasar_images(
     :type kwargs_lens: list
     :param source_light_model: instance of LightModel for the source
     :type source_light_model: LightModel
-    :param kwargs_light_source: the keyword arguments for the source
-        light
+    :param kwargs_light_source: the keyword arguments for the source light
     :type kwargs_light_source: list
     :param grid_resolution: the grid resolution in units arcsec/pixel
     :type grid_resolution: float
-    :param grid_radius_arcsec: the size of the ray tracing region in
-        arcsec
+    :param grid_radius_arcsec: the size of the ray tracing region in arcsec
     :type grid_radius_arcsec: float
     """
     magnifications = []

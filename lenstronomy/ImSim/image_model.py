@@ -15,8 +15,8 @@ __all__ = ["ImageModel"]
 
 
 class ImageModel(object):
-    """This class uses functions of lens_model and source_model to make a
-    lensed image."""
+    """This class uses functions of lens_model and source_model to make a lensed
+    image."""
 
     def __init__(
         self,
@@ -155,22 +155,18 @@ class ImageModel(object):
         source_marg=False,
         check_positive_flux=False,
     ):
-        """Computes the likelihood of the data given a model This is specified
-        with the non-linear parameters and a linear inversion and prior
-        marginalisation.
+        """Computes the likelihood of the data given a model This is specified with the
+        non-linear parameters and a linear inversion and prior marginalisation.
 
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param kwargs_ps: keyword arguments corresponding to "other"
-            parameters, such as external shear and point source image
-            positions
-        :param kwargs_extinction: list of keyword arguments for
-            extinction model
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
         :param source_marg: unused param; kept to match
             ImageLinearFit.likelihood_data_given_model API
@@ -210,23 +206,20 @@ class ImageModel(object):
     ):
         """Computes the source surface brightness distribution.
 
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_extinction: list of keyword arguments for
-            extinction model
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_extinction: list of keyword arguments for extinction model
         :param kwargs_special: list of special keyword arguments
-        :param unconvolved: if True: returns the unconvolved light
-            distribution (prefect seeing)
-        :param apply_primary_beam: if True: returns the light
-            distribution affected by the interferometry primary beam.
-            This only applies when the class instance has a primary beam
-            (for interferometric images).
-        :param de_lensed: if True: returns the un-lensed source surface
-            brightness profile, otherwise the lensed.
-        :param k: integer, if set, will only return the model of the
-            specific index
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
@@ -267,23 +260,20 @@ class ImageModel(object):
     ):
         """Computes the source surface brightness distribution.
 
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_extinction: list of keyword arguments of
-            extinction model
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
         :param kwargs_special: list of special keyword arguments
-        :param unconvolved: if True: returns the unconvolved light
-            distribution (prefect seeing)
-        :param apply_primary_beam: if True: returns the light
-            distribution affected by the interferometry primary beam.
-            This only applies when the class instance has a primary beam
-            (for interferometric images).
-        :param de_lensed: if True: returns the un-lensed source surface
-            brightness profile, otherwise the lensed.
-        :param k: integer, if set, will only return the model of the
-            specific index
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
         source_light = self._source_surface_brightness_analytical_numerics(
@@ -313,21 +303,18 @@ class ImageModel(object):
     ):
         """Computes the source surface brightness distribution.
 
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_extinction: list of keyword arguments of
-            extinction model
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
         :param kwargs_special: list of special keyword arguments
-        :param apply_primary_beam: if True: returns the light
-            distribution affected by the interferometry primary beam.
-            This only applies when the class instance has a primary beam
-            (for interferometric images).
-        :param de_lensed: if True: returns the un-lensed source surface
-            brightness profile, otherwise the lensed.
-        :param k: integer, if set, will only return the model of the
-            specific index
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
@@ -367,25 +354,22 @@ class ImageModel(object):
         k=None,
         update_mapping=True,
     ):
-        """Computes the source surface brightness distribution, using pixel-
-        based solver for light profiles (from SLITronomy)
+        """Computes the source surface brightness distribution, using pixel- based
+        solver for light profiles (from SLITronomy)
 
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_extinction: list of keyword arguments of
-            extinction model
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
         :param kwargs_special: list of special keyword arguments
-        :param unconvolved: if True: returns the unconvolved light
-            distribution (prefect seeing)
-        :param de_lensed: if True: returns the un-lensed source surface
-            brightness profile, otherwise the lensed.
-        :param k: integer, if set, will only return the model of the
-            specific index
-        :param update_mapping: if False, prevent the pixelated lensing
-            mapping to be updated (saves computation time if previously
-            computed).
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness
+            profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
+        :param update_mapping: if False, prevent the pixelated lensing mapping to be
+            updated (saves computation time if previously computed).
         :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
@@ -417,16 +401,13 @@ class ImageModel(object):
     ):
         """Computes the lens surface brightness distribution.
 
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param unconvolved: if True, returns unconvolved surface
-            brightness (perfect seeing), otherwise convolved with PSF
-            kernel
-        :param apply_primary_beam: if True: returns the light
-            distribution affected by the interferometry primary beam.
-            This only applies when the class instance has a primary beam
-            (for interferometric images).
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect
+            seeing), otherwise convolved with PSF kernel
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
         :return: 2d array of surface brightness pixels
         """
         if self._pixelbased_bool is True:
@@ -448,16 +429,13 @@ class ImageModel(object):
     ):
         """Computes the lens surface brightness distribution.
 
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param unconvolved: if True, returns unconvolved surface
-            brightness (perfect seeing), otherwise convolved with PSF
-            kernel
-        :param apply_primary_beam: if True: returns the light
-            distribution affected by the interferometry primary beam.
-            This only applies when the class instance has a primary beam
-            (for interferometric images).
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect
+            seeing), otherwise convolved with PSF kernel
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
         :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
@@ -499,22 +477,16 @@ class ImageModel(object):
         apply_primary_beam=True,
         k=None,
     ):
-        """Computes the point source positions and paints PSF convolutions on
-        them.
+        """Computes the point source positions and paints PSF convolutions on them.
 
-        :param kwargs_ps: list of dicts containing point source keyword
-            arguments
-        :param kwargs_lens: list of dicts containing lens model keyword
-            arguments
-        :param kwargs_special: list of dicts containing "special"
-            keywords
+        :param kwargs_ps: list of dicts containing point source keyword arguments
+        :param kwargs_lens: list of dicts containing lens model keyword arguments
+        :param kwargs_special: list of dicts containing "special" keywords
         :param unconvolved: bool, if False, applies convolution
-        :param apply_primary_beam: if True: returns the point source
-            light affected by the interferometry primary beam. This only
-            applies when the class instance has a primary beam (for
-            interferometric images).
-        :param k: int or tuple, only evaluate the k-th point source
-            model
+        :param apply_primary_beam: if True: returns the point source light affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
+        :param k: int or tuple, only evaluate the k-th point source model
         :return: image of point source
         """
         point_source_image = np.zeros((self.Data.num_pixel_axes))
@@ -555,30 +527,24 @@ class ImageModel(object):
     ):
         """Make an image with a realisation of linear parameter values "param".
 
-        :param kwargs_lens: list of keyword arguments corresponding to
-            the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to
-            the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments
-            corresponding to different lens light surface brightness
-            profiles
-        :param kwargs_ps: keyword arguments corresponding to "other"
-            parameters, such as external shear and point source image
-            positions
-        :param kwargs_extinction: list of keyword arguments for dust
-            extinction
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition
+            of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the
+            superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different
+            lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as
+            external shear and point source image positions
+        :param kwargs_extinction: list of keyword arguments for dust extinction
         :param kwargs_special: list of special keyword arguments
-        :param unconvolved: if True: returns the unconvolved light
-            distribution (prefect seeing)
-        :param apply_primary_beam: if True: returns the light
-            distribution affected by the interferometry primary beam.
-            This only applies when the class instance has a primary beam
-            (for interferometric images).
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect
+            seeing)
+        :param apply_primary_beam: if True: returns the light distribution affected by
+            the interferometry primary beam. This only applies when the class instance
+            has a primary beam (for interferometric images).
         :param source_add: if True, compute source, otherwise without
-        :param lens_light_add: if True, compute lens light, otherwise
-            without
-        :param point_source_add: if True, add point sources, otherwise
-            without
+        :param lens_light_add: if True, compute lens light, otherwise without
+        :param point_source_add: if True, add point sources, otherwise without
         :return: 2d array of surface brightness pixels of the simulation
         """
         model = np.zeros(self.Data.num_pixel_axes)
@@ -613,11 +579,9 @@ class ImageModel(object):
     def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
         """Differential extinction per pixel.
 
-        :param kwargs_extinction: list of keyword arguments
-            corresponding to the optical depth models tau, such that
-            extinction is exp(-tau)
-        :param kwargs_special: keyword arguments, additional parameter
-            to the extinction
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical
+            depth models tau, such that extinction is exp(-tau)
+        :param kwargs_special: keyword arguments, additional parameter to the extinction
         :return: 2d array of size of the image
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
@@ -637,8 +601,8 @@ class ImageModel(object):
 
     @property
     def data_response(self):
-        """Returns the 1d array of the data element that is fitted for
-        (including masking)
+        """Returns the 1d array of the data element that is fitted for (including
+        masking)
 
         :return: 1d numpy array
         """
@@ -649,14 +613,13 @@ class ImageModel(object):
         """Returns the 1d array of the error estimate corresponding to the data
         response.
 
-        :param kwargs_lens: list of dicts, keyword arguments
-            corresponding to the lens profiles
-        :param kwargs_ps: list of dicts, keyword arguments corresponding
-            to the point source models
-        :param kwargs_special: list of dicts, special parameter keyword
-            arguments
-        :return: 1d numpy array of response, 2d array of additional
-            errors (e.g. point source uncertainties)
+        :param kwargs_lens: list of dicts, keyword arguments corresponding to the lens
+            profiles
+        :param kwargs_ps: list of dicts, keyword arguments corresponding to the point
+            source models
+        :param kwargs_special: list of dicts, special parameter keyword arguments
+        :return: 1d numpy array of response, 2d array of additional errors (e.g. point
+            source uncertainties)
         """
         model_error = self._error_map_model(
             kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
@@ -666,11 +629,10 @@ class ImageModel(object):
         return C_D_response, model_error
 
     def reset_point_source_cache(self, cache=True):
-        """Deletes all the cache in the point source class and saves it from
-        then on.
+        """Deletes all the cache in the point source class and saves it from then on.
 
-        :param cache: boolean, if True, saves the next occuring point
-            source positions in the cache
+        :param cache: boolean, if True, saves the next occuring point source positions
+            in the cache
         :return: None
         """
         self.PointSource.delete_lens_model_cache()
@@ -723,8 +685,8 @@ class ImageModel(object):
         """Returns reduced chi2.
 
         :param model: 2d numpy array of a model predicted image
-        :param error_map: same format as model, additional error
-            component (such as PSF errors)
+        :param error_map: same format as model, additional error component (such as PSF
+            errors)
         :return: reduced chi2.
         """
         norm_res = self.reduced_residuals(model, error_map)
@@ -753,21 +715,20 @@ class ImageModel(object):
         return grid2d
 
     def _error_map_model(self, kwargs_lens, kwargs_ps, kwargs_special=None):
-        """Noise estimate (variances as diagonal of the pixel covariance
-        matrix) resulted from inherent model uncertainties. This term is
-        currently the psf error map.
+        """Noise estimate (variances as diagonal of the pixel covariance matrix)
+        resulted from inherent model uncertainties. This term is currently the psf error
+        map.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_ps: point source keyword arguments
         :param kwargs_special: special parameter keyword arguments
-        :return: 2d array corresponding to the pixels in terms of
-            variance in noise
+        :return: 2d array corresponding to the pixels in terms of variance in noise
         """
         return self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special)
 
     def _error_map_psf(self, kwargs_lens, kwargs_ps, kwargs_special=None):
-        """Map of image with error terms (sigma**2) expected from inaccuracies
-        in the PSF modeling.
+        """Map of image with error terms (sigma**2) expected from inaccuracies in the
+        PSF modeling.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_ps: point source keyword arguments
@@ -798,13 +759,12 @@ class ImageModel(object):
     def _displace_astrometry(x_pos, y_pos, kwargs_special=None):
         """Displaces point sources by shifts specified in kwargs_special.
 
-        :param x_pos: list of point source positions according to point
-            source model list
-        :param y_pos: list of point source positions according to point
-            source model list
-        :param kwargs_special: keyword arguments, can contain
-            'delta_x_image' and 'delta_y_image' The list is defined in
-            order of the image positions
+        :param x_pos: list of point source positions according to point source model
+            list
+        :param y_pos: list of point source positions according to point source model
+            list
+        :param kwargs_special: keyword arguments, can contain 'delta_x_image' and
+            'delta_y_image' The list is defined in order of the image positions
         :return: shifted image positions in same format as input
         """
         if kwargs_special is not None:
@@ -822,8 +782,8 @@ class ImageModel(object):
         return x_pos, y_pos
 
     def _detect_pixelbased_models(self):
-        """Returns True if light profiles specific to pixel-based modelling are
-        present in source model list. Otherwise returns False.
+        """Returns True if light profiles specific to pixel-based modelling are present
+        in source model list. Otherwise returns False.
 
         Currently, pixel-based light profiles are: 'SLIT_STARLETS',
         'SLIT_STARLETS_GEN2'.
@@ -841,14 +801,13 @@ class ImageModel(object):
         return False
 
     def _setup_pixelbased_source_numerics(self, kwargs_numerics, kwargs_pixelbased):
-        """Check if model requirement are compatible with support pixel-based
-        solver, and creates a new numerics class specifically for source plane.
+        """Check if model requirement are compatible with support pixel-based solver,
+        and creates a new numerics class specifically for source plane.
 
-        :param kwargs_numerics: keyword argument with various numeric
-            description (see ImageNumerics class for options)
-        :param kwargs_pixelbased: keyword argument with various settings
-            related to the pixel-based solver (see SLITronomy
-            documentation)
+        :param kwargs_numerics: keyword argument with various numeric description (see
+            ImageNumerics class for options)
+        :param kwargs_pixelbased: keyword argument with various settings related to the
+            pixel-based solver (see SLITronomy documentation)
         """
         # check that the required convolution type is compatible with pixel-based modelling (in current implementation)
         psf_type = self.PSF.psf_type
@@ -883,14 +842,13 @@ class ImageModel(object):
         return source_numerics_class
 
     def _point_source_primary_beam_amp_normalization(self, ra_pos, dec_pos):
-        """Interpolate primary beam response values at the point source
-        positions, (only for interferometric images). These values are used to
-        scale the observed point source amplitudes.
+        """Interpolate primary beam response values at the point source positions, (only
+        for interferometric images). These values are used to scale the observed point
+        source amplitudes.
 
         :param ra_pos: RA coordinates of point source(s).
         :param dec_pos: DEC coordinates of point source(s).
-        :return: Array of primary beam response values at the given (RA,
-            DEC).
+        :return: Array of primary beam response values at the given (RA, DEC).
         """
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         pb_values = primary_beam_util.primary_beam_value_at_coords(

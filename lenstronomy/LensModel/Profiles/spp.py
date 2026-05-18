@@ -166,8 +166,8 @@ class SPP(LensProfileBase):
 
     @staticmethod
     def theta2rho(theta_E, gamma):
-        """Converts projected density parameter (in units of deflection) into
-        3d density parameter.
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter.
 
         :param theta_E: 2D projected density parameter
         :param gamma: power law slope of mass profile
@@ -197,8 +197,8 @@ class SPP(LensProfileBase):
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E, gamma):
-        """Calculates the mass enclosed in a 3D sphere of radius r using lens
-        model parameters.
+        """Calculates the mass enclosed in a 3D sphere of radius r using lens model
+        parameters.
 
         :param r: radius of the sphere
         :param theta_E: 2D projected density parameter
@@ -229,8 +229,8 @@ class SPP(LensProfileBase):
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, gamma):
-        """Calculates the mass enclosed in a projected circle of radius r using
-        lens model parameters.
+        """Calculates the mass enclosed in a projected circle of radius r using lens
+        model parameters.
 
         :param r: radius of the projected circle
         :param theta_E: 2D projected density parameter
@@ -241,8 +241,7 @@ class SPP(LensProfileBase):
         return self.mass_2d(r, rho0, gamma)
 
     def grav_pot(self, x, y, rho0, gamma, center_x=0, center_y=0):
-        """Gravitational potential (modulo 4 pi G and rho0 in appropriate
-        units)
+        """Gravitational potential (modulo 4 pi G and rho0 in appropriate units)
 
         :param x: x-coordinate position
         :param y: y-coordinate position
@@ -274,8 +273,8 @@ class SPP(LensProfileBase):
     def density_lens(self, r, theta_E, gamma):
         """Calculates the 3D density using lens model parameters.
 
-        The integral is projected in units of angles (i.e. arc seconds)
-        results in the convergence quantity.
+        The integral is projected in units of angles (i.e. arc seconds) results in the
+        convergence quantity.
 
         :param r: radius
         :param theta_E: 2D projected density parameter

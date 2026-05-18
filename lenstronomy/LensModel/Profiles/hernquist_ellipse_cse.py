@@ -186,8 +186,7 @@ class HernquistEllipseCSE(HernquistEllipsePotential):
 
     @staticmethod
     def _normalization(sigma0, Rs, q):
-        """Mapping to eqn 10 and 11 in Oguri 2021 from phenomenological
-        definition.
+        """Mapping to eqn 10 and 11 in Oguri 2021 from phenomenological definition.
 
         :param sigma0: sigma0 normalization
         :param Rs: scale radius

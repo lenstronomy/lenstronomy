@@ -9,14 +9,12 @@ export, __all__ = exporter()
 
 @export
 class Coordinates(object):
-    """Class to handle linear coordinate transformations of a square pixel
-    image."""
+    """Class to handle linear coordinate transformations of a square pixel image."""
 
     def __init__(self, transform_pix2angle, ra_at_xy_0, dec_at_xy_0):
         """Initialize the coordinate-to-pixel transform and their inverse.
 
-        :param transform_pix2angle: 2x2 matrix, mapping of pixel to
-            coordinate
+        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         """
@@ -61,13 +59,11 @@ class Coordinates(object):
         return self._ra_at_xy_0, self._dec_at_xy_0
 
     def map_coord2pix(self, ra, dec):
-        """Maps the (ra,dec) coordinates of the system into the pixel
-        coordinate of the image.
+        """Maps the (ra,dec) coordinates of the system into the pixel coordinate of the
+        image.
 
-        :param ra: relative RA coordinate as defined by the coordinate
-            frame
-        :param dec: relative DEC coordinate as defined by the coordinate
-            frame
+        :param ra: relative RA coordinate as defined by the coordinate frame
+        :param dec: relative DEC coordinate as defined by the coordinate frame
         :return: (x, y) pixel coordinates
         """
 
@@ -76,13 +72,12 @@ class Coordinates(object):
         )
 
     def map_pix2coord(self, x, y):
-        """Maps the (x,y) pixel coordinates of the image into the system
-        coordinates.
+        """Maps the (x,y) pixel coordinates of the image into the system coordinates.
 
-        :param x: pixel coordinate (can be 1d numpy array), defined in
-            the center of the pixel
-        :param y: pixel coordinate (can be 1d numpy array), defined in
-            the center of the pixel
+        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the
+            pixel
+        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the
+            pixel
         :return: relative (RA, DEC) coordinates of the system
         """
         return util.map_coord2pix(
@@ -124,8 +119,7 @@ class Coordinates(object):
 
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
-        :param pixel_unit: bool, if True, units of pixels in input,
-            otherwise RA/DEC
+        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
         :return: updated data class with change in coordinate system
         """
         self._shift_coordinates(x_shift, y_shift, pixel_unit)
@@ -135,8 +129,7 @@ class Coordinates(object):
 
         :param x_shift: shift in x (or RA)
         :param y_shift: shift in y (or DEC)
-        :param pixel_unit: bool, if True, units of pixels in input,
-            otherwise RA/DEC
+        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
         :return: updated data class with change in coordinate system
         """
         if pixel_unit is True:

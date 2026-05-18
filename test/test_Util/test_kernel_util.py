@@ -78,8 +78,7 @@ def test_pixelsize_change():
 
 
 def test_cutout_source():
-    """Test whether a shifted psf can be reproduced sufficiently well
-    :return:"""
+    """Test whether a shifted psf can be reproduced sufficiently well :return:"""
     kernel_size = 5
     image = np.zeros((10, 10))
     kernel = np.zeros((kernel_size, kernel_size))

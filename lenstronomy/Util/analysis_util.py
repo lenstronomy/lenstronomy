@@ -179,11 +179,9 @@ def bic_model(logL, num_data, num_param):
 
 @export
 def profile_center(kwargs_list, center_x=None, center_y=None):
-    """Utility routine that results in the centroid estimate for the profile
-    estimates.
+    """Utility routine that results in the centroid estimate for the profile estimates.
 
-    :param kwargs_list: light parameter keyword argument list (can be
-        light or mass)
+    :param kwargs_list: light parameter keyword argument list (can be light or mass)
     :param center_x: None or center
     :param center_y: None or center
     :return: center_x, center_y

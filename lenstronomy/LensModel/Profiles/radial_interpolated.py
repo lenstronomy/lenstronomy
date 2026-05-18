@@ -28,16 +28,14 @@ class RadialInterpolate(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """Lensing potential (only needed for specific calculations, such as
-        time delays)
+        """Lensing potential (only needed for specific calculations, such as time
+        delays)
 
         :param x: x-coordinate (angular position), float or numpy array
         :param y: y-coordinate (angular position), float or numpy array
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :param center_x: x-position of center of radial density profile
         :type center_x: float
@@ -63,11 +61,9 @@ class RadialInterpolate(LensProfileBase):
 
         :param x: x-coordinate (angular position), float or numpy array
         :param y: y-coordinate (angular position), float or numpy array
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :param center_x: x-position of center of radial density profile
         :type center_x: float
@@ -90,16 +86,13 @@ class RadialInterpolate(LensProfileBase):
         center_x=0,
         center_y=0,
     ):
-        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx,
-        d^f/dy^2.
+        """Returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2.
 
         :param x: x-coordinate (angular position), float or numpy array
         :param y: y-coordinate (angular position), float or numpy array
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :param center_x: x-position of center of radial density profile
         :type center_x: float
@@ -126,11 +119,9 @@ class RadialInterpolate(LensProfileBase):
         """Radial deflection angle m(<r) / r / pi.
 
         :param r: radius from center
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :return: radial deflection angle
         """
@@ -140,11 +131,9 @@ class RadialInterpolate(LensProfileBase):
         """Calls interpolated kappa(r)
 
         :param r: radius
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: numpy array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :return: kappa(r)
         """
@@ -162,11 +151,9 @@ class RadialInterpolate(LensProfileBase):
         """Convergence enclosed a radius.
 
         :param r: radius
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: numpy array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :return: integrated convergence within radius <r
         """
@@ -182,11 +169,9 @@ class RadialInterpolate(LensProfileBase):
         """Convergence enclosed a radius divided by r.
 
         :param r: radius
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: numpy array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :return: integrated convergence within radius <r
         """
@@ -228,11 +213,9 @@ class RadialInterpolate(LensProfileBase):
         """Convergence enclosed a radius.
 
         :param r: radius
-        :param r_bin: radial bins for which convergence values are
-            provided
+        :param r_bin: radial bins for which convergence values are provided
         :type r_bin: numpy array
-        :param kappa_r: convergence values corresponding to the r_bin
-            radii
+        :param kappa_r: convergence values corresponding to the r_bin radii
         :type kappa_r: array of same size as r_bin
         :return: integrated convergence within radius <r
         """

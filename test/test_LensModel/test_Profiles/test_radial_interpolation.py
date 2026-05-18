@@ -6,8 +6,8 @@ import numpy.testing as npt
 
 
 class TestRadialInterpolation(object):
-    """Testing radial interpolation class test case is a SIS profile and a
-    constant mass sheet."""
+    """Testing radial interpolation class test case is a SIS profile and a constant mass
+    sheet."""
 
     def setup_method(self):
         self.rad_interp = RadialInterpolate()

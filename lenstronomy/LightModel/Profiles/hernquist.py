@@ -5,8 +5,7 @@ __all__ = ["Hernquist", "HernquistEllipse"]
 
 
 class Hernquist(object):
-    """Class for Hernquist lens light (2d projected light/mass
-    distribution)."""
+    """Class for Hernquist lens light (2d projected light/mass distribution)."""
 
     def __init__(self):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Hernquist_lens

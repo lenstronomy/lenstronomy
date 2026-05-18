@@ -15,20 +15,18 @@ def light2mass_interpol(
     center_x=0,
     center_y=0,
 ):
-    """Takes a lens light model and turns it numerically in a lens model (with
-    all lensmodel quantities computed on a grid). Then provides an interpolated
-    grid for the quantities.
+    """Takes a lens light model and turns it numerically in a lens model (with all
+    lensmodel quantities computed on a grid). Then provides an interpolated grid for the
+    quantities.
 
-    :param lens_light_model_list: list of strings indicating the type of
-        lens light models
+    :param lens_light_model_list: list of strings indicating the type of lens light
+        models
     :param kwargs_lens_light: lens light keyword argument list
-    :param lens_light_profile_kwargs_list: list of dicts, keyword
-        arguments used to initialize lens light profile classes in the
-        same order of the lens_light_model_list. If any of the
-        profile_kwargs are None, then that profile will be initialized
-        using default settings.
-    :param num_pix: number of pixels per axis for the return
-        interpolation
+    :param lens_light_profile_kwargs_list: list of dicts, keyword arguments used to
+        initialize lens light profile classes in the same order of the
+        lens_light_model_list. If any of the profile_kwargs are None, then that profile
+        will be initialized using default settings.
+    :param num_pix: number of pixels per axis for the return interpolation
     :param delta_pix: interpolation/pixel size
     :param center_x: center of the grid
     :param center_y: center of the grid

@@ -8,8 +8,8 @@ __all__ = ["CurvedArcTanDiff"]
 
 
 class CurvedArcTanDiff(LensProfileBase):
-    """Curved arc model with an additional non-zero tangential stretch
-    differential in tangential direction component.
+    """Curved arc model with an additional non-zero tangential stretch differential in
+    tangential direction component.
 
     Observables are:
     - curvature radius (basically bending relative to the center of the profile)

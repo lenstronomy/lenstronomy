@@ -12,16 +12,15 @@ export, __all__ = exporter()
 
 @export
 class MultiBandImageReconstruction(object):
-    """This class manages the output/results of a fitting process and can
-    conveniently access image reconstruction properties in multi-band fitting.
-    In particular, the fitting result does not come with linear inversion
-    parameters (which may or may not be joint or different for multiple bands)
-    and this class performs the linear inversion for the surface brightness
-    amplitudes and stores them for each individual band to be accessible by the
-    user.
+    """This class manages the output/results of a fitting process and can conveniently
+    access image reconstruction properties in multi-band fitting. In particular, the
+    fitting result does not come with linear inversion parameters (which may or may not
+    be joint or different for multiple bands) and this class performs the linear
+    inversion for the surface brightness amplitudes and stores them for each individual
+    band to be accessible by the user.
 
-    This class is the backbone of the ModelPlot routine that provides
-    the interface of this class with plotting and illustration routines.
+    This class is the backbone of the ModelPlot routine that provides the interface of
+    this class with plotting and illustration routines.
     """
 
     def __init__(
@@ -121,13 +120,12 @@ class MultiBandImageReconstruction(object):
         kwargs_params["kwargs_tracer_source"] = kwargs_tracer_source_temp
 
     def band_setup(self, band_index=0):
-        """ImageModel() instance and keyword arguments of the model components
-        to execute all the options of the ImSim core modules.
+        """ImageModel() instance and keyword arguments of the model components to
+        execute all the options of the ImSim core modules.
 
-        :param band_index: integer (>=0) of imaging band in order of
-            multi_band_list input to this class
-        :return: ImageModel() instance and keyword arguments of the
-            model
+        :param band_index: integer (>=0) of imaging band in order of multi_band_list
+            input to this class
+        :return: ImageModel() instance and keyword arguments of the model
         """
         i = int(band_index)
         if self.model_band_list[i] is None:
@@ -140,10 +138,10 @@ class MultiBandImageReconstruction(object):
 
 @export
 class ModelBand(object):
-    """Class to plot a single band given the full modeling results This class
-    has its specific role when the linear inference is performed on the joint
-    band level and/or when only a subset of model components get used for this
-    specific band in the modeling."""
+    """Class to plot a single band given the full modeling results This class has its
+    specific role when the linear inference is performed on the joint band level and/or
+    when only a subset of model components get used for this specific band in the
+    modeling."""
 
     def __init__(
         self,
@@ -238,11 +236,10 @@ class ModelBand(object):
 
     @property
     def image_model_class(self):
-        """ImageModel() class instance of the single band with only the model
-        components applied to this band.
+        """ImageModel() class instance of the single band with only the model components
+        applied to this band.
 
-        :return: SingleBandMultiModel() instance, which inherits the
-            ImageModel instance
+        :return: SingleBandMultiModel() instance, which inherits the ImageModel instance
         """
         return self._bandmodel
 
@@ -264,9 +261,8 @@ class ModelBand(object):
         return kwargs_return
 
     def point_source_residuals(self, aperture_radius):
-        """Computes integrated residuals within circular apertures around point
-        sources. This routine can assess the accuracy of point source flux
-        measurements.
+        """Computes integrated residuals within circular apertures around point sources.
+        This routine can assess the accuracy of point source flux measurements.
 
         :param aperture_radius: radius of the aperture considering the residuals around the point sources
         :return: list of integrated flux residuals (data - model) within the apertures around the point sources

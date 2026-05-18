@@ -10,17 +10,15 @@ __all__ = ["JAMWrapper"]
 
 
 class JAMWrapper(JAMWrapperBase, GalkinObservation):
-    """Wrapper class to use jampy JAM functionality similar to lenstronomy's
-    Galkin class.
+    """Wrapper class to use jampy JAM functionality similar to lenstronomy's Galkin
+    class.
 
-    :param kwargs_model: keyword arguments describing the model
-        components
-    :param kwargs_aperture: keyword arguments describing the
-        spectroscopic aperture, see Aperture() class
-    :param kwargs_psf: keyword argument specifying the PSF of the
-        observation
-    :param kwargs_cosmo: keyword arguments that define the cosmology in
-        terms of the angular diameter distances involved
+    :param kwargs_model: keyword arguments describing the model components
+    :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see
+        Aperture() class
+    :param kwargs_psf: keyword argument specifying the PSF of the observation
+    :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the
+        angular diameter distances involved
     """
 
     def __init__(
@@ -45,27 +43,23 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
         voronoi_bins=None,
         supersampling_factor=None,
     ):
-        """Computes the velocity dispersion in the aperture. IF the aperture is
-        a slit, frame or shell, the output is a single float. If the aperture
-        is an IFU grid, the output is a 2D array of the same shape as the IFU
-        grid. If the aperture is an IFU shells, the output is a 1D array with
-        the number of shells.
+        """Computes the velocity dispersion in the aperture. IF the aperture is a slit,
+        frame or shell, the output is a single float. If the aperture is an IFU grid,
+        the output is a 2D array of the same shape as the IFU grid. If the aperture is
+        an IFU shells, the output is a 1D array with the number of shells.
 
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
-        :param inclination: inclination angle of the lens galaxy
-            [degrees]
+        :param inclination: inclination angle of the lens galaxy [degrees]
         :param black_hole_mass: mass of the central SMBH [solar masses]
         :param convolved: bool, if True the PSF convolution is applied
-        :param voronoi_bins: None or 2D array with same shape as the IFU
-            grid defining the Voronoi bins. If None, no Voronoi binning
-            is applied. Only relevant if aperture is of type 'IFU_grid'.
-        :param supersampling_factor: supersampling factor of the
-            aperture. Only relevant for a PIXEL PSF, otherwise
-            supersampling is done within jampy
-        :return: ordered array of velocity dispersions [km/s] for each
-            unit
+        :param voronoi_bins: None or 2D array with same shape as the IFU grid defining
+            the Voronoi bins. If None, no Voronoi binning is applied. Only relevant if
+            aperture is of type 'IFU_grid'.
+        :param supersampling_factor: supersampling factor of the aperture. Only relevant
+            for a PIXEL PSF, otherwise supersampling is done within jampy
+        :return: ordered array of velocity dispersions [km/s] for each unit
         """
         if supersampling_factor is None:
             supersampling_factor = self._default_supersampling_factor

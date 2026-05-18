@@ -337,16 +337,14 @@ class Likelihood(object):
         return self.logL(a)
 
     def logL(self, args, verbose=False):
-        """Routine to compute X2 given variable parameters for a MCMC/PSO
-        chain.
+        """Routine to compute X2 given variable parameters for a MCMC/PSO chain.
 
         :param args: ordered parameter values that are being sampled
         :type args: tuple or list of floats
-        :param verbose: if True, makes print statements about individual
-            likelihood components
+        :param verbose: if True, makes print statements about individual likelihood
+            components
         :type verbose: boolean
-        :returns: log likelihood of the data given the model (natural
-            logarithm)
+        :returns: log likelihood of the data given the model (natural logarithm)
         """
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(
@@ -445,8 +443,8 @@ class Likelihood(object):
 
     @staticmethod
     def check_bounds(args, lowerLimit, upperLimit, verbose=False):
-        """Checks whether the parameter vector has left its bound, if so, adds
-        a big number."""
+        """Checks whether the parameter vector has left its bound, if so, adds a big
+        number."""
         penalty = 0.0
         bound_hit = False
         args = np.atleast_1d(args)
@@ -485,8 +483,8 @@ class Likelihood(object):
         return self._lower_limit, self._upper_limit
 
     def effective_num_data_points(self, **kwargs):
-        """Returns the effective number of data points considered in the X2
-        estimation to compute the reduced X2 value."""
+        """Returns the effective number of data points considered in the X2 estimation
+        to compute the reduced X2 value."""
         num_linear = 0
         if self._image_likelihood is True:
             num_linear = self.image_likelihood.num_param_linear(**kwargs)
@@ -497,8 +495,7 @@ class Likelihood(object):
         return self.logL(a)
 
     def negativelogL(self, a):
-        """For minimizer function, the negative value of the logl value is
-        requested.
+        """For minimizer function, the negative value of the logl value is requested.
 
         :param a: array of parameters
         :return: -logL
@@ -556,12 +553,12 @@ class Likelihood(object):
             self.tracer_likelihood.reset_point_source_cache(bool_input)
 
     def _update_model(self, kwargs_special):
-        """Updates lens model instance of this class (and all class instances
-        related to it) when an update to the modeled redshifts of the deflector
-        and/or source planes are made.
+        """Updates lens model instance of this class (and all class instances related to
+        it) when an update to the modeled redshifts of the deflector and/or source
+        planes are made.
 
-        :param kwargs_special: keyword arguments from SpecialParam()
-            class return of sampling arguments
+        :param kwargs_special: keyword arguments from SpecialParam() class return of
+            sampling arguments
         :return: None, all class instances updated to recent model
         """
         kwargs_model, update_bool = self.param.update_kwargs_model(kwargs_special)

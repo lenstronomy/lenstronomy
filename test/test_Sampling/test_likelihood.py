@@ -436,9 +436,9 @@ class TestLikelihood(object):
         npt.assert_almost_equal(logL / num_data_evaluate, -1 / 2.0, decimal=1)
 
     def test_multi_source_redshift_likelihood(self):
-        """This function tests the likelihood with multiple point sources at
-        different source redshift and the recovery of log likelihood=0 when
-        providing the exact solution."""
+        """This function tests the likelihood with multiple point sources at different
+        source redshift and the recovery of log likelihood=0 when providing the exact
+        solution."""
         # lens properties
         z_lens = 0.5
         # source properties

@@ -39,8 +39,8 @@ class Cosmo(object):
 
     @property
     def epsilon_crit(self):
-        """Returns the critical projected mass density in units of M_sun/Mpc^2
-        (physical units)"""
+        """Returns the critical projected mass density in units of M_sun/Mpc^2 (physical
+        units)"""
         const_si = const.c**2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
         conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
         pre_const = const_si * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]

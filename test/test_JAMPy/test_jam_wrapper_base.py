@@ -188,8 +188,8 @@ class TestJAMWrapperBaseOM(object):
 class TestJAMWrapperBaseAnalytical(object):
 
     def setup_method(self):
-        """Comparison with analytical solution for the spherical isotropic case
-        with self-consistent Hernquist profile."""
+        """Comparison with analytical solution for the spherical isotropic case with
+        self-consistent Hernquist profile."""
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
         self.cosmo = LensCosmo(0.5, 1.2, cosmo=cosmo)
 

@@ -10,9 +10,8 @@ __all__ = ["SersicEllipseKappa"]
 
 
 class SersicEllipseKappa(LensProfileBase):
-    """This class contains the function and the derivatives of an elliptical
-    sersic profile with the ellipticity introduced in the convergence (not the
-    potential).
+    """This class contains the function and the derivatives of an elliptical sersic
+    profile with the ellipticity introduced in the convergence (not the potential).
 
     This requires the use of numerical integrals (Keeton 2004)
     """

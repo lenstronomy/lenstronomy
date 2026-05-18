@@ -35,8 +35,8 @@ def _alpha_epl_shear(x, y, b, q, t=1, gamma1=0, gamma2=0, Omega=None):
 
 @jit()
 def _one_dim_lens_eq_calcs(args, phi):
-    """Calculates intermediate quantities that are needed for several of the
-    subsequent functions."""
+    """Calculates intermediate quantities that are needed for several of the subsequent
+    functions."""
     b, t, y1, y2, q, gamma1, gamma2 = args
     y = y1 + y2 * 1j
 
@@ -135,12 +135,11 @@ def _one_dim_lens_eq_unsmooth(phi, args):
 
 @jit()
 def _getphi(thpl, args):
-    """Finds all roots to both versions the 1-dimensional lens equation in phi,
-    by doing a grid search for sign changes on the supplied thpl. In the case
-    of extrema, refine at the relevant location.
+    """Finds all roots to both versions the 1-dimensional lens equation in phi, by doing
+    a grid search for sign changes on the supplied thpl. In the case of extrema, refine
+    at the relevant location.
 
-    :param thpl: What points to calculate the equation on use for
-        detecting sign changes
+    :param thpl: What points to calculate the equation on use for detecting sign changes
     :param args: Parameters to be passed to the lens equation
     :return: an array containing all roots
     """
@@ -219,8 +218,8 @@ def _getphi(thpl, args):
 
 
 def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra=50):
-    """Solve the lens equation, where the arguments have been properly rotated
-    to the major-axis."""
+    """Solve the lens equation, where the arguments have been properly rotated to the
+    major-axis."""
     b, t, y1, y2, q, gamma1, gamma2 = args
     p1 = np.arctan2(y2 * (1 - gamma1) + gamma2 * y1, y1 * (1 + gamma1) + gamma2 * y2)
     int_points = [p1]
@@ -315,26 +314,23 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
 def caustics_epl_shear(
     kwargs_lens, num_th=500, maginf=0, sourceplane=True, return_which=None
 ):
-    """Analytically calculates the caustics of an EPL+shear lens model. Since
-    for gamma>2, the outer critical curve does not exist, the option to find
-    the curves for a set, finite magnification exists, by supplying maginf, so
-    that the routine finds the curve of this magnification, rather than the
-    true caustic.
+    """Analytically calculates the caustics of an EPL+shear lens model. Since for
+    gamma>2, the outer critical curve does not exist, the option to find the curves for
+    a set, finite magnification exists, by supplying maginf, so that the routine finds
+    the curve of this magnification, rather than the true caustic.
 
-    :param kwargs_lens: List of kwargs in lenstronomy style, following
-        ['EPL', 'SHEAR'] format
+    :param kwargs_lens: List of kwargs in lenstronomy style, following ['EPL', 'SHEAR']
+        format
     :param num_th: resolution.
-    :param maginf: the outer critical curve for t>1 will be replaced
-        with the curve where the inverse magnification is maginf
-    :param sourceplane: if True (default), ray-shoot the calculated
-        critical curves to the source plane
-    :param return_which: options 'quad' (boundary of area within which
-        there are 4 images), 'double' (boundary of area within which
-        there are 2 images), 'caustic' (the diamond caustic) and 'cut'
-        (the cut, if it exists, that is if t<2, else, if t>2, returns
-        the caustic) and None (in that case: return quad, caustic, cut)
-    :return: (2,N) array if return_which set, else a tuple of (caustic,
-        cut, quad)
+    :param maginf: the outer critical curve for t>1 will be replaced with the curve
+        where the inverse magnification is maginf
+    :param sourceplane: if True (default), ray-shoot the calculated critical curves to
+        the source plane
+    :param return_which: options 'quad' (boundary of area within which there are 4
+        images), 'double' (boundary of area within which there are 2 images), 'caustic'
+        (the diamond caustic) and 'cut' (the cut, if it exists, that is if t<2, else, if
+        t>2, returns the caustic) and None (in that case: return quad, caustic, cut)
+    :return: (2,N) array if return_which set, else a tuple of (caustic, cut, quad)
     """
     e1, e2 = kwargs_lens[0]["e1"], kwargs_lens[0]["e2"]
     if len(kwargs_lens) > 1:

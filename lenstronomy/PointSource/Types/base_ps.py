@@ -92,12 +92,12 @@ class PSBase(object):
         )
 
     def source_amplitude(self, kwargs_ps, **kwargs):
-        """Intrinsic source amplitudes (without lensing magnification, but
-        still apparent)
+        """Intrinsic source amplitudes (without lensing magnification, but still
+        apparent)
 
         :param kwargs_ps: keyword argument of point source model
-        :param kwargs: keyword arguments of function call (which are not
-            used for this object
+        :param kwargs: keyword arguments of function call (which are not used for this
+            object
         :return: numpy array of amplitudes
         """
         raise ValueError(

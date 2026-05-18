@@ -42,11 +42,11 @@ class SourceAmp(SingleParam):
 
 
 class ImageAmp(ArrayParam):
-    """Observed amplification of lensed images of a point source. Can model
-    arbitrarily many magnified images.
+    """Observed amplification of lensed images of a point source. Can model arbitrarily
+    many magnified images.
 
-    :param num_point_sources: integer. The number of lensed images
-        without fixed magnification.
+    :param num_point_sources: integer. The number of lensed images without fixed
+        magnification.
     """
 
     _kwargs_lower = {"point_amp": 0}
@@ -181,8 +181,7 @@ class PointSourceParam(object):
     def add_fix_linear(self, kwargs_fixed):
         """Updates fixed keyword argument list with linear parameters.
 
-        :param kwargs_fixed: list of keyword arguments held fixed during
-            sampling
+        :param kwargs_fixed: list of keyword arguments held fixed during sampling
         :return: updated keyword argument list
         """
         for k, model in enumerate(self.model_list):

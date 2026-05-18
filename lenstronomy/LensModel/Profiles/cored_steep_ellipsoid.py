@@ -320,8 +320,8 @@ class CSEMajorAxisSet(LensProfileBase):
 
 
 class CSEProductAvg(LensProfileBase):
-    """Cored steep ellipsoid (CSE) evaluated at the product-averaged radius
-    sqrt(ab), such that mass is not changed when increasing ellipticity.
+    """Cored steep ellipsoid (CSE) evaluated at the product-averaged radius sqrt(ab),
+    such that mass is not changed when increasing ellipticity.
 
     Same as CSEMajorAxis but evaluated at r=sqrt(q)*r_original
 
@@ -359,8 +359,8 @@ class CSEProductAvg(LensProfileBase):
 
     @staticmethod
     def _convert2prodavg(x, y, a, s, q):
-        """Converts coordinates and re-normalizes major-axis parameterization
-        to instead be wrt.
+        """Converts coordinates and re-normalizes major-axis parameterization to instead
+        be wrt.
 
         product-averaged
         """

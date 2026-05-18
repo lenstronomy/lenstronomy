@@ -6,9 +6,8 @@ __all__ = ["CurvedArcSPP", "center_deflector"]
 
 
 class CurvedArcSPP(LensProfileBase):
-    """Lens model that describes a section of a highly magnified deflector
-    region. The parameterization is chosen to describe local observables
-    efficient.
+    """Lens model that describes a section of a highly magnified deflector region. The
+    parameterization is chosen to describe local observables efficient.
 
     Observables are:
     - curvature radius (basically bending relative to the center of the profile)
@@ -76,9 +75,8 @@ class CurvedArcSPP(LensProfileBase):
 
     @staticmethod
     def spp2stretch(theta_E, gamma, center_x_spp, center_y_spp, center_x, center_y):
-        """Turn Singular power-law lens model into stretch parameterization at
-        position (center_x, center_y) This is the inverse function of
-        stretch2spp()
+        """Turn Singular power-law lens model into stretch parameterization at position
+        (center_x, center_y) This is the inverse function of stretch2spp()
 
         :param theta_E: Einstein radius of SPP model
         :param gamma: power-law slope
@@ -86,8 +84,7 @@ class CurvedArcSPP(LensProfileBase):
         :param center_y_spp: center of SPP model
         :param center_x: center of curved model definition
         :param center_y: center of curved model definition
-        :return: tangential_stretch, radial_stretch, curvature,
-            direction
+        :return: tangential_stretch, radial_stretch, curvature, direction
         """
         r_curvature = np.sqrt(
             (center_x_spp - center_x) ** 2 + (center_y_spp - center_y) ** 2

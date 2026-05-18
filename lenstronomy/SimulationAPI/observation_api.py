@@ -77,20 +77,16 @@ class Observation(object):
         psf_type=None,
         kernel_point_source=None,
     ):
-        """Updates class instance with new properties if specific argument is
-        not None.
+        """Updates class instance with new properties if specific argument is not None.
 
         :param exposure_time: exposure time per image (in seconds)
-        :param sky_brightness: sky brightness (in magnitude per square
-            arcseconds)
-        :param seeing: full width at half maximum of the PSF (if not
-            specific psf_model is specified)
+        :param sky_brightness: sky brightness (in magnitude per square arcseconds)
+        :param seeing: full width at half maximum of the PSF (if not specific psf_model
+            is specified)
         :param num_exposures: number of exposures that are combined
-        :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL'
-            supported)
-        :param kernel_point_source: 2d numpy array, model of PSF
-            centered with odd number of pixels per axis (optional when
-            psf_type='PIXEL' is chosen)
+        :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+        :param kernel_point_source: 2d numpy array, model of PSF centered with odd
+            number of pixels per axis (optional when psf_type='PIXEL' is chosen)
         :return: None, updated class instance
         """
         if exposure_time is not None:
@@ -151,9 +147,9 @@ class Observation(object):
 
     @property
     def psf_class(self):
-        """Creates instance of PSF() class based on knowledge of the
-        observations For the full possibility of how to create such an
-        instance, see the PSF() class documentation.
+        """Creates instance of PSF() class based on knowledge of the observations For
+        the full possibility of how to create such an instance, see the PSF() class
+        documentation.
 
         :return: instance of PSF() class
         """
@@ -254,8 +250,7 @@ class SingleBand(Instrument, Observation):
 
     @property
     def background_noise(self):
-        """Gaussian sigma of noise level per pixel in counts (e- or ADU) per
-        second.
+        """Gaussian sigma of noise level per pixel in counts (e- or ADU) per second.
 
         :return: sqrt(variance) of background noise level in data units
         """
@@ -304,12 +299,11 @@ class SingleBand(Instrument, Observation):
         return noise
 
     def flux_iid(self, flux_per_second):
-        """IID counts. This can be used by lenstronomy to estimate the Poisson
-        errors keeping the assumption that the counts are IIDs (even if they
-        are not).
+        """IID counts. This can be used by lenstronomy to estimate the Poisson errors
+        keeping the assumption that the counts are IIDs (even if they are not).
 
-        :param flux_per_second: flux count per second in the units set
-            in this class (ADU or e-)
+        :param flux_per_second: flux count per second in the units set in this class
+            (ADU or e-)
         :return: IID count number
         """
         if self._data_count_unit == "ADU":
@@ -343,18 +337,17 @@ class SingleBand(Instrument, Observation):
         return noise
 
     def estimate_noise(self, image):
-        """Estimates noise per pixel on the basis that the counts in the pixel
-        come from Poisson statistics of astrophysical objects.
+        """Estimates noise per pixel on the basis that the counts in the pixel come from
+        Poisson statistics of astrophysical objects.
 
         :param image: data, background subtracted
-        :return: estimated noise map sqrt(variance) for each pixel as
-            estimated from the instrument and observation
+        :return: estimated noise map sqrt(variance) for each pixel as estimated from the
+            instrument and observation
         """
         return np.sqrt(self.background_noise**2 + self.flux_noise(image) ** 2)
 
     def magnitude2cps(self, magnitude):
-        """Converts an apparent magnitude to counts per second (in units of the
-        data)
+        """Converts an apparent magnitude to counts per second (in units of the data)
 
         The zero point of an instrument, by definition, is the magnitude of an object that produces one count
         (or data number, DN) per second. The magnitude of an arbitrary object producing DN counts in an observation of

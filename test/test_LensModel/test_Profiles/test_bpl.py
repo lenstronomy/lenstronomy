@@ -21,8 +21,8 @@ def _finite(z):
 
 
 class TestBPLInternals(object):
-    """Cover scalar-input branches and 3D helper functions that are not hit by
-    BPL-vs- EPL tests."""
+    """Cover scalar-input branches and 3D helper functions that are not hit by BPL-vs-
+    EPL tests."""
 
     def setup_method(self):
         from lenstronomy.LensModel.Profiles.bpl import BPL
@@ -47,9 +47,9 @@ class TestBPLInternals(object):
     def test_scalar_origin_hits_center_shear_fix_and_major_axis_safe_complex(
         self, monkeypatch
     ):
-        """Cover BPL.hessian scalar-origin 'center shear = 0' branch without
-        calling BPLMajorAxis.hessian at scalar origin (which is currently not
-        safe due to .conj())."""
+        """Cover BPL.hessian scalar-origin 'center shear = 0' branch without calling
+        BPLMajorAxis.hessian at scalar origin (which is currently not safe due to
+        .conj())."""
 
         # Return an intentionally non-zero shear in major-axis frame,
         # so the wrapper must zero it out at exact center.
@@ -178,16 +178,16 @@ class TestBPLInternals(object):
         assert np.size(out) == 1
 
     def test_s0arr_scalar_resizes_converges_and_unwraps(self):
-        """Cover s0arr scalar-input resize (nzc==1), convergence break, and
-        scalar unwrap."""
+        """Cover s0arr scalar-input resize (nzc==1), convergence break, and scalar
+        unwrap."""
         out = self.major.s0arr(
             alpha=2.2, alphac=1.7, zel2=0.5, c=0.8, target_precision=1e-4
         )
         _assert_finite_complex(out)
 
     def test_s2arr_scalar_resizes_converges_and_unwraps(self):
-        """Cover s2arr scalar-input resize (nzc==1), convergence break, and
-        scalar unwrap."""
+        """Cover s2arr scalar-input resize (nzc==1), convergence break, and scalar
+        unwrap."""
         out = self.major.s2arr(
             alpha=2.2, alphac=1.7, zel2=0.5, c=0.8, target_precision=1e-4
         )
@@ -287,12 +287,10 @@ class TestBPLvsEPL(object):
 
     @staticmethod
     def _kwargs_pair(b=1.0, a=2.0, q=0.8, phi_G=1.0, r_c=0.7):
-        """Return kwargs for BPL and EPL that should match in the power-law
-        limit.
+        """Return kwargs for BPL and EPL that should match in the power-law limit.
 
-        Power-law limit is achieved by setting a_c == a (no break in 3D
-        slope), which removes the 'core/break' correction terms in the
-        current BPL implementation.
+        Power-law limit is achieved by setting a_c == a (no break in 3D slope), which
+        removes the 'core/break' correction terms in the current BPL implementation.
         """
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
 
@@ -303,8 +301,8 @@ class TestBPLvsEPL(object):
         return kwargs_bpl, kwargs_epl
 
     def test_elliptical_radius_convention(self):
-        """Sanity check the two common elliptical-radius definitions mentioned
-        in the discussion.
+        """Sanity check the two common elliptical-radius definitions mentioned in the
+        discussion.
 
         r1 = sqrt(q*x^2 + y^2/q)
         r2 = sqrt(x^2 + y^2/q^2)

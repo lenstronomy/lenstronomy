@@ -7,8 +7,8 @@ __all__ = ["SIS"]
 
 
 class SIS(LensProfileBase):
-    """This class contains the function and the derivatives of the Singular
-    Isothermal Sphere.
+    """This class contains the function and the derivatives of the Singular Isothermal
+    Sphere.
 
     .. math::
         \\kappa(x, y) = \\frac{1}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{x^2 + y^2}} \\right)
@@ -72,23 +72,22 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def theta2rho(theta_E):
-        """Converts projected density parameter (in units of deflection) into
-        3d density parameter :param theta_E: Einstein radius :return:"""
+        """Converts projected density parameter (in units of deflection) into 3d density
+        parameter :param theta_E: Einstein radius :return:"""
         fac1 = np.pi * 2
         rho0 = theta_E / fac1
         return rho0
 
     @staticmethod
     def mass_3d(r, rho0):
-        """Mass enclosed a 3d sphere or radius r :param r: radius in angular
-        units :param rho0: density at angle=1 :return: mass in angular
-        units."""
+        """Mass enclosed a 3d sphere or radius r :param r: radius in angular units
+        :param rho0: density at angle=1 :return: mass in angular units."""
         mass_3d = 4 * np.pi * rho0 * r
         return mass_3d
 
     def mass_3d_lens(self, r, theta_E):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization
-        with angular units.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :param r: radius in angular units
         :param theta_E: Einstein radius
@@ -137,15 +136,15 @@ class SIS(LensProfileBase):
 
     @staticmethod
     def density(r, rho0):
-        """Computes the density :param r: radius in angles :param rho0: density
-        at angle=1 :return: density at r."""
+        """Computes the density :param r: radius in angles :param rho0: density at
+        angle=1 :return: density at r."""
         rho = rho0 / r**2
         return rho
 
     def density_lens(self, r, theta_E):
-        """Computes the density at 3d radius r given lens model
-        parameterization. The integral in projected in units of angles (i.e.
-        arc seconds) results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in projected in units of angles (i.e. arc seconds) results in the
+        convergence quantity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius

@@ -218,8 +218,8 @@ class DoubleChameleon(object):
 
 @export
 class TripleChameleon(object):
-    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated
-    double isothermal profile."""
+    """Class of the Chameleon model (See Suyu+2014) an elliptical truncated double
+    isothermal profile."""
 
     param_names = [
         "amp",

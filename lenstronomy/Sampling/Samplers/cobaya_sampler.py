@@ -24,10 +24,10 @@ class CobayaSampler(object):
         https://cobaya.readthedocs.io/en/latest/index.html
 
         :param likelihood_class: Likelihood() instance
-        :param mean_start: initial point for parameters are drawn from
-            Gaussians with these means
-        :param sigma_start: initial point for parameters are drawn from
-            Gaussians with these standard deviations
+        :param mean_start: initial point for parameters are drawn from Gaussians with
+            these means
+        :param sigma_start: initial point for parameters are drawn from Gaussians with
+            these standard deviations
         """
 
         # get the logL and parameter info from Likelihood
@@ -141,9 +141,9 @@ class CobayaSampler(object):
             ]
 
         def likelihood_for_cobaya(**kwargs):
-            """We define a function to return the log-likelihood; this function
-            is passed to Cobaya. The function must be nested within the run()
-            function for it to work properly.
+            """We define a function to return the log-likelihood; this function is
+            passed to Cobaya. The function must be nested within the run() function for
+            it to work properly.
 
             :param kwargs: dictionary of keyword arguments
             """

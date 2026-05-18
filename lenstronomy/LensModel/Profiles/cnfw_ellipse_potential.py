@@ -12,8 +12,8 @@ __all__ = ["CNFWEllipsePotential"]
 
 
 class CNFWEllipsePotential(LensProfileBase):
-    """This class contains functions concerning the CNFW profile with
-    ellipticity in the potential.
+    """This class contains functions concerning the CNFW profile with ellipticity in the
+    potential.
 
     relation are: R_200 = c * Rs
     """
@@ -106,18 +106,17 @@ class CNFWEllipsePotential(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
-        """Mass enclosed a 3d sphere or radius r given a lens parameterization
-        with angular units.
+        """Mass enclosed a 3d sphere or radius r given a lens parameterization with
+        angular units.
 
         :return:
         """
         return self.cnfw.mass_3d_lens(R, Rs, alpha_Rs, r_core)
 
     def density_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
-        """Computes the density at 3d radius r given lens model
-        parameterization.
+        """Computes the density at 3d radius r given lens model parameterization.
 
-        The integral in the LOS projection of this quantity results in
-        the convergence quantity.
+        The integral in the LOS projection of this quantity results in the convergence
+        quantity.
         """
         return self.cnfw.density_lens(R, Rs, alpha_Rs, r_core)

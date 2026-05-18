@@ -12,17 +12,14 @@ export, __all__ = exporter()
 
 @export
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
-    """Adds a kernel on the grid2d image at position x_pos, y_pos with an
-    interpolated subgrid pixel shift of order=order.
+    """Adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated
+    subgrid pixel shift of order=order.
 
     :param grid2d: 2d pixel grid (i.e. image)
-    :param x_pos: x-position center (pixel coordinate) of the layer to
-        be added
-    :param y_pos: y-position center (pixel coordinate) of the layer to
-        be added
+    :param x_pos: x-position center (pixel coordinate) of the layer to be added
+    :param y_pos: y-position center (pixel coordinate) of the layer to be added
     :param kernel: the layer to be added to the image
-    :param order: interpolation order for sub-pixel shift of the kernel
-        to be added
+    :param order: interpolation order for sub-pixel shift of the kernel to be added
     :return: image with added layer, cut to original size
     """
 
@@ -36,14 +33,12 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
 
 @export
 def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
-    """Adds a kernel on the grid2d image at position x_pos, y_pos at integer
-    positions of pixel.
+    """Adds a kernel on the grid2d image at position x_pos, y_pos at integer positions
+    of pixel.
 
     :param grid2d: 2d pixel grid (i.e. image)
-    :param x_pos: x-position center (pixel coordinate) of the layer to
-        be added
-    :param y_pos: y-position center (pixel coordinate) of the layer to
-        be added
+    :param x_pos: x-position center (pixel coordinate) of the layer to be added
+    :param y_pos: y-position center (pixel coordinate) of the layer to be added
     :param kernel: the layer to be added to the image
     :return: image with added layer
     """
@@ -88,9 +83,8 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
 
 @export
 def add_background(image, sigma_bkd):
-    """Generates background noise to image. To generate a noisy image with
-    background noise, generate image_noisy = image + add_background(image,
-    sigma_bkd)
+    """Generates background noise to image. To generate a noisy image with background
+    noise, generate image_noisy = image + add_background(image, sigma_bkd)
 
     :param image: pixel values of image
     :param sigma_bkd: background noise (sigma)
@@ -103,9 +97,9 @@ def add_background(image, sigma_bkd):
 
 @export
 def add_poisson(image, exp_time):
-    """Generates a poison (or Gaussian) distributed noise with mean given by
-    surface brightness. To generate a noisy image with Poisson noise, perform
-    image_noisy = image + add_poisson(image, exp_time)
+    """Generates a poison (or Gaussian) distributed noise with mean given by surface
+    brightness. To generate a noisy image with Poisson noise, perform image_noisy =
+    image + add_poisson(image, exp_time)
 
     :param image: pixel values (photon counts per unit exposure time)
     :param exp_time: exposure time
@@ -141,8 +135,8 @@ def shift_image(img, shift):
 
 @export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
-    """Resizes 2d array (i.e. image) to new coordinates. So far only works with
-    square output aligned with coordinate axis.
+    """Resizes 2d array (i.e. image) to new coordinates. So far only works with square
+    output aligned with coordinate axis.
 
     :param x_in:
     :param y_in:
@@ -175,8 +169,8 @@ def symmetry_average(image, symmetry):
 
 @export
 def findOverlap(x_mins, y_mins, min_distance):
-    """Finds overlapping solutions, deletes multiples and deletes non-solutions
-    and if it is not a solution, deleted as well."""
+    """Finds overlapping solutions, deletes multiples and deletes non-solutions and if
+    it is not a solution, deleted as well."""
     n = len(x_mins)
     idex = []
     for i in range(n):
@@ -244,8 +238,7 @@ def re_size(image, factor=1):
 
 @export
 def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask):
-    """Re-bins pixels, updates cutout image, wht_map, sigma_bkg, coordinates,
-    PSF.
+    """Re-bins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF.
 
     :param bin_size: number of pixels (per axis) to merge
     :return:
@@ -279,8 +272,8 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
 def rebin_coord_transform(
     factor, x_at_radec_0, y_at_radec_0, transform_pix2coord, transform_coord2pix
 ):
-    """Adopt coordinate system and transformation between angular and pixel
-    coordinates of a re-binned image."""
+    """Adopt coordinate system and transformation between angular and pixel coordinates
+    of a re-binned image."""
     factor = int(factor)
     transform_coord2pix_resized = transform_coord2pix / factor
     transform_pix2coord_resized = transform_pix2coord * factor
@@ -320,8 +313,8 @@ def stack_images(image_list, wht_list, sigma_list):
 
 @export
 def cut_edges(image, num_pix):
-    """Cuts out the edges of a 2d image and returns re-sized image to num_pix
-    center is well defined for odd pixel sizes.
+    """Cuts out the edges of a 2d image and returns re-sized image to num_pix center is
+    well defined for odd pixel sizes.
 
     :param image: 2d numpy array
     :param num_pix: square size of cut out image
@@ -356,8 +349,7 @@ def radial_profile(data, center):
     """Computes radial profile.
 
     :param data: 2d numpy array
-    :param center: center [x, y] from which pixel to compute the radial
-        profile
+    :param center: center [x, y] from which pixel to compute the radial profile
     :return: radial profile (in units pixel)
     """
     y, x = np.indices(data.shape)
@@ -375,8 +367,7 @@ def gradient_map(image):
     """Computes gradients of images with the sobel transform.
 
     :param image: 2d numpy array
-    :return: array of same size as input, with gradients between
-        neighboring pixels
+    :return: array of same size as input, with gradients between neighboring pixels
     """
     from skimage import filters
 

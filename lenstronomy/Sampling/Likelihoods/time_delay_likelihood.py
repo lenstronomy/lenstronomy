@@ -6,8 +6,7 @@ __all__ = ["TimeDelayLikelihood"]
 
 
 class TimeDelayLikelihood(object):
-    """Class to compute the likelihood of a model given a measurement of time
-    delays."""
+    """Class to compute the likelihood of a model given a measurement of time delays."""
 
     def __init__(
         self,
@@ -123,8 +122,8 @@ class TimeDelayLikelihood(object):
         :param kwargs_lens: lens model kwargs list
         :param kwargs_ps: point source kwargs list
         :param kwargs_cosmo: cosmology and other kwargs
-        :param lambda_mst: mass-sheet transform of the input lens model
-            that is not accounted for in the lens model parameters
+        :param lambda_mst: mass-sheet transform of the input lens model that is not
+            accounted for in the lens model parameters
         :type lambda_mst: float or int
         :return: log likelihood of the model given the time delay data.
         """
@@ -204,12 +203,12 @@ class TimeDelayLikelihood(object):
 
     @staticmethod
     def _logL_delays(delays_model, delays_measured, delays_errors):
-        """Log likelihood of modeled delays vs measured time delays under
-        considerations of errors.
+        """Log likelihood of modeled delays vs measured time delays under considerations
+        of errors.
 
         :param delays_model: n delays of the model (not relative delays)
-        :param delays_measured: relative delays (1-2,1-3,1-4) relative
-            to the first in the list
+        :param delays_measured: relative delays (1-2,1-3,1-4) relative to the first in
+            the list
         :param delays_errors: gaussian errors on the measured delays
         :return: log likelihood of data given model
         """

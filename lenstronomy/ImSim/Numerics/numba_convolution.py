@@ -189,10 +189,9 @@ class NumbaConvolution(object):
 
 
 class SubgridNumbaConvolution(object):
-    """Class that inputs a supersampled grid and convolution kernel and
-    computes the response on the regular grid This makes use of the regualr
-    NumbaConvolution class as a loop through the different sub-pixel
-    positions."""
+    """Class that inputs a supersampled grid and convolution kernel and computes the
+    response on the regular grid This makes use of the regualr NumbaConvolution class as
+    a loop through the different sub-pixel positions."""
 
     def __init__(
         self,

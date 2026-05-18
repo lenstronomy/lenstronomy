@@ -20,25 +20,22 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
     """De-shifts a shifted kernel to the center of a pixel. This is performed
     iteratively.
 
-    The input kernel is the solution of a linear interpolated shift of a
-    sharper kernel centered in the middle of the pixel. To find the de-
-    shifted kernel, we perform an iterative correction of proposed de-
-    shifted kernels and compare its shifted version with the input
-    kernel.
+    The input kernel is the solution of a linear interpolated shift of a sharper kernel
+    centered in the middle of the pixel. To find the de- shifted kernel, we perform an
+    iterative correction of proposed de- shifted kernels and compare its shifted version
+    with the input kernel.
 
-    :param kernel: (shifted) kernel, e.g. a star in an image that is not
-        centered in the pixel grid
-    :param shift_x: x-offset relative to the center of the pixel (sub-
-        pixel shift)
-    :param shift_y: y-offset relative to the center of the pixel (sub-
-        pixel shift)
-    :param iterations: number of repeated iterations of shifting a new
-        de-shifted kernel and apply corrections
-    :param fractional_step_size: correction factor relative to previous
-        proposal (can be used for stability
+    :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the
+        pixel grid
+    :param shift_x: x-offset relative to the center of the pixel (sub- pixel shift)
+    :param shift_y: y-offset relative to the center of the pixel (sub- pixel shift)
+    :param iterations: number of repeated iterations of shifting a new de-shifted kernel
+        and apply corrections
+    :param fractional_step_size: correction factor relative to previous proposal (can be
+        used for stability
     :type fractional_step_size: float (0, 1]
-    :return: de-shifted kernel such that the interpolated shift boy
-        (shift_x, shift_y) results in the input kernel
+    :return: de-shifted kernel such that the interpolated shift boy (shift_x, shift_y)
+        results in the input kernel
     """
     nx, ny = np.shape(kernel)
     kernel_new = (
@@ -69,9 +66,9 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
 
 @export
 def center_kernel(kernel, iterations=20):
-    """Given a kernel that might not be perfectly centered, this routine
-    computes its light weighted center and then moves the center in an
-    iterative process such that it is centered.
+    """Given a kernel that might not be perfectly centered, this routine computes its
+    light weighted center and then moves the center in an iterative process such that it
+    is centered.
 
     :param kernel: 2d array (odd numbers)
     :param iterations: int, number of iterations
@@ -137,8 +134,8 @@ def kernel_norm(kernel):
 
 @export
 def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
-    """Creates a higher resolution kernel with subgrid resolution as an
-    interpolation of the original kernel in an iterative approach.
+    """Creates a higher resolution kernel with subgrid resolution as an interpolation of
+    the original kernel in an iterative approach.
 
     :param kernel: initial kernel
     :type kernel: 2d numpy array with square odd size
@@ -146,12 +143,10 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     :type subgrid_res: integer
     :param odd: forces odd axis size return (-1 in size if even)
     :type odd: boolean
-    :param num_iter: number of iterations in the de-shifting and
-        enhancement
+    :param num_iter: number of iterations in the de-shifting and enhancement
     :type num_iter: integer
     :return: kernel with higher resolution (larger)
-    :rtype: 2d numpy array with n x subgrid size (-1 if result is even
-        and odd=True)
+    :rtype: 2d numpy array with n x subgrid size (-1 if result is even and odd=True)
     """
     subgrid_res = int(subgrid_res)
     if subgrid_res == 1:
@@ -249,8 +244,8 @@ def cut_psf(psf_data, psf_size, normalisation=True):
 
 @export
 def pixel_kernel(point_source_kernel, subgrid_res=7):
-    """Converts a pixelised kernel of a point source to a kernel representing a
-    uniform extended pixel.
+    """Converts a pixelised kernel of a point source to a kernel representing a uniform
+    extended pixel.
 
     :param point_source_kernel:
     :param subgrid_res:
@@ -274,11 +269,10 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
 
 @export
 def kernel_average_pixel(kernel_super, supersampling_factor):
-    """Computes the effective convolution kernel assuming a uniform surface
-    brightness on the scale of a pixel.
+    """Computes the effective convolution kernel assuming a uniform surface brightness
+    on the scale of a pixel.
 
-    :param kernel_super: supersampled PSF of a point source (odd number
-        per axis
+    :param kernel_super: supersampled PSF of a point source (odd number per axis
     :param supersampling_factor: supersampling factor (int)
     :return:
     """
@@ -380,16 +374,14 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
 def split_kernel(
     kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True
 ):
-    """Pixel kernel and subsampling kernel such that the convolution of both
-    applied on an image can be performed, i.e. smaller subsampling PSF and hole
-    in larger PSF.
+    """Pixel kernel and subsampling kernel such that the convolution of both applied on
+    an image can be performed, i.e. smaller subsampling PSF and hole in larger PSF.
 
     :param kernel_super: super-sampled kernel
-    :param supersampling_kernel_size: size of super-sampled PSF in units
-        of degraded pixels
-    :param normalized: if True, preserves the sum of low and high-res
-        kernels to be the sum of the original kernel, else, conserves
-        local density
+    :param supersampling_kernel_size: size of super-sampled PSF in units of degraded
+        pixels
+    :param normalized: if True, preserves the sum of low and high-res kernels to be the
+        sum of the original kernel, else, conserves local density
     :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:
@@ -464,11 +456,11 @@ def averaging_odd_kernel(kernel_super, degrading_factor):
 
 @export
 def averaging_even_kernel(kernel_high_res, subgrid_res):
-    """Makes a lower resolution kernel based on the kernel_high_res (odd
-    numbers) and the subgrid_res (even number), both meant to be centered.
+    """Makes a lower resolution kernel based on the kernel_high_res (odd numbers) and
+    the subgrid_res (even number), both meant to be centered.
 
-    :param kernel_high_res: high resolution kernel with even subsampling
-        resolution, centered
+    :param kernel_high_res: high resolution kernel with even subsampling resolution,
+        centered
     :param subgrid_res: subsampling resolution (even number)
     :return: averaged undersampling kernel
     """
@@ -519,8 +511,8 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
 
 @export
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
-    """Cuts out point source (e.g. PSF estimate) out of image and shift it to
-    the center of a pixel.
+    """Cuts out point source (e.g. PSF estimate) out of image and shift it to the center
+    of a pixel.
 
     :param x_pos:
     :param y_pos:
@@ -630,13 +622,13 @@ def mge_kernel(kernel, order=5):
 
 @export
 def match_kernel_size(image, size):
-    """Matching kernel/image to a dedicated size by either expanding the image
-    with zeros at the edges or chopping of the edges.
+    """Matching kernel/image to a dedicated size by either expanding the image with
+    zeros at the edges or chopping of the edges.
 
     :param image: 2d array (square with odd number of pixels)
     :param size: integer (odd number)
-    :return: image with matched size, either by cutting or by adding
-        zeros in the outskirts
+    :return: image with matched size, either by cutting or by adding zeros in the
+        outskirts
     """
     n = len(image)
     if n == size:

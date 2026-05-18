@@ -11,9 +11,9 @@ __all__ = ["EPL_BOXYDISKY_ELL", "EPL_BOXYDISKY"]
 
 
 class EPL_BOXYDISKY_ELL(LensProfileBase):
-    """" EPL (Elliptical Power Law) mass profile combined with an elliptical
-    multipole with m=4, so that it's either purely boxy or disky with EPL's
-    axis and multipole's axis aligned (exact for general axis ratio q).
+    """ " EPL (Elliptical Power Law) mass profile combined with an elliptical multipole
+    with m=4, so that it's either purely boxy or disky with EPL's axis and multipole's
+    axis aligned (exact for general axis ratio q).
 
     Read the documentation of lenstronomy.LensModel.Profiles.epl and
     lenstronomy.LensModel.Profiles.multipole for details.
@@ -26,11 +26,10 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
         lenstronomy.Util.param_util.phi_q2_ellipticity document.
     :param center_x: center of distortion
     :param center_y: center of distortion
-    :param a4_a: Strength of the deviation of multipole order 4 of the
-        elliptical isodensity contours, which is translated into the
-        multipole strength from the MULTIPOLE_ELL class through a
-        rescaling by theta_E. Profile is disky when a4_a>0 and boxy when
-        a4_a<0.
+    :param a4_a: Strength of the deviation of multipole order 4 of the elliptical
+        isodensity contours, which is translated into the multipole strength from the
+        MULTIPOLE_ELL class through a rescaling by theta_E. Profile is disky when a4_a>0
+        and boxy when a4_a<0.
     """
 
     param_names = ["theta_E", "gamma", "e1", "e2", "center_x", "center_y", "a4_a"]
@@ -171,9 +170,9 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
 
 
 class EPL_BOXYDISKY(LensProfileBase):
-    """" EPL (Elliptical Power Law) mass profile combined with a circular
-    multipole with m=4, so that it's either purely boxy or disky with EPL's
-    axis and multipole's axis aligned (exact for axis ratio q=1 only).
+    """ " EPL (Elliptical Power Law) mass profile combined with a circular multipole with
+    m=4, so that it's either purely boxy or disky with EPL's axis and multipole's axis
+    aligned (exact for axis ratio q=1 only).
 
     Reference to the implementation: https://ui.adsabs.harvard.edu/abs/2022A%26A...659A.127V/abstract
 

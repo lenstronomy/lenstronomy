@@ -253,9 +253,8 @@ class TestData(object):
         npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=16)
 
     def test_jax_array_psf_variance_map(self):
-        """Test that jax arrays in kernel_point_source or psf_variance_map are
-        handled correctly during normalisation (covers the jax.Array branch in
-        psf.py)."""
+        """Test that jax arrays in kernel_point_source or psf_variance_map are handled
+        correctly during normalisation (covers the jax.Array branch in psf.py)."""
         jnp = pytest.importorskip("jax.numpy")
 
         kernel_np = kernel_util.kernel_gaussian(

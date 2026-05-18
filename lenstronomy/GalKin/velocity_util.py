@@ -88,8 +88,8 @@ def displace_psf_moffat(x, y, FWHM, beta):
 
 @export
 def draw_cdf_y(beta):
-    """Draw c.d.f for Moffat function according to Berge et al. Ufig paper,
-    equation B2 cdf(Y) = 1-Y**(1-beta)
+    """Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
+    cdf(Y) = 1-Y**(1-beta)
 
     :return:
     """

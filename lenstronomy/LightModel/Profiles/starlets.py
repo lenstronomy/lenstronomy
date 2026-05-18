@@ -11,9 +11,8 @@ __all__ = ["SLIT_Starlets"]
 
 
 class SLIT_Starlets(object):
-    """Decomposition of an image using the Isotropic Undecimated Walevet
-    Transform, also known as "starlet" or "B-spline", using the 'a trous'
-    algorithm.
+    """Decomposition of an image using the Isotropic Undecimated Walevet Transform, also
+    known as "starlet" or "B-spline", using the 'a trous' algorithm.
 
     Astronomical data (galaxies, stars, ...) are often very sparsely represented in the starlet basis.
 
@@ -56,16 +55,14 @@ class SLIT_Starlets(object):
     ):
         """Load pySAP package if found, and initialize the Starlet transform.
 
-        :param thread_count: number of threads used for pySAP
-            computations
-        :param fast_inverse: if True, reconstruction is simply the sum
-            of each scale (only for 1st generation starlet transform)
-        :param second_gen: if True, uses the second generation of
-            starlet transform
-        :param show_pysap_plots: if True, displays pySAP plots when
-            calling the decomposition method
-        :param force_no_pysap: if True, does not load pySAP and computes
-            starlet transforms in python.
+        :param thread_count: number of threads used for pySAP computations
+        :param fast_inverse: if True, reconstruction is simply the sum of each scale
+            (only for 1st generation starlet transform)
+        :param second_gen: if True, uses the second generation of starlet transform
+        :param show_pysap_plots: if True, displays pySAP plots when calling the
+            decomposition method
+        :param force_no_pysap: if True, does not load pySAP and computes starlet
+            transforms in python.
         """
         self.use_pysap, pysap = self._load_pysap(force_no_pysap)
         if self.use_pysap:
@@ -94,13 +91,12 @@ class SLIT_Starlets(object):
         center_x=0,
         center_y=0,
     ):
-        """1D inverse starlet transform from starlet coefficients stored in
-        coeffs Follows lenstronomy conventions for light profiles.
+        """1D inverse starlet transform from starlet coefficients stored in coeffs
+        Follows lenstronomy conventions for light profiles.
 
-        :param amp: decomposition coefficients ('amp' to follow
-            conventions in other light profile) This is an ndarray with
-            shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or
-            (n_scales*n_pixels,)
+        :param amp: decomposition coefficients ('amp' to follow conventions in other
+            light profile) This is an ndarray with shape (n_scales, sqrt(n_pixels),
+            sqrt(n_pixels)) or (n_scales*n_pixels,)
         :param n_scales: number of decomposition scales
         :param n_pixels: number of pixels in a single scale
         :return: reconstructed signal as 1D array of shape (n_pixels,)
@@ -127,14 +123,13 @@ class SLIT_Starlets(object):
         return image
 
     def function_2d(self, coeffs, n_scales, n_pixels):
-        """2D inverse starlet transform from starlet coefficients stored in
-        coeffs.
+        """2D inverse starlet transform from starlet coefficients stored in coeffs.
 
-        :param coeffs: decomposition coefficients, ndarray with shape
-            (n_scales, sqrt(n_pixels), sqrt(n_pixels))
+        :param coeffs: decomposition coefficients, ndarray with shape (n_scales,
+            sqrt(n_pixels), sqrt(n_pixels))
         :param n_scales: number of decomposition scales
-        :return: reconstructed signal as 2D array of shape
-            (sqrt(n_pixels), sqrt(n_pixels))
+        :return: reconstructed signal as 2D array of shape (sqrt(n_pixels),
+            sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
             return self._inverse_transform(coeffs, n_scales, n_pixels)
@@ -146,11 +141,10 @@ class SLIT_Starlets(object):
     def decomposition(self, image, n_scales):
         """1D starlet transform from starlet coefficients stored in coeffs.
 
-        :param image: 2D image to be decomposed, ndarray with shape
-            (sqrt(n_pixels), sqrt(n_pixels))
+        :param image: 2D image to be decomposed, ndarray with shape (sqrt(n_pixels),
+            sqrt(n_pixels))
         :param n_scales: number of decomposition scales
-        :return: reconstructed signal as 1D array of shape
-            (n_scales*n_pixels,)
+        :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
         if len(image.shape) == 1:
             image_2d = util.array2image(image)
@@ -165,11 +159,11 @@ class SLIT_Starlets(object):
     def decomposition_2d(self, image, n_scales):
         """2D starlet transform from starlet coefficients stored in coeffs.
 
-        :param image: 2D image to be decomposed, ndarray with shape
-            (sqrt(n_pixels), sqrt(n_pixels))
+        :param image: 2D image to be decomposed, ndarray with shape (sqrt(n_pixels),
+            sqrt(n_pixels))
         :param n_scales: number of decomposition scales
-        :return: reconstructed signal as 2D array of shape (n_scales,
-            sqrt(n_pixels), sqrt(n_pixels))
+        :return: reconstructed signal as 2D array of shape (n_scales, sqrt(n_pixels),
+            sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
             coeffs = self._transform(image, n_scales)
@@ -206,8 +200,7 @@ class SLIT_Starlets(object):
         return coeffs
 
     def _check_transform_pysap(self, n_scales, n_pixels):
-        """If needed, update the loaded pySAP transform to correct number of
-        scales."""
+        """If needed, update the loaded pySAP transform to correct number of scales."""
         if (
             not hasattr(self, "_transf")
             or n_scales != self._n_scales
@@ -224,8 +217,7 @@ class SLIT_Starlets(object):
         return np.asarray(coeffs)
 
     def _coeffs2pysap(self, coeffs):
-        """Convert coefficients stored in numpy array to list required by
-        pySAP."""
+        """Convert coefficients stored in numpy array to list required by pySAP."""
         coeffs_list = []
         for i in range(coeffs.shape[0]):
             coeffs_list.append(coeffs[i, :, :])

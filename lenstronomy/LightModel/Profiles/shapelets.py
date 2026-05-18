@@ -65,19 +65,19 @@ class Shapelets(object):
     def __init__(
         self, interpolation=False, precalc=False, stable_cut=True, cut_scale=5
     ):
-        """Load interpolation of the Hermite polynomials in a range [-30,30] in
-        order n<= 150.
+        """Load interpolation of the Hermite polynomials in a range [-30,30] in order
+        n<= 150.
 
-        :param interpolation: boolean; if True, uses interpolated pre-
-            calculated shapelets in the evaluation
-        :param precalc: boolean; if True interprets as input (x, y) as
-            pre-calculated normalized shapelets
+        :param interpolation: boolean; if True, uses interpolated pre- calculated
+            shapelets in the evaluation
+        :param precalc: boolean; if True interprets as input (x, y) as pre-calculated
+            normalized shapelets
         :param stable_cut: boolean; if True, sets the values outside of
-            :math:`\\sqrt\\left(n_{\\rm max} + 1 \\right) \\beta s_{\\rm
-            cut scale} = 0`.
-        :param cut_scale: float, scaling parameter where to cut the
-            shapelets. This is for numerical reasons such that the
-            polynomials in the Hermite function do not get unstable.
+            :math:`\\sqrt\\left(n_{\\rm max} + 1 \\right) \\beta s_{\\rm cut scale} =
+            0`.
+        :param cut_scale: float, scaling parameter where to cut the shapelets. This is
+            for numerical reasons such that the polynomials in the Hermite function do
+            not get unstable.
         """
 
         self._interpolation = interpolation
@@ -143,8 +143,7 @@ class Shapelets(object):
         )  # /beta
 
     def H_n(self, n, x):
-        """Constructs the Hermite polynomial of order n at position x
-        (dimensionless)
+        """Constructs the Hermite polynomial of order n at position x (dimensionless)
 
         :param n: The n'the basis function.
         :param x: 1-dim position (dimensionless)
@@ -161,8 +160,7 @@ class Shapelets(object):
             return np.interp(x, self.x_grid, self.H_interp[n])
 
     def phi_n(self, n, x):
-        """Constructs the 1-dim basis function (formula (1) in Refregier et al.
-        2001)
+        """Constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
 
         :param n: The n'the basis function.
         :type n: int.
@@ -174,8 +172,8 @@ class Shapelets(object):
         return prefactor * self.H_n(n, x) * np.exp(-(x**2) / 2.0)
 
     def pre_calc(self, x, y, beta, n_order, center_x, center_y):
-        """Calculates the H_n(x) and H_n(y) for a given x-array and y-array for
-        the full order in the polynomials.
+        """Calculates the H_n(x) and H_n(y) for a given x-array and y-array for the full
+        order in the polynomials.
 
         :param x: x-coordinates (numpy array)
         :param y: 7-coordinates (numpy array)
@@ -205,8 +203,8 @@ class Shapelets(object):
 
 @export
 class ShapeletSet(object):
-    """Class to operate on entire shapelet set limited by a maximal polynomial
-    order n_max, such that n1 + n2 <= n_max."""
+    """Class to operate on entire shapelet set limited by a maximal polynomial order
+    n_max, such that n1 + n2 <= n_max."""
 
     param_names = ["amp", "n_max", "beta", "center_x", "center_y"]
     lower_limit_default = {"beta": 0.01, "center_x": -100, "center_y": -100}
@@ -256,13 +254,11 @@ class ShapeletSet(object):
         return np.nan_to_num(f_)
 
     def function_split(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
-        """Splits shapelet set in list of individual shapelet basis function
-        responses.
+        """Splits shapelet set in list of individual shapelet basis function responses.
 
         :param x: x-coordinates
         :param y: y-coordinates
-        :param amp: array of amplitudes in pre-defined order of shapelet
-            basis functions
+        :param amp: array of amplitudes in pre-defined order of shapelet basis functions
         :param beta: shapelet scale
         :param n_max: maximum polynomial order in Hermite polynomial
         :param center_x: shapelet center
@@ -333,8 +329,8 @@ class ShapeletSet(object):
     def decomposition(
         self, image, x, y, n_max, beta, delta_pix, center_x=0, center_y=0
     ):
-        """Decomposes an image into the shapelet coefficients in same order as
-        for the function call.
+        """Decomposes an image into the shapelet coefficients in same order as for the
+        function call.
 
         :param image:
         :param x:

@@ -89,8 +89,7 @@ class DynestySampler(NestedSampler):
 
         see https://dynesty.readthedocs.io for content of kwargs_run
 
-        :param kwargs_run: kwargs directly passed to
-            DynamicNestedSampler.run_nested
+        :param kwargs_run: kwargs directly passed to DynamicNestedSampler.run_nested
         :return: samples, means, logZ, logZ_err, logL, results
         """
         print("prior type :", self.prior_type)

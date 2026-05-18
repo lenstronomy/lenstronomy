@@ -5,8 +5,7 @@ __all__ = ["PriorLikelihood"]
 
 
 class PriorLikelihood(object):
-    """Class containing additional Gaussian priors to be folded into the
-    likelihood."""
+    """Class containing additional Gaussian priors to be folded into the likelihood."""
 
     def __init__(
         self,

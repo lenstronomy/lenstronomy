@@ -113,8 +113,8 @@ class GeneralScalingParam(ArrayParam):
     """General lens scaling.
 
     For each scaled lens parameter, adds a `{param}_scale_factor` and
-    `{param}_scale_pow` special parameter, and updates the scaled param
-    as `param = param_scale_factor * param**param_scale_pow`.
+    `{param}_scale_pow` special parameter, and updates the scaled param as `param =
+    param_scale_factor * param**param_scale_pow`.
     """
 
     def __init__(self, params: dict):
@@ -239,11 +239,11 @@ class CosmologyParam(SingleParam):
 
 
 class SpecialParam(object):
-    """Class that handles special parameters that are not directly part of a
-    specific model component.
+    """Class that handles special parameters that are not directly part of a specific
+    model component.
 
-    These include cosmology relevant parameters, astrometric errors and
-    overall scaling parameters.
+    These include cosmology relevant parameters, astrometric errors and overall scaling
+    parameters.
     """
 
     def __init__(

@@ -25,8 +25,7 @@ def _centered(arr, newshape):
 
 @export
 class PixelKernelConvolution(object):
-    """Class to compute convolutions for a given pixelized kernel (fft,
-    grid)"""
+    """Class to compute convolutions for a given pixelized kernel (fft, grid)"""
 
     def __init__(self, kernel, convolution_type="fft_static"):
         """
@@ -43,8 +42,8 @@ class PixelKernelConvolution(object):
     def pixel_kernel(self, num_pix=None):
         """Access pixelated kernel.
 
-        :param num_pix: size of returned kernel (odd number per axis).
-            If None, return the original kernel.
+        :param num_pix: size of returned kernel (odd number per axis). If None, return
+            the original kernel.
         :return: pixel kernel centered
         """
         if num_pix is not None:
@@ -144,8 +143,8 @@ class PixelKernelConvolution(object):
             raise ValueError("Acceptable mode flags are 'valid'," " 'same', or 'full'.")
 
     def _static_pre_compute(self, image):
-        """Pre-compute Fourier transformed kernel and shape quantities to speed
-        up convolution.
+        """Pre-compute Fourier transformed kernel and shape quantities to speed up
+        convolution.
 
         :param image: 2d numpy array
         :return:
@@ -196,8 +195,8 @@ class PixelKernelConvolution(object):
 
 @export
 class SubgridKernelConvolution(object):
-    """Class to compute the convolution on a supersampled grid with partial
-    convolution computed on the regular grid."""
+    """Class to compute the convolution on a supersampled grid with partial convolution
+    computed on the regular grid."""
 
     def __init__(
         self,
@@ -270,9 +269,9 @@ class SubgridKernelConvolution(object):
 
 @export
 class MultiGaussianConvolution(object):
-    """Class to perform a convolution consisting of multiple 2d Gaussians This
-    is aimed to lead to a speed-up without significant loss of accuracy do to
-    the simplified convolution kernel relative to a pixelized kernel."""
+    """Class to perform a convolution consisting of multiple 2d Gaussians This is aimed
+    to lead to a speed-up without significant loss of accuracy do to the simplified
+    convolution kernel relative to a pixelized kernel."""
 
     def __init__(
         self,
@@ -364,8 +363,8 @@ class MultiGaussianConvolution(object):
 
 @export
 class FWHMGaussianConvolution(object):
-    """Uses a two-dimensional Gaussian function with same FWHM of given kernel
-    as approximation."""
+    """Uses a two-dimensional Gaussian function with same FWHM of given kernel as
+    approximation."""
 
     def __init__(self, kernel, truncation=4):
         """

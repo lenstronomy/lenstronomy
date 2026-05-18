@@ -7,8 +7,8 @@ __all__ = ["LCDM"]
 
 
 class LCDM(object):
-    """Flat LCDM cosmology background with free Hubble parameter and Omega_m at
-    fixed lens redshift configuration."""
+    """Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed
+    lens redshift configuration."""
 
     def __init__(self, z_lens, z_source, flat=True):
         """

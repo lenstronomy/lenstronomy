@@ -8,8 +8,8 @@ __all__ = ["CoredDensityExp"]
 
 
 class CoredDensityExp(LensProfileBase):
-    """This class contains functions concerning an exponential cored density
-    profile, namely.
+    """This class contains functions concerning an exponential cored density profile,
+    namely.
 
     ..math::
         \\rho(r) = \\rho_0 \\exp(- (\\theta / \\theta_c)^2)
@@ -60,9 +60,9 @@ class CoredDensityExp(LensProfileBase):
 
     @staticmethod
     def alpha_radial(r, kappa_0, theta_c):
-        """Returns the radial part of the deflection angle :param r: angular
-        position (normally in units of arc seconds) :param kappa_0: central
-        convergence of profile :param theta_c: core radius (in arcsec) :return:
+        """Returns the radial part of the deflection angle :param r: angular position
+        (normally in units of arc seconds) :param kappa_0: central convergence of
+        profile :param theta_c: core radius (in arcsec) :return:
 
         radial deflection angle.
         """
@@ -70,8 +70,8 @@ class CoredDensityExp(LensProfileBase):
         return prefactor * (1 - np.exp(-((r / theta_c) ** 2)))
 
     def derivatives(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
-        """Returns df/dx and df/dy of the function (lensing potential), which
-        are the deflection angles.
+        """Returns df/dx and df/dy of the function (lensing potential), which are the
+        deflection angles.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -116,8 +116,7 @@ class CoredDensityExp(LensProfileBase):
         """Three dimensional density profile in angular units (rho0_physical =
         rho0_angular Sigma_crit / D_lens)
 
-        :param R: projected angular position (normally in units of arc
-            seconds)
+        :param R: projected angular position (normally in units of arc seconds)
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :return: rho(R) density
@@ -126,9 +125,9 @@ class CoredDensityExp(LensProfileBase):
         return rhotilde * np.exp(-((R / theta_c) ** 2))
 
     def density_lens(self, r, kappa_0, theta_c):
-        """Computes the density at 3d radius r given lens model
-        parameterization. The integral in the LOS projection of this quantity
-        results in the convergence quantity.
+        """Computes the density at 3d radius r given lens model parameterization. The
+        integral in the LOS projection of this quantity results in the convergence
+        quantity.
 
         :param r: angular position (normally in units of arc seconds)
         :param kappa_0: central convergence of profile
@@ -139,8 +138,7 @@ class CoredDensityExp(LensProfileBase):
 
     @staticmethod
     def kappa_r(R, kappa_0, theta_c):
-        """Convergence of the cored density profile. This routine is also for
-        testing.
+        """Convergence of the cored density profile. This routine is also for testing.
 
         :param R: radius (angular scale)
         :param kappa_0: convergence in the core
@@ -151,9 +149,8 @@ class CoredDensityExp(LensProfileBase):
         return kappa_0 * expFactor
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
-        """Projected two dimensional ULDM profile (convergence * Sigma_crit),
-        but given our units convention for rho0, it is basically the
-        convergence.
+        """Projected two dimensional ULDM profile (convergence * Sigma_crit), but given
+        our units convention for rho0, it is basically the convergence.
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -178,8 +175,8 @@ class CoredDensityExp(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, kappa_0, theta_c):
-        """Mass enclosed a 3d sphere or radius r :param kappa_0: central
-        convergence of profile :param theta_c: core radius (in arcsec) :return:
+        """Mass enclosed a 3d sphere or radius r :param kappa_0: central convergence of
+        profile :param theta_c: core radius (in arcsec) :return:
 
         mass.
         """

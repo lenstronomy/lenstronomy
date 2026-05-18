@@ -9,9 +9,8 @@ __all__ = ["MultiPlaneBase"]
 class MultiPlaneBase(ProfileListBase):
     """Multi-plane lensing class.
 
-    The lens model deflection angles are in units of reduced deflections
-    from the specified redshift of the lens to the source redshift of
-    the class instance.
+    The lens model deflection angles are in units of reduced deflections from the
+    specified redshift of the lens to the source redshift of the class instance.
     """
 
     def __init__(
@@ -88,8 +87,8 @@ class MultiPlaneBase(ProfileListBase):
         self.set_T_zs_and_T_ijs()
 
     def set_T_zs_and_T_ijs(self):
-        """Set the transverse angular diameter distances between the observer
-        and the lens planes and between the lens planes."""
+        """Set the transverse angular diameter distances between the observer and the
+        lens planes and between the lens planes."""
         z_before = 0
         T_z = 0
         # Sort redshift for vectorized reduced2physical factor calculation
@@ -125,8 +124,8 @@ class MultiPlaneBase(ProfileListBase):
 
     @property
     def z_source_convention(self):
-        """Redshift of the source to define the reduced deflection angles of
-        the lens models."""
+        """Redshift of the source to define the reduced deflection angles of the lens
+        models."""
         return self._z_source_convention
 
     @property
@@ -136,26 +135,24 @@ class MultiPlaneBase(ProfileListBase):
 
     @property
     def T_z_list(self):
-        """List of transverse angular diameter distances between the observer
-        and the lens planes."""
+        """List of transverse angular diameter distances between the observer and the
+        lens planes."""
         return self._T_z_list
 
     @T_z_list.setter
     def T_z_list(self, T_z_list):
-        """List of transverse angular diameter distances between the observer
-        and the lens planes."""
+        """List of transverse angular diameter distances between the observer and the
+        lens planes."""
         self._T_z_list = T_z_list
 
     @property
     def T_ij_list(self):
-        """List of transverse angular diameter distances between the lens
-        planes."""
+        """List of transverse angular diameter distances between the lens planes."""
         return self._T_ij_list
 
     @T_ij_list.setter
     def T_ij_list(self, T_ij_list):
-        """List of transverse angular diameter distances between the lens
-        planes."""
+        """List of transverse angular diameter distances between the lens planes."""
         self._T_ij_list = T_ij_list
 
     def ray_shooting_partial_comoving(
@@ -172,8 +169,8 @@ class MultiPlaneBase(ProfileListBase):
         T_ij_end=None,
     ):
         """Ray-tracing through parts of the cone, starting with (x,y) co-moving
-        distances and angles (alpha_x, alpha_y) at redshift z_start and then
-        backwards to redshift z_stop.
+        distances and angles (alpha_x, alpha_y) at redshift z_start and then backwards
+        to redshift z_stop.
 
         :param x: co-moving position [Mpc]
         :param y: co-moving position [Mpc]
@@ -253,10 +250,9 @@ class MultiPlaneBase(ProfileListBase):
         T_z_start=None,
         T_z_stop=None,
     ):
-        """Ray-tracing through parts of the coin, starting with (x,y) in
-        angular units as seen on the sky without lensing and angles (alpha_x,
-        alpha_y) as seen at redshift z_start and then backwards to redshift
-        z_stop.
+        """Ray-tracing through parts of the coin, starting with (x,y) in angular units
+        as seen on the sky without lensing and angles (alpha_x, alpha_y) as seen at
+        redshift z_start and then backwards to redshift z_stop.
 
         :param theta_x: angular position on the sky [arcsec]
         :param theta_y: angular position on the sky [arcsec]
@@ -306,15 +302,14 @@ class MultiPlaneBase(ProfileListBase):
         return beta_x, beta_y, alpha_x, alpha_y
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
-        """Computes the transverse distance (T_ij) that is required by the ray-
-        tracing between the starting redshift and the first deflector
-        afterwards and the last deflector before the end of the ray-tracing.
+        """Computes the transverse distance (T_ij) that is required by the ray- tracing
+        between the starting redshift and the first deflector afterwards and the last
+        deflector before the end of the ray-tracing.
 
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
-        :param include_z_start: boolean, if True includes the
-            computation of the starting position if the first deflector
-            is at z_start
+        :param include_z_start: boolean, if True includes the computation of the
+            starting position if the first deflector is at z_start
         :return: T_ij_start, T_ij_end
         """
         z_lens_last = z_start
@@ -336,19 +331,17 @@ class MultiPlaneBase(ProfileListBase):
     def geo_shapiro_delay(
         self, theta_x, theta_y, kwargs_lens, z_stop, T_z_stop=None, T_ij_end=None
     ):
-        """Geometric and Shapiro (gravitational) light travel time relative to
-        a straight path through the coordinate (0,0) Negative sign means
-        earlier arrival time.
+        """Geometric and Shapiro (gravitational) light travel time relative to a
+        straight path through the coordinate (0,0) Negative sign means earlier arrival
+        time.
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
-        :param z_stop: redshift of the source to stop the backwards ray-
-            tracing
-        :param T_z_stop: optional, transversal angular distance from z=0
-            to z_stop
-        :param T_ij_end: optional, transversal angular distance between
-            the last lensing plane and the source plane
+        :param z_stop: redshift of the source to stop the backwards ray- tracing
+        :param T_z_stop: optional, transversal angular distance from z=0 to z_stop
+        :param T_ij_end: optional, transversal angular distance between the last lensing
+            plane and the source plane
         :return: dt_geo, dt_shapiro, [days]
         """
         dt_grav = np.zeros_like(theta_x, dtype=float)
@@ -463,13 +456,12 @@ class MultiPlaneBase(ProfileListBase):
         return tau_ij * (d_beta_x**2 + d_beta_y**2) / 2
 
     def _lensing_potential2time_delay(self, potential, z_lens, z_source):
-        """Transforms the lensing potential (in units arcsec^2) to a
-        gravitational time- delay as measured at z=0.
+        """Transforms the lensing potential (in units arcsec^2) to a gravitational time-
+        delay as measured at z=0.
 
         :param potential: lensing potential
         :param z_lens: redshift of the deflector
-        :param z_source: redshift of source for the definition of the
-            lensing quantities
+        :param z_source: redshift of source for the definition of the lensing quantities
         :return: gravitational time-delay in units of days
         """
         D_dt = self._cosmo_bkg.ddt(z_lens, z_source)
@@ -499,8 +491,7 @@ class MultiPlaneBase(ProfileListBase):
         :param y: co-moving y-position
         :param alpha_x: deflection angle in x-direction at (x, y)
         :param alpha_y: deflection angle in y-direction at (x, y)
-        :param delta_T: transverse angular diameter distance to the next
-            step
+        :param delta_T: transverse angular diameter distance to the next step
         :return: co-moving position at the next step (backwards)
         """
         x_ = x + alpha_x * delta_T
@@ -509,16 +500,14 @@ class MultiPlaneBase(ProfileListBase):
 
     @staticmethod
     def _ray_step_add(x, y, alpha_x, alpha_y, delta_T):
-        """Ray propagation with small angle approximation The difference to
-        _ray_step() is that the previous input position (x, y) do get
-        overwritten, which is faster.
+        """Ray propagation with small angle approximation The difference to _ray_step()
+        is that the previous input position (x, y) do get overwritten, which is faster.
 
         :param x: co-moving x-position
         :param y: co-moving y-position
         :param alpha_x: deflection angle in x-direction at (x, y)
         :param alpha_y: deflection angle in y-direction at (x, y)
-        :param delta_T: transverse angular diameter distance to the next
-            step
+        :param delta_T: transverse angular diameter distance to the next step
         :return: co-moving position at the next step (backwards)
         """
         x += alpha_x * delta_T
@@ -526,20 +515,18 @@ class MultiPlaneBase(ProfileListBase):
         return x, y
 
     def _add_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens, index):
-        """Adds the physical deflection angle of a single lens plane to the
-        deflection field.
+        """Adds the physical deflection angle of a single lens plane to the deflection
+        field.
 
         :param x: co-moving distance at the deflector plane
         :param y: co-moving distance at the deflector plane
-        :param alpha_x: physical angle (radian) before the deflector
-            plane
-        :param alpha_y: physical angle (radian) before the deflector
-            plane
+        :param alpha_x: physical angle (radian) before the deflector plane
+        :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
-        :param index: index of the lens model to be added in sorted
-            redshift list convention
-        :return: updated physical deflection after deflector plane (in a
-            backwards ray- tracing perspective)
+        :param index: index of the lens model to be added in sorted redshift list
+            convention
+        :return: updated physical deflection after deflector plane (in a backwards ray-
+            tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, index)
         k = self._sorted_redshift_index[index]

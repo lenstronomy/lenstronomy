@@ -120,8 +120,9 @@ class CoredDensityExp(LensProfileBase):
         return rhotilde * np.exp(-((R / theta_c) ** 2))
 
     def density_lens(self, r, kappa_0, theta_c):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: angular position (normally in units of arc seconds)
@@ -133,8 +134,9 @@ class CoredDensityExp(LensProfileBase):
 
     @staticmethod
     def kappa_r(R, kappa_0, theta_c):
-        """Convergence of the cored density profile. This routine is also for testing.
+        """Convergence of the cored density profile.
 
+        This routine is also for testing.
         :param R: radius (angular scale)
         :param kappa_0: convergence in the core
         :param theta_c: core radius

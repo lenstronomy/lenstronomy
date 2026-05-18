@@ -40,7 +40,6 @@ class TracerPlot(object):
         :param fast_caustic: ; if True, uses fast (but less accurate) caustic
         :type fast_caustic: bool calculation method
         """
-
         multi_band_list = kwargs_data_joint.get("multi_band_list", [])
         multi_band_type = kwargs_data_joint.get("multi_band_type", "single-band")
         bands_compute = kwargs_data_joint.get("bands_compute", None)
@@ -1058,7 +1057,6 @@ class TracerPlot(object):
         :kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.
         :return:
         """
-
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)

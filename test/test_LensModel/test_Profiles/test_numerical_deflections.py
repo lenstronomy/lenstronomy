@@ -18,7 +18,6 @@ class TestClass:
         :param kwargs:
         :return:
         """
-
         rho0 = self._alpha2rho0(norm, Rs)
 
         _x = x - center_x
@@ -63,7 +62,6 @@ class TestClass:
 
     def _alpha2rho0(self, alpha_Rs, Rs):
         """Convert angle at Rs into rho0."""
-
         rho0 = alpha_Rs / (4.0 * Rs**2 * (1.0 + np.log(1.0 / 2.0)))
         return rho0
 

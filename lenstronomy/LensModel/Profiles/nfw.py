@@ -157,8 +157,9 @@ class NFW(LensProfileBase):
         return rho0 / (R / Rs * (1 + R / Rs) ** 2)
 
     def density_lens(self, r, Rs, alpha_Rs):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: 3d radios
@@ -202,8 +203,9 @@ class NFW(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, Rs, alpha_Rs):
-        """Mass enclosed a 3d sphere or radius r. This function takes as input the
-        lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r.
+
+        This function takes as input the lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -235,7 +237,6 @@ class NFW(LensProfileBase):
         :param alpha_Rs: deflection (angular units) at projected Rs
         :return: mass enclosed 2d cylinder <R
         """
-
         rho0 = self.alpha2rho0(alpha_Rs, Rs)
         return self.mass_2d(R, Rs=Rs, rho0=rho0)
 
@@ -496,7 +497,6 @@ class NFW(LensProfileBase):
         :param Rs: scale radius
         :return: density normalization (characteristic density)
         """
-
         rho0 = alpha_Rs / (4.0 * Rs**2 * (1.0 + np.log(1.0 / 2.0)))
         return rho0
 
@@ -508,6 +508,5 @@ class NFW(LensProfileBase):
         :param Rs: scale radius
         :return: deflection angle at RS
         """
-
         alpha_Rs = rho0 * (4 * Rs**2 * (1 + np.log(1.0 / 2.0)))
         return alpha_Rs

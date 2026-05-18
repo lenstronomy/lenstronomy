@@ -282,7 +282,6 @@ class Likelihood(object):
         :param kinematic_data: kinematic class for kinematic likelihood
         :return: updated model instances of this class
         """
-
         # TODO: in case lens model or point source models are only applied on partial images, then this current class
         # has ambiguities when it comes to position likelihood, time-delay likelihood and flux ratio likelihood
         (

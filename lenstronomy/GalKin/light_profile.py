@@ -36,7 +36,6 @@ class LightProfile(object):
         :param min_interpolate: float; minimum interpolate (and also drawing of light profile)
         :param max_draw: float; (optional) if set, draws up to this radius, else uses max_interpolate value
         """
-
         self.light_model = LightModel(
             light_model_list=profile_list, profile_kwargs_list=profile_kwargs_list
         )
@@ -132,7 +131,6 @@ class LightProfile(object):
             LightModule)
         :return: projected surface brightness
         """
-
         # here we perform a logarithmic integral
         stop = np.log10(
             np.maximum(
@@ -175,7 +173,6 @@ class LightProfile(object):
             LightModule)
         :return: projected surface brightness
         """
-
         kwargs_circ = self._circularize_kwargs(kwargs_list)
         n = len(np.atleast_1d(R))
         if n <= 1:

@@ -109,8 +109,9 @@ class TNFWC(LensProfileBase):
         return rho0 / denom
 
     def density_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: 3d radios
@@ -159,8 +160,9 @@ class TNFWC(LensProfileBase):
         return 4 * np.pi * quad(integrand, 0, r)[0]
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, r_core, r_trunc):
-        """Mass enclosed a 3d sphere or radius r. This function takes as input the
-        lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r.
+
+        This function takes as input the lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius

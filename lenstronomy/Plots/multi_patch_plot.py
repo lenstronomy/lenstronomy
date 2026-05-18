@@ -21,8 +21,8 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 class MultiPatchPlot(MultiPatchReconstruction):
-    """This class illustrates the model of disconnected multi-patch modeling
-    with 'joint-linear' option in one single array."""
+    """This class illustrates the model of disconnected multi-patch modeling with
+    'joint-linear' option in one single array."""
 
     def __init__(
         self,

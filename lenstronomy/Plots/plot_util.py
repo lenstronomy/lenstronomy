@@ -30,8 +30,7 @@ class CoordArrowKwargs(TypedDict, total=False):
     arrow_length: float
     """Length of the coordinate arrow as a fraction of the image size."""
     arrowhead_size: float
-    """Size of the arrowhead of the coordinate arrow as a fraction of the image
-    size."""
+    """Size of the arrowhead of the coordinate arrow as a fraction of the image size."""
     origin_x: float
     """X-origin of the coordinate arrow as a fraction of the image size."""
     origin_y: float
@@ -188,8 +187,7 @@ class MatshowKwargs(TypedDict, total=False):
     vmax: float
     """Maximum data value that corresponds to the upper end of the colormap."""
     origin: str
-    """Place the [0, 0] index of the array in the upper left or lower left
-    corner."""
+    """Place the [0, 0] index of the array in the upper left or lower left corner."""
     extent: tuple
     """Bounding box in data coordinates."""
     alpha: float
@@ -497,10 +495,10 @@ def plot_line_set(
     *args,
     **kwargs_plot: "Unpack[PlotKwargs]",
 ):
-    """Plotting a line set on a matplotlib instance where the coordinates are
-    defined in pixel units with the lower left corner (defined as origin) is by
-    default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the
-    center of the pixel in accordance with the matplotlib.matshow() routine.
+    """Plotting a line set on a matplotlib instance where the coordinates are defined in
+    pixel units with the lower left corner (defined as origin) is by default (0, 0). The
+    coordinates are moved by 0.5 pixels to be placed in the center of the pixel in
+    accordance with the matplotlib.matshow() routine.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
@@ -570,27 +568,25 @@ def image_position_plot(
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
-    :param coords: Coordinates() class instance or inherited class (such
-        as PixelGrid(), or Data())
+    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(),
+        or Data())
     :type coords: Coordinates
-    :param ra_image: Ra/x-coordinates of image positions (list of arrays
-        in angular units)
+    :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular
+        units)
     :type ra_image: list or numpy.ndarray
-    :param dec_image: Dec/y-coordinates of image positions (list of
-        arrays in angular units)
+    :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular
+        units)
     :type dec_image: list or numpy.ndarray
     :param color: color of ticks and text
     :type color: str
-    :param image_name_list: Strings for names of the images in the same
-        order as
+    :param image_name_list: Strings for names of the images in the same order as
     :type image_name_list: list the positions
-    :param origin: [x0, y0], lower left pixel coordinate in the frame of
-        the pixels
+    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :type origin: list or None
     :param flipped_x: If True, flips x-axis
     :type flipped_x: bool
-    :param plot_out_of_image: if True, plots images even appearing out
-        of the Coordinate frame
+    :param plot_out_of_image: if True, plots images even appearing out of the Coordinate
+        frame
     :type plot_out_of_image: bool
     :return: matplotlib axis instance with images plotted on
     """
@@ -701,8 +697,7 @@ def cmap_conf(cmap_string):
 
     :param cmap_string: Of cmap name, or cmap instance
     :type cmap_string: str
-    :return: cmap instance with setting for bad pixels and values below
-        the threshold
+    :return: cmap instance with setting for bad pixels and values below the threshold
     """
     if isinstance(cmap_string, str):
         cmap = plt.get_cmap(cmap_string)

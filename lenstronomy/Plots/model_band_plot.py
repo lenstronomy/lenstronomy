@@ -1,6 +1,9 @@
 import sys
 from typing import Optional
 
+# Check for Python >= 3.12, "# pragma: no cover" tells coverage to 
+# ignore these lines as the number of accessed lines will be different 
+# for different Python versions
 if sys.version_info >= (3, 12):  # pragma: no cover
     from typing import Unpack
 else:  # pragma: no cover

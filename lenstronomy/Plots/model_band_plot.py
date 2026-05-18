@@ -1490,9 +1490,9 @@ class ModelBandPlot(ModelBand):
     def subtract_from_data_plot(
         self,
         ax,
-        point_source_add=False,
-        source_add=False,
-        lens_light_add=False,
+        subtract_point_source=False,
+        subtract_source=False,
+        subtract_lens_light=False,
         font_size=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
@@ -1504,14 +1504,14 @@ class ModelBandPlot(ModelBand):
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param point_source_add: If True, includes the lensed point source(s) in
-            the plot
-        :type point_source_add: bool
-        :param source_add: If True, includes the lensed image of the source in the
-            plot
-        :type source_add: bool
-        :param lens_light_add: If True, includes the lens light in the plot
-        :type lens_light_add: bool
+        :param subtract_point_source: If True, subtracts the lensed point source(s) from the data
+            in the plot
+        :type subtract_point_source: bool
+        :param subtract_source: If True, subtracts the lensed image of the source from the data in the plot
+        :type subtract_source: bool
+        :param subtract_lens_light: If True, subtracts the lens light from the data
+            in the plot
+        :type subtract_lens_light: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
@@ -1536,9 +1536,9 @@ class ModelBandPlot(ModelBand):
             self._kwargs_ps_partial,
             kwargs_special=self._kwargs_special_partial,
             unconvolved=False,
-            source_add=source_add,
-            lens_light_add=lens_light_add,
-            point_source_add=point_source_add,
+            source_add=subtract_source,
+            lens_light_add=subtract_lens_light,
+            point_source_add=subtract_point_source,
         )
         kwargs_matshow.setdefault("cmap", "cubehelix")
         kwargs_matshow.setdefault("vmin", self._vmin_default)
@@ -1673,27 +1673,29 @@ class ModelBandPlot(ModelBand):
         self.subtract_from_data_plot(
             ax=axes[0, 1],
             kwargs_title={"text": "Data - Point Source"},
-            point_source_add=True,
+            subtract_point_source=True,
         )
         self.subtract_from_data_plot(
             ax=axes[0, 2],
             kwargs_title={"text": "Data - Lens Light"},
-            lens_light_add=True,
+            subtract_lens_light=True,
         )
         self.subtract_from_data_plot(
-            ax=axes[1, 0], kwargs_title={"text": "Data - Source Light"}, source_add=True
+            ax=axes[1, 0],
+            kwargs_title={"text": "Data - Source Light"},
+            subtract_source=True,
         )
         self.subtract_from_data_plot(
             ax=axes[1, 1],
             kwargs_title={"text": "Data - Source Light - Point Source"},
-            source_add=True,
-            point_source_add=True,
+            subtract_source=True,
+            subtract_point_source=True,
         )
         self.subtract_from_data_plot(
             ax=axes[1, 2],
             kwargs_title={"text": "Data - Lens Light - Point Source"},
-            lens_light_add=True,
-            point_source_add=True,
+            subtract_lens_light=True,
+            subtract_point_source=True,
         )
         f.tight_layout()
         f.subplots_adjust(

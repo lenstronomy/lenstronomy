@@ -53,11 +53,11 @@ class ModelPlot(object):
         :param multi_band_list: [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
         :type multi_band_list: list
         :param multi_band_type: Option when having multiple imaging data sets modelled simultaneously.
-        :type multi_band_type: str
          Options are:
          - 'multi-linear': linear amplitudes are inferred on single data set
          - 'linear-joint': linear amplitudes ae jointly inferred
          - 'single-band': single band
+        :type multi_band_type: str
         :param kwargs_model: model keyword arguments
         :type kwargs_model: dict
         :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
@@ -73,8 +73,8 @@ class ModelPlot(object):
         :param fast_caustic: ; if True, uses fast (but less accurate) caustic calculation method
         :type fast_caustic: bool
         :param linear_solver: If True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
-        :type linear_solver: bool
          that they get overwritten by the linear solver solution.
+        :type linear_solver: bool
         """
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
@@ -572,8 +572,8 @@ class ModelPlot(object):
         :param num_pix: number of pixels in plot per axis
         :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
-        :type delta_pix_source: float
             plot
+        :type delta_pix_source: float
         :param center: [center_x, center_y], if specified, uses this as the center
         :type center: list or None
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
@@ -583,8 +583,8 @@ class ModelPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param point_source_position: If True, plots a point at the position of
-        :type point_source_position: bool
             the point source
+        :type point_source_position: bool
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -639,13 +639,13 @@ class ModelPlot(object):
         :param num_pix: number of pixels in plot per axis
         :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
-        :type delta_pix_source: float
             plot
+        :type delta_pix_source: float
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param point_source_position: If True, plots a point at the position of
-        :type point_source_position: bool
             the point source
+        :type point_source_position: bool
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -692,8 +692,8 @@ class ModelPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param image_name_list: Strings for names of the images in the same
-        :type image_name_list: list
             order as the positions
+        :type image_name_list: list
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: Label for the colorbar
@@ -780,9 +780,9 @@ class ModelPlot(object):
         ax=None,
         unconvolved=False,
         point_source_add=False,
-        font_size=None,
         source_add=False,
         lens_light_add=False,
+        font_size=None,
         kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
         kwargs_title: Optional[plot_util.TitleKwargs] = {},
         kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
@@ -798,16 +798,16 @@ class ModelPlot(object):
         :param unconvolved: If True, does not perform PSF convolution on the image
         :type unconvolved: bool
         :param point_source_add: If True, includes the lensed point source(s) in
-        :type point_source_add: bool
             the plot
+        :type point_source_add: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param source_add: If True, includes the lensed image of the source in the
-        :type source_add: bool
             plot
+        :type source_add: bool
         :param lens_light_add: If True, includes the lens light in the plot
-        :type lens_light_add: bool
             from the plot
+        :type lens_light_add: bool
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
         :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
@@ -854,11 +854,11 @@ class ModelPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param point_source_add: If True, includes the lensed point source(s) in
-        :type point_source_add: bool
             the plot
+        :type point_source_add: bool
         :param source_add: If True, includes the lensed image of the source in the
-        :type source_add: bool
             plot
+        :type source_add: bool
         :param lens_light_add: If True, includes the lens light in the plot
         :type lens_light_add: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.

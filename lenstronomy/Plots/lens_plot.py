@@ -71,14 +71,14 @@ def lens_model_plot(
     :param delta_pix: width of pixel (total frame size is delta_pix x num_pix)
     :type delta_pix: float
     :param source_pos_x: X-position of point source (image positions computed by
+        the lens equation)
     :type source_pos_x: float
-        the lens equation)
     :param source_pos_y: Y-position of point source (image positions computed by
-    :type source_pos_y: float
         the lens equation)
+    :type source_pos_y: float
     :param point_source: If True, illustrates and computes the image positions of
-    :type point_source: bool
         the point source
+    :type point_source: bool
     :param with_convergence: If True, illustrates the convergence map
     :type with_convergence: bool
     :param coord_center_ra: X-coordinate of the center of the frame
@@ -86,11 +86,11 @@ def lens_model_plot(
     :param coord_center_dec: Y-coordinate of the center of the frame
     :type coord_center_dec: float
     :param coord_inverse: If True, inverts the x-coordinates to go from right-to-
-    :type coord_inverse: bool
         left (effectively the RA definition)
+    :type coord_inverse: bool
     :param fast_caustic: If True, uses faster but less precise caustic
-    :type fast_caustic: bool
         calculation (might have troubles for the outer caustic (inner critical curve)
+    :type fast_caustic: bool
     :param with_convergence: If True, plots the convergence of the deflector
     :type with_convergence: bool
     :param name_list: Strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[...]
@@ -261,11 +261,11 @@ def caustics_plot(
     :param kwargs_lens: lens model keyword argument list
     :type kwargs_lens: list or dict
     :param fast_caustic: If True, uses faster but less precise caustic
-    :type fast_caustic: bool
         calculation (might have troubles for the outer caustic (inner critical curve)
+    :type fast_caustic: bool
     :param coord_inverse: If True, inverts the x-coordinates to go from right-to-
-    :type coord_inverse: bool
         left (effectively the RA definition)
+    :type coord_inverse: bool
     :param kwargs_caustics: keyword arguments for the caustic and critical curves, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
     :type kwargs_caustics: dict
     :param args: argument for plotting curve

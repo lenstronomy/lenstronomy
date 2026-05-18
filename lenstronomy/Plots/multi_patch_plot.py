@@ -43,18 +43,18 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_params: keyword arguments of the model parameters, same as output of FittingSequence() 'kwargs_result'
         :type kwargs_params: dict
         :param multi_band_type: Option when having multiple imaging data sets modelled simultaneously. Options are:
-        :type multi_band_type: str
             - 'multi-linear': linear amplitudes are inferred on single data set
             - 'linear-joint': linear amplitudes ae jointly inferred
             - 'single-band': single band
+        :type multi_band_type: str
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
         :type kwargs_likelihood: dict or None
         :param kwargs_pixel_grid: keyword argument of PixelGrid() class. This is optional and overwrites a minimal grid.
-        :type kwargs_pixel_grid: dict or None
             Attention for consistent pixel grid definitions!
+        :type kwargs_pixel_grid: dict or None
         :param verbose: if True (default), computes and prints the total log-likelihood.
-        :type verbose: bool
             This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
+        :type verbose: bool
         """
         MultiPatchReconstruction.__init__(
             self,
@@ -101,8 +101,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: If True, plots the map in log_10 scale
         :type log_scale: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
@@ -149,8 +149,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: If True, plots the map in log_10 scale
         :type log_scale: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -206,8 +206,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: If True, plots the map in log_10 scale
         :type log_scale: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -266,8 +266,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param white_on_black: If True, prints white text on black background, otherwise the opposite
         :type white_on_black: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -325,8 +325,8 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_max: maximum plotting scale
         :type v_max: float
         :param font_size: Font size to override the class-level default. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -383,11 +383,11 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param v_max: maximum plotting scale
         :type v_max: float
         :param white_on_black: If True, prints white text on black background,
-        :type white_on_black: bool
             otherwise the opposite
+        :type white_on_black: bool
         :param font_size: Font size to override the class-level default. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
         :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -465,22 +465,22 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param log_scale: If True, plots the map in log_10 scale
         :type log_scale: bool
         :param font_size: Default font size for all texts in the plot. Font size for different text elements
-        :type font_size: int
             can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows.
+        :type font_size: int
         :param white_on_black: If True, prints white text on black background, otherwise the opposite
         :type white_on_black: bool
         :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
-        :type kwargs_colorbar: dict
             see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
+        :type kwargs_colorbar: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
             see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`
+        :type kwargs_title: dict
         :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
             see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`
+        :type kwargs_scale_bar: dict
         :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
             see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`
+        :type kwargs_coordinate_arrows: dict
         :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
         :type kwargs_matshow: dict
         :return: matplotlib axis instance

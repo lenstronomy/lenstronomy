@@ -3,7 +3,7 @@ import pytest
 
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Sampling.likelihood import Likelihood
+from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -16,21 +16,15 @@ def simple_einstein_ring_likelihood():
     # data specifics
     sigma_bkg = 0.05  # background noise per pixel
     exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-    num_pix = 10  # cutout pixel size
-    delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
+    numPix = 10  # cutout pixel size
+    deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
     fwhm = 0.5  # full width half max of PSF
 
     # PSF specification
 
-    kwargs_data = sim_util.data_configure_simple(
-        num_pix, delta_pix, exp_time, sigma_bkg
-    )
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
     data_class = ImageData(**kwargs_data)
-    kwargs_psf_gaussian = {
-        "psf_type": "GAUSSIAN",
-        "fwhm": fwhm,
-        "pixel_size": delta_pix,
-    }
+    kwargs_psf_gaussian = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": deltaPix}
     psf = PSF(**kwargs_psf_gaussian)
     kwargs_psf = {"psf_type": "PIXEL", "kernel_point_source": psf.kernel_point_source}
     psf_class = PSF(**kwargs_psf)
@@ -131,7 +125,7 @@ def simple_einstein_ring_likelihood():
         **kwargs_constraints
     )
 
-    likelihood = Likelihood(
+    likelihood = LikelihoodModule(
         kwargs_data_joint=kwargs_data_joint,
         kwargs_model=kwargs_model,
         param_class=param_class,
@@ -150,21 +144,15 @@ def simple_einstein_ring_likelihood_2d():
     # data specifics
     sigma_bkg = 0.05  # background noise per pixel
     exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-    num_pix = 10  # cutout pixel size
-    delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
+    numPix = 10  # cutout pixel size
+    deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
     fwhm = 0.5  # full width half max of PSF
 
     # PSF specification
 
-    kwargs_data = sim_util.data_configure_simple(
-        num_pix, delta_pix, exp_time, sigma_bkg
-    )
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
     data_class = ImageData(**kwargs_data)
-    kwargs_psf_gaussian = {
-        "psf_type": "GAUSSIAN",
-        "fwhm": fwhm,
-        "pixel_size": delta_pix,
-    }
+    kwargs_psf_gaussian = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": deltaPix}
     psf = PSF(**kwargs_psf_gaussian)
     kwargs_psf = {"psf_type": "PIXEL", "kernel_point_source": psf.kernel_point_source}
     psf_class = PSF(**kwargs_psf)
@@ -274,7 +262,7 @@ def simple_einstein_ring_likelihood_2d():
         **kwargs_constraints
     )
 
-    likelihood = Likelihood(
+    likelihood = LikelihoodModule(
         kwargs_data_joint=kwargs_data_joint,
         kwargs_model=kwargs_model,
         param_class=param_class,

@@ -18,7 +18,6 @@ import matplotlib
 matplotlib.use("agg")
 import matplotlib.pyplot as plt
 import unittest
-from unittest.mock import patch
 
 
 class TestOutputPlots(object):
@@ -28,21 +27,21 @@ class TestOutputPlots(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        num_pix = 10  # cutout pixel size
-        delta_pix = 0.5  # pixel size in arcsec (area per pixel = delta_pix**2)
+        numPix = 10  # cutout pixel size
+        deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(
-            num_pix, delta_pix, exp_time, sigma_bkg
+            numPix, deltaPix, exp_time, sigma_bkg
         )
         data_class = ImageData(**self.kwargs_data)
         kwargs_psf_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": delta_pix,
+            "pixel_size": deltaPix,
         }
         psf_gaussian = PSF(**kwargs_psf_gaussian)
         self.kwargs_psf = {
@@ -163,6 +162,8 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             multi_band_type="single-band",
         )
 
@@ -173,10 +174,12 @@ class TestOutputPlots(object):
             multi_band_list_multiplane,
             self.kwargs_model_multiplane,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             multi_band_type="single-band",
         )
 
-        lensPlot.plot_main(kwargs_caustics={"color": "b"})
+        lensPlot.plot_main(with_caustics=True)
         plt.close()
         cmap = plt.get_cmap("gist_heat")
 
@@ -184,6 +187,8 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string=cmap,
         )
 
         lensPlot.plot_separate()
@@ -191,7 +196,7 @@ class TestOutputPlots(object):
         lensPlot.plot_subtract_from_data_all()
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax, kwargs_caustics={"color": "b"}, axis=1)
+        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=1)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -199,17 +204,14 @@ class TestOutputPlots(object):
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax, kwargs_caustics={"color": "b"}, axis=0)
+        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=0)
         plt.close()
 
-        num_pix = 100
-        delta_pix_source = 0.01
+        numPix = 100
+        deltaPix_source = 0.01
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.error_map_source_plot(
-            ax=ax,
-            num_pix=num_pix,
-            delta_pix_source=delta_pix_source,
-            kwargs_caustics={"color": "b"},
+            ax=ax, numPix=numPix, deltaPix_source=deltaPix_source, with_caustics=True
         )
         plt.close()
 
@@ -242,15 +244,21 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             fast_caustic=False,
         )
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.source_plot(
             ax=ax,
-            num_pix=10,
-            delta_pix_source=0.1,
-            font_size=15,
+            numPix=10,
+            deltaPix_source=0.1,
+            v_min=None,
+            v_max=None,
+            with_caustics=True,
+            caustic_color="yellow",
+            fsize=15,
             plot_scale="linear",
         )
         plt.close()
@@ -261,19 +269,21 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
         )
         source, coords_source = lensPlot.source(
-            band_index=0, num_pix=10, delta_pix=0.1, image_orientation=True
-        )
-        assert len(source) == 10
-
-        source, coords_source = lensPlot.source(
-            band_index=0, num_pix=10, delta_pix=0.1, image_orientation=False
+            band_index=0, numPix=10, deltaPix=0.1, image_orientation=True
         )
         assert len(source) == 10
 
         source, coords_source = lensPlot.source(
-            band_index=0, num_pix=10, delta_pix=0.1, center=[0, 0]
+            band_index=0, numPix=10, deltaPix=0.1, image_orientation=False
+        )
+        assert len(source) == 10
+
+        source, coords_source = lensPlot.source(
+            band_index=0, numPix=10, deltaPix=0.1, center=[0, 0]
         )
         assert len(source) == 10
 
@@ -283,6 +293,8 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
         )
 
         chi2 = lensPlot.single_band_chi2(band_index=0)
@@ -298,6 +310,8 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             multi_band_type="joint-linear",
             bands_compute=[True, False],
         )
@@ -305,21 +319,42 @@ class TestOutputPlots(object):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.data_plot(
             ax=ax,
-            font_size=15,
+            numPix=10,
+            deltaPix_source=0.1,
+            v_min=None,
+            v_max=None,
+            with_caustics=False,
+            caustic_color="yellow",
+            fsize=15,
+            plot_scale="linear",
         )
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.model_plot(
             ax=ax,
-            font_size=15,
+            numPix=10,
+            deltaPix_source=0.1,
+            v_min=None,
+            v_max=None,
+            with_caustics=False,
+            caustic_color="yellow",
+            fsize=15,
+            plot_scale="linear",
         )
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.convergence_plot(
             ax=ax,
-            font_size=15,
+            numPix=10,
+            deltaPix_source=0.1,
+            v_min=None,
+            v_max=None,
+            with_caustics=False,
+            caustic_color="yellow",
+            fsize=15,
+            plot_scale="linear",
         )
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -341,6 +376,8 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             multi_band_type="joint-linear",
             bands_compute=[True, True],
         )
@@ -354,6 +391,8 @@ class TestOutputPlots(object):
             multi_band_list,
             self.kwargs_model,
             self.kwargs_params,
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             multi_band_type="joint-linear",
             bands_compute=[True],
         )
@@ -371,7 +410,7 @@ class TestOutputPlots(object):
 
     def test_no_linear_solver(self):
         kwargs_data = sim_util.data_configure_simple(
-            num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
+            numPix=10, deltaPix=1, background_rms=1, exposure_time=1
         )
         # kwargs_data['image_data'] = np.zeros((10, 10))
         kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -386,98 +425,20 @@ class TestOutputPlots(object):
             kwargs_model=kwargs_model,
             kwargs_params=kwargs_params,
             bands_compute=[True],
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             linear_solver=False,
         )
-        lensPlot.plot_main(kwargs_caustics={"color": "b"})
+        lensPlot.plot_main(with_caustics=True)
         plt.close()
         assert kwargs_params["kwargs_source"][0]["amp"] == 2
-
-    def test_substructure_plot_default_index_macromodel(self):
-        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
-        lensPlot = ModelPlot(
-            multi_band_list,
-            self.kwargs_model,
-            self.kwargs_params,
-            multi_band_type="single-band",
-        )
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax, cb = lensPlot.substructure_plot(ax=ax, index_macromodel=None)
-        assert cb is not None
-        plt.close()
-
-    def test_model_band_plot_additional_paths(self):
-        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
-        lensPlot = ModelPlot(
-            multi_band_list,
-            self.kwargs_model,
-            self.kwargs_params,
-            multi_band_type="single-band",
-        )
-        plot_band = lensPlot._select_band(0)
-
-        plot_band.plot_main(kwargs_caustics={"color": "b"})
-        plt.close()
-
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax, cb = plot_band.substructure_plot(
-            ax=ax,
-            index_macromodel=(0,),
-        )
-        assert cb is not None
-        plt.close()
-
-        old_model_font_size = lensPlot.font_size
-        lensPlot.font_size = old_model_font_size + 1
-        assert lensPlot.font_size == old_model_font_size + 1
-        assert plot_band.font_size == old_model_font_size + 1
-
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_band.source_plot(
-            ax=ax,
-            num_pix=30,
-            delta_pix_source=0.02,
-            kwargs_caustics={"linewidth": 2},
-            plot_scale="linear",
-        )
-        plt.close()
-
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_band.error_map_source_plot(
-            ax=ax,
-            num_pix=30,
-            delta_pix_source=0.02,
-            kwargs_caustics={"linewidth": 2},
-        )
-        plt.close()
-
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax, cb = plot_band.substructure_plot(
-            ax=ax,
-            index_macromodel=(0,),
-            subtract_mean=False,
-            with_critical_curves=True,
-        )
-        assert cb is not None
-        plt.close()
-
-    def test_source_requires_grid_arguments(self):
-        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
-        lensPlot = ModelPlot(
-            multi_band_list,
-            self.kwargs_model,
-            self.kwargs_params,
-            multi_band_type="single-band",
-        )
-
-        with pytest.raises(ValueError):
-            lensPlot.source(band_index=0)
 
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, delta_pix=1, background_rms=1
+                numPix=10, deltaPix=1, background_rms=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -491,10 +452,12 @@ class TestRaise(unittest.TestCase):
                 multi_band_list=[[kwargs_data, {"psf_type": "NONE"}, {}]],
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
+                arrow_size=0.02,
+                cmap_string="gist_heat",
             )
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, delta_pix=1, background_rms=1
+                numPix=10, deltaPix=1, background_rms=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -508,19 +471,25 @@ class TestRaise(unittest.TestCase):
                 multi_band_list=[[kwargs_data, {}, {}]],
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
+                arrow_size=0.02,
+                cmap_string="gist_heat",
             )
             f, ax = plt.subplots(1, 1, figsize=(4, 4))
             ax = lensPlot.source_plot(
                 ax=ax,
-                num_pix=10,
-                delta_pix_source=0.1,
+                numPix=10,
+                deltaPix_source=0.1,
+                v_min=None,
+                v_max=None,
+                with_caustics=False,
+                caustic_color="yellow",
                 fsize=15,
                 plot_scale="bad",
             )
             plt.close()
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, delta_pix=1, background_rms=1
+                numPix=10, deltaPix=1, background_rms=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -535,12 +504,14 @@ class TestRaise(unittest.TestCase):
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
                 bands_compute=[False],
+                arrow_size=0.02,
+                cmap_string="gist_heat",
             )
             lensPlot._select_band(band_index=0)
 
         with self.assertRaises(ValueError):
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
+                numPix=10, deltaPix=1, background_rms=1, exposure_time=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -555,15 +526,19 @@ class TestRaise(unittest.TestCase):
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
                 bands_compute=[True],
+                arrow_size=0.02,
+                cmap_string="gist_heat",
             )
 
             f, ax = plt.subplots(1, 1, figsize=(4, 4))
             ax = lensPlot.source_plot(
                 ax=ax,
-                num_pix=10,
-                delta_pix_source=0.1,
+                numPix=10,
+                deltaPix_source=0.1,
                 v_min=None,
                 v_max=None,
+                with_caustics=False,
+                caustic_color="yellow",
                 fsize=15,
                 plot_scale="wrong",
             )
@@ -571,7 +546,7 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             # test whether linear_solver=False returns raise when having two bands
             kwargs_data = sim_util.data_configure_simple(
-                num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
+                numPix=10, deltaPix=1, background_rms=1, exposure_time=1
             )
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -589,43 +564,17 @@ class TestRaise(unittest.TestCase):
                 kwargs_model=kwargs_model,
                 kwargs_params=kwargs_params,
                 bands_compute=[True],
+                arrow_size=0.02,
+                cmap_string="gist_heat",
                 linear_solver=False,
             )
-
-    def test_raise_linear_solver_false_multi_band_branch(self):
-        class DummyImageModel(object):
-            def image_linear_solve(self, inv_bool=True, **kwargs):
-                return [], [], None, kwargs
-
-        kwargs_params = {
-            "kwargs_lens": [],
-            "kwargs_source": [],
-            "kwargs_ps": [],
-            "kwargs_lens_light": [],
-        }
-
-        with patch(
-            "lenstronomy.Plots.model_plot.class_creator.create_im_sim",
-            return_value=DummyImageModel(),
-        ):
-            with self.assertRaisesRegex(
-                ValueError,
-                "plotting the solution without the linear solver currently only works with one band",
-            ):
-                ModelPlot(
-                    multi_band_list=[[{}, {}, {}], [{}, {}, {}]],
-                    kwargs_model={},
-                    kwargs_params=kwargs_params,
-                    linear_solver=False,
-                    multi_band_type="multi-linear",
-                )
 
 
 def test_interferometry_natwt_Model_Plot_linear_solver():
     # Test no errors are raised in the Model Plot linear solver for 'interferometry_natwt' likelihood function.
     try:
         kwargs_data = sim_util.data_configure_simple(
-            num_pix=10, delta_pix=1, background_rms=1, exposure_time=1
+            numPix=10, deltaPix=1, background_rms=1, exposure_time=1
         )
         kwargs_data["likelihood_method"] = "interferometry_natwt"
         kwargs_model = {"source_light_model_list": ["GAUSSIAN"]}
@@ -640,6 +589,8 @@ def test_interferometry_natwt_Model_Plot_linear_solver():
             kwargs_model=kwargs_model,
             kwargs_params=kwargs_params,
             bands_compute=[True],
+            arrow_size=0.02,
+            cmap_string="gist_heat",
             linear_solver=True,
         )
     except:

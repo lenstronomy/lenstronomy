@@ -10,10 +10,10 @@ from lenstronomy.Sampling.Likelihoods.kinematic_2D_likelihood import KinLikeliho
 import lenstronomy.Util.class_creator as class_creator
 import numpy as np
 
-__all__ = ["Likelihood"]
+__all__ = ["LikelihoodModule"]
 
 
-class Likelihood(object):
+class LikelihoodModule(object):
     """This class contains the routines to run a MCMC process.
 
     the key components are:

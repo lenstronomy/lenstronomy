@@ -29,8 +29,8 @@ class TestNumerics(object):
 
         # we define a pixel grid and a higher resolution super sampling factor
         self._supersampling_factor = 5
-        num_pix = 61  # cutout pixel size
-        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
+        numPix = 61  # cutout pixel size
+        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         (
             x,
             y,
@@ -38,11 +38,11 @@ class TestNumerics(object):
             dec_at_xy_0,
             x_at_radec_0,
             y_at_radec_0,
-            transform_pix2coord,
-            transform_coord2pix,
+            Mpix2coord,
+            Mcoord2pix,
         ) = util.make_grid_with_coordtransform(
-            num_pix=num_pix,
-            delta_pix=delta_pix,
+            numPix=numPix,
+            deltapix=deltaPix,
             subgrid_res=1,
             left_lower=False,
             inverse=False,
@@ -50,7 +50,7 @@ class TestNumerics(object):
         flux = self.lightModel.surface_brightness(x, y, kwargs_list=self.kwargs_light)
         flux = util.array2image(flux)
         flux_max = np.max(flux)
-        conv_pixels_partial = np.zeros((num_pix, num_pix), dtype=bool)
+        conv_pixels_partial = np.zeros((numPix, numPix), dtype=bool)
         conv_pixels_partial[flux >= flux_max / 20] = True
         self._conv_pixels_partial = conv_pixels_partial
 
@@ -122,7 +122,7 @@ class TestNumerics(object):
             "convolution_kernel_size": 9,
         }
 
-        flux_evaluate_indexes = np.zeros((num_pix, num_pix), dtype=bool)
+        flux_evaluate_indexes = np.zeros((numPix, numPix), dtype=bool)
         flux_evaluate_indexes[flux >= flux_max / 1000] = True
         # low resolution convolution on subframe
         self.kwargs_numerics_partial = {
@@ -138,7 +138,7 @@ class TestNumerics(object):
         # import PSF file
         kernel_super = kernel_util.kernel_gaussian(
             num_pix=11 * self._supersampling_factor,
-            delta_pix=delta_pix / self._supersampling_factor,
+            delta_pix=deltaPix / self._supersampling_factor,
             fwhm=0.1,
         )
 
@@ -153,9 +153,9 @@ class TestNumerics(object):
         from lenstronomy.Data.pixel_grid import PixelGrid
 
         kwargs_grid = {
-            "nx": num_pix,
-            "ny": num_pix,
-            "transform_pix2angle": transform_pix2coord,
+            "nx": numPix,
+            "ny": numPix,
+            "transform_pix2angle": Mpix2coord,
             "ra_at_xy_0": ra_at_xy_0,
             "dec_at_xy_0": dec_at_xy_0,
         }
@@ -480,13 +480,13 @@ def test_supersampling_simple():
     from lenstronomy.SimulationAPI.data_api import DataAPI
 
     detector_pixel_scale = 0.04
-    num_pix = 64
+    numpix = 64
     supersampling_factor = 2
     # generate a Gaussian image
 
     x, y = util.make_grid(
-        num_pix=num_pix * supersampling_factor,
-        delta_pix=detector_pixel_scale / supersampling_factor,
+        numPix=numpix * supersampling_factor,
+        deltapix=detector_pixel_scale / supersampling_factor,
     )
     from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
@@ -523,7 +523,7 @@ def test_supersampling_simple():
         "supersampling_kernel_size": 21,
     }
     psf_model = PSF(**psf_parameters)
-    data_class = DataAPI(num_pix=num_pix, **kwargs_detector).data_class
+    data_class = DataAPI(numpix=numpix, **kwargs_detector).data_class
 
     from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
 

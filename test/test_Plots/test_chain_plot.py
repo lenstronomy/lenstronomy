@@ -27,13 +27,13 @@ class TestChainPlots(object):
 
     def setup_method(self):
         # data specifics
-        delta_pix = 0.5  # pixel size in arcsec (area per pixel = delta_pix**2)
+        deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
         kwargs_psf_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": delta_pix,
+            "pixel_size": deltaPix,
         }
         psf_gaussian = PSF(**kwargs_psf_gaussian)
         self.kwargs_psf = {

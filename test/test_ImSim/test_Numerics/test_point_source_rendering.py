@@ -10,11 +10,11 @@ import unittest
 
 class TestPointSourceRendering(object):
     def setup_method(self):
-        transform_pix2coord = np.array([[1, 0], [0, 1]])
+        Mpix2coord = np.array([[1, 0], [0, 1]])
         kwargs_grid = {
             "ra_at_xy_0": 0,
             "dec_at_xy_0": 0,
-            "transform_pix2angle": transform_pix2coord,
+            "transform_pix2angle": Mpix2coord,
             "nx": 10,
             "ny": 10,
         }
@@ -61,11 +61,11 @@ class TestPointSourceRendering(object):
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
-        transform_pix2coord = np.array([[1, 0], [0, 1]])
+        Mpix2coord = np.array([[1, 0], [0, 1]])
         kwargs_grid = {
             "ra_at_xy_0": 0,
             "dec_at_xy_0": 0,
-            "transform_pix2angle": transform_pix2coord,
+            "transform_pix2angle": Mpix2coord,
             "nx": 10,
             "ny": 10,
         }
@@ -90,11 +90,11 @@ class TestRaise(unittest.TestCase):
 
 class TestPointSourceRendering_for_interfermetry(unittest.TestCase):
     def test_point_source_rendering_unconvolved_for_interferometry(self):
-        transform_pix2coord = np.array([[1, 0], [0, 1]])
+        Mpix2coord = np.array([[1, 0], [0, 1]])
         kwargs_grid = {
             "ra_at_xy_0": -2.5,
             "dec_at_xy_0": -2.5,
-            "transform_pix2angle": transform_pix2coord,
+            "transform_pix2angle": Mpix2coord,
             "nx": 5,
             "ny": 5,
         }
@@ -143,11 +143,11 @@ class TestPointSourceRendering_for_interfermetry(unittest.TestCase):
             )
 
     def test_raise_error_for_interferometric_supersampling(self):
-        transform_pix2coord = np.array([[1, 0], [0, 1]])
+        Mpix2coord = np.array([[1, 0], [0, 1]])
         kwargs_grid = {
             "ra_at_xy_0": -2.5,
             "dec_at_xy_0": -2.5,
-            "transform_pix2angle": transform_pix2coord,
+            "transform_pix2angle": Mpix2coord,
             "nx": 5,
             "ny": 5,
         }

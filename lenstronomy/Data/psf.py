@@ -237,13 +237,13 @@ class PSF(object):
             self._point_source_supersampling_factor = supersampling_factor
         return kernel_point_source_supersampled
 
-    def set_pixel_size(self, delta_pix):
+    def set_pixel_size(self, deltaPix):
         """Update pixel size.
 
-        :param delta_pix: pixel size in angular units (arc seconds)
+        :param deltaPix: pixel size in angular units (arc seconds)
         :return: None
         """
-        self._pixel_size = delta_pix
+        self._pixel_size = deltaPix
         if self.psf_type == "GAUSSIAN":
             try:
                 del self._kernel_point_source

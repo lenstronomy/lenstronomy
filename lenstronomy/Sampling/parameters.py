@@ -444,7 +444,7 @@ class Param(object):
             lens_profile_kwargs_list = kwargs_model["lens_profile_kwargs_list"]
         else:
             lens_profile_kwargs_list = None
-        self.lens_params = LensParam(
+        self.lensParams = LensParam(
             self._lens_model_list,
             kwargs_fixed_lens_updated,
             kwargs_logsampling=kwargs_logsampling_lens,
@@ -461,7 +461,7 @@ class Param(object):
             ]
         else:
             lens_light_profile_kwargs_list = None
-        self.lens_light_params = LightParam(
+        self.lensLightParams = LightParam(
             self._lens_light_model_list,
             kwargs_fixed_lens_light_updated,
             param_type="lens_light",
@@ -476,7 +476,7 @@ class Param(object):
             ]
         else:
             source_light_profile_kwargs_list = None
-        self.source_params = LightParam(
+        self.sourceParams = LightParam(
             self._source_light_model_list,
             kwargs_fixed_source_updated,
             param_type="source_light",
@@ -485,7 +485,7 @@ class Param(object):
             kwargs_upper=kwargs_upper_source,
             profile_kwargs_list=source_light_profile_kwargs_list,
         )
-        self.point_source_params = PointSourceParam(
+        self.pointSourceParams = PointSourceParam(
             self._point_source_model_list,
             kwargs_fixed_ps_updated,
             num_point_source_list=num_point_source_list,
@@ -494,14 +494,14 @@ class Param(object):
             kwargs_lower=kwargs_lower_ps,
             kwargs_upper=kwargs_upper_ps,
         )
-        self.extinction_params = LightParam(
+        self.extinctionParams = LightParam(
             self._optical_depth_model_list,
             kwargs_fixed_extinction_updated,
             kwargs_lower=kwargs_lower_extinction,
             kwargs_upper=kwargs_upper_extinction,
             linear_solver=False,
         )
-        self.special_params = SpecialParam(
+        self.specialParams = SpecialParam(
             Ddt_sampling=Ddt_sampling,
             mass_scaling=self._mass_scaling,
             general_scaling_params=self._general_scaling_masks,
@@ -521,7 +521,7 @@ class Param(object):
             source_grid_offset=source_grid_offset,
             kinematic_sampling=kinematic_sampling,
         )
-        self.tracer_source_params = LightParam(
+        self.tracerSourceParams = LightParam(
             self._tracer_source_model_list,
             kwargs_fixed_tracer_source_updated,
             kwargs_lower=kwargs_lower_tracer_source,
@@ -574,15 +574,15 @@ class Param(object):
         else:
             impose_bound = False
 
-        kwargs_lens, i = self.lens_params.get_params(args, i)
-        kwargs_source, i = self.source_params.get_params(args, i)
-        kwargs_lens_light, i = self.lens_light_params.get_params(args, i)
-        kwargs_ps, i = self.point_source_params.get_params(args, i)
-        kwargs_special, i = self.special_params.get_params(
+        kwargs_lens, i = self.lensParams.get_params(args, i)
+        kwargs_source, i = self.sourceParams.get_params(args, i)
+        kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
+        kwargs_ps, i = self.pointSourceParams.get_params(args, i)
+        kwargs_special, i = self.specialParams.get_params(
             args, i, impose_bound=impose_bound
         )
-        kwargs_extinction, i = self.extinction_params.get_params(args, i)
-        kwargs_tracer_source, i = self.tracer_source_params.get_params(args, i)
+        kwargs_extinction, i = self.extinctionParams.get_params(args, i)
+        kwargs_tracer_source, i = self.tracerSourceParams.get_params(args, i)
         self._update_lens_model(kwargs_special)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(
@@ -660,13 +660,13 @@ class Param(object):
         :param kwargs_tracer_source: tracer of the source light keyword argument list
         :return: numpy array of parameters
         """
-        args = self.lens_params.set_params(kwargs_lens)
-        args += self.source_params.set_params(kwargs_source)
-        args += self.lens_light_params.set_params(kwargs_lens_light)
-        args += self.point_source_params.set_params(kwargs_ps)
-        args += self.special_params.set_params(kwargs_special)
-        args += self.extinction_params.set_params(kwargs_extinction)
-        args += self.tracer_source_params.set_params(kwargs_tracer_source)
+        args = self.lensParams.set_params(kwargs_lens)
+        args += self.sourceParams.set_params(kwargs_source)
+        args += self.lensLightParams.set_params(kwargs_lens_light)
+        args += self.pointSourceParams.set_params(kwargs_ps)
+        args += self.specialParams.set_params(kwargs_special)
+        args += self.extinctionParams.set_params(kwargs_extinction)
+        args += self.tracerSourceParams.set_params(kwargs_tracer_source)
         return np.array(args, dtype=float)
 
     def param_limits(self):
@@ -675,22 +675,22 @@ class Param(object):
         :return: lower and upper limits of the arguments being sampled
         """
         lower_limit = self.kwargs2args(
-            kwargs_lens=self.lens_params.lower_limit,
-            kwargs_source=self.source_params.lower_limit,
-            kwargs_lens_light=self.lens_light_params.lower_limit,
-            kwargs_ps=self.point_source_params.lower_limit,
-            kwargs_special=self.special_params.lower_limit,
-            kwargs_extinction=self.extinction_params.lower_limit,
-            kwargs_tracer_source=self.tracer_source_params.lower_limit,
+            kwargs_lens=self.lensParams.lower_limit,
+            kwargs_source=self.sourceParams.lower_limit,
+            kwargs_lens_light=self.lensLightParams.lower_limit,
+            kwargs_ps=self.pointSourceParams.lower_limit,
+            kwargs_special=self.specialParams.lower_limit,
+            kwargs_extinction=self.extinctionParams.lower_limit,
+            kwargs_tracer_source=self.tracerSourceParams.lower_limit,
         )
         upper_limit = self.kwargs2args(
-            kwargs_lens=self.lens_params.upper_limit,
-            kwargs_source=self.source_params.upper_limit,
-            kwargs_lens_light=self.lens_light_params.upper_limit,
-            kwargs_ps=self.point_source_params.upper_limit,
-            kwargs_special=self.special_params.upper_limit,
-            kwargs_extinction=self.extinction_params.upper_limit,
-            kwargs_tracer_source=self.tracer_source_params.upper_limit,
+            kwargs_lens=self.lensParams.upper_limit,
+            kwargs_source=self.sourceParams.upper_limit,
+            kwargs_lens_light=self.lensLightParams.upper_limit,
+            kwargs_ps=self.pointSourceParams.upper_limit,
+            kwargs_special=self.specialParams.upper_limit,
+            kwargs_extinction=self.extinctionParams.upper_limit,
+            kwargs_tracer_source=self.tracerSourceParams.upper_limit,
         )
         return lower_limit, upper_limit
 
@@ -699,23 +699,23 @@ class Param(object):
 
         :return: number of parameters involved (int), list of parameter names
         """
-        num, name_list = self.lens_params.num_param()
-        _num, _list = self.source_params.num_param()
+        num, name_list = self.lensParams.num_param()
+        _num, _list = self.sourceParams.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.lens_light_params.num_param()
+        _num, _list = self.lensLightParams.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.point_source_params.num_param()
+        _num, _list = self.pointSourceParams.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.special_params.num_param()
+        _num, _list = self.specialParams.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.extinction_params.num_param()
+        _num, _list = self.extinctionParams.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.tracer_source_params.num_param()
+        _num, _list = self.tracerSourceParams.num_param()
         num += _num
         name_list += _list
         return num, name_list
@@ -726,9 +726,9 @@ class Param(object):
         :return: number of linear basis set coefficients that are solved for
         """
         num = 0
-        num += self.source_params.num_param_linear()
-        num += self.lens_light_params.num_param_linear()
-        num += self.point_source_params.num_param_linear()
+        num += self.sourceParams.num_param_linear()
+        num += self.lensLightParams.num_param_linear()
+        num += self.pointSourceParams.num_param_linear()
         return num
 
     def image2source_plane(
@@ -1034,13 +1034,13 @@ class Param(object):
         """
 
         return (
-            self.lens_params.kwargs_fixed,
-            self.source_params.kwargs_fixed,
-            self.lens_light_params.kwargs_fixed,
-            self.point_source_params.kwargs_fixed,
-            self.special_params.kwargs_fixed,
-            self.extinction_params.kwargs_fixed,
-            self.tracer_source_params.kwargs_fixed,
+            self.lensParams.kwargs_fixed,
+            self.sourceParams.kwargs_fixed,
+            self.lensLightParams.kwargs_fixed,
+            self.pointSourceParams.kwargs_fixed,
+            self.specialParams.kwargs_fixed,
+            self.extinctionParams.kwargs_fixed,
+            self.tracerSourceParams.kwargs_fixed,
         )
 
     def print_setting(self):
@@ -1059,11 +1059,11 @@ class Param(object):
         print("Point source models:", self._point_source_model_list)
         print("===================")
         print("The following parameters are being fixed:")
-        print("Lens:", self.lens_params.kwargs_fixed)
-        print("Source:", self.source_params.kwargs_fixed)
-        print("Lens light:", self.lens_light_params.kwargs_fixed)
-        print("Point source:", self.point_source_params.kwargs_fixed)
-        print("Tracer Source:", self.tracer_source_params.kwargs_fixed)
+        print("Lens:", self.lensParams.kwargs_fixed)
+        print("Source:", self.sourceParams.kwargs_fixed)
+        print("Lens light:", self.lensLightParams.kwargs_fixed)
+        print("Point source:", self.pointSourceParams.kwargs_fixed)
+        print("Tracer Source:", self.tracerSourceParams.kwargs_fixed)
         print("===================")
         print("Joint parameters for different models")
         print("Joint lens with lens:", self._joint_lens_with_lens)
@@ -1089,4 +1089,4 @@ class Param(object):
         print("Number of linear parameters being solved for: ", num_linear)
         print("===================")
         print("The log10 of following parameters is being sampled:")
-        print("Lens:", self.lens_params.kwargs_logsampling)
+        print("Lens:", self.lensParams.kwargs_logsampling)

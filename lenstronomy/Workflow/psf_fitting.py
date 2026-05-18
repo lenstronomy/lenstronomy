@@ -890,9 +890,7 @@ class PsfFitting(object):
         # mask the error map outside a certain radius (can avoid double counting of errors when map is overlapping
         if error_map_radius is not None:
             pixel_scale = self._image_model_class.Data.pixel_width
-            x_grid, y_grid = util.make_grid(
-                num_pix=len(error_map), delta_pix=pixel_scale
-            )
+            x_grid, y_grid = util.make_grid(numPix=len(error_map), deltapix=pixel_scale)
             mask = mask_util.mask_azimuthal(
                 x_grid, y_grid, center_x=0, center_y=0, r=error_map_radius
             )
@@ -975,9 +973,7 @@ class PsfFitting(object):
         # mask the error map outside a certain radius (can avoid double counting of errors when map is overlapping
         if error_map_radius is not None:
             pixel_scale = self._image_model_class.Data.pixel_width
-            x_grid, y_grid = util.make_grid(
-                num_pix=len(error_map), delta_pix=pixel_scale
-            )
+            x_grid, y_grid = util.make_grid(numPix=len(error_map), deltapix=pixel_scale)
             mask = mask_util.mask_azimuthal(
                 x_grid, y_grid, center_x=0, center_y=0, r=error_map_radius
             )

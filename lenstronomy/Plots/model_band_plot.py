@@ -1,23 +1,10 @@
-import sys
-from typing import Optional
-
-# Check for Python >= 3.12, "# pragma: no cover" tells coverage to
-# ignore these lines as the number of accessed lines will be different
-# for different Python versions
-if sys.version_info >= (3, 12):  # pragma: no cover
-    from typing import Unpack
-else:  # pragma: no cover
-    try:  # pragma: no cover
-        from typing_extensions import Unpack
-    except ImportError:  # pragma: no cover
-        pass
 import lenstronomy.Util.util as util
-import lenstronomy.Plots.plot_util as plot_util
-from lenstronomy.Data.coord_transforms import Coordinates
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.Data.coord_transforms import Coordinates
+from lenstronomy.Plots import plot_util
 from lenstronomy.Analysis.image_reconstruction import ModelBand
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit, ImageModel
@@ -39,34 +26,27 @@ class ModelBandPlot(ModelBand):
         kwargs_params,
         likelihood_mask_list=None,
         band_index=0,
+        arrow_size=0.02,
+        cmap_string="gist_heat",
         fast_caustic=True,
         linear_solver=True,
     ):
-        """Initialize the model-band plotting class.
+        """
 
-        :param multi_band_list: Imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :type multi_band_list: list
+        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
         :param kwargs_model: model keyword argument list for the full multi-band modeling
-        :type kwargs_model: dict
-        :param model: Of modeled image for the specified band
-        :type model: numpy.ndarray
-        :param error_map: Of size of the image, additional error in the pixels coming from PSF uncertainties
-        :type error_map: numpy.ndarray
+        :param model: 2d numpy array of modeled image for the specified band
+        :param error_map: 2d numpy array of size of the image, additional error in the pixels coming from PSF uncertainties
         :param cov_param: covariance matrix of the linear inversion
-        :type cov_param: numpy.ndarray
         :param param: 1d numpy array of the linear coefficients of this imaging band
-        :type param: numpy.ndarray or list
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
-        :type kwargs_params: dict
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param likelihood_mask_list: 2d numpy arrays of likelihood masks (for all bands)
-        :type likelihood_mask_list: list
-        :param band_index: Of the band to be considered in this class
-        :type band_index: int
-        :param fast_caustic: ; if True, uses fast (but less accurate) caustic calculation method
-        :type fast_caustic: bool
-        :param linear_solver: If True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
-        :type linear_solver: bool
+        :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
+        :param band_index: integer of the band to be considered in this class
+        :param arrow_size: size of the scale and orientation arrow
+        :param cmap_string: string of color map (or cmap matplotlib object)
+        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
          that they get overwritten by the linear solver solution.
         """
         ModelBand.__init__(
@@ -83,61 +63,37 @@ class ModelBandPlot(ModelBand):
             linear_solver=linear_solver,
         )
 
-        self._lens_model = self._bandmodel.LensModel
-        self._lens_model_ext = LensModelExtensions(self._lens_model)
+        self._lensModel = self._bandmodel.LensModel
+        self._lensModelExt = LensModelExtensions(self._lensModel)
         log_model = np.log10(model)
         log_model[np.isnan(log_model)] = -5
-        self._vmin_default = np.nanpercentile(log_model, 1)
-        self._vmax_default = np.nanpercentile(log_model, 99)
+        self._v_min_default = max(np.min(log_model), -5)
+        self._v_max_default = min(np.max(log_model), 10)
         self._coords = self._bandmodel.Data
         self._width_x, self._width_y = self._coords.width
         self._data = self._coords.data
-        self._delta_pix = self._coords.pixel_width
+        self._deltaPix = self._coords.pixel_width
         self._frame_size = np.max(self._coords.width)
         x_grid, y_grid = self._coords.pixel_coordinates
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
         self._x_center, self._y_center = self._coords.center
 
+        self._cmap = plot_util.cmap_conf(cmap_string)
+        self._arrow_size = arrow_size
         self._fast_caustic = fast_caustic
 
-        self._font_size = 15
-
         self._image_extent = [
-            -self._delta_pix / 2,
-            self._width_x - self._delta_pix / 2,
-            -self._delta_pix / 2,
-            self._width_y - self._delta_pix / 2,
+            -self._deltaPix / 2,
+            self._width_x - self._deltaPix / 2,
+            -self._deltaPix / 2,
+            self._width_y - self._deltaPix / 2,
         ]
 
-    @property
-    def font_size(self):
-        """Default font size for all texts in the subplots.
-
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
-        """
-        return self._font_size
-
-    @font_size.setter
-    def font_size(self, value):
-        """Set default font size for all texts in the subplots.
-
-        Font size in individual subplots can be adjusted by font_size argument in the
-        plotting methods. Font size for different text elements can be further fine-
-        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
-        kwargs_coordinate_arrows arguments in the plotting methods.
-        """
-        self._font_size = value
-
     def _critical_curves(self):
-        """Compute and cache critical curves."""
         if not hasattr(self, "_ra_crit_list") or not hasattr(self, "_dec_crit_list"):
             # self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
-            # self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lens_model_ext.critical_curve_caustics(
-            #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._delta_pix / 5.,
+            #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix / 5.,
             #    center_x=self._x_center, center_y=self._y_center)
             if self._fast_caustic:
                 (
@@ -145,10 +101,10 @@ class ModelBandPlot(ModelBand):
                     self._dec_crit_list,
                     self._ra_caustic_list,
                     self._dec_caustic_list,
-                ) = self._lens_model_ext.critical_curve_caustics(
+                ) = self._lensModelExt.critical_curve_caustics(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
-                    grid_scale=self._delta_pix,
+                    grid_scale=self._deltaPix,
                     center_x=self._x_center,
                     center_y=self._y_center,
                 )
@@ -159,10 +115,10 @@ class ModelBandPlot(ModelBand):
                 (
                     self._ra_crit_list,
                     self._dec_crit_list,
-                ) = self._lens_model_ext.critical_curve_tiling(
+                ) = self._lensModelExt.critical_curve_tiling(
                     self._kwargs_lens_partial,
                     compute_window=self._frame_size,
-                    start_scale=self._delta_pix / 5.0,
+                    start_scale=self._deltaPix / 5.0,
                     max_order=10,
                     center_x=self._x_center,
                     center_y=self._y_center,
@@ -170,13 +126,12 @@ class ModelBandPlot(ModelBand):
                 (
                     self._ra_caustic_list,
                     self._dec_caustic_list,
-                ) = self._lens_model.ray_shooting(
+                ) = self._lensModel.ray_shooting(
                     self._ra_crit_list, self._dec_crit_list, self._kwargs_lens_partial
                 )
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):
-        """Compute and cache caustics."""
         if not hasattr(self, "_ra_caustic_list") or not hasattr(
             self, "_dec_caustic_list"
         ):
@@ -186,169 +141,122 @@ class ModelBandPlot(ModelBand):
     def data_plot(
         self,
         ax,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        v_min=None,
+        v_max=None,
+        text="Observed",
+        font_size=15,
+        colorbar_label=r"log$_{10}$ flux",
+        **kwargs
     ):
-        """Plot observed imaging data.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._vmin_default)
-        kwargs_matshow.setdefault("vmax", self._vmax_default)
+
+        :param ax:
+        :return:
+        """
+        if v_min is None:
+            v_min = self._v_min_default
+        if v_max is None:
+            v_max = self._v_max_default
         im = ax.matshow(
             np.log10(self._data),
             origin="lower",
             extent=self._image_extent,
-            **kwargs_matshow,
-        )
+            cmap=self._cmap,
+            vmin=v_min,
+            vmax=v_max,
+        )  # , vmin=0, vmax=2
 
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Observed")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', font_size=font_size
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="w",
+            backgroundcolor="k",
+            font_size=font_size,
+        )
 
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            plot_util.show_coordinate_arrows(
+        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
+                color="w",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
             )
 
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax, orientation="vertical")
-            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax, orientation="vertical")
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def model_plot(
         self,
         ax,
+        v_min=None,
+        v_max=None,
         image_names=False,
-        original_position=True,
-        image_name_list=None,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        colorbar_label=r"log$_{10}$ flux",
+        font_size=15,
+        text="Reconstructed",
+        **kwargs
     ):
-        """Plot reconstructed imaging model.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param image_names: If True, prints image names
-        :type image_names: bool
-        :param label: Label for the colorbar
-        :type label: str
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param original_position: If True, uses original image positions
-        :type original_position: bool
-        :param image_name_list: Names for images
-        :type image_name_list: list
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._vmin_default)
-        kwargs_matshow.setdefault("vmax", self._vmax_default)
+
+        :param ax: matplotib axis instance
+        :param v_min:
+        :param v_max:
+        :return:
+        """
+        if v_min is None:
+            v_min = self._v_min_default
+        if v_max is None:
+            v_max = self._v_max_default
         im = ax.matshow(
             np.log10(self._model),
             origin="lower",
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
-            **kwargs_matshow,
+            cmap=self._cmap,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Reconstructed")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            plot_util.show_coordinate_arrows(
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', font_size=font_size
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="w",
+            backgroundcolor="k",
+            font_size=font_size,
+        )
+        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-            plot_util.show_colorbar(
-                cb,
+                color="w",
+                arrow_size=self._arrow_size,
                 font_size=font_size,
-                **kwargs_colorbar,
             )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
 
         # plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         # plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
@@ -356,14 +264,14 @@ class ModelBandPlot(ModelBand):
             ra_image, dec_image = self._bandmodel.PointSource.image_position(
                 self._kwargs_ps_partial,
                 self._kwargs_lens_partial,
-                original_position=original_position,
+                original_position=kwargs.get("original_position", True),
             )
             plot_util.image_position_plot(
                 ax,
                 self._coords,
                 ra_image,
                 dec_image,
-                image_name_list=image_name_list,
+                image_name_list=kwargs.get("image_name_list", None),
                 plot_out_of_image=False,
             )
         # source_position_plot(ax, self._coords, self._kwargs_source)
@@ -371,157 +279,121 @@ class ModelBandPlot(ModelBand):
     def convergence_plot(
         self,
         ax,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        text="Convergence",
+        v_min=None,
+        v_max=None,
+        font_size=15,
+        colorbar_label=r"$\log_{10}\ \kappa$",
+        **kwargs
     ):
-        """Plot lensing convergence in the data frame.
+        """
 
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param label: Label for the colorbar
-        :type label: str
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
+        :param ax: matplotib axis instance
         :return: convergence plot in ax instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "gist_heat")
+        if not "cmap" in kwargs:
+            kwargs["cmap"] = self._cmap
 
         kappa_result = util.array2image(
-            self._lens_model.kappa(
-                self._x_grid, self._y_grid, self._kwargs_lens_partial
-            )
+            self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial)
         )
         im = ax.matshow(
             np.log10(kappa_result),
             origin="lower",
             extent=self._image_extent,
-            **kwargs_matshow,
+            cmap=kwargs["cmap"],
+            vmin=v_min,
+            vmax=v_max,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            plot_util.show_coordinate_arrows(
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', color="w", font_size=font_size
+        )
+        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Convergence")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"$\log_{10}\ \kappa$")
-            plot_util.show_colorbar(
-                cb,
+                color="w",
+                arrow_size=self._arrow_size,
                 font_size=font_size,
-                **kwargs_colorbar,
             )
+            plot_util.text_description(
+                ax,
+                self._frame_size,
+                text=text,
+                color="w",
+                backgroundcolor="k",
+                flipped=False,
+                font_size=font_size,
+            )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def substructure_plot(
         self,
         ax,
         index_macromodel,
+        text="Substructure convergence",
         subtract_mean=True,
-        font_size=None,
+        v_min=-0.05,
+        v_max=0.05,
+        font_size=15,
+        colorbar_label=r"$\kappa - \kappa_{\rm{macro}}$",
+        cmap="bwr",
         with_critical_curves=False,
-        critical_curve_color="k",
+        crit_curve_color="k",
         image_name_list=None,
         super_sample_factor=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        add_color_bar=True,
+        **kwargs
     ):
         """Plots the convergence of a full lens model minus the convergence from a few
         specified lens models to more clearly show the presence of substructure.
 
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param index_macromodel: a list of indices corresponding to the lens models with convergence to be subtracted
-        :type index_macromodel: list
-        :param subtract_mean: ; displays the substructure convergence relative to the mean convergence in the frame
-        :type subtract_mean: bool
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param label: label for the color bar
-        :type label: str
-        :param with_critical_curves: ; plots the critical curves in the frame
-        :type with_critical_curves: bool
-        :param critical_curve_color: color of the critical curves
-        :type critical_curve_color: str
+        :param ax: matplotib axis instance
+        :param index_macromodel: a list of indexes corresponding to the lens models with convergence to be subtracted
+        :param text: text appearing in frame
+        :param subtract_mean: bool; displays the substructure convergence relative to the mean convergence in the frame
+        :param v_min: minimum color scale
+        :param v_max: max color scale
+        :param font_size: font size for text appearing in image
+        :param colorbar_label: label for the color bar
+        :param cmap: colormap for use in the visualization
+        :param with_critical_curves: bool; plots the critical curves in the frame
+        :param crit_curve_color: color of the critical curves
         :param image_name_list: labels the images, default is A, B, C, ...
-        :type image_name_list: list
         :param super_sample_factor: a integer the specifies supersampling of the coordinate grid to create the convergence map
-        :type super_sample_factor: int
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
+        :param add_color_bar: bool; whether or not to include a color bar
         :return: matplotib axis and colorbar
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "coolwarm")
 
         kwargs_lens_macro = []
         lens_model_list_macro = []
         profile_kwargs_list_macro = []
-        multi_plane = self._lens_model.multi_plane
+        multi_plane = self._lensModel.multi_plane
         if multi_plane:
-            lens_redshift_list = self._lens_model.redshift_list
+            lens_redshift_list = self._lensModel.redshift_list
             lens_redshift_list_macro = []
-            z_source = self._lens_model.z_source
-            cosmo = self._lens_model.cosmo
+            z_source = self._lensModel.z_source
+            cosmo = self._lensModel.cosmo
         else:
             lens_redshift_list = None
             lens_redshift_list_macro = None
             z_source = None
             cosmo = None
         for idx in index_macromodel:
-            lens_model_list_macro.append(self._lens_model.lens_model_list[idx])
+            lens_model_list_macro.append(self._lensModel.lens_model_list[idx])
             kwargs_lens_macro.append(self._kwargs_lens_partial[idx])
             if multi_plane:
                 lens_redshift_list_macro.append(lens_redshift_list[idx])
-            profile_kwargs_list_macro.append(self._lens_model.profile_kwargs_list[idx])
+            profile_kwargs_list_macro.append(self._lensModel.profile_kwargs_list[idx])
 
         lens_model_macro = LensModel(
             lens_model_list_macro,
@@ -541,7 +413,7 @@ class ModelBandPlot(ModelBand):
             )
 
         kappa_full = util.array2image(
-            self._lens_model.kappa(x_grid, y_grid, self._kwargs_lens_partial)
+            self._lensModel.kappa(x_grid, y_grid, self._kwargs_lens_partial)
         )
         kappa_macro = util.array2image(
             lens_model_macro.kappa(x_grid, y_grid, kwargs_lens_macro)
@@ -550,49 +422,40 @@ class ModelBandPlot(ModelBand):
         if subtract_mean:
             mean_kappa = np.mean(residual_kappa)
             residual_kappa -= mean_kappa
-        else:
-            pass
-        kwargs_matshow.setdefault("vmin", -0.05)
-        kwargs_matshow.setdefault("vmax", 0.05)
+            colorbar_label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
         alpha = 1.0
         im = ax.imshow(
             residual_kappa,
             origin="lower",
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
+            cmap=cmap,
             alpha=alpha,
-            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            kwargs_scale_bar.setdefault("color", "k")
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-            plot_util.show_coordinate_arrows(
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+        )
+        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
+                color="k",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
             )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Substructure convergence")
-            kwargs_title.setdefault("color", "k")
-            kwargs_title.setdefault("backgroundcolor", "w")
-            plot_util.show_title_text(
+            plot_util.text_description(
                 ax,
-                **kwargs_title,
+                self._frame_size,
+                text=text,
+                color="k",
+                backgroundcolor="w",
+                flipped=False,
+                font_size=font_size,
             )
 
         if with_critical_curves is True:
@@ -602,7 +465,7 @@ class ModelBandPlot(ModelBand):
                 self._coords,
                 ra_crit_list,
                 dec_crit_list,
-                color=critical_curve_color,
+                color=crit_curve_color,
                 points_only=self._caustic_points_only,
             )
 
@@ -619,211 +482,141 @@ class ModelBandPlot(ModelBand):
             plot_out_of_image=False,
         )
 
-        cb = None
-
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            if subtract_mean:
-                label = r"$\kappa_{\rm{sub}} - \langle \kappa_{\rm{sub}} \rangle$"
-            else:
-                label = r"$\kappa - \kappa_{\rm{macro}}$"
+        if add_color_bar:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", label)
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
+            cb.set_label(colorbar_label, fontsize=font_size)
+            cb.ax.tick_params(labelsize=font_size)
+        else:
+            cb = None
         return ax, cb
 
     def normalized_residual_plot(
         self,
         ax,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        v_min=-6,
+        v_max=6,
+        font_size=15,
+        text="Normalized Residuals",
+        colorbar_label=r"(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$",
+        no_arrow=False,
+        color_bar=True,
+        **kwargs
     ):
-        """Plot normalized residuals between data and model.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param label: label for the color bar
-        :type label: str
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "RdBu_r")
-        kwargs_matshow.setdefault("vmin", -5)
-        kwargs_matshow.setdefault("vmax", 5)
+
+        :param ax:
+        :param v_min:
+        :param v_max:
+        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param color_bar: Option to display the color bar
+        :return:
+        """
+        if not "cmap" in kwargs:
+            kwargs["cmap"] = "bwr"
         im = ax.matshow(
             self._norm_residuals,
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
             origin="lower",
-            **kwargs_matshow,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            kwargs_scale_bar.setdefault("color", "k")
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Normalized Residuals")
-            kwargs_title.setdefault("color", "k")
-            kwargs_title.setdefault("backgroundcolor", "w")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-            plot_util.show_coordinate_arrows(
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="k",
+            backgroundcolor="w",
+            font_size=font_size,
+        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
+                color="w",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
             )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
+        if color_bar:
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.05)
             cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault(
-                "label", r"(f$_{\rm data}$ - f$_{\rm model}$)/$\sigma$"
-            )
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
+            cb.set_label(colorbar_label, fontsize=font_size)
+            cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def absolute_residual_plot(
         self,
         ax,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        v_min=-1,
+        v_max=1,
+        font_size=15,
+        text="Residuals",
+        colorbar_label=r"(f$_{\rm model}$-f$_{\rm data}$)",
     ):
-        """Plot absolute residuals between data and model.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param label: label for the color bar
-        :type label: str
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "RdBu_r")
+
+        :param ax:
+        :return:
+        """
         im = ax.matshow(
-            self._data - self._model,
+            self._model - self._data,
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
+            cmap="bwr",
             origin="lower",
-            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            kwargs_scale_bar.setdefault("color", "k")
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Residuals")
-            kwargs_title.setdefault("color", "k")
-            kwargs_title.setdefault("backgroundcolor", "w")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-            plot_util.show_coordinate_arrows(
-                ax,
-                self._frame_size,
-                self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"(f$_{\rm data}$-f$_{\rm model}$)")
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="k",
+            backgroundcolor="w",
+            font_size=font_size,
+        )
+        plot_util.coordinate_arrows(
+            ax,
+            self._frame_size,
+            self._coords,
+            font_size=font_size,
+            color="k",
+            arrow_size=self._arrow_size,
+        )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
-    def source(self, num_pix, delta_pix, center=None, image_orientation=True):
-        """Compute source surface brightness on a source grid.
+    def source(self, numPix, deltaPix, center=None, image_orientation=True):
+        """
 
-        :param num_pix: number of pixels per axes
-        :type num_pix: int
-        :param delta_pix: pixel size
-        :type delta_pix: float
-        :param image_orientation: If True, uses frame in orientation of the image,
-        :type image_orientation: bool otherwise in RA-DEC coordinates
-        :return: 2d surface brightness grid of the reconstructed source and
-            Coordinates() instance of source grid
+        :param numPix: number of pixels per axes
+        :param deltaPix: pixel size
+        :param image_orientation: bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
+        :return: 2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid
         """
         if image_orientation is True:
-            transform_pix2coord = (
-                self._coords.transform_pix2angle * delta_pix / self._delta_pix
-            )
+            Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
             x_grid_source, y_grid_source = util.make_grid_transformed(
-                num_pix, transform_pix2angle=transform_pix2coord
+                numPix, Mpix2Angle=Mpix2coord
             )
             ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
         else:
@@ -834,9 +627,9 @@ class ModelBandPlot(ModelBand):
                 dec_at_xy_0,
                 x_at_radec_0,
                 y_at_radec_0,
-                transform_pix2coord,
-                transform_coord2pix,
-            ) = util.make_grid_with_coordtransform(num_pix, delta_pix)
+                Mpix2coord,
+                Mcoord2pix,
+            ) = util.make_grid_with_coordtransform(numPix, deltaPix)
 
         center_x = 0
         center_y = 0
@@ -849,7 +642,7 @@ class ModelBandPlot(ModelBand):
         y_grid_source += center_y
 
         coords_source = Coordinates(
-            transform_pix2angle=transform_pix2coord,
+            transform_pix2angle=Mpix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
         )
@@ -857,62 +650,49 @@ class ModelBandPlot(ModelBand):
         source = self._bandmodel.SourceModel.surface_brightness(
             x_grid_source, y_grid_source, self._kwargs_source_partial
         )
-        source = util.array2image(source) * delta_pix**2
+        source = util.array2image(source) * deltaPix**2
         return source, coords_source
 
     def source_plot(
         self,
         ax,
-        num_pix,
-        delta_pix_source,
+        numPix,
+        deltaPix_source,
         center=None,
-        font_size=None,
+        v_min=None,
+        v_max=None,
+        with_caustics=False,
+        caustic_color="yellow",
+        font_size=15,
         plot_scale="log",
+        scale_size=0.1,
+        text="Reconstructed source",
+        colorbar_label=r"log$_{10}$ flux",
         point_source_position=True,
-        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        **kwargs
     ):
-        """Plot reconstructed source brightness.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param num_pix: number of pixels in plot per axis
-        :type num_pix: int
-        :param delta_pix_source: pixel spacing in the source resolution illustrated in
-        :type delta_pix_source: float
-            plot
-        :param center: [center_x, center_y], if specified, uses this as the center
-        :type center: list or None
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param plot_scale: Log or linear, scale of surface brightness plot
-        :type plot_scale: str
-        :param label: Label for the colorbar
-        :type label: str
-        :param point_source_position: If True, plots a point at the position of
-        :type point_source_position: bool
-            the point source
-        :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_caustics: dict
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        d_s = num_pix * delta_pix_source
-        source, coords_source = self.source(num_pix, delta_pix_source, center=center)
+
+        :param ax:
+        :param numPix:
+        :param deltaPix_source:
+        :param center: [center_x, center_y], if specified, uses this as the center
+        :param v_min:
+        :param v_max:
+        :param caustic_color:
+        :param font_size:
+        :param plot_scale: string, log or linear, scale of surface brightness plot
+        :param kwargs:
+        :return:
+        """
+        if v_min is None:
+            v_min = self._v_min_default
+        if v_max is None:
+            v_max = self._v_max_default
+        d_s = numPix * deltaPix_source
+        source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == "log":
+            source[source < 10**v_min] = 10 ** (v_min)  # to remove weird shadow in plot
             source_scale = np.log10(source)
         elif plot_scale == "linear":
             source_scale = source
@@ -921,71 +701,75 @@ class ModelBandPlot(ModelBand):
                 'variable plot_scale needs to be "log" or "linear", not %s.'
                 % plot_scale
             )
-        kwargs_matshow.setdefault("cmap", "cubehelix")
-        if plot_scale == "log":
-            kwargs_matshow.setdefault("vmin", self._vmin_default)
-            kwargs_matshow.setdefault("vmax", self._vmax_default)
         im = ax.matshow(
             source_scale,
             origin="lower",
             extent=[
-                -delta_pix_source / 2,
-                d_s - delta_pix_source / 2,
-                -delta_pix_source / 2,
-                d_s - delta_pix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
             ],
-            **kwargs_matshow,
+            cmap=self._cmap,
+            vmin=v_min,
+            vmax=v_max,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
 
-        if kwargs_caustics is not None:
-            kwargs_caustics = dict(kwargs_caustics)
-            kwargs_caustics.setdefault("color", "yellow")
+        if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(
                 ax,
                 coords_source,
                 ra_caustic_list,
                 dec_caustic_list,
+                color=caustic_color,
                 points_only=self._caustic_points_only,
-                **kwargs_caustics,
             )
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 0.1)
-            if kwargs_scale_bar.get("scale_size", 1.0) > 0:
-                plot_util.show_scale_bar(ax, d_s, **kwargs_scale_bar)
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            kwargs_coordinate_arrows.setdefault("font_size", font_size)
-            kwargs_coordinate_arrows.setdefault("arrow_color_north", "w")
-            kwargs_coordinate_arrows.setdefault("arrow_color_east", "w")
-            plot_util.show_coordinate_arrows(
+            plot_util.plot_line_set(
+                ax,
+                coords_source,
+                ra_caustic_list,
+                dec_caustic_list,
+                color=caustic_color,
+                points_only=self._caustic_points_only,
+                **kwargs.get("kwargs_caustic", {}),
+            )
+        if scale_size > 0:
+            plot_util.scale_bar(
+                ax,
+                d_s,
+                dist=scale_size,
+                text='{:.1f}"'.format(scale_size),
+                color="w",
+                flipped=False,
+                font_size=font_size,
+            )
+        if "no_arrow" not in kwargs or not kwargs["no_arrow"]:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
+                color="w",
+                arrow_size=self._arrow_size,
+                font_size=font_size,
             )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Reconstructed source")
-            kwargs_title.setdefault("flipped", False)
-            kwargs_title.setdefault("font_size", font_size)
-            plot_util.show_title_text(ax, **kwargs_title)
+            plot_util.text_description(
+                ax,
+                d_s,
+                text=text,
+                color="w",
+                backgroundcolor="k",
+                flipped=False,
+                font_size=font_size,
+            )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -996,16 +780,13 @@ class ModelBandPlot(ModelBand):
     def error_map_source_plot(
         self,
         ax,
-        num_pix,
-        delta_pix_source,
-        font_size=None,
+        numPix,
+        deltaPix_source,
+        v_min=None,
+        v_max=None,
+        with_caustics=False,
+        font_size=15,
         point_source_position=True,
-        kwargs_caustics: Optional[plot_util.CausticKwargs] = {},
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
     ):
         """Plots the uncertainty in the surface brightness in the source from the linear
         inversion by taking the diagonal elements of the covariance matrix of the
@@ -1014,44 +795,29 @@ class ModelBandPlot(ModelBand):
         is subtle. # The best way is probably to draw realizations from the covariance
         matrix.
 
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param num_pix: number of pixels in plot per axis
-        :type num_pix: int
-        :param delta_pix_source: pixel spacing in the source resolution illustrated in
-        :type delta_pix_source: float
+        :param ax: matplotlib axis instance
+        :param numPix: number of pixels in plot per axis
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in
             plot
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param point_source_position: If True, plots a point at the position of
-        :type point_source_position: bool
+        :param v_min: minimum plotting scale of the map
+        :param v_max: maximum plotting scale of the map
+        :param with_caustics: plot the caustics on top of the source reconstruction (may
+            take some time)
+        :param font_size: font size of labels
+        :param point_source_position: boolean, if True, plots a point at the position of
             the point source
-        :param kwargs_caustics: keyword arguments for caustic plotting. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
-        :type kwargs_caustics: dict
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
         :return: plot of source surface brightness errors in the reconstruction on the
             axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-
         x_grid_source, y_grid_source = util.make_grid_transformed(
-            num_pix,
-            self._coords.transform_pix2angle * delta_pix_source / self._delta_pix,
+            numPix, self._coords.transform_pix2angle * deltaPix_source / self._deltaPix
         )
         x_center = self._kwargs_source_partial[0]["center_x"]
         y_center = self._kwargs_source_partial[0]["center_y"]
         x_grid_source += x_center
         y_grid_source += y_center
         coords_source = Coordinates(
-            self._coords.transform_pix2angle * delta_pix_source / self._delta_pix,
+            self._coords.transform_pix2angle * deltaPix_source / self._deltaPix,
             ra_at_xy_0=x_grid_source[0],
             dec_at_xy_0=y_grid_source[0],
         )
@@ -1063,73 +829,64 @@ class ModelBandPlot(ModelBand):
             self._cov_param,
         )
         error_map_source = util.array2image(error_map_source)
-        d_s = num_pix * delta_pix_source
-        kwargs_matshow.setdefault("cmap", "CMRmap")
+        d_s = numPix * deltaPix_source
         im = ax.matshow(
             error_map_source,
             origin="lower",
             extent=[
-                -delta_pix_source / 2,
-                d_s - delta_pix_source / 2,
-                -delta_pix_source / 2,
-                d_s - delta_pix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
+                -deltaPix_source / 2,
+                d_s - deltaPix_source / 2,
             ],
-            **kwargs_matshow,
+            cmap=self._cmap,
+            vmin=v_min,
+            vmax=v_max,
         )  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
-        if kwargs_caustics is not None:
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(r"error variance", fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
+        if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
-
-            kwargs_caustics = dict(kwargs_caustics)
-            kwargs_caustics = dict(kwargs_caustics)
-            kwargs_caustics.setdefault("color", "b")
-
             plot_util.plot_line_set(
                 ax,
                 coords_source,
                 ra_caustic_list,
                 dec_caustic_list,
+                color="b",
                 points_only=self._caustic_points_only,
-                **kwargs_caustics,
             )
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 0.1)
-            plot_util.show_scale_bar(
-                ax,
-                d_s,
-                **kwargs_scale_bar,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            plot_util.show_coordinate_arrows(
-                ax,
-                d_s,
-                coords_source,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Error map in source")
-            plot_util.show_title_text(
-                ax,
-                flipped=False,
-                **kwargs_title,
-            )
+        plot_util.scale_bar(
+            ax,
+            d_s,
+            dist=0.1,
+            text='0.1"',
+            color="w",
+            flipped=False,
+            font_size=font_size,
+        )
+        plot_util.coordinate_arrows(
+            ax,
+            d_s,
+            coords_source,
+            arrow_size=self._arrow_size,
+            color="w",
+            font_size=font_size,
+        )
+        plot_util.text_description(
+            ax,
+            d_s,
+            text="Error map in source",
+            color="w",
+            backgroundcolor="k",
+            flipped=False,
+            font_size=font_size,
+        )
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(
                 self._kwargs_ps_partial, self._kwargs_lens
@@ -1140,43 +897,29 @@ class ModelBandPlot(ModelBand):
     def magnification_plot(
         self,
         ax,
+        v_min=-10,
+        v_max=10,
         image_name_list=None,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        font_size=15,
+        no_arrow=False,
+        text="Magnification model",
+        colorbar_label=r"$\det\ (\mathsf{A}^{-1})$",
+        **kwargs
     ):
-        """Plot magnification map in the data frame.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param image_name_list: Strings for names of the images in the same
-        :type image_name_list: list
-            order as the positions
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param label: Label for the colorbar
-        :type label: str
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
-        kwargs_matshow.setdefault("cmap", "RdYlBu_r")
-        kwargs_matshow.setdefault("vmin", -10)
-        kwargs_matshow.setdefault("vmax", 10)
-        kwargs_matshow.setdefault("alpha", 0.5)
+
+        :param ax: matplotib axis instance
+        :param v_min: minimum range of plotting
+        :param v_max: maximum range of plotting
+        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :return:
+        """
+        if "cmap" not in kwargs:
+            kwargs["cmap"] = self._cmap
+        if "alpha" not in kwargs:
+            kwargs["alpha"] = 0.5
         mag_result = util.array2image(
-            self._lens_model.magnification(
+            self._lensModel.magnification(
                 self._x_grid, self._y_grid, self._kwargs_lens_partial
             )
         )
@@ -1184,51 +927,38 @@ class ModelBandPlot(ModelBand):
             mag_result,
             origin="lower",
             extent=self._image_extent,
-            **kwargs_matshow,
+            vmin=v_min,
+            vmax=v_max,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            kwargs_scale_bar.setdefault("color", "k")
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-            plot_util.show_coordinate_arrows(
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+        )
+        if not no_arrow:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Magnification model")
-            kwargs_title.setdefault("color", "k")
-            kwargs_title.setdefault("backgroundcolor", "w")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"$\det\ (\mathsf{A}^{-1})$")
-            plot_util.show_colorbar(
-                cb,
+                color="k",
+                arrow_size=self._arrow_size,
                 font_size=font_size,
-                **kwargs_colorbar,
             )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="k",
+            backgroundcolor="w",
+            font_size=font_size,
+        )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
         )
@@ -1246,44 +976,21 @@ class ModelBandPlot(ModelBand):
     def deflection_plot(
         self,
         ax,
+        v_min=None,
+        v_max=None,
         axis=0,
+        with_caustics=False,
         image_name_list=None,
-        font_size=None,
-        kwargs_caustics: Optional[plot_util.CausticCriticalKwargs] = {},
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        text="Deflection model",
+        font_size=15,
+        colorbar_label=r"arcsec",
     ):
-        """Plot deflection-angle map in the data frame.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param axis: 0 or 1, specifies the deflection angle axis to be plotted
-        :type axis: int
-        :param image_name_list: Strings for names of the images
-        :type image_name_list: list
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param label: Label for the colorbar
-        :type label: str
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_caustics: keyword arguments for caustic and critical-curve plotting, see :class:`~lenstronomy.Plots.plot_util.CausticCriticalKwargs`. Set to None to exclude this element from the plot. The dictionary takes ``"critical_curve_color"`` as an additional optional key to specify the color of the critical curves.
-        :type kwargs_caustics: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
         """
-        if font_size is None:
-            font_size = self._font_size
 
-        alpha1, alpha2 = self._lens_model.alpha(
+        :return:
+        """
+
+        alpha1, alpha2 = self._lensModel.alpha(
             self._x_grid, self._y_grid, self._kwargs_lens_partial
         )
         alpha1 = util.array2image(alpha1)
@@ -1292,80 +999,60 @@ class ModelBandPlot(ModelBand):
             alpha = alpha1
         else:
             alpha = alpha2
-        kwargs_matshow.setdefault("cmap", "PiYG")
         im = ax.matshow(
             alpha,
             origin="lower",
             extent=self._image_extent,
+            vmin=v_min,
+            vmax=v_max,
+            cmap=self._cmap,
             alpha=0.5,
-            **kwargs_matshow,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            kwargs_scale_bar.setdefault("color", "k")
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            kwargs_coordinate_arrows.setdefault("arrow_color_north", "k")
-            kwargs_coordinate_arrows.setdefault("arrow_color_east", "k")
-            plot_util.show_coordinate_arrows(
-                ax,
-                self._frame_size,
-                self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Deflection model")
-            kwargs_title.setdefault("color", "k")
-            kwargs_title.setdefault("backgroundcolor", "w")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"arcsec")
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
-        if kwargs_caustics is not None:
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', color="k", font_size=font_size
+        )
+        plot_util.coordinate_arrows(
+            ax,
+            self._frame_size,
+            self._coords,
+            color="k",
+            arrow_size=self._arrow_size,
+            font_size=font_size,
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="k",
+            backgroundcolor="w",
+            font_size=font_size,
+        )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(colorbar_label, fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
+        if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
-
-            kwargs_caustics = dict(kwargs_caustics)
-            kwargs_caustics.setdefault("color", "yellow")
-            critical_curve_color = kwargs_caustics.pop("critical_curve_color", "red")
             plot_util.plot_line_set(
                 ax,
                 self._coords,
                 ra_caustic_list,
                 dec_caustic_list,
+                color="b",
                 points_only=self._caustic_points_only,
-                **kwargs_caustics,
             )
-            kwargs_caustics.setdefault("color", critical_curve_color)
             plot_util.plot_line_set(
                 ax,
                 self._coords,
                 ra_crit_list,
                 dec_crit_list,
+                color="r",
                 points_only=self._caustic_points_only,
-                **kwargs_caustics,
             )
         ra_image, dec_image = self._bandmodel.PointSource.image_position(
             self._kwargs_ps_partial, self._kwargs_lens_partial
@@ -1383,48 +1070,34 @@ class ModelBandPlot(ModelBand):
     def decomposition_plot(
         self,
         ax,
+        text="Reconstructed",
+        v_min=None,
+        v_max=None,
         unconvolved=False,
         point_source_add=False,
-        font_size=None,
+        font_size=15,
         source_add=False,
         lens_light_add=False,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        no_arrow=False,
+        **kwargs
     ):
         """Make a plot displaying all or a subset of light components.
 
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param unconvolved: If True, does not perform PSF convolution on the image
-        :type unconvolved: bool
-        :param point_source_add: If True, includes the lensed point source(s) in
-        :type point_source_add: bool
+        :param ax: an instance of matplotlib.axes.Axes
+        :param text: text to display in upper left corner
+        :param v_min: min color scale for matshow plot
+        :param v_max: max color scale for matshow plot
+        :param unconvolved: bool, if True, does not perform PSF convolution on the image
+        :param point_source_add: bool, if True, includes the lensed point source(s) in
             the plot
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param source_add: If True, includes the lensed image of the source in the
-        :type source_add: bool
+        :param source_add: bool, if True, includes the lensed image of the source in the
             plot
-        :param lens_light_add: If True, includes the lens light in the plot
-        :type lens_light_add: bool
-            from the plot
-        :param label: Label for the colorbar
-        :type label: str
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
+        :param lens_light_add: bool, if True, includes the lens light in the plot
+        :param no_arrow: bool, if True, omits the North/East directional arrows from the
+            plot
+        :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return: the instance of matplotlib.axes.Axes
         """
-        if font_size is None:
-            font_size = self._font_size
         model = ImageModel.image(
             self._bandmodel,
             self._kwargs_lens_partial,
@@ -1438,96 +1111,61 @@ class ModelBandPlot(ModelBand):
             point_source_add=point_source_add,
         )
 
-        kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._vmin_default)
-        kwargs_matshow.setdefault("vmax", self._vmax_default)
+        if v_min is None:
+            v_min = self._v_min_default
+        if v_max is None:
+            v_max = self._v_max_default
+        if "cmap" not in kwargs:
+            kwargs["cmap"] = self._cmap
         im = ax.matshow(
             np.log10(model),
             origin="lower",
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
-            **kwargs_matshow,
+            **kwargs,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Reconstructed")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            plot_util.show_coordinate_arrows(
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', font_size=font_size
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="w",
+            backgroundcolor="k",
+            font_size=font_size,
+        )
+        if no_arrow is False:
+            plot_util.coordinate_arrows(
                 ax,
                 self._frame_size,
                 self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-            plot_util.show_colorbar(
-                cb,
+                color="w",
+                arrow_size=self._arrow_size,
                 font_size=font_size,
-                **kwargs_colorbar,
             )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
     def subtract_from_data_plot(
         self,
         ax,
+        text="Subtracted",
+        v_min=None,
+        v_max=None,
         point_source_add=False,
         source_add=False,
         lens_light_add=False,
-        font_size=None,
-        kwargs_colorbar: Optional[plot_util.ColorBarKwargs] = {},
-        kwargs_title: Optional[plot_util.TitleKwargs] = {},
-        kwargs_scale_bar: Optional[plot_util.ScaleBarKwargs] = {},
-        kwargs_coordinate_arrows: Optional[plot_util.CoordArrowKwargs] = {},
-        **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]",
+        font_size=15,
     ):
-        """Plot data after subtracting selected model components.
-
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param point_source_add: If True, includes the lensed point source(s) in
-        :type point_source_add: bool
-            the plot
-        :param source_add: If True, includes the lensed image of the source in the
-        :type source_add: bool
-            plot
-        :param lens_light_add: If True, includes the lens light in the plot
-        :type lens_light_add: bool
-        :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
-        :type font_size: int
-        :param kwargs_colorbar: keyword arguments for the colorbar, see :class:`~lenstronomy.Plots.plot_util.ColorBarKwargs`
-        :type kwargs_colorbar: dict
-        :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_title: dict
-        :param kwargs_scale_bar: keyword arguments for the scale bar, see :class:`~lenstronomy.Plots.plot_util.ScaleBarKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_scale_bar: dict
-        :param kwargs_coordinate_arrows: keyword arguments for coordinate arrows, see :class:`~lenstronomy.Plots.plot_util.CoordArrowKwargs`. Set to None to exclude this element from the plot.
-        :type kwargs_coordinate_arrows: dict
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: the instance of matplotlib.axes.Axes
-        """
-        if font_size is None:
-            font_size = self._font_size
         model = ImageModel.image(
             self._bandmodel,
             self._kwargs_lens_partial,
@@ -1540,56 +1178,47 @@ class ModelBandPlot(ModelBand):
             lens_light_add=lens_light_add,
             point_source_add=point_source_add,
         )
-        kwargs_matshow.setdefault("cmap", "cubehelix")
-        kwargs_matshow.setdefault("vmin", self._vmin_default)
-        kwargs_matshow.setdefault("vmax", self._vmax_default)
+        if v_min is None:
+            v_min = self._v_min_default
+        if v_max is None:
+            v_max = self._v_max_default
         im = ax.matshow(
             np.log10(self._data - model),
             origin="lower",
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
-            **kwargs_matshow,
+            cmap=self._cmap,
         )
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-
-        if kwargs_scale_bar is not None:
-            kwargs_scale_bar = dict(kwargs_scale_bar)
-            kwargs_scale_bar.setdefault("scale_size", 1.0)
-            plot_util.show_scale_bar(
-                ax,
-                self._frame_size,
-                **kwargs_scale_bar,
-            )
-        if kwargs_title is not None:
-            kwargs_title = dict(kwargs_title)
-            kwargs_title.setdefault("text", "Subtracted")
-            plot_util.show_title_text(
-                ax,
-                **kwargs_title,
-            )
-        if kwargs_coordinate_arrows is not None:
-            kwargs_coordinate_arrows = dict(kwargs_coordinate_arrows)
-            plot_util.show_coordinate_arrows(
-                ax,
-                self._frame_size,
-                self._coords,
-                **kwargs_coordinate_arrows,
-            )
-        if kwargs_colorbar is not None:
-            kwargs_colorbar = dict(kwargs_colorbar)
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes("right", size="5%", pad=0.05)
-            cb = plt.colorbar(im, cax=cax)
-            kwargs_colorbar.setdefault("label", r"log$_{10}$ flux")
-            plot_util.show_colorbar(
-                cb,
-                font_size=font_size,
-                **kwargs_colorbar,
-            )
+        plot_util.scale_bar(
+            ax, self._frame_size, dist=1, text='1"', font_size=font_size
+        )
+        plot_util.text_description(
+            ax,
+            self._frame_size,
+            text=text,
+            color="w",
+            backgroundcolor="k",
+            font_size=font_size,
+        )
+        plot_util.coordinate_arrows(
+            ax,
+            self._frame_size,
+            self._coords,
+            arrow_size=self._arrow_size,
+            font_size=font_size,
+        )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax)
+        cb.set_label(r"log$_{10}$ flux", fontsize=font_size)
+        cb.ax.tick_params(labelsize=font_size)
         return ax
 
-    def plot_main(self, kwargs_caustics=None):
+    def plot_main(self, with_caustics=False):
         """Print the main plots together in a joint frame.
 
         :return:
@@ -1598,14 +1227,11 @@ class ModelBandPlot(ModelBand):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)
-        self.normalized_residual_plot(ax=axes[0, 2])
+        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
         self.source_plot(
-            ax=axes[1, 0],
-            delta_pix_source=0.01,
-            num_pix=100,
-            kwargs_caustics=kwargs_caustics,
+            ax=axes[1, 0], deltaPix_source=0.01, numPix=100, with_caustics=with_caustics
         )
-        self.convergence_plot(ax=axes[1, 1])
+        self.convergence_plot(ax=axes[1, 1], v_max=1)
         self.magnification_plot(ax=axes[1, 2])
         f.tight_layout()
         f.subplots_adjust(
@@ -1621,37 +1247,27 @@ class ModelBandPlot(ModelBand):
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         self.decomposition_plot(
-            ax=axes[0, 0],
-            kwargs_title={"text": "Lens light"},
-            lens_light_add=True,
-            unconvolved=True,
+            ax=axes[0, 0], text="Lens light", lens_light_add=True, unconvolved=True
         )
         self.decomposition_plot(
-            ax=axes[1, 0],
-            kwargs_title={"text": "Lens light convolved"},
-            lens_light_add=True,
+            ax=axes[1, 0], text="Lens light convolved", lens_light_add=True
         )
         self.decomposition_plot(
-            ax=axes[0, 1],
-            kwargs_title={"text": "Source light"},
-            source_add=True,
-            unconvolved=True,
+            ax=axes[0, 1], text="Source light", source_add=True, unconvolved=True
         )
         self.decomposition_plot(
-            ax=axes[1, 1],
-            kwargs_title={"text": "Source light convolved"},
-            source_add=True,
+            ax=axes[1, 1], text="Source light convolved", source_add=True
         )
         self.decomposition_plot(
             ax=axes[0, 2],
-            kwargs_title={"text": "All components"},
+            text="All components",
             source_add=True,
             lens_light_add=True,
             unconvolved=True,
         )
         self.decomposition_plot(
             ax=axes[1, 2],
-            kwargs_title={"text": "All components convolved"},
+            text="All components convolved",
             source_add=True,
             lens_light_add=True,
             point_source_add=True,
@@ -1669,29 +1285,25 @@ class ModelBandPlot(ModelBand):
         """
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        self.subtract_from_data_plot(ax=axes[0, 0], kwargs_title={"text": "Data"})
+        self.subtract_from_data_plot(ax=axes[0, 0], text="Data")
         self.subtract_from_data_plot(
-            ax=axes[0, 1],
-            kwargs_title={"text": "Data - Point Source"},
-            point_source_add=True,
+            ax=axes[0, 1], text="Data - Point Source", point_source_add=True
         )
         self.subtract_from_data_plot(
-            ax=axes[0, 2],
-            kwargs_title={"text": "Data - Lens Light"},
-            lens_light_add=True,
+            ax=axes[0, 2], text="Data - Lens Light", lens_light_add=True
         )
         self.subtract_from_data_plot(
-            ax=axes[1, 0], kwargs_title={"text": "Data - Source Light"}, source_add=True
+            ax=axes[1, 0], text="Data - Source Light", source_add=True
         )
         self.subtract_from_data_plot(
             ax=axes[1, 1],
-            kwargs_title={"text": "Data - Source Light - Point Source"},
+            text="Data - Source Light - Point Source",
             source_add=True,
             point_source_add=True,
         )
         self.subtract_from_data_plot(
             ax=axes[1, 2],
-            kwargs_title={"text": "Data - Lens Light - Point Source"},
+            text="Data - Lens Light - Point Source",
             lens_light_add=True,
             point_source_add=True,
         )
@@ -1701,28 +1313,30 @@ class ModelBandPlot(ModelBand):
         )
         return f, axes
 
-    def plot_extinction_map(
-        self, ax, **kwargs_matshow: "Unpack[plot_util.MatshowKwargs]"
-    ):
-        """Plot differential extinction map.
+    def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs):
+        """
 
-        :param ax: Matplotlib axes instance
-        :type ax: matplotlib.axes.Axes
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
-        :type kwargs_matshow: dict
-        :return: matplotlib axis instance
+        :param ax:
+        :param v_min:
+        :param v_max:
+        :return:
         """
         model = ImageModel.extinction_map(
             self._bandmodel,
             self._kwargs_extinction_partial,
             self._kwargs_special_partial,
         )
-        kwargs_matshow.setdefault("cmap", "afmhot")
+        if v_min is None:
+            v_min = 0
+        if v_max is None:
+            v_max = 1
 
         _ = ax.matshow(
             model,
             origin="lower",
+            vmin=v_min,
+            vmax=v_max,
             extent=self._image_extent,
-            **kwargs_matshow,
+            **kwargs,
         )
         return ax

@@ -10,19 +10,19 @@ import lenstronomy.Util.util as util
 
 class TestData(object):
     def setup_method(self):
-        self.num_pix = 10
+        self.numPix = 10
         kwargs_data = {
-            "image_data": np.zeros((self.num_pix, self.num_pix)),
-            "noise_map": np.ones((self.num_pix, self.num_pix)),
+            "image_data": np.zeros((self.numPix, self.numPix)),
+            "noise_map": np.ones((self.numPix, self.numPix)),
         }
         self.Data = ImageData(**kwargs_data)
 
     def test_numData(self):
-        assert self.Data.num_pixel == self.num_pix**2
+        assert self.Data.num_pixel == self.numPix**2
 
     def test_shift_coords(self):
-        num_pix = 10
-        delta_pix = 0.05
+        numPix = 10
+        deltaPix = 0.05
         (
             x_grid,
             y_grid,
@@ -30,18 +30,18 @@ class TestData(object):
             dec_at_xy_0,
             x_at_radec_0,
             y_at_radec_0,
-            transform_pix2coord,
-            transform_coord2pix,
+            Mpix2coord,
+            Mcoord2pix,
         ) = util.make_grid_with_coordtransform(
-            num_pix=num_pix, delta_pix=delta_pix, subgrid_res=1, inverse=True
+            numPix=numPix, deltapix=deltaPix, subgrid_res=1, inverse=True
         )
         # mask (1= model this pixel, 0= leave blanck)
 
         kwargs_data = {
             "ra_at_xy_0": ra_at_xy_0,
             "dec_at_xy_0": dec_at_xy_0,
-            "transform_pix2angle": transform_pix2coord,
-            "image_data": np.ones((num_pix, num_pix)),
+            "transform_pix2angle": Mpix2coord,
+            "image_data": np.ones((numPix, numPix)),
         }
         data = ImageData(**kwargs_data)
 
@@ -69,8 +69,8 @@ class TestData(object):
         x_shift = 0.05
         y_shift = 0
 
-        num_pix = 10
-        delta_pix = 0.05
+        numPix = 10
+        deltaPix = 0.05
         (
             x_grid,
             y_grid,
@@ -78,17 +78,17 @@ class TestData(object):
             dec_at_xy_0,
             x_at_radec_0,
             y_at_radec_0,
-            transform_pix2coord,
-            transform_coord2pix,
+            Mpix2coord,
+            Mcoord2pix,
         ) = util.make_grid_with_coordtransform(
-            num_pix=num_pix, delta_pix=delta_pix, subgrid_res=1, inverse=True
+            numPix=numPix, deltapix=deltaPix, subgrid_res=1, inverse=True
         )
 
         kwargs_data = {
             "ra_at_xy_0": ra_at_xy_0,
             "dec_at_xy_0": dec_at_xy_0,
-            "transform_pix2angle": transform_pix2coord,
-            "image_data": np.ones((num_pix, num_pix)),
+            "transform_pix2angle": Mpix2coord,
+            "image_data": np.ones((numPix, numPix)),
         }
 
         data = ImageData(**kwargs_data)
@@ -112,18 +112,18 @@ class TestData(object):
 
     def test_update_data(self):
         kwargs_data = {
-            "image_data": np.zeros((self.num_pix, self.num_pix)),
+            "image_data": np.zeros((self.numPix, self.numPix)),
             "noise_map": None,
             "exposure_time": 1,
             "background_rms": 1,
         }
         data = ImageData(**kwargs_data)
         C_D = data.C_D
-        data.update_data(image_data=np.ones((self.num_pix, self.num_pix)))
+        data.update_data(image_data=np.ones((self.numPix, self.numPix)))
         C_D_new = data.C_D
         assert C_D_new[0, 0] > C_D[0, 0]
         data_new = data.data
-        npt.assert_almost_equal(data_new, np.ones((self.num_pix, self.num_pix)))
+        npt.assert_almost_equal(data_new, np.ones((self.numPix, self.numPix)))
 
 
 class TestRaise(unittest.TestCase):

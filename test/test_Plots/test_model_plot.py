@@ -442,6 +442,15 @@ class TestOutputPlots(object):
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        plot_band.subtract_from_data_plot(
+            ax=ax,
+            subtract_point_source=True,
+            subtract_source=True,
+            subtract_lens_light=True,
+        )
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
         plot_band.error_map_source_plot(
             ax=ax,
             num_pix=30,

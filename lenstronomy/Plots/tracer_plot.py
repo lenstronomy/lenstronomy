@@ -1,4 +1,16 @@
+import sys
 from typing import Optional
+
+# Check for Python >= 3.12, "# pragma: no cover" tells coverage to
+# ignore these lines as the number of accessed lines will be different
+# for different Python versions
+if sys.version_info >= (3, 12):  # pragma: no cover
+    from typing import Unpack
+else:  # pragma: no cover
+    try:  # pragma: no cover
+        from typing_extensions import Unpack
+    except ImportError:  # pragma: no cover
+        pass
 import copy
 
 import lenstronomy.Util.util as util
@@ -38,7 +50,8 @@ class TracerPlot(object):
         :param kwargs_likelihood: likelihood keyword arguments
         :type kwargs_likelihood: dict or None
         :param fast_caustic: ; if True, uses fast (but less accurate) caustic
-        :type fast_caustic: bool calculation method
+            calculation method
+        :type fast_caustic: bool
         """
 
         multi_band_list = kwargs_data_joint.get("multi_band_list", [])
@@ -706,8 +719,8 @@ class TracerPlot(object):
         :param num_pix: number of pixels in plot per axis
         :type num_pix: int
         :param delta_pix_source: pixel spacing in the source resolution illustrated in
-        :type delta_pix_source: float
             plot
+        :type delta_pix_source: float
         :param center: [center_x, center_y], if specified, uses this as the center
         :type center: list or None
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
@@ -717,8 +730,8 @@ class TracerPlot(object):
         :param label: Label for the colorbar
         :type label: str
         :param point_source_position: If True, plots a point at the position of
-        :type point_source_position: bool
             the point source
+        :type point_source_position: bool
         :param kwargs_caustics: keyword arguments for caustic plotting, see :class:`~lenstronomy.Plots.plot_util.CausticKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
         :type kwargs_caustics: dict
         :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot.
@@ -836,8 +849,8 @@ class TracerPlot(object):
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
         :param image_name_list: Strings for names of the images in the same
-        :type image_name_list: list
             order as the positions
+        :type image_name_list: list
         :param font_size: Font size to override the class-level default. Font size for different text elements can be further fine-tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the plotting methods.
         :type font_size: int
         :param label: Label for the colorbar

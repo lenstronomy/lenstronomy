@@ -610,7 +610,7 @@ class TestRaise(unittest.TestCase):
             left_lower=False,
             inverse=False,
         )
-        
+
         kwargs_grid = {
             "nx": num_pix,
             "ny": num_pix,

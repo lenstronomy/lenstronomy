@@ -55,7 +55,6 @@ def radian_lenstronomy_to_degree(value):
     :param value: float, angle in lenstronomy conventions
     :return: float, angle almost in COOLEST conventions (without folding)
     """
-
     lenstro_degree = value * 180.0 / np.pi
     coolest_oriented_degree = lenstro_degree - 90.0
     coolest_oriented_degree *= -1
@@ -121,7 +120,6 @@ def g1g2_lenstronomy_to_gamma_phi(gamma1, gamma2):
     :return: gamma_ext, phi_ext ; shear strenght and shear position angle almost in
         COOLEST conventions (without folding)
     """
-
     angle = np.arctan2(gamma2, gamma1) / 2.0
     phi_ext = radian_lenstronomy_to_degree(angle)
 
@@ -294,7 +292,6 @@ def sie_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
     :param kwargs_lens: dictionnary with the point estimate
     :return: updated mass
     """
-
     q, phi = e1e2_lenstronomy_to_qphi_coolest(
         float(kwargs_lens["e1"]), float(kwargs_lens["e2"])
     )

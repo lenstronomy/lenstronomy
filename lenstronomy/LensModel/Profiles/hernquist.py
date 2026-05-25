@@ -127,7 +127,6 @@ class Hernquist(LensProfileBase):
         :param Rs: Hernquist radius
         :return: mass enclosed 2d projected radius
         """
-
         sigma0 = self.rho2sigma(rho0, Rs)
         return self.mass_2d_lens(r, sigma0, Rs)
 

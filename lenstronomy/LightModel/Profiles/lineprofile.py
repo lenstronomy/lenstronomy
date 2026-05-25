@@ -6,11 +6,10 @@ __all__ = ["LineProfile"]
 class LineProfile(object):
     """Horizontal line segment class.
 
-    The line extends `length` arcseconds from
-    (`start_x`, `start_y`) at an angle `angle` degrees to the horizontal. Line `width`
-    is centered in the perpendicular direction, e.g. a profile with 1 arcsecond width
-    and `angle=0` will span -0.5 to 0.5 in the y-direction. Surface brightness is
-    constant and given by `amp`.
+    The line extends `length` arcseconds from (`start_x`, `start_y`) at an angle `angle`
+    degrees to the horizontal. Line `width` is centered in the perpendicular direction,
+    e.g. a profile with 1 arcsecond width and `angle=0` will span -0.5 to 0.5 in the
+    y-direction. Surface brightness is constant and given by `amp`.
     """
 
     param_names = ["amp", "angle", "length", "width", "start_x", "start_y"]

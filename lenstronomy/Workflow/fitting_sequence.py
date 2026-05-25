@@ -230,7 +230,6 @@ class FittingSequence(object):
          are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
-
         return self._updateManager.best_fit(bijective=bijective)
 
     def update_state(self, kwargs_update):
@@ -300,7 +299,6 @@ class FittingSequence(object):
             scipy.optimize.minimize
         :return: result of the best fit
         """
-
         param_class = self.param_class
         kwargs_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(**kwargs_temp)
@@ -331,22 +329,27 @@ class FittingSequence(object):
         :param n_burn: number of burn in iterations (will not be saved)
         :param n_run: number of MCMC iterations that are saved
         :param walkerRatio: ratio of walkers/number of free parameters
-        :param n_walkers: integer, number of walkers of emcee (optional, if set, overwrites the walkerRatio input
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
+        :param n_walkers: integer, number of walkers of emcee (optional, if set,
+            overwrites the walkerRatio input
+        :param sigma_scale: scaling of the initial parameter spread relative to the
+            width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
-        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
-         scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are 'emcee' and 'zeus'
+        :param re_use_samples: bool, if True, re-uses the samples described in
+            init_samples.nOtherwise starts from scratch.
+        :param sampler_type: string, which MCMC sampler to be used. Options are 'emcee'
+            and 'zeus'
         :param progress: boolean, if True shows progress bar in EMCEE
-        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :param backend_filename: name of the HDF5 file where sampling state is saved
+            (through emcee backend engine)
         :type backend_filename: string
-        :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :param start_from_backend: if True, start from the state saved in
+            `backup_filename`. O therwise, create a new backup file with name
+            `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
         :param kwargs_zeus: zeus-specific kwargs
-        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
-         by the specific sampler used
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL
+            distances of all samples specified by the specific sampler used
         """
         param_class = self.param_class
         # run PSO
@@ -427,7 +430,6 @@ class FittingSequence(object):
             each iteration [lnlikelihood, parameters, velocities], list of parameters in
             same order as in chain
         """
-
         param_class = self.param_class
         kwargs_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(**kwargs_temp)
@@ -710,8 +712,10 @@ class FittingSequence(object):
         scaling_lower_limit=0,
         scaling_upper_limit=1000,
     ):
-        """Calibrates flux_scaling between multiple images. This routine only works in
-        'join-linear' model when fluxes are meant to be identical for different bands.
+        """Calibrates flux_scaling between multiple images.
+
+        This routine only works in 'join-linear' model when fluxes are meant to be
+        identical for different bands.
 
         :param n_particles: number of particles in the Particle Swarm Optimization
         :param n_iterations: number of iterations in the optimization process
@@ -773,9 +777,12 @@ class FittingSequence(object):
     ):
         """Updates lenstronomy settings "on the fly".
 
-        :param kwargs_model: kwargs, specified keyword arguments overwrite the existing ones
-        :param kwargs_constraints: kwargs, specified keyword arguments overwrite the existing ones
-        :param kwargs_likelihood: kwargs, specified keyword arguments overwrite the existing ones
+        :param kwargs_model: kwargs, specified keyword arguments overwrite the existing
+            ones
+        :param kwargs_constraints: kwargs, specified keyword arguments overwrite the
+            existing ones
+        :param kwargs_likelihood: kwargs, specified keyword arguments overwrite the
+            existing ones
         :param lens_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param lens_light_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
@@ -790,13 +797,20 @@ class FittingSequence(object):
         :param special_remove_fixed: ['param1', 'param2',...]
         :param special_remove_fixed: ['param1', 'param2',...]
         :param tracer_source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
-        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_source_upper_limit: [[i_model, [''param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2',
+            ...], [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, [''param_name1', 'param_name2',
+            ...], [value1, value2, ...]]]
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(
@@ -830,8 +844,9 @@ class FittingSequence(object):
         return 0
 
     def set_param_value(self, **kwargs):
-        """Set a parameter to a specific value. `kwargs` are below.
+        """Set a parameter to a specific value.
 
+        `kwargs` are below.
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
         :param source: [[i_model, ['param1', 'param2',...], [...]]

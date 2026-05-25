@@ -108,15 +108,15 @@ class CosmoInterp(object):
         d : `~astropy.units.Quantity`
           Angular diameter distance in Mpc at each input redshift.
         """
-
         if isiterable(z):
             z = np.asarray(z)
 
         return self.comoving_transverse_distance(z) / (1.0 + z)
 
     def angular_diameter_distance_z1z2(self, z1, z2):
-        """Angular diameter distance between objects at 2 redshifts. Useful for
-        gravitational lensing.
+        """Angular diameter distance between objects at 2 redshifts.
+
+        Useful for gravitational lensing.
 
         Parameters
         ----------
@@ -129,7 +129,6 @@ class CosmoInterp(object):
           The angular diameter distance between each input redshift
           pair.
         """
-
         z1 = np.asanyarray(z1)
         z2 = np.asanyarray(z2)
         return self._comoving_transverse_distance_z1z2(z1, z2) / (1.0 + z2)
@@ -157,7 +156,6 @@ class CosmoInterp(object):
         This quantity also called the 'proper motion distance' in some
         texts.
         """
-
         return self._comoving_transverse_distance_z1z2(0, z)
 
     def _comoving_transverse_distance_z1z2(self, z1, z2):
@@ -184,7 +182,6 @@ class CosmoInterp(object):
         This quantity is also called the 'proper motion distance' in
         some texts.
         """
-
         dc = self._comoving_distance_z1z2(z1, z2)
         if np.fabs(self.Ok0) < 1.0e-6:
             return dc

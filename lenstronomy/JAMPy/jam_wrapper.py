@@ -43,10 +43,12 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
         voronoi_bins=None,
         supersampling_factor=None,
     ):
-        """Computes the velocity dispersion in the aperture. IF the aperture is a slit,
-        frame or shell, the output is a single float. If the aperture is an IFU grid,
-        the output is a 2D array of the same shape as the IFU grid. If the aperture is
-        an IFU shells, the output is a 1D array with the number of shells.
+        """Computes the velocity dispersion in the aperture.
+
+        IF the aperture is a slit, frame or shell, the output is a single float. If the
+        aperture is an IFU grid, the output is a 2D array of the same shape as the IFU
+        grid. If the aperture is an IFU shells, the output is a 1D array with the number
+        of shells.
 
         :param kwargs_mass: keyword arguments of the mass model
         :param kwargs_light: keyword argument of the light model

@@ -201,8 +201,9 @@ class CartShapelets(LensProfileBase):
         )  # attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
 
     def phi_n(self, n, x):
-        """Constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
+        """Constructs the 1-dim basis function (formula (1) in Refregier et al.
 
+        2001)
         :param n: The n'the basis function.
         :type name: int.
         :param x: 1-dim position (dimensionless)
@@ -224,7 +225,6 @@ class CartShapelets(LensProfileBase):
         :param center_y:
         :return: list of H_n(x) and H_n(y)
         """
-
         n = len(np.atleast_1d(x))
         x_ = x - center_x
         y_ = y - center_y

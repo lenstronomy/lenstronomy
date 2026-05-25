@@ -100,7 +100,6 @@ class JAMWrapperBase(object):
         :param jam_kwargs: keyword arguments for JAM call
         :return: array of LOS velocity dispersion at each (x,y) position [km/s]
         """
-
         sigma_lum = np.asarray(kwargs_light[0]["sigma"])
         # convert to surface brightness
         surf_lum = np.asarray(kwargs_light[0]["amp"]) / (2 * np.pi * sigma_lum**2)

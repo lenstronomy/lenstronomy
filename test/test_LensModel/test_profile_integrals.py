@@ -93,7 +93,7 @@ class TestNumerics(object):
 
     def test_PJaffa_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter sigma0 and
-        the units in the density profile are ok
+        the units in the density profile are ok.
 
         :return:
         """
@@ -155,7 +155,7 @@ class TestNumerics(object):
 
     def test_nfw_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok
+        the units in the density profile are ok.
 
         :return:
         """
@@ -196,9 +196,7 @@ class TestNumerics(object):
 
     def test_hernquist_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok
-        :return:
-        """
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Model
 
@@ -224,7 +222,7 @@ class TestNumerics(object):
 
     def test_sis_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok
+        the units in the density profile are ok.
 
         :return:
         """
@@ -259,9 +257,7 @@ class TestNumerics(object):
 
     def test_sie_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok
-        :return:
-        """
+        the units in the density profile are ok :return:"""
 
         from lenstronomy.LensModel.Profiles.sie import SIE as Model
 
@@ -289,7 +285,7 @@ class TestNumerics(object):
 
     def test_spp_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok
+        the units in the density profile are ok.
 
         :return:
         """
@@ -321,7 +317,7 @@ class TestNumerics(object):
 
     def test_gaussian_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok
+        the units in the density profile are ok.
 
         :return:
         """

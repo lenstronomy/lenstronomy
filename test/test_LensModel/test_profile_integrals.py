@@ -92,8 +92,12 @@ class TestNumerics(object):
         self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_PJaffa_density_deflection(self):
-        """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok :return:"""
+        """Tests whether the unit conversion between the lensing parameter sigma0 and
+        the units in the density profile are ok.
+
+        :return:
+        """
+
         from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe as Model
 
         lensModel = Model()
@@ -151,7 +155,11 @@ class TestNumerics(object):
 
     def test_nfw_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok :return:"""
+        the units in the density profile are ok.
+
+        :return:
+        """
+
         from lenstronomy.LensModel.Profiles.nfw import NFW as Model
 
         lensModel = Model()
@@ -213,7 +221,11 @@ class TestNumerics(object):
 
     def test_sis_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok :return:"""
+        the units in the density profile are ok.
+
+        :return:
+        """
+
         from lenstronomy.LensModel.Profiles.sis import SIS as Model
 
         lensModel = Model()
@@ -271,7 +283,11 @@ class TestNumerics(object):
 
     def test_spp_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok :return:"""
+        the units in the density profile are ok.
+
+        :return:
+        """
+
         from lenstronomy.LensModel.Profiles.spp import SPP as Model
 
         lensModel = Model()
@@ -299,7 +315,11 @@ class TestNumerics(object):
 
     def test_gaussian_density_deflection(self):
         """Tests whether the unit conversion between the lensing parameter 'sigma0' and
-        the units in the density profile are ok :return:"""
+        the units in the density profile are ok.
+
+        :return:
+        """
+
         from lenstronomy.LensModel.Profiles.gaussian import (
             Gaussian as Model,
         )
@@ -494,7 +514,3 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     """
-
-
-if __name__ == "__main__":
-    pytest.main("-k TestLensModel")

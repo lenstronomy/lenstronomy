@@ -97,7 +97,6 @@ class TestNumerics(object):
 
         :return:
         """
-
         from lenstronomy.LensModel.Profiles.pseudo_jaffe import PseudoJaffe as Model
 
         lensModel = Model()
@@ -159,7 +158,6 @@ class TestNumerics(object):
 
         :return:
         """
-
         from lenstronomy.LensModel.Profiles.nfw import NFW as Model
 
         lensModel = Model()
@@ -225,7 +223,6 @@ class TestNumerics(object):
 
         :return:
         """
-
         from lenstronomy.LensModel.Profiles.sis import SIS as Model
 
         lensModel = Model()
@@ -287,7 +284,6 @@ class TestNumerics(object):
 
         :return:
         """
-
         from lenstronomy.LensModel.Profiles.spp import SPP as Model
 
         lensModel = Model()
@@ -319,7 +315,6 @@ class TestNumerics(object):
 
         :return:
         """
-
         from lenstronomy.LensModel.Profiles.gaussian import (
             Gaussian as Model,
         )

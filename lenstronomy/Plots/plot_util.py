@@ -33,8 +33,10 @@ class CoordArrowKwargs(TypedDict, total=False):
 
     arrowhead_size: float
     """Size of the arrowhead of the coordinate arrow as a fraction of the image size."""
+
     origin_x: float
     """X-origin of the coordinate arrow as a fraction of the image size."""
+
     origin_y: float
     """Y-origin of the coordinate arrow as a fraction of the image size."""
 
@@ -51,7 +53,6 @@ class CoordArrowKwargs(TypedDict, total=False):
     """Y-offset of the East arrow text as a fraction of the image size."""
     color_north: str
     """Color of the North arrow."""
-
     color_east: str
     """Color of the East arrow."""
 
@@ -60,19 +61,14 @@ class ScaleBarKwargs(TypedDict, total=False):
     """Keyword arguments for scale bar."""
     scale_size: float
     """Length of the scale bar in arcseconds."""
-
     text: str
     """String printed on the scale bar."""
-
     color: str
     """Color of the scale bar."""
-
     font_size: int
     """Font size of the scale bar text."""
-
     flipped: bool
     """If True, flips the scale bar to the other side."""
-
     linewidth: float
     """Line width of the scale bar."""
 
@@ -81,65 +77,58 @@ class ColorBarKwargs(TypedDict, total=False):
     """Keyword arguments for color bars."""
     label: str
     """Label text for the colorbar."""
-
     label_font_size: int
     """Font size of the colorbar label."""
-
     tick_fontsize: int
     """Font size of the colorbar tick labels."""
 
 
 class TitleKwargs(TypedDict, total=False):
     """Keyword arguments for title."""
-
     text: str
     """Text to be displayed."""
-
     color: str
     """Color of the title text."""
-
     backgroundcolor: str
     """Background color of the title text."""
-
     flipped: bool
     """If True, draw text on the right side."""
-
     font_size: int
     """Font size of the title."""
-
     x_position: float
     """X-position of the title in axes coordinates."""
-
     y_position: float
     """Y-position of the title in axes coordinates."""
 
 
 class CausticKwargs(TypedDict, total=False):
     """Keyword arguments for caustic plotting."""
-
     color: str
     """Color of the caustic lines."""
-
     linewidth: float
     """Line width of the caustic lines."""
-
     linestyle: str
     """Line style of the caustic lines."""
     alpha: float
     """Transparency of the caustic lines."""
+
     label: str
     """Label for the caustic lines."""
 
 
 class CausticCriticalKwargs(CausticKwargs, total=False):
     """Keyword arguments for caustic and critical-curve plotting."""
+
     critical_curve_color: str
     """Color of the critical-curve lines."""
 
+
 class PlotKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib plot function."""
+
     color: str
     """Line color."""
+
     linestyle: str
     """Line style."""
 
@@ -154,13 +143,17 @@ class PlotKwargs(TypedDict, total=False):
 
     alpha: float
     """Transparency."""
+
     label: str
     """Label for legend."""
 
+
 class QuiverKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib quiver function."""
+
     scale: float
     """Scale of the arrows."""
+
     headaxislength: float
     """Length of the arrow head."""
 
@@ -185,24 +178,21 @@ class QuiverKwargs(TypedDict, total=False):
 
 class EllipseKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib Ellipse patch."""
-
     linewidth: float
     """Line width."""
-
     fill: bool
     """Whether to fill the ellipse."""
-
     color: str
     """Color of the ellipse."""
 
     alpha: float
     """Transparency."""
+
     edgecolor: str
     """Edge color."""
+
     facecolor: str
     """Face color."""
-
-
 class MatshowKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib.pyplot.matshow."""
 
@@ -582,6 +572,8 @@ def plot_line_set(
     if label is not None:
         ax.plot(-1000, -1000, label=label, *args, **kwargs_plot)
     return ax
+
+
 @export
 def image_position_plot(
     ax,
@@ -720,8 +712,6 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     if label is not None:
         title = "{0} = {1}".format(label, title)
     return title
-
-
 @export
 def cmap_conf(cmap_string):
     """Configures matplotlib color map.

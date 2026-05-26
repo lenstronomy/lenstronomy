@@ -711,6 +711,7 @@ class MultiPlane(object):
 class PhysicalLocation(object):
     """center_x and center_y kwargs correspond to angular location of deflectors without
     lensing along the LOS."""
+
     def __call__(self, kwargs_lens):
         return kwargs_lens
 
@@ -720,6 +721,7 @@ class LensedLocation(object):
     """center_x and center_y kwargs correspond to observed (lensed) locations of
     deflectors given a model for the line of sight structure, compute the angular
     position of the deflector without lensing contribution along the LOS."""
+
     def __init__(self, multiplane_instance, observed_convention_index):
         """
 

@@ -10,7 +10,6 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
-from copy import deepcopy
 
 __all__ = ["KinematicsAPI"]
 
@@ -473,7 +472,7 @@ class KinematicsAPI(object):
 
         return jam_models, kwargs_profile, kwargs_light
 
-    def _copy_centers(self, kwargs_1, kwargs_2):
+    def _copy_centers_and_ellip(self, kwargs_1, kwargs_2):
         """Fills the centers of the kwargs_1 with the centers of kwargs_2.
 
         :param kwargs_1: target
@@ -487,6 +486,9 @@ class KinematicsAPI(object):
             else:
                 kwargs_1[0]["center_x"] = kwargs_2[0]["center_x"]
                 kwargs_1[0]["center_y"] = kwargs_2[0]["center_y"]
+        if ("e1" in kwargs_2[0]) and ("e2" in kwargs_2[0]) and not self._analytic_kinematics:
+            kwargs_1[0]["e1"] = kwargs_2[0]["e1"]
+            kwargs_1[0]["e2"] = kwargs_2[0]["e2"]
         return kwargs_1
 
     def kinematic_lens_profiles(
@@ -567,7 +569,7 @@ class KinematicsAPI(object):
                 mass_profile_list = ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
             kwargs_profile = [{"amp": amps, "sigma": sigmas}]
 
-        kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)
+        kwargs_profile = self._copy_centers_and_ellip(kwargs_profile, kwargs_lens)
 
         return mass_profile_list, kwargs_profile
 
@@ -765,5 +767,5 @@ class KinematicsAPI(object):
             else:
                 light_profile_list = ["MULTI_GAUSSIAN_ELLIPSE"]
             kwargs_light = [{"amp": amps, "sigma": sigmas}]
-            kwargs_light = self._copy_centers(kwargs_light, kwargs_lens_light)
+            kwargs_light = self._copy_centers_and_ellip(kwargs_light, kwargs_lens_light)
         return light_profile_list, kwargs_light

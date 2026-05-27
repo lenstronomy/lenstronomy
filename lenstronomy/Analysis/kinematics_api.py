@@ -461,6 +461,7 @@ class KinematicsAPI(object):
                         analytic_kinematics=self._analytic_kinematics,
                     )
             elif self.kinematics_backend == "jampy":
+                kwargs_model["symmetry"] = self.axial_symmetry
                 jam_model_i = JAMWrapper(
                     kwargs_model=kwargs_model,
                     kwargs_aperture=self._kwargs_aperture_kin[i],

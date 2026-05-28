@@ -1381,21 +1381,67 @@ class TestKinematicsAPI(object):
             kinematics_backend="galkin",
         )
         kwargs_lens = [
-            {"theta_E": 1, "center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}
+            {"theta_E": 1, "center_x": 0, "center_y": 0}
         ]
         kwargs_lens_light = [
-            {"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}
+            {"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0}
         ]
         kwargs_anisotropy = {"r_ani": 1}
 
-        assert kinematicAPI._copy_centers_and_ellip({}, kwargs_lens) == {
+        assert kinematicAPI._copy_centers({}, kwargs_lens) == {
             "center_x": 0,
             "center_y": 0,
         }
 
         kinematicAPI._analytic_kinematics = False
-        assert kinematicAPI._copy_centers_and_ellip([{}], kwargs_lens_light) == [
-            {"center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}
+        assert kinematicAPI._copy_centers([{}], kwargs_lens_light) == [
+            {"center_x": 0, "center_y": 0}
+        ]
+
+    def test_copy_ellip(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_model = {
+            "lens_model_list": ["EPL"],
+            "lens_light_model_list": ["HERNQUIST_ELLIPSE"],
+        }
+        kwargs_aperture = {
+            "aperture_type": "slit",
+            "center_ra": 0,
+            "width": 1,
+            "length": 1,
+            "angle": 0,
+            "center_dec": 0,
+        }
+        psf_fwhm = 0.7
+        kwargs_seeing = {"psf_type": "GAUSSIAN", "fwhm": psf_fwhm}
+        anisotropy_model = "OM"
+        kinematicAPI = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_seeing,
+            kwargs_aperture,
+            anisotropy_model=anisotropy_model,
+            analytic_kinematics=False,
+            kinematics_backend="jampy",
+            axial_symmetry="axi_sph",
+        )
+        kwargs_lens = [
+            {"theta_E": 1, "center_x": 0, "center_y": 0, 'e1': 0.1, "e2": -0.1},
+        ]
+        kwargs_lens_light = [
+            {"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0, 'e1': 0.1, "e2": -0.1}
+        ]
+        kwargs_anisotropy = {"r_ani": 1}
+
+        assert kinematicAPI._copy_ellip([{}], kwargs_lens) == [
+            {'e1': 0.1, "e2": -0.1}
+        ]
+
+        kinematicAPI._analytic_kinematics = False
+        assert kinematicAPI._copy_ellip([{}], kwargs_lens_light) == [
+            {'e1': 0.1, "e2": -0.1}
         ]
 
 

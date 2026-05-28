@@ -363,7 +363,7 @@ class TestKinematicsAPI(object):
             kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
         )
         assert jampy_models[0].axisymmetric is False
-        assert jampy_models[0].symmetry =="spherical"
+        assert jampy_models[0].symmetry == "spherical"
 
         kinematicAPI = KinematicsAPI(
             z_lens,
@@ -1380,8 +1380,12 @@ class TestKinematicsAPI(object):
             analytic_kinematics=True,
             kinematics_backend="galkin",
         )
-        kwargs_lens = [{"theta_E": 1, "center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}]
-        kwargs_lens_light = [{"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}]
+        kwargs_lens = [
+            {"theta_E": 1, "center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}
+        ]
+        kwargs_lens_light = [
+            {"Rs": 1, "amp": 1, "center_x": 0, "center_y": 0, "e1": 0.1, "e2": -0.1}
+        ]
         kwargs_anisotropy = {"r_ani": 1}
 
         assert kinematicAPI._copy_centers_and_ellip({}, kwargs_lens) == {

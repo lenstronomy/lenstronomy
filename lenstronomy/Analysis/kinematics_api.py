@@ -486,7 +486,11 @@ class KinematicsAPI(object):
             else:
                 kwargs_1[0]["center_x"] = kwargs_2[0]["center_x"]
                 kwargs_1[0]["center_y"] = kwargs_2[0]["center_y"]
-        if ("e1" in kwargs_2[0]) and ("e2" in kwargs_2[0]) and not self._analytic_kinematics:
+        if (
+            ("e1" in kwargs_2[0])
+            and ("e2" in kwargs_2[0])
+            and not self._analytic_kinematics
+        ):
             kwargs_1[0]["e1"] = kwargs_2[0]["e1"]
             kwargs_1[0]["e2"] = kwargs_2[0]["e2"]
         return kwargs_1

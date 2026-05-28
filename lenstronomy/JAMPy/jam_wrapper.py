@@ -19,6 +19,7 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
     :param kwargs_psf: keyword argument specifying the PSF of the observation
     :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the
         angular diameter distances involved
+    :param kwargs_jampy: optional keyword arguments for the jampy call
     """
 
     def __init__(
@@ -27,10 +28,14 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
         kwargs_aperture,
         kwargs_psf,
         kwargs_cosmo,
+        kwargs_jampy=None,
     ):
 
         JAMWrapperBase.__init__(self, kwargs_model, kwargs_cosmo)
         GalkinObservation.__init__(self, kwargs_aperture, kwargs_psf, backend="jampy")
+        if kwargs_jampy is None:
+            kwargs_jampy = {}
+        self.kwargs_jampy = kwargs_jampy
 
     def dispersion(
         self,
@@ -76,6 +81,7 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
                 inclination=inclination,
                 black_hole_mass=black_hole_mass,
                 convolved=False,
+                kwargs_jampy=self.kwargs_jampy,
             )
             sigma2_lum_weighted_sup = vrms_sup**2 * surf_bright_sup
             if convolved:
@@ -96,6 +102,7 @@ class JAMWrapper(JAMWrapperBase, GalkinObservation):
                 psf_sigmas=self.psf_multi_gauss_sigmas,
                 psf_amplitudes=self.psf_multi_gauss_amplitudes,
                 delta_pix=self.delta_pix,
+                kwargs_jampy=self.kwargs_jampy,
             )
             sigma2_lum_weighted_sup = vrms_sup**2 * surf_bright_sup
 

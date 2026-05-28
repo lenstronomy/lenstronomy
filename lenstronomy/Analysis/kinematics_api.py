@@ -10,7 +10,6 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
-from copy import deepcopy
 
 __all__ = ["KinematicsAPI"]
 
@@ -33,6 +32,7 @@ class KinematicsAPI(object):
         multi_observations=False,
         multi_light_profile=False,
         kwargs_numerics_galkin=None,
+        kwargs_numerics_jampy=None,
         analytic_kinematics=False,
         Hernquist_approx=False,  # TODO: revise if this is still needed
         MGE_light=None,
@@ -84,6 +84,7 @@ class KinematicsAPI(object):
             defaults to False for Galkin and True for Jampy
         :param kwargs_numerics_galkin: numerical settings for the integrated
             line-of-sight velocity dispersion
+        :param kwargs_numerics_jampy: additional kwargs for the jampy call
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition
             routine
             - n_gauss: number of Gaussian components to fit (default: 20)
@@ -183,7 +184,8 @@ class KinematicsAPI(object):
 
         self._kwargs_mge_mass = kwargs_mge_mass
         self._kwargs_mge_light = kwargs_mge_light
-        self._kwargs_numerics_kin = kwargs_numerics_galkin
+        self._kwargs_numerics_galkin = kwargs_numerics_galkin
+        self._kwargs_numerics_jampy = kwargs_numerics_jampy
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
         self._Hernquist_approx = Hernquist_approx
@@ -445,7 +447,7 @@ class KinematicsAPI(object):
                         kwargs_aperture=self._kwargs_aperture_kin[i],
                         kwargs_psf=self._kwargs_psf_kin[i],
                         kwargs_cosmo=self._kwargs_cosmo,
-                        kwargs_numerics=self._kwargs_numerics_kin,
+                        kwargs_numerics=self._kwargs_numerics_galkin,
                         analytic_kinematics=self._analytic_kinematics,
                     )
                 else:
@@ -454,15 +456,17 @@ class KinematicsAPI(object):
                         kwargs_aperture=self._kwargs_aperture_kin[i],
                         kwargs_psf=self._kwargs_psf_kin[i],
                         kwargs_cosmo=self._kwargs_cosmo,
-                        kwargs_numerics=self._kwargs_numerics_kin,
+                        kwargs_numerics=self._kwargs_numerics_galkin,
                         analytic_kinematics=self._analytic_kinematics,
                     )
             elif self.kinematics_backend == "jampy":
+                kwargs_model["symmetry"] = self.axial_symmetry
                 jam_model_i = JAMWrapper(
                     kwargs_model=kwargs_model,
                     kwargs_aperture=self._kwargs_aperture_kin[i],
                     kwargs_psf=self._kwargs_psf_kin[i],
                     kwargs_cosmo=self._kwargs_cosmo,
+                    kwargs_jampy=self._kwargs_numerics_jampy,
                 )
             jam_models.append(jam_model_i)
 
@@ -482,6 +486,19 @@ class KinematicsAPI(object):
             else:
                 kwargs_1[0]["center_x"] = kwargs_2[0]["center_x"]
                 kwargs_1[0]["center_y"] = kwargs_2[0]["center_y"]
+        return kwargs_1
+
+    @staticmethod
+    def _copy_ellip(kwargs_1, kwargs_2):
+        """Fills the ellipticity of the kwargs_1 with the ones of kwargs_2.
+
+        :param kwargs_1: target
+        :param kwargs_2: source
+        :return: kwargs_1 with filled e1 and e2
+        """
+        if ("e1" in kwargs_2[0]) and ("e2" in kwargs_2[0]):
+            kwargs_1[0]["e1"] = kwargs_2[0]["e1"]
+            kwargs_1[0]["e2"] = kwargs_2[0]["e2"]
         return kwargs_1
 
     def kinematic_lens_profiles(
@@ -556,14 +573,13 @@ class KinematicsAPI(object):
         if MGE_fit is True:
             MGE_mass_fitter = MGEMass(mass_profile_list, kwargs_mge)
             amps, sigmas = MGE_mass_fitter.mge_fit(kwargs_lens, theta_E)
+            kwargs_profile = [{"amp": amps, "sigma": sigmas}]
             if self.axial_symmetry == "spherical":
                 mass_profile_list = ["MULTI_GAUSSIAN"]
             else:
                 mass_profile_list = ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
-            kwargs_profile = [{"amp": amps, "sigma": sigmas}]
-
+                kwargs_profile = self._copy_ellip(kwargs_profile, kwargs_lens)
         kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)
-
         return mass_profile_list, kwargs_profile
 
     def kinematic_light_profile(
@@ -708,7 +724,7 @@ class KinematicsAPI(object):
             )
         self._kwargs_mge_mass = kwargs_mge_mass
         self._kwargs_mge_light = kwargs_mge_light
-        self._kwargs_numerics_kin = kwargs_numerics_galkin
+        self._kwargs_numerics_galkin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
         self._Hernquist_approx = Hernquist_approx
@@ -755,10 +771,11 @@ class KinematicsAPI(object):
         if MGE_fit is True:
             MGE_light_fitter = MGELight(light_profile_list, kwargs_mge)
             amps, sigmas = MGE_light_fitter.mge_fit(kwargs_lens_light, r_eff)
+            kwargs_light = [{"amp": amps, "sigma": sigmas}]
             if self.axial_symmetry == "spherical":
                 light_profile_list = ["MULTI_GAUSSIAN"]
             else:
                 light_profile_list = ["MULTI_GAUSSIAN_ELLIPSE"]
-            kwargs_light = [{"amp": amps, "sigma": sigmas}]
+                kwargs_light = self._copy_ellip(kwargs_light, kwargs_lens_light)
             kwargs_light = self._copy_centers(kwargs_light, kwargs_lens_light)
         return light_profile_list, kwargs_light

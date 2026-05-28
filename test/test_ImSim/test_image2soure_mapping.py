@@ -196,7 +196,7 @@ class TestMultiSourcePlane(object):
         assert n == 2
 
     def test_pseudo_multi_ray_tracing(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.5)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.5)
         kwargs_lens = self.kwargs_lens
         kwargs_light = self.kwargs_light
         flux_single_single = self.singlePlane_singlePlane.image_flux_joint(
@@ -216,7 +216,7 @@ class TestMultiSourcePlane(object):
         npt.assert_almost_equal(flux_single_single, flux_pseudo_single, decimal=10)
 
     def test_multi_ray_tracing(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         kwargs_lens = self.kwargs_lens
         kwargs_light = self.kwargs_light
         flux_multi_single = self.multi_single.image_flux_joint(
@@ -237,7 +237,7 @@ class TestMultiSourcePlane(object):
         npt.assert_almost_equal(np.sum(flux_multi_multi), 1454.689246553742, decimal=-1)
 
     def test_pseudo_ray_trace_functions_split(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.5)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.5)
         kwargs_lens = self.kwargs_lens
         kwargs_light = self.kwargs_light
         response_single_single, n1 = self.singlePlane_singlePlane.image_flux_split(
@@ -277,7 +277,7 @@ class TestMultiSourcePlane(object):
         )
 
     def test_multi_ray_trace_functions_split(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         kwargs_lens = self.kwargs_lens
         kwargs_light = self.kwargs_light
         response_multi_single, n1 = self.multi_single.image_flux_split(

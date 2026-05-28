@@ -158,6 +158,7 @@ class Param(object):
         distance_ratio_sampling=False,
         cosmology_sampling=False,
         solver_param_module=None,
+        _jax=False,
     ):
         """
 
@@ -238,6 +239,7 @@ class Param(object):
         :param cosmology_model: str, name of the cosmology model to use for
         :param solver_param_module: a class that performs conversions update_kwargs, extract_array, and add_fixed_lens
          for the Solver4Point class with the solver_type = 'CUSTOM' option
+        :param _jax: bool, flag that is set to True whenever this class is called from JAXtronomy
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])
@@ -286,13 +288,20 @@ class Param(object):
         else:
             num_lens_planes = len(list(set(self._lens_redshift_list)))
 
+        # Required for JAXtronomy to initialize Image2SourceMapping class with JAXtronomy profiles
+        if _jax:
+            from jaxtronomy.Util import class_creator as class_creator_jax
+
+            _class_creator = class_creator_jax
+        else:
+            _class_creator = class_creator
         (
             self._lens_model_class,
             self._source_model_class,
             _,
             _,
             _,
-        ) = class_creator.create_class_instances(all_models=True, **kwargs_model)
+        ) = _class_creator.create_class_instances(all_models=True, **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(
             lens_model=self._lens_model_class, source_model=self._source_model_class
         )
@@ -379,7 +388,7 @@ class Param(object):
         except:
             self._num_images = 0
         self._solver_type = solver_type
-        if self._solver_type == "NONE":
+        if self._solver_type == "NONE" or self._solver_type is None:
             self._solver = False
         else:
             self._solver = True
@@ -435,7 +444,7 @@ class Param(object):
             lens_profile_kwargs_list = kwargs_model["lens_profile_kwargs_list"]
         else:
             lens_profile_kwargs_list = None
-        self.lensParams = LensParam(
+        self.lens_params = LensParam(
             self._lens_model_list,
             kwargs_fixed_lens_updated,
             kwargs_logsampling=kwargs_logsampling_lens,
@@ -452,7 +461,7 @@ class Param(object):
             ]
         else:
             lens_light_profile_kwargs_list = None
-        self.lensLightParams = LightParam(
+        self.lens_light_params = LightParam(
             self._lens_light_model_list,
             kwargs_fixed_lens_light_updated,
             param_type="lens_light",
@@ -467,7 +476,7 @@ class Param(object):
             ]
         else:
             source_light_profile_kwargs_list = None
-        self.sourceParams = LightParam(
+        self.source_params = LightParam(
             self._source_light_model_list,
             kwargs_fixed_source_updated,
             param_type="source_light",
@@ -476,7 +485,7 @@ class Param(object):
             kwargs_upper=kwargs_upper_source,
             profile_kwargs_list=source_light_profile_kwargs_list,
         )
-        self.pointSourceParams = PointSourceParam(
+        self.point_source_params = PointSourceParam(
             self._point_source_model_list,
             kwargs_fixed_ps_updated,
             num_point_source_list=num_point_source_list,
@@ -485,14 +494,14 @@ class Param(object):
             kwargs_lower=kwargs_lower_ps,
             kwargs_upper=kwargs_upper_ps,
         )
-        self.extinctionParams = LightParam(
+        self.extinction_params = LightParam(
             self._optical_depth_model_list,
             kwargs_fixed_extinction_updated,
             kwargs_lower=kwargs_lower_extinction,
             kwargs_upper=kwargs_upper_extinction,
             linear_solver=False,
         )
-        self.specialParams = SpecialParam(
+        self.special_params = SpecialParam(
             Ddt_sampling=Ddt_sampling,
             mass_scaling=self._mass_scaling,
             general_scaling_params=self._general_scaling_masks,
@@ -512,7 +521,7 @@ class Param(object):
             source_grid_offset=source_grid_offset,
             kinematic_sampling=kinematic_sampling,
         )
-        self.tracerSourceParams = LightParam(
+        self.tracer_source_params = LightParam(
             self._tracer_source_model_list,
             kwargs_fixed_tracer_source_updated,
             kwargs_lower=kwargs_lower_tracer_source,
@@ -528,6 +537,8 @@ class Param(object):
                     " source position in the image plane is not valid!"
                 )
         self._linear_solver = linear_solver
+
+        self._jax = _jax
 
     @property
     def num_point_source_images(self):
@@ -545,7 +556,7 @@ class Param(object):
         """
         return self._linear_solver
 
-    def args2kwargs(self, args, bijective=False, jax=False):
+    def args2kwargs(self, args, bijective=False):
         """
 
         :param args: tuple of parameter values (float, strings, ...)
@@ -553,20 +564,25 @@ class Param(object):
          (e.g. if image_plane_source_list is set =True it returns the position in the image plane coordinates),
          if False, returns the parameters in the form to render a model (e.g. image_plane_source_list positions are
          ray-traced back to the source plane).
-        :param jax: Always False unless this function is being called from jaxtronomy, in which case set to True.
         :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
-        if jax is False:
+        if self._jax is False:
             args = np.atleast_1d(args)
+            impose_bound = True
+        # Turn off bound checks for kwargs_special when being called from JAXtronomy
+        else:
+            impose_bound = False
 
-        kwargs_lens, i = self.lensParams.get_params(args, i)
-        kwargs_source, i = self.sourceParams.get_params(args, i)
-        kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
-        kwargs_ps, i = self.pointSourceParams.get_params(args, i)
-        kwargs_special, i = self.specialParams.get_params(args, i, impose_bound=True)
-        kwargs_extinction, i = self.extinctionParams.get_params(args, i)
-        kwargs_tracer_source, i = self.tracerSourceParams.get_params(args, i)
+        kwargs_lens, i = self.lens_params.get_params(args, i)
+        kwargs_source, i = self.source_params.get_params(args, i)
+        kwargs_lens_light, i = self.lens_light_params.get_params(args, i)
+        kwargs_ps, i = self.point_source_params.get_params(args, i)
+        kwargs_special, i = self.special_params.get_params(
+            args, i, impose_bound=impose_bound
+        )
+        kwargs_extinction, i = self.extinction_params.get_params(args, i)
+        kwargs_tracer_source, i = self.tracer_source_params.get_params(args, i)
         self._update_lens_model(kwargs_special)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(
@@ -644,13 +660,13 @@ class Param(object):
         :param kwargs_tracer_source: tracer of the source light keyword argument list
         :return: numpy array of parameters
         """
-        args = self.lensParams.set_params(kwargs_lens)
-        args += self.sourceParams.set_params(kwargs_source)
-        args += self.lensLightParams.set_params(kwargs_lens_light)
-        args += self.pointSourceParams.set_params(kwargs_ps)
-        args += self.specialParams.set_params(kwargs_special)
-        args += self.extinctionParams.set_params(kwargs_extinction)
-        args += self.tracerSourceParams.set_params(kwargs_tracer_source)
+        args = self.lens_params.set_params(kwargs_lens)
+        args += self.source_params.set_params(kwargs_source)
+        args += self.lens_light_params.set_params(kwargs_lens_light)
+        args += self.point_source_params.set_params(kwargs_ps)
+        args += self.special_params.set_params(kwargs_special)
+        args += self.extinction_params.set_params(kwargs_extinction)
+        args += self.tracer_source_params.set_params(kwargs_tracer_source)
         return np.array(args, dtype=float)
 
     def param_limits(self):
@@ -659,22 +675,22 @@ class Param(object):
         :return: lower and upper limits of the arguments being sampled
         """
         lower_limit = self.kwargs2args(
-            kwargs_lens=self.lensParams.lower_limit,
-            kwargs_source=self.sourceParams.lower_limit,
-            kwargs_lens_light=self.lensLightParams.lower_limit,
-            kwargs_ps=self.pointSourceParams.lower_limit,
-            kwargs_special=self.specialParams.lower_limit,
-            kwargs_extinction=self.extinctionParams.lower_limit,
-            kwargs_tracer_source=self.tracerSourceParams.lower_limit,
+            kwargs_lens=self.lens_params.lower_limit,
+            kwargs_source=self.source_params.lower_limit,
+            kwargs_lens_light=self.lens_light_params.lower_limit,
+            kwargs_ps=self.point_source_params.lower_limit,
+            kwargs_special=self.special_params.lower_limit,
+            kwargs_extinction=self.extinction_params.lower_limit,
+            kwargs_tracer_source=self.tracer_source_params.lower_limit,
         )
         upper_limit = self.kwargs2args(
-            kwargs_lens=self.lensParams.upper_limit,
-            kwargs_source=self.sourceParams.upper_limit,
-            kwargs_lens_light=self.lensLightParams.upper_limit,
-            kwargs_ps=self.pointSourceParams.upper_limit,
-            kwargs_special=self.specialParams.upper_limit,
-            kwargs_extinction=self.extinctionParams.upper_limit,
-            kwargs_tracer_source=self.tracerSourceParams.upper_limit,
+            kwargs_lens=self.lens_params.upper_limit,
+            kwargs_source=self.source_params.upper_limit,
+            kwargs_lens_light=self.lens_light_params.upper_limit,
+            kwargs_ps=self.point_source_params.upper_limit,
+            kwargs_special=self.special_params.upper_limit,
+            kwargs_extinction=self.extinction_params.upper_limit,
+            kwargs_tracer_source=self.tracer_source_params.upper_limit,
         )
         return lower_limit, upper_limit
 
@@ -683,23 +699,23 @@ class Param(object):
 
         :return: number of parameters involved (int), list of parameter names
         """
-        num, name_list = self.lensParams.num_param()
-        _num, _list = self.sourceParams.num_param()
+        num, name_list = self.lens_params.num_param()
+        _num, _list = self.source_params.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.lensLightParams.num_param()
+        _num, _list = self.lens_light_params.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.pointSourceParams.num_param()
+        _num, _list = self.point_source_params.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.specialParams.num_param()
+        _num, _list = self.special_params.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.extinctionParams.num_param()
+        _num, _list = self.extinction_params.num_param()
         num += _num
         name_list += _list
-        _num, _list = self.tracerSourceParams.num_param()
+        _num, _list = self.tracer_source_params.num_param()
         num += _num
         name_list += _list
         return num, name_list
@@ -710,9 +726,9 @@ class Param(object):
         :return: number of linear basis set coefficients that are solved for
         """
         num = 0
-        num += self.sourceParams.num_param_linear()
-        num += self.lensLightParams.num_param_linear()
-        num += self.pointSourceParams.num_param_linear()
+        num += self.source_params.num_param_linear()
+        num += self.lens_light_params.num_param_linear()
+        num += self.point_source_params.num_param_linear()
         return num
 
     def image2source_plane(
@@ -1018,13 +1034,13 @@ class Param(object):
         """
 
         return (
-            self.lensParams.kwargs_fixed,
-            self.sourceParams.kwargs_fixed,
-            self.lensLightParams.kwargs_fixed,
-            self.pointSourceParams.kwargs_fixed,
-            self.specialParams.kwargs_fixed,
-            self.extinctionParams.kwargs_fixed,
-            self.tracerSourceParams.kwargs_fixed,
+            self.lens_params.kwargs_fixed,
+            self.source_params.kwargs_fixed,
+            self.lens_light_params.kwargs_fixed,
+            self.point_source_params.kwargs_fixed,
+            self.special_params.kwargs_fixed,
+            self.extinction_params.kwargs_fixed,
+            self.tracer_source_params.kwargs_fixed,
         )
 
     def print_setting(self):
@@ -1043,11 +1059,11 @@ class Param(object):
         print("Point source models:", self._point_source_model_list)
         print("===================")
         print("The following parameters are being fixed:")
-        print("Lens:", self.lensParams.kwargs_fixed)
-        print("Source:", self.sourceParams.kwargs_fixed)
-        print("Lens light:", self.lensLightParams.kwargs_fixed)
-        print("Point source:", self.pointSourceParams.kwargs_fixed)
-        print("Tracer Source:", self.tracerSourceParams.kwargs_fixed)
+        print("Lens:", self.lens_params.kwargs_fixed)
+        print("Source:", self.source_params.kwargs_fixed)
+        print("Lens light:", self.lens_light_params.kwargs_fixed)
+        print("Point source:", self.point_source_params.kwargs_fixed)
+        print("Tracer Source:", self.tracer_source_params.kwargs_fixed)
         print("===================")
         print("Joint parameters for different models")
         print("Joint lens with lens:", self._joint_lens_with_lens)
@@ -1073,4 +1089,4 @@ class Param(object):
         print("Number of linear parameters being solved for: ", num_linear)
         print("===================")
         print("The log10 of following parameters is being sampled:")
-        print("Lens:", self.lensParams.kwargs_logsampling)
+        print("Lens:", self.lens_params.kwargs_logsampling)

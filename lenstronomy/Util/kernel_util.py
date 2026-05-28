@@ -79,7 +79,7 @@ def center_kernel(kernel, iterations=20):
     if nx % 2 == 0:
         raise ValueError("kernel needs odd number of pixels")
     # make coordinate grid of kernel
-    x_grid, y_grid = util.make_grid(nx, deltapix=1, left_lower=False)
+    x_grid, y_grid = util.make_grid(nx, delta_pix=1, left_lower=False)
     # compute 1st moments to get light weighted center
     x_w = np.sum(kernel * util.array2image(x_grid))
     y_w = np.sum(kernel * util.array2image(y_grid))
@@ -178,7 +178,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
         if subgrid_res % 2 == 0:
             kernel_pixel = averaging_even_kernel(kernel_subgrid, subgrid_res)
         else:
-            kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
+            kernel_pixel = util.averaging(kernel_subgrid, num_grid=nx_new, num_pix=nx)
         delta = kernel - kernel_pixel
         temp_kernel = kernel_input + delta
         kernel_subgrid = image_util.re_size_array(
@@ -194,7 +194,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     # whatever has not been matched is added to zeroth order (in squares of the undersampled PSF)
     if subgrid_res % 2 == 0:
         return kernel_subgrid
-    kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
+    kernel_pixel = util.averaging(kernel_subgrid, num_grid=nx_new, num_pix=nx)
     kernel_pixel = kernel_norm(kernel_pixel)
     delta_kernel = kernel_pixel - kernel_norm(kernel)
     id = np.ones((subgrid_res, subgrid_res))
@@ -203,25 +203,25 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
 
 
 @export
-def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
+def kernel_pixelsize_change(kernel, delta_pix_in, delta_pix_out):
     """Change the pixel size of a given kernel.
 
     :param kernel:
-    :param deltaPix_in:
-    :param deltaPix_out:
+    :param delta_pix_in:
+    :param delta_pix_out:
     :return:
     """
-    numPix = len(kernel)
-    numPix_new = int(round(numPix * deltaPix_in / deltaPix_out))
-    if numPix_new % 2 == 0:
-        numPix_new -= 1
+    num_pix = len(kernel)
+    num_pix_new = int(round(num_pix * delta_pix_in / delta_pix_out))
+    if num_pix_new % 2 == 0:
+        num_pix_new -= 1
     x_in = np.linspace(
-        -(numPix - 1) / 2 * deltaPix_in, (numPix - 1) / 2 * deltaPix_in, numPix
+        -(num_pix - 1) / 2 * delta_pix_in, (num_pix - 1) / 2 * delta_pix_in, num_pix
     )
     x_out = np.linspace(
-        -(numPix_new - 1) / 2 * deltaPix_out,
-        (numPix_new - 1) / 2 * deltaPix_out,
-        numPix_new,
+        -(num_pix_new - 1) / 2 * delta_pix_out,
+        (num_pix_new - 1) / 2 * delta_pix_out,
+        num_pix_new,
     )
     kernel_out = image_util.re_size_array(x_in, x_in, kernel, x_out, x_out)
     kernel_out = kernel_norm(kernel_out)
@@ -262,7 +262,7 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
                 kernel_pixel, k_x, k_y, kernel_subgrid
             )
     kernel_pixel = util.averaging(
-        kernel_pixel, numGrid=kernel_size * subgrid_res, numPix=kernel_size
+        kernel_pixel, num_grid=kernel_size * subgrid_res, num_pix=kernel_size
     )
     return kernel_norm(kernel_pixel)
 
@@ -295,7 +295,9 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     if supersampling_factor % 2 == 0:
         kernel_pixel = averaging_even_kernel(kernel_pixel, supersampling_factor)
     else:
-        kernel_pixel = util.averaging(kernel_pixel, numGrid=n_high, numPix=kernel_size)
+        kernel_pixel = util.averaging(
+            kernel_pixel, num_grid=n_high, num_pix=kernel_size
+        )
     kernel_pixel /= np.sum(kernel_pixel)
     return kernel_pixel * kernel_sum
 
@@ -327,8 +329,8 @@ def kernel_gaussian(num_pix, delta_pix, fwhm):
     :return: 2d kernel
     """
     sigma = util.fwhm2sigma(fwhm)
-    # if kernel_numPix % 2 == 0:
-    #    kernel_numPix += 1
+    # if kernel_num_pix % 2 == 0:
+    #    kernel_num_pix += 1
     x_grid, y_grid = util.make_grid(num_pix, delta_pix)
     kernel = kernel_gaussian_grid(x_grid, y_grid, sigma)
     kernel = util.array2image(kernel)
@@ -362,7 +364,7 @@ def kernel_moffat(num_pix, delta_pix, fwhm, moffat_beta):
     :param moffat_beta: beta of Moffat profile
     :return: 2d kernel
     """
-    x, y = util.make_grid(numPix=num_pix, deltapix=delta_pix)
+    x, y = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
     kernel = kernel_moffat_grid(x, y, fwhm, moffat_beta)
     kernel = util.array2image(kernel)
     return kernel
@@ -438,17 +440,17 @@ def degrade_kernel(kernel_super, degrading_factor):
 def averaging_odd_kernel(kernel_super, degrading_factor):
     """"""
     n_kernel = len(kernel_super)
-    numPix = int(round(n_kernel / degrading_factor))
-    if numPix % 2 == 0:
-        numPix += 1
-    n_high = numPix * degrading_factor
+    num_pix = int(round(n_kernel / degrading_factor))
+    if num_pix % 2 == 0:
+        num_pix += 1
+    n_high = num_pix * degrading_factor
 
     kernel_super_ = np.zeros((n_high, n_high))
     i_start = int((n_high - n_kernel) / 2)
     kernel_super_[i_start : i_start + n_kernel, i_start : i_start + n_kernel] = (
         kernel_super
     )
-    kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix)
+    kernel_low_res = util.averaging(kernel_super_, num_grid=n_high, num_pix=num_pix)
     return kernel_low_res
 
 
@@ -583,11 +585,11 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     :param psf_kernel:
     :return:
     """
-    numPix_x, numPix_y = np.shape(data)
+    num_pix_x, num_pix_y = np.shape(data)
     x_int = int(round(x_pos - 0.49999))
     y_int = int(round(y_pos - 0.49999))
     # TODO: make amplitude estimate not susceptible to rounding effects on which pixels to chose to estimate the amplitude
-    if x_int > 2 and x_int < numPix_x - 2 and y_int > 2 and y_int < numPix_y - 2:
+    if x_int > 2 and x_int < num_pix_x - 2 and y_int > 2 and y_int < num_pix_y - 2:
         mean_image = max(np.sum(data[y_int - 2 : y_int + 3, x_int - 2 : x_int + 3]), 0)
         num = len(psf_kernel)
         center = int((num - 0.5) / 2)

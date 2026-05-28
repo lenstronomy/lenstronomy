@@ -42,7 +42,7 @@ class TestNumerics(object):
         npt.assert_almost_equal(output_num, output, decimal=5)
 
     def test_differentials(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.5)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.5)
         f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x, y, self.kwargs)
         f_xx_num, f_xy_num, f_yx_num, f_yy_num = self.lensModel.hessian(
             x, y, self.kwargs, diff=0.00001

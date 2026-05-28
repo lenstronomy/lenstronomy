@@ -20,14 +20,14 @@ class SimAPI(DataAPI, ModelAPI):
     provided by LightModel, LensModel, PointSource modules
     """
 
-    def __init__(self, numpix, kwargs_single_band, kwargs_model):
+    def __init__(self, num_pix, kwargs_single_band, kwargs_model):
         """
 
-        :param numpix: number of pixels per axis
+        :param num_pix: number of pixels per axis
         :param kwargs_single_band: keyword arguments specifying the class instance of DataAPI
         :param kwargs_model: keyword arguments specifying the class instance of ModelAPI
         """
-        DataAPI.__init__(self, numpix, **kwargs_single_band)
+        DataAPI.__init__(self, num_pix, **kwargs_single_band)
         ModelAPI.__init__(self, **kwargs_model)
 
     def image_model_class(self, kwargs_numerics=None):

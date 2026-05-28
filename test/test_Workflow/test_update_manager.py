@@ -203,7 +203,7 @@ class TestUpdateManager(object):
             kwargs_constraints={"log_sampling_lens": [[0, ["e1"]]]},
             kwargs_likelihood={},
         )
-        assert self.manager.param_class.lensParams.kwargs_logsampling[0] == ["e1"]
+        assert self.manager.param_class.lens_params.kwargs_logsampling[0] == ["e1"]
 
     def test_fix_image_parameters(self):
         self.manager.fix_image_parameters(image_index=0)

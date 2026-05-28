@@ -1,5 +1,4 @@
 import copy
-
 import numpy as np
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
@@ -65,7 +64,7 @@ class PSF(object):
                     "kernel_point_source needs to be specified for PIXEL PSF type!"
                 )
             # store the initial input PSF and supersampling factor
-            self._kernel_point_source_init = kernel_point_source
+            self._kernel_point_source_init = np.array(kernel_point_source)
             self._point_source_supersampling_factor_init = (
                 point_source_supersampling_factor
             )
@@ -108,7 +107,7 @@ class PSF(object):
         if psf_variance_map is not None:
             n_kernel = len(self.kernel_point_source)
             self._psf_variance_map = kernel_util.match_kernel_size(
-                psf_variance_map, n_kernel
+                np.array(psf_variance_map), n_kernel
             )
             if self.psf_type == "PIXEL" and point_source_supersampling_factor > 1:
                 if len(psf_variance_map) == len(self._kernel_point_source_supersampled):
@@ -117,7 +116,7 @@ class PSF(object):
                         "psf_variance_map are on the down-sampled pixel scale."
                     )
             if kernel_point_source_normalisation is True:
-                self._psf_variance_map /= np.sum(kernel_point_source) ** 2
+                self._psf_variance_map /= np.sum(np.array(kernel_point_source)) ** 2
             self.psf_variance_map_bool = True
         else:
             self.psf_variance_map_bool = False
@@ -238,13 +237,13 @@ class PSF(object):
             self._point_source_supersampling_factor = supersampling_factor
         return kernel_point_source_supersampled
 
-    def set_pixel_size(self, deltaPix):
+    def set_pixel_size(self, delta_pix):
         """Update pixel size.
 
-        :param deltaPix: pixel size in angular units (arc seconds)
+        :param delta_pix: pixel size in angular units (arc seconds)
         :return: None
         """
-        self._pixel_size = deltaPix
+        self._pixel_size = delta_pix
         if self.psf_type == "GAUSSIAN":
             try:
                 del self._kernel_point_source

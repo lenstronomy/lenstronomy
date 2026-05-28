@@ -190,7 +190,7 @@ class TestLensCosmo(object):
         # test mass integrals
         # make large grid
         delta_pix = rs_angle / 10.0
-        x, y = util.make_grid(numPix=1001, deltapix=delta_pix)
+        x, y = util.make_grid(num_pix=1001, delta_pix=delta_pix)
         # compute convergence
         from lenstronomy.LensModel.lens_model import LensModel
 
@@ -213,7 +213,7 @@ class TestLensCosmo(object):
         # test mass integrals
         # make large grid
         delta_pix = rs_angle / 10.0
-        x, y = util.make_grid(numPix=1001, deltapix=delta_pix)
+        x, y = util.make_grid(num_pix=1001, delta_pix=delta_pix)
         # compute convergence
         from lenstronomy.LensModel.lens_model import LensModel
 

@@ -15,7 +15,7 @@ class Nautilus(object):
         -----------
         .. [1] Johannes Lange, in prep, https://github.com/johannesulf/nautilus
 
-        :param likelihood_module: LikelihoodModule() instance
+        :param likelihood_module: Likelihood() instance
         """
         self._likelihood_module = likelihood_module
         self._num_param, _ = self._likelihood_module.param.num_param()

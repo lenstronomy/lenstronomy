@@ -10,8 +10,8 @@ class TestLight2Mass(object):
         pass
 
     def test_light2mass_conversion(self):
-        numPix = 100
-        deltaPix = 0.05
+        num_pix = 100
+        delta_pix = 0.05
 
         lightModel = LightModel(light_model_list=["SERSIC_ELLIPSE", "SERSIC"])
         kwargs_lens_light = [
@@ -22,8 +22,8 @@ class TestLight2Mass(object):
         kwargs_interpol = light2mass.light2mass_interpol(
             lens_light_model_list=["SERSIC_ELLIPSE", "SERSIC"],
             kwargs_lens_light=kwargs_lens_light,
-            numPix=numPix,
-            deltaPix=deltaPix,
+            num_pix=num_pix,
+            delta_pix=delta_pix,
             subgrid_res=1,
         )
         from lenstronomy.LensModel.lens_model import LensModel
@@ -32,7 +32,7 @@ class TestLight2Mass(object):
         kwargs_lens = [kwargs_interpol]
         import lenstronomy.Util.util as util
 
-        x_grid, y_grid = util.make_grid(numPix, deltapix=deltaPix)
+        x_grid, y_grid = util.make_grid(num_pix, delta_pix=delta_pix)
         kappa = lensModel.kappa(x_grid, y_grid, kwargs=kwargs_lens)
         kappa = util.array2image(kappa)
         kappa /= np.mean(kappa)

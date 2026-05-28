@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.testing as npt
+import pytest
 from lenstronomy.Sampling.Likelihoods.kinematic_2D_likelihood import KinLikelihood
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -8,6 +9,31 @@ from lenstronomy.Data.kinematic_bin_2D import KinBin
 from lenstronomy.Data.pixel_grid import PixelGrid
 import lenstronomy.Util.kernel_util as kernel_util
 from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
+
+
+class _FakeKinematicNN(object):
+    def __init__(self, config=None, installed=True, bounds=True):
+        self.config = (
+            config
+            if config is not None
+            else {"grid_settings": {"npix": 3, "delta_pix": 0.2}}
+        )
+        self.SKiNN_installed = installed
+        self._bounds = bounds
+
+    def generate_map(self, input_params, verbose=False):
+        return np.ones((3, 3))
+
+    def check_bounds(self, input_params, same_orientation=True, verbose=False):
+        return self._bounds
+
+
+class _FakeAlign(object):
+    def update(self, *args, **kwargs):
+        return None
+
+    def interp_image(self):
+        return np.ones((3, 3))
 
 
 class TestKinLikelihood(object):
@@ -212,6 +238,88 @@ class TestKinLikelihood(object):
                 verbose=False,
             )
             assert out_of_bounds_logL == -(10**8)
+
+    def test_init_and_skinn_branches(self, monkeypatch):
+        original_kinematic_nn = kinematic_NN_call.KinematicNN
+        monkeypatch.setattr(
+            kinematic_NN_call,
+            "KinematicNN",
+            lambda: _FakeKinematicNN(config={"grid_settings": {"npix": 3}}),
+        )
+        with pytest.raises(KeyError):
+            KinLikelihood(
+                KinBin(psf_class=self.kinPSF, **self.kwargs_kin),
+                self.lensModel,
+                self.lensLightModel,
+                self.kwargs_data,
+                idx_lens=0,
+                idx_lens_light=0,
+            )
+
+        monkeypatch.setattr(
+            kinematic_NN_call,
+            "KinematicNN",
+            lambda: _FakeKinematicNN(),
+        )
+        kin_likelihood = KinLikelihood(
+            KinBin(psf_class=self.kinPSF, **self.kwargs_kin),
+            self.lensModel,
+            self.lensLightModel,
+            self.kwargs_data,
+            idx_lens=0,
+            idx_lens_light=0,
+        )
+        kin_likelihood.kinematic_NN = _FakeKinematicNN(installed=True, bounds=True)
+        kin_likelihood.KiNNalign = _FakeAlign()
+        vrms = kin_likelihood.calc_vrms(
+            self.kwargs_lens, self.kwargs_lens_light, self.kwargs_special, verbose=False
+        )
+        assert vrms.shape == (4,)
+
+        kin_likelihood.kinematic_NN = _FakeKinematicNN(installed=False)
+        assert np.isnan(
+            kin_likelihood.calc_vrms(
+                self.kwargs_lens,
+                self.kwargs_lens_light,
+                self.kwargs_special,
+                verbose=False,
+            )
+        )
+
+        kin_likelihood.kinematic_NN = _FakeKinematicNN(installed=True, bounds=False)
+        assert kin_likelihood.logL(
+            self.kwargs_lens,
+            self.kwargs_lens_light,
+            self.kwargs_special,
+            verbose=False,
+        ) == -(10**8)
+
+        kin_likelihood.kinematic_NN = _FakeKinematicNN(installed=True, bounds=True)
+        kin_likelihood.KiNNalign = _FakeAlign()
+        finite_logL = kin_likelihood.logL(
+            self.kwargs_lens,
+            self.kwargs_lens_light,
+            self.kwargs_special,
+            verbose=False,
+        )
+        assert np.isfinite(finite_logL)
+
+        kin_likelihood.kinematic_NN = _FakeKinematicNN(installed=False)
+        assert np.isnan(
+            kin_likelihood.logL(
+                self.kwargs_lens,
+                self.kwargs_lens_light,
+                self.kwargs_special,
+                verbose=False,
+            )
+        )
+
+        bad_vrms = np.array([np.nan, 1.0, 1.0, 1.0])
+        assert kin_likelihood._logL(bad_vrms) == -(10**15)
+
+        with pytest.raises(ValueError):
+            kin_likelihood.bin_mask = np.zeros_like(kin_likelihood.bin_mask)
+            kin_likelihood.auto_binning(np.ones((3, 3)), np.ones((3, 3)))
 
     def test_convert_to_nn_params(self):
         kwargs_lens_test = [

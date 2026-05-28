@@ -18,12 +18,13 @@ class TestPlotUtil(object):
 
     def test_scale_bar(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_util.scale_bar(ax, 3, dist=1, text='1"', flipped=True)
+        plot_util.show_scale_bar(ax, 3, dist=1, text='1"', flipped=True)
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        plot_util.text_description(
-            ax, d=3, text="test", color="w", backgroundcolor="k", flipped=True
+        plot_util.show_title_text(
+            ax, text="test", color="w", backgroundcolor="k", flipped=True
         )
+        plot_util.show_title_text(ax)
         plt.close()
 
     def test_source_position_plot(self):
@@ -67,7 +68,9 @@ class TestPlotUtil(object):
 
     def test_plot_line_set(self):
         coords = Coordinates(
-            transform_pix2angle=[[1, 0], [0, 1]], ra_at_xy_0=0, dec_at_xy_0=0
+            transform_pix2angle=np.array([[1, 0], [0, 1]]),
+            ra_at_xy_0=0,
+            dec_at_xy_0=0,
         )
         line_set_x = np.linspace(start=0, stop=1, num=10)
         line_set_y = np.linspace(start=0, stop=1, num=10)
@@ -126,6 +129,40 @@ class TestPlotUtil(object):
             origin=[1, 1],
             color="g",
             flipped_x=False,
+        )
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = plot_util.plot_line_set(
+            ax,
+            coords,
+            line_set_x,
+            line_set_y,
+            origin=[0, 0],
+            color="g",
+            flipped_x=False,
+            label="curve",
+        )
+        plt.close()
+
+    def test_coordinate_arrow_explicit_origin(self):
+        coords = Coordinates(
+            transform_pix2angle=np.array([[1, 0], [0, 1]]),
+            ra_at_xy_0=0,
+            dec_at_xy_0=0,
+        )
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        plot_util.show_coordinate_arrows(
+            ax,
+            1,
+            coords,
+            font_size=8,
+            arrow_length=0.02,
+            arrowhead_size=0.04,
+            arrow_origin_x=0.2,
+            arrow_origin_y=0.3,
+            arrow_color_north="w",
+            arrow_color_east="w",
         )
         plt.close()
 

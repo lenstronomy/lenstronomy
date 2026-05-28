@@ -20,7 +20,7 @@ class TestRadialInterpolation(object):
         kappa_r_sis = sis.kappa(r_bin_log, 0, kwargs=kwargs_sis)
         kwargs_interp = [{"r_bin": r_bin_log, "kappa_r": kappa_r_sis}]
 
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
 
         # hessian
         f_xx_int, f_xy_int, f_yx_int, f_yy_int = interp_profile.hessian(
@@ -58,7 +58,7 @@ class TestRadialInterpolation(object):
         kappa_r_sis = mass_sheet.kappa(r_bin, 0, kwargs=kwargs_convergence)
         kwargs_interp = [{"r_bin": r_bin, "kappa_r": kappa_r_sis}]
 
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
 
         # hessian
         f_xx_int, f_xy_int, f_yx_int, f_yy_int = interp_profile.hessian(

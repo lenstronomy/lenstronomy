@@ -102,7 +102,7 @@ class TestNIE(object):
 
         nie_light = NIE_Light()
         kwargs = {"e1": 0.3, "e2": -0.05, "s_scale": 0.5}
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         f_xx, f_xy, f_yx, f_yy = self.nie.hessian(x, y, theta_E=1, **kwargs)
         kappa = 1 / 2.0 * (f_xx + f_yy)
         flux = nie_light.function(x, y, amp=1, **kwargs)
@@ -129,7 +129,7 @@ class TestNIEMajorAxis(object):
 
     def test_kappa(self):
         nie = NIEMajorAxis()
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         kwargs = {"b": 1, "s": 0.2, "q": 0.3}
         f_xx, f_xy, f_yx, f_yy = nie.hessian(x, y, **kwargs)
         kappa_num = 1.0 / 2 * (f_xx + f_yy)

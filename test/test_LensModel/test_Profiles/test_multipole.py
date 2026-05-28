@@ -125,7 +125,7 @@ class TestEllipticalMultipole(object):
     def setup_method(self):
         self.Multipole = EllipticalMultipole()
         self.CircularMultipole = Multipole()
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
 
     def test_function(self):
         x = 1

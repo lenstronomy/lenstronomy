@@ -51,7 +51,7 @@ class LightProfileAnalysis(object):
         )
         if model_bool_list is None:
             model_bool_list = [True] * len(kwargs_light)
-        x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
+        x_grid, y_grid = util.make_grid(num_pix=grid_num, delta_pix=grid_spacing)
         x_grid += center_x
         y_grid += center_y
         I_xy = self._light_model.surface_brightness(
@@ -95,7 +95,7 @@ class LightProfileAnalysis(object):
         )
         if model_bool_list is None:
             model_bool_list = [True] * len(kwargs_light)
-        x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
+        x_grid, y_grid = util.make_grid(num_pix=grid_num, delta_pix=grid_spacing)
         x_grid += center_x
         y_grid += center_y
         lens_light = self._light_model.surface_brightness(
@@ -249,7 +249,7 @@ class LightProfileAnalysis(object):
         """
         flux_list = []
         R_h_list = []
-        x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
+        x_grid, y_grid = util.make_grid(num_pix=grid_num, delta_pix=grid_spacing)
         kwargs_copy = copy.deepcopy(kwargs_light)
         for k, kwargs in enumerate(kwargs_light):
             if "center_x" in kwargs_copy[k]:

@@ -19,13 +19,13 @@ Test the implementation of interferometric PSF and primary beam in image simulat
 def test_lens_light_and_source_light_simulation_with_interferometric_PSF_and_primary_beam():
     sigma_bkg = 0.05
     exp_time = np.inf
-    numPix = 100
-    deltaPix = 0.05
+    num_pix = 100
+    delta_pix = 0.05
 
     # simulate a primary beam (pb)
-    primary_beam = np.zeros((numPix, numPix))
-    for i in range(numPix):
-        for j in range(numPix):
+    primary_beam = np.zeros((num_pix, num_pix))
+    for i in range(num_pix):
+        for j in range(num_pix):
             primary_beam[i, j] = np.exp(-1e-4 * ((i - 78) ** 2 + (j - 56) ** 2))
     primary_beam /= np.max(primary_beam)
 
@@ -43,12 +43,12 @@ def test_lens_light_and_source_light_simulation_with_interferometric_PSF_and_pri
 
     # define two data classes
     kwargs_data_no_pb = sim_util.data_configure_simple(
-        numPix, deltaPix, exp_time, sigma_bkg
+        num_pix, delta_pix, exp_time, sigma_bkg
     )
     data_class_no_pb = ImageData(**kwargs_data_no_pb)
 
     kwargs_data_with_pb = sim_util.data_configure_simple(
-        numPix, deltaPix, exp_time, sigma_bkg
+        num_pix, delta_pix, exp_time, sigma_bkg
     )
     kwargs_data_with_pb["antenna_primary_beam"] = primary_beam
     data_class_with_pb = ImageData(**kwargs_data_with_pb)
@@ -60,7 +60,7 @@ def test_lens_light_and_source_light_simulation_with_interferometric_PSF_and_pri
     kernel_cut = kernel_util.cut_psf(psf_test, 201, normalisation=False)
     kwargs_psf = {
         "psf_type": "PIXEL",
-        "pixel_size": deltaPix,
+        "pixel_size": delta_pix,
         "kernel_point_source": kernel_cut,
         "kernel_point_source_normalisation": False,
     }
@@ -189,13 +189,13 @@ def test_lens_light_and_source_light_simulation_with_interferometric_PSF_and_pri
 def test_point_source_simulation_with_interferometric_PSF_and_primary_beam():
     sigma_bkg = 0.05
     exp_time = np.inf
-    numPix = 100
-    deltaPix = 0.2
+    num_pix = 100
+    delta_pix = 0.2
 
     # simulate a primary beam (pb)
-    primary_beam = np.zeros((numPix, numPix))
-    for i in range(numPix):
-        for j in range(numPix):
+    primary_beam = np.zeros((num_pix, num_pix))
+    for i in range(num_pix):
+        for j in range(num_pix):
             primary_beam[i, j] = np.exp(-2e-4 * ((i - 78) ** 2 + (j - 56) ** 2))
     primary_beam /= np.max(primary_beam)
 
@@ -212,20 +212,22 @@ def test_point_source_simulation_with_interferometric_PSF_and_primary_beam():
                 psf_test[i, j] = np.sin(r * 0.5) / (r * 0.5)
 
     # Define data class with the primary beam
-    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-    kwargs_data["ra_at_xy_0"] = -(50) * deltaPix
-    kwargs_data["dec_at_xy_0"] = -(50) * deltaPix
+    kwargs_data = sim_util.data_configure_simple(
+        num_pix, delta_pix, exp_time, sigma_bkg
+    )
+    kwargs_data["ra_at_xy_0"] = -(50) * delta_pix
+    kwargs_data["dec_at_xy_0"] = -(50) * delta_pix
     kwargs_data["antenna_primary_beam"] = primary_beam
     data_class = ImageData(**kwargs_data)
 
     # Define two PSF classes
-    kwargs_psf_none = {"psf_type": "NONE", "pixel_size": deltaPix}
+    kwargs_psf_none = {"psf_type": "NONE", "pixel_size": delta_pix}
     psf_class_none = PSF(**kwargs_psf_none)
 
     kernel_cut = kernel_util.cut_psf(psf_test, 201, normalisation=False)
     kwargs_psf = {
         "psf_type": "PIXEL",
-        "pixel_size": deltaPix,
+        "pixel_size": delta_pix,
         "kernel_point_source": kernel_cut,
         "kernel_point_source_normalisation": False,
     }

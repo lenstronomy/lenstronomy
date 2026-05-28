@@ -154,6 +154,10 @@ class Numerics(PointSourceRendering):
                 )
 
         elif self._psf_type == "GAUSSIAN":
+            if compute_mode == "adaptive":
+                raise ValueError(
+                    "Adaptive compute mode is not compatible with Gaussian convolution"
+                )
             pixel_scale = pixel_grid.pixel_width
             fwhm = psf.fwhm  # FWHM  in units of angle
             sigma = util.fwhm2sigma(fwhm)

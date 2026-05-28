@@ -678,7 +678,7 @@ class ImageModel(object):
         """
         mask = self.likelihood_mask
         C_D = self.Data.C_D_model(model)
-        residual = (model - self.Data.data) / np.sqrt(C_D + np.abs(error_map)) * mask
+        residual = (self.Data.data - model) / np.sqrt(C_D + np.abs(error_map)) * mask
         return residual
 
     def reduced_chi2(self, model, error_map=0):

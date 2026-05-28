@@ -240,12 +240,12 @@ class LensModelExtensions(object):
         """
 
         mag_finite = np.zeros_like(x_pos)
-        deltaPix = float(window_size) / grid_number
+        delta_pix = float(window_size) / grid_number
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
         quasar = Gaussian()
         x_grid, y_grid = util.make_grid(
-            numPix=grid_number, deltapix=deltaPix, subgrid_res=1
+            num_pix=grid_number, delta_pix=delta_pix, subgrid_res=1
         )
 
         if polar_grid is True:
@@ -272,7 +272,7 @@ class LensModelExtensions(object):
             I_image = quasar.function(
                 betax, betay, 1.0, source_sigma, center_x, center_y
             )
-            mag_finite[i] = np.sum(I_image) * deltaPix**2
+            mag_finite[i] = np.sum(I_image) * delta_pix**2
         return mag_finite
 
     def zoom_source(
@@ -296,7 +296,7 @@ class LensModelExtensions(object):
         :param shape: string, shape of source, supports 'GAUSSIAN' and 'TORUS
         :return: 2d numpy array
         """
-        deltaPix = float(window_size) / grid_number
+        delta_pix = float(window_size) / grid_number
         if shape == "GAUSSIAN":
             from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
@@ -308,7 +308,7 @@ class LensModelExtensions(object):
                 "shape %s not valid for finite magnification computation!" % shape
             )
         x_grid, y_grid = util.make_grid(
-            numPix=grid_number, deltapix=deltaPix, subgrid_res=1
+            num_pix=grid_number, delta_pix=delta_pix, subgrid_res=1
         )
         center_x, center_y = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         betax, betay = self._lensModel.ray_shooting(
@@ -337,9 +337,9 @@ class LensModelExtensions(object):
         :param center_y: float, center of the window to compute critical curves and caustics
         :return: list of positions representing coordinates of the critical curve (in RA and DEC)
         """
-        numPix = int(compute_window / start_scale)
+        num_pix = int(compute_window / start_scale)
         x_grid_init, y_grid_init = util.make_grid(
-            numPix, deltapix=start_scale, subgrid_res=1
+            num_pix, delta_pix=start_scale, subgrid_res=1
         )
         x_grid_init += center_x
         y_grid_init += center_y
@@ -352,8 +352,8 @@ class LensModelExtensions(object):
         ra_crit_list = []
         dec_crit_list = []
         # iterate through original triangles and return ra_crit, dec_crit list
-        for i in range(numPix - 1):
-            for j in range(numPix - 1):
+        for i in range(num_pix - 1):
+            for j in range(num_pix - 1):
                 edge1 = [x_grid_init[i, j], y_grid_init[i, j], mag_init[i, j]]
                 edge2 = [
                     x_grid_init[i + 1, j + 1],
@@ -488,7 +488,7 @@ class LensModelExtensions(object):
         if num_pix % 2 == 1:
             num_pix += 1
         x_grid_high_res, y_grid_high_res = util.make_grid(
-            num_pix, deltapix=grid_scale, subgrid_res=1
+            num_pix, delta_pix=grid_scale, subgrid_res=1
         )
         x_grid_high_res += center_x
         y_grid_high_res += center_y

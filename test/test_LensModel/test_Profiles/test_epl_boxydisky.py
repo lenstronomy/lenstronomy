@@ -21,7 +21,7 @@ class TestEPL_BOXYDISKY(object):
 
         self.epl_boxydisky = EPL_BOXYDISKY()
 
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
         self.theta_E_list = [0.5, 1, 2]
         self.gamma_list = [1.8, 2.0, 2.2]
         self.e1_list = [-0.2, 0.0, 0.2]
@@ -163,7 +163,7 @@ class TestEPL_BOXYDISKY_ELL(object):
 
         self.epl_boxydisky = EPL_BOXYDISKY_ELL()
 
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
         self.theta_E_list = [0.5, 1, 2]
         self.gamma_list = [1.8, 2.0, 2.2]
         self.e1_list = [-0.2, 0.0, 0.2]

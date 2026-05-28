@@ -12,12 +12,12 @@ import lenstronomy.Util.kernel_util as kernel_util
 
 class TestKinBin(object):
     def setup_method(self, method):
-        self.numPix = 10
+        self.num_pix = 10
         self.num_bin = 4
         kwargs_kin = {
             "bin_data": np.zeros(self.num_bin) + 10.0,
             "bin_cov": np.diag(np.ones(self.num_bin) * 2.0**2),
-            "bin_mask": np.zeros((self.numPix, self.numPix)),
+            "bin_mask": np.zeros((self.num_pix, self.num_pix)),
         }
         kwargs_kin["bin_mask"][0, 0] = 1
         kwargs_kin["bin_mask"][0, 1] = 1
@@ -46,7 +46,7 @@ class TestKinBin(object):
         )
 
     def test_KinBin2kwargs(self):
-        assert self.KinBin.kin_bin2kwargs()["deltaPix"] == 1.0
+        assert self.KinBin.kin_bin2kwargs()["delta_pix"] == 1.0
 
     def test_kin_grid(self):
-        assert np.shape(self.KinBin.kin_grid()[0]) == (self.numPix, self.numPix)
+        assert np.shape(self.KinBin.kin_grid()[0]) == (self.num_pix, self.num_pix)

@@ -5,7 +5,7 @@ from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.Workflow.flux_calibration import FluxCalibration
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
-from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.likelihood import Likelihood
 from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
@@ -36,7 +36,7 @@ class FittingSequence(object):
     ):
         """
 
-        :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
+        :param kwargs_data_joint: keyword argument specifying the data according to Likelihood() class, see documentation of Likelihood() for details
         :param kwargs_model: keyword arguments to describe all model components used in
          class_creator.create_class_instances()
         :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the
@@ -160,7 +160,7 @@ class FittingSequence(object):
                 kwargs_sigma = self._updateManager.sigma_kwargs
                 sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
                 # pass the likelihood and starting info to the sampler
-                sampler = CobayaSampler(self.likelihoodModule, mean_start, sigma_start)
+                sampler = CobayaSampler(self.likelihood_class, mean_start, sigma_start)
                 # run the sampler
                 updated_info, sampler_type, best_fit_values = sampler.run(**kwargs)
                 # change the best-fit values returned by cobaya into lenstronomy kwargs format
@@ -189,7 +189,7 @@ class FittingSequence(object):
             elif fitting_type == "Nautilus":
                 # do importance nested sampling with Nautilus
                 nautilus = NautilusSampler(
-                    likelihood_module=self.likelihoodModule, mpi=self._mpi, **kwargs
+                    likelihood_module=self.likelihood_class, mpi=self._mpi, **kwargs
                 )
                 samples, means, log_z, log_z_err, log_l, results_object = nautilus.run(
                     **kwargs
@@ -250,8 +250,8 @@ class FittingSequence(object):
         """
         kwargs_result = self.best_fit(bijective=True)
         param_class = self.param_class
-        likelihoodModule = self.likelihoodModule
-        logL = likelihoodModule.logL(
+        likelihood_class = self.likelihood_class
+        logL = likelihood_class.logL(
             param_class.kwargs2args(**kwargs_result), verbose=verbose
         )
         return logL
@@ -262,7 +262,7 @@ class FittingSequence(object):
 
         :return: bic value, float
         """
-        num_data = self.likelihoodModule.num_data
+        num_data = self.likelihood_class.num_data
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
@@ -280,17 +280,17 @@ class FittingSequence(object):
         return self._updateManager.param_class
 
     @property
-    def likelihoodModule(self):
+    def likelihood_class(self):
         """
 
         :return: Likelihood() class instance reflecting the current state of FittingSequence
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
-        likelihoodModule = LikelihoodModule(
+        likelihood_class = Likelihood(
             self.kwargs_data_joint, kwargs_model, self.param_class, **kwargs_likelihood
         )
-        return likelihoodModule
+        return likelihood_class
 
     def simplex(self, n_iterations, method="Nelder-Mead"):
         """Downhill simplex optimization using the Nelder-Mead algorithm.
@@ -304,7 +304,7 @@ class FittingSequence(object):
         param_class = self.param_class
         kwargs_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(**kwargs_temp)
-        sampler = Sampler(likelihoodModule=self.likelihoodModule)
+        sampler = Sampler(likelihood_class=self.likelihood_class)
         result = sampler.simplex(init_pos, n_iterations, method)
 
         kwargs_result = param_class.args2kwargs(result, bijective=True)
@@ -350,7 +350,7 @@ class FittingSequence(object):
         """
         param_class = self.param_class
         # run PSO
-        mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
+        mcmc_class = Sampler(likelihood_class=self.likelihood_class)
         kwargs_temp = self._updateManager.parameter_state
         mean_start = param_class.kwargs2args(**kwargs_temp)
         kwargs_sigma = self._updateManager.sigma_kwargs
@@ -444,7 +444,7 @@ class FittingSequence(object):
 
         num_param, param_list = param_class.num_param()
         # run PSO
-        sampler = Sampler(likelihoodModule=self.likelihoodModule)
+        sampler = Sampler(likelihood_class=self.likelihood_class)
         result, chain = sampler.pso(
             n_particles,
             n_iterations,
@@ -523,7 +523,7 @@ class FittingSequence(object):
             else:
                 resume_dyn_run = False
             sampler = DyPolyChordSampler(
-                self.likelihoodModule,
+                self.likelihood_class,
                 prior_type=prior_type,
                 prior_means=mean_start,
                 prior_sigmas=sigma_start,
@@ -542,7 +542,7 @@ class FittingSequence(object):
 
         elif sampler_type == "MultiNest":
             sampler = MultiNestSampler(
-                self.likelihoodModule,
+                self.likelihood_class,
                 prior_type=prior_type,
                 prior_means=mean_start,
                 prior_sigmas=sigma_start,
@@ -558,7 +558,7 @@ class FittingSequence(object):
             )
         else:
             sampler = DynestySampler(
-                self.likelihoodModule,
+                self.likelihood_class,
                 prior_type=prior_type,
                 prior_means=mean_start,
                 prior_sigmas=sigma_start,
@@ -726,7 +726,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_temp = self.best_fit(bijective=False)
         multi_band_type = self.kwargs_data_joint.get("multi_band_type", "multi-linear")
-        kwargs_imaging = self.likelihoodModule.kwargs_imaging
+        kwargs_imaging = self.likelihood_class.kwargs_imaging
 
         calibration_fitting = FluxCalibration(
             kwargs_imaging=kwargs_imaging,

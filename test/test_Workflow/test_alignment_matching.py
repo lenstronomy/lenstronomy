@@ -18,14 +18,14 @@ class TestAlignmentMatching(object):
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel
         exp_time = 1000  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 20  # cutout pixel size
-        deltaPix = 0.2  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 20  # cutout pixel size
+        delta_pix = 0.2  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.1  # full width half max of PSF
 
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         transform_pix2angle = self.kwargs_data["transform_pix2angle"]
         self.kwargs_data2 = copy.deepcopy(self.kwargs_data)
@@ -42,7 +42,7 @@ class TestAlignmentMatching(object):
         kwargs_psf = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
             "truncation": 3,
         }
         psf_class = PSF(**kwargs_psf)

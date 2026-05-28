@@ -19,13 +19,13 @@ class TestPixelConvolution(object):
         self.delta_pix = 1
         self.num_pix = 10
         self.num_pix_kernel = 7
-        x, y = util.make_grid(numPix=self.num_pix_kernel, deltapix=self.delta_pix)
+        x, y = util.make_grid(num_pix=self.num_pix_kernel, delta_pix=self.delta_pix)
         kwargs_kernel = [{"amp": 1, "sigma": 3, "center_x": 0, "center_y": 0}]
         kernel = lightModel.surface_brightness(x, y, kwargs_kernel)
         self.kernel = util.array2image(kernel)
         self.kernel /= np.sum(self.kernel)
 
-        x, y = util.make_grid(numPix=self.num_pix, deltapix=self.delta_pix)
+        x, y = util.make_grid(num_pix=self.num_pix, delta_pix=self.delta_pix)
         kwargs = [{"amp": 1, "sigma": 2, "center_x": 0, "center_y": 0}]
         flux = lightModel.surface_brightness(x, y, kwargs)
         self.model = util.array2image(flux)
@@ -51,15 +51,15 @@ class TestSubgirdNumbaConvolution(object):
         self.delta_pix = 1
         self.num_pix = 10
         self.num_pix_kernel = 7
-        x, y = util.make_grid(numPix=self.num_pix_kernel, deltapix=self.delta_pix)
+        x, y = util.make_grid(num_pix=self.num_pix_kernel, delta_pix=self.delta_pix)
         kwargs_kernel = [{"amp": 1, "sigma": 3, "center_x": 0, "center_y": 0}]
         kernel = lightModel.surface_brightness(x, y, kwargs_kernel)
         self.kernel = util.array2image(kernel)
         self.kernel /= np.sum(self.kernel)
 
         x_sub, y_sub = util.make_grid(
-            numPix=self.num_pix_kernel,
-            deltapix=self.delta_pix,
+            num_pix=self.num_pix_kernel,
+            delta_pix=self.delta_pix,
             subgrid_res=self.supersampling_factor,
         )
         kernel_super = lightModel.surface_brightness(x_sub, y_sub, kwargs_kernel)
@@ -67,8 +67,8 @@ class TestSubgirdNumbaConvolution(object):
         self.kernel_super /= np.sum(self.kernel_super)
 
         x_sub, y_sub = util.make_grid(
-            numPix=self.num_pix,
-            deltapix=self.delta_pix,
+            num_pix=self.num_pix,
+            delta_pix=self.delta_pix,
             subgrid_res=self.supersampling_factor,
         )
         kwargs = [{"amp": 1, "sigma": 2, "center_x": 0, "center_y": 0}]

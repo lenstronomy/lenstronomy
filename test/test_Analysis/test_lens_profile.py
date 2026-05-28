@@ -81,11 +81,11 @@ class TestLensProfileAnalysis(object):
         assert np.isnan(theta_E)
 
         # test interpolated profile
-        numPix = 101
-        deltaPix = 0.02
+        num_pix = 101
+        delta_pix = 0.02
         from lenstronomy.Util import util
 
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         from lenstronomy.LensModel.Profiles.sis import SIS
 
         sis = SIS()
@@ -193,7 +193,7 @@ class TestLensProfileAnalysis(object):
         lensModel = LensModel(**{"lens_model_list": ["SIS"]})
         lensAnalysis = LensProfileAnalysis(lens_model=lensModel)
         kappa_mean_list = lensAnalysis.mass_fraction_within_radius(
-            kwargs_lens, center_x, center_y, theta_E, numPix=100
+            kwargs_lens, center_x, center_y, theta_E, num_pix=100
         )
         npt.assert_almost_equal(kappa_mean_list[0], 1, 2)
 

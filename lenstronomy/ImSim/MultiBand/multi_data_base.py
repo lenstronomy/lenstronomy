@@ -22,7 +22,7 @@ class MultiDataBase(object):
                     "compute_bool statement has not the same range as number of bands available!"
                 )
         self._compute_bool = compute_bool
-        self._imageModel_list = image_model_list
+        self._image_model_list = image_model_list
         self._num_response_list = []
         for imageModel in image_model_list:
             self._num_response_list.append(imageModel.num_data_evaluate)
@@ -44,7 +44,7 @@ class MultiDataBase(object):
 
         :return:
         """
-        for imageModel in self._imageModel_list:
+        for imageModel in self._image_model_list:
             imageModel.reset_point_source_cache(cache=cache)
 
     @property
@@ -52,7 +52,7 @@ class MultiDataBase(object):
         num = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                num += self._imageModel_list[i].num_data_evaluate
+                num += self._image_model_list[i].num_data_evaluate
         return num
 
     def num_param_linear(
@@ -65,7 +65,7 @@ class MultiDataBase(object):
         num = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                num += self._imageModel_list[i].num_param_linear(
+                num += self._image_model_list[i].num_param_linear(
                     kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
                 )
         return num
@@ -84,7 +84,7 @@ class MultiDataBase(object):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 residual_list.append(
-                    self._imageModel_list[i].reduced_residuals(
+                    self._image_model_list[i].reduced_residuals(
                         model_list[index], error_map=error_map_list[index]
                     )
                 )

@@ -185,7 +185,7 @@ class TestEPLvsPEMD(object):
         if self._fastell4py_bool is False:
             assert True
         else:
-            x, y = util.make_grid(numPix=10, deltapix=0.2)
+            x, y = util.make_grid(num_pix=10, delta_pix=0.2)
 
             theta_E_list = [0.5, 1, 2]
             gamma_list = [1.8, 2.0, 2.2]
@@ -222,7 +222,7 @@ class TestEPLQPhi(object):
         self.epl_qphi = EPLQPhi()
 
     def test_epl_eplqphi(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.2)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.2)
 
         theta_E_list = [0.5, 1, 2]
         gamma_list = [1.8, 2.0, 2.2]

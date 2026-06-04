@@ -3,8 +3,8 @@
 See Reference for Euclid Instrument and Observation Parameters at:
 AB mag (2022, Page 17):
 https://arxiv.org/pdf/2405.13496
-Sky brightness (2022, Table 2): 
-https://arxiv.org/pdf/2405.13496 
+Sky brightness (2022, Table 2):
+https://arxiv.org/pdf/2405.13496
 Seeing (2024, Table 1):
 https://arxiv.org/pdf/2405.13501
  Number of exposures, exposure time (2024, Euclid Wide Survey):

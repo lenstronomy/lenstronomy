@@ -1,11 +1,15 @@
 """Provisional Euclid instrument and observational settings.
 
-See Reference for Euclid Instrument and Observation Parameters at
-AB mag (2022, Page 17): https://arxiv.org/pdf/2405.13496
-Sky brightness (2022, Table 2): https://arxiv.org/pdf/2405.13496
-Seeing (2024, Table 1): https://arxiv.org/pdf/2405.13501
-Number of exposures, exposure time (2024, Euclid Wide Survey): https://www.euclid-ec.org/science/overview/
-Read noise (2024, Table 3, a representative value from the Photo row in Table 3): https://arxiv.org/pdf/2405.13493
+See Reference for Euclid Instrument and Observation Parameters at AB mag (2022, Page
+17):
+https://arxiv.org/pdf/2405.13496
+ Sky brightness (2022, Table 2): https://arxiv.org/pdf/2405.13496 Seeing (2024, Table
+1):
+https://arxiv.org/pdf/2405.13501
+ Number of exposures, exposure time (2024, Euclid Wide Survey):
+https://www.euclid-ec.org/science/overview/
+ Read noise (2024, Table 3, a representative value from the Photo row in Table 3):
+https://arxiv.org/pdf/2405.13493
 """
 
 import lenstronomy.Util.util as util
@@ -85,8 +89,7 @@ class Euclid(object):
             self.camera = NISP_camera.copy()
         else:
             raise ValueError(
-                "band %s not supported! Choose 'VIS', 'Y', 'J', or 'H'" 
-                % band
+                "band %s not supported! Choose 'VIS', 'Y', 'J', or 'H'" % band
             )
 
         if coadd_years > 6 or coadd_years < 2:

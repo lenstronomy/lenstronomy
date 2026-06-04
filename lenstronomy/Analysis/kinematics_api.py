@@ -186,6 +186,7 @@ class KinematicsAPI(object):
         self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_galkin = kwargs_numerics_galkin
         self._kwargs_numerics_jampy = kwargs_numerics_jampy
+        self._black_hole_mass = 0.0
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics
         self._Hernquist_approx = Hernquist_approx
@@ -244,6 +245,7 @@ class KinematicsAPI(object):
                     kwargs_light_i,
                     kwargs_anisotropy,
                     inclination=inclination,
+                    black_hole_mass=self._black_hole_mass,
                 )
             sigma_v = np.append(sigma_v, sigma_v_)
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
@@ -320,6 +322,7 @@ class KinematicsAPI(object):
                     inclination=inclination,
                     supersampling_factor=supersampling_factor,
                     voronoi_bins=voronoi_bins,
+                    black_hole_mass=self._black_hole_mass,
                 )
             sigma_v_map = np.append(sigma_v_map, sigma_v_map_)
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
@@ -539,10 +542,21 @@ class KinematicsAPI(object):
             return None, {"theta_E": theta_E, "gamma": gamma}
         mass_profile_list = []
         kwargs_profile = []
+        self._black_hole_mass = 0.0
         if model_kinematics_bool is None:
             model_kinematics_bool = [True] * len(kwargs_lens)
         for i, lens_model in enumerate(self._lens_model_list):
             if model_kinematics_bool[i] is True:
+                if self.kinematics_backend == "jampy" and lens_model in [
+                    "POINT_MASS",
+                    "POINT_MASS_LOG_SCALED",
+                ]:
+                    if lens_model == "POINT_MASS":
+                        theta_E_i = kwargs_lens[i]["theta_E"]
+                    else:
+                        theta_E_i = 10.0 ** kwargs_lens[i]["log10_theta_E"]
+                    self._black_hole_mass += self.lensCosmo.mass_in_theta_E(theta_E_i)
+                    continue
                 mass_profile_list.append(lens_model)
                 if lens_model in ["INTERPOL", "INTERPOL_SCLAED"]:
                     center_x_i, center_y_i = self._lensMassProfile.convergence_peak(
@@ -571,14 +585,20 @@ class KinematicsAPI(object):
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_fit is True:
+            kwargs_lens_mge = [
+                kwargs_lens[i]
+                for i, lens_model in enumerate(self._lens_model_list)
+                if model_kinematics_bool[i]
+                and lens_model not in ["POINT_MASS", "POINT_MASS_LOG_SCALED"]
+            ]
             MGE_mass_fitter = MGEMass(mass_profile_list, kwargs_mge)
-            amps, sigmas = MGE_mass_fitter.mge_fit(kwargs_lens, theta_E)
+            amps, sigmas = MGE_mass_fitter.mge_fit(kwargs_lens_mge, theta_E)
             kwargs_profile = [{"amp": amps, "sigma": sigmas}]
             if self.axial_symmetry == "spherical":
                 mass_profile_list = ["MULTI_GAUSSIAN"]
             else:
                 mass_profile_list = ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"]
-                kwargs_profile = self._copy_ellip(kwargs_profile, kwargs_lens)
+                kwargs_profile = self._copy_ellip(kwargs_profile, kwargs_lens_mge)
         kwargs_profile = self._copy_centers(kwargs_profile, kwargs_lens)
         return mass_profile_list, kwargs_profile
 

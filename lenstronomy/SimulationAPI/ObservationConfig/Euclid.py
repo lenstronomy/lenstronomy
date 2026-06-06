@@ -7,10 +7,11 @@ Sky brightness (2022, Table 2):
 https://arxiv.org/pdf/2405.13496
 Seeing (2024, Table 1):
 https://arxiv.org/pdf/2405.13501
- Number of exposures, exposure time (2024, Euclid Wide Survey):
+Number of exposures, exposure time (2024, Euclid Wide Survey):
 https://www.euclid-ec.org/science/overview/
- Read noise (2024, Table 3, a representative value from the Photo row in Table 3):
+Read noise (2024, Table 3, a representative value from the Photo row in Table 3):
 https://arxiv.org/pdf/2405.13493
+
 """
 
 import lenstronomy.Util.util as util

@@ -7,6 +7,8 @@ from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.LensModel.Profiles.hernquist import Hernquist
+from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
+from lenstronomy.Util.param_util import phi_q2_ellipticity
 
 
 class TestJAMWrapperBase(object):
@@ -470,6 +472,71 @@ class TestJAMWrapperBaseIsoAxiCyl(object):
         )
         sigma_v_galkin = np.sqrt(sigma2_IR_galkin / IR_galkin) / 1000
         npt.assert_allclose(sigma_v_jam, sigma_v_galkin, rtol=5e-2)
+
+
+class TestJAMWrapperBaseAxiElliptical(object):
+    """Test the elliptical case (not spherical limit)"""
+
+    def setup_method(self):
+
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+        self.cosmo = LensCosmo(0.5, 1.2, cosmo=cosmo)
+
+        self.x, self.y = np.meshgrid(np.linspace(-3, 3, 100), np.linspace(-3, 3, 100))
+
+        light_profile_list = ["SERSIC_ELLIPSE"]
+        mass_profile_list = ["EPL"]
+
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 0.5}
+        kwargs_cosmo = {
+            "d_d": self.cosmo.dd,
+            "d_s": self.cosmo.ds,
+            "d_ds": self.cosmo.dds,
+        }
+        kwargs_aperture = {
+            "aperture_type": "slit",
+            "length": 3,
+            "width": 0.2,
+        }
+        kwargs_model_jampy = {
+            "mass_profile_list": ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"],
+            "light_profile_list": ["MULTI_GAUSSIAN_ELLIPSE"],
+            "anisotropy_model": "const",
+            "symmetry": "axi_sph",
+        }
+
+        self.jam_axi = JAMWrapperBase(
+            kwargs_model=kwargs_model_jampy,
+            kwargs_cosmo=kwargs_cosmo,
+        )
+        self.q = 0.75
+        self.inclination = 70
+        e1, e2 = phi_q2_ellipticity(0, self.q)
+        self.kwargs_ellip = {"e1": e1, "e2": e2}
+        self.kwargs_light = [{"R_sersic": 1.1, "n_sersic": 3.5, "amp": 1.0}]
+        self.kwargs_lens_mass = [{"theta_E": 1.3, "gamma": 2.1}]
+        self.kwargs_anisotropy = {"beta": 0.1}
+
+        light_mge = MGELight(light_profile_list, {"n_comp": 50})
+        amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
+        self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l} | self.kwargs_ellip]
+        mass_mge = MGEMass(mass_profile_list, {"n_comp": 50})
+        amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
+        self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m} | self.kwargs_ellip]
+
+    def test_surface_brightness_2d(self):
+        sigma_v_jampy, surf_bright_jampy = self.jam_axi.dispersion_points(
+            x=self.x,
+            y=self.y,
+            kwargs_mass=self.kwargs_mass_mge,
+            kwargs_light=self.kwargs_light_mge,
+            kwargs_anisotropy=self.kwargs_anisotropy,
+            convolved=False,
+        )
+        surf_bright_lenstronomy = SersicElliptic().function(
+            self.x, self.y, **self.kwargs_light[0], **self.kwargs_ellip
+        )
+        npt.assert_allclose(surf_bright_jampy, surf_bright_lenstronomy, rtol=1e-2)
 
 
 class TestRaise(object):

@@ -475,20 +475,17 @@ class TestJAMWrapperBaseIsoAxiCyl(object):
 
 
 class TestJAMWrapperBaseAxiElliptical(object):
-    """Test the elliptical case (not spherical limit)
-    """
+    """Test the elliptical case (not spherical limit)"""
+
     def setup_method(self):
 
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
         self.cosmo = LensCosmo(0.5, 1.2, cosmo=cosmo)
 
-        self.x, self.y = np.meshgrid(
-            np.linspace(-3, 3, 100),
-            np.linspace(-3, 3, 100)
-        )
+        self.x, self.y = np.meshgrid(np.linspace(-3, 3, 100), np.linspace(-3, 3, 100))
 
-        light_profile_list = ['SERSIC_ELLIPSE']
-        mass_profile_list = ['EPL']
+        light_profile_list = ["SERSIC_ELLIPSE"]
+        mass_profile_list = ["EPL"]
 
         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 0.5}
         kwargs_cosmo = {
@@ -515,14 +512,14 @@ class TestJAMWrapperBaseAxiElliptical(object):
         self.q = 0.75
         self.inclination = 70
         e1, e2 = phi_q2_ellipticity(0, self.q)
-        self.kwargs_ellip = {'e1': e1, 'e2': e2}
+        self.kwargs_ellip = {"e1": e1, "e2": e2}
         self.kwargs_light = [{"R_sersic": 1.1, "n_sersic": 3.5, "amp": 1.0}]
         self.kwargs_lens_mass = [{"theta_E": 1.3, "gamma": 2.1}]
         self.kwargs_anisotropy = {"beta": 0.1}
 
         light_mge = MGELight(light_profile_list, {"n_comp": 50})
         amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
-        self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}| self.kwargs_ellip]
+        self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l} | self.kwargs_ellip]
         mass_mge = MGEMass(mass_profile_list, {"n_comp": 50})
         amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m} | self.kwargs_ellip]
@@ -537,10 +534,7 @@ class TestJAMWrapperBaseAxiElliptical(object):
             convolved=False,
         )
         surf_bright_lenstronomy = SersicElliptic().function(
-            self.x,
-            self.y,
-            **self.kwargs_light[0],
-            **self.kwargs_ellip
+            self.x, self.y, **self.kwargs_light[0], **self.kwargs_ellip
         )
         npt.assert_allclose(surf_bright_jampy, surf_bright_lenstronomy, rtol=1e-2)
 

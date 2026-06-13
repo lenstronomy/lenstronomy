@@ -90,7 +90,6 @@ class SinglePlaneLOS(SinglePlane):
         :return: a list of kwargs corresponding to the lens and a list of kwargs
             corresponding to the LOS effects
         """
-
         kwargs_los = copy.deepcopy(kwargs[self._index_los])
         # if 'LOS_MINIMAL' is at play, we set Gamma_os = Gamma_los
         # and Gamma_ds = Gamma_od
@@ -121,7 +120,6 @@ class SinglePlaneLOS(SinglePlane):
             the lens model classes
         :return: fermat potential in arcsec**2 as a list
         """
-
         kwargs_main, kwargs_los = self.split_lens_los(kwargs_lens)
 
         # the amplification matrices
@@ -218,7 +216,6 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
 
         # Angular position where the ray hits the deflector's plane
@@ -272,7 +269,6 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: f_xx, f_xy, f_yx, f_yy components
         """
-
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
 
         # Angular position where the ray hits the deflector's plane
@@ -331,7 +327,6 @@ class SinglePlaneLOS(SinglePlane):
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
-
         print("Note: The computation of the 3d mass ignores the LOS corrections.")
 
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
@@ -372,7 +367,6 @@ class SinglePlaneLOS(SinglePlane):
         :param bool_list: list of bools that are part of the output
         :return: mass density at radius r (in angular units, modulo epsilon_crit)
         """
-
         print("Note: The computation of the density ignores the LOS corrections.")
 
         kwargs_main, kwargs_los = self.split_lens_los(kwargs)
@@ -394,7 +388,6 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """
-
         print("Note: The computation of the potential ignores the LOS corrections.\
               In the presence of LOS corrections, a lensing system does not always\
               derive from a potential.")

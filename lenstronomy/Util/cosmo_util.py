@@ -19,7 +19,6 @@ def get_astropy_cosmology(cosmology_model="FlatLambdaCDM", param_kwargs={}):
     :type param_kwargs: dict
     :return: instance of a astropy.cosmology class
     """
-
     H0 = param_kwargs.get("H0", 70)
     Om0 = param_kwargs.get("Om0", 0.3)
     Ode0 = param_kwargs.get("Ode0", 0.7)

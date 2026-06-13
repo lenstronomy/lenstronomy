@@ -140,8 +140,9 @@ class CoredDensity(LensProfileBase):
 
     @staticmethod
     def kappa_r(r, sigma0, r_core):
-        """Convergence of the cored density profile. This routine is also for testing.
+        """Convergence of the cored density profile.
 
+        This routine is also for testing.
         :param r: radius (angular scale)
         :param sigma0: convergence in the core
         :param r_core: core radius
@@ -161,8 +162,9 @@ class CoredDensity(LensProfileBase):
         return 2 / np.pi * sigma0 * r_core**3 * (r_core**2 + r**2) ** (-2)
 
     def density_lens(self, r, sigma0, r_core):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: radius (angular scale)

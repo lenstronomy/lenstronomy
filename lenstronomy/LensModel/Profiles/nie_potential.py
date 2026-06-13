@@ -11,9 +11,11 @@ __all__ = ["NIE_POTENTIAL", "NIEPotentialMajorAxis"]
 class NIE_POTENTIAL(LensProfileBase):
     """This class implements the elliptical potential of Eq.
 
-    (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
-    and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
-    mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
+    (67) of
+    `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
+       and Eq. (1) of `Blandford & Kochanek 1987
+    <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_, mapped to Eq. (8) of
+    `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds
     """
 
@@ -61,7 +63,6 @@ class NIE_POTENTIAL(LensProfileBase):
         :return: transformed Einstein radius, core radius, ellipticity modulus,
             orientation angle phi_G
         """
-
         eps = np.sqrt(e1**2 + e2**2)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E_conv = self._theta_q_convert(theta_E, q)
@@ -219,9 +220,11 @@ class NIE_POTENTIAL(LensProfileBase):
 class NIEPotentialMajorAxis(LensProfileBase):
     """This class implements the elliptical potential of Eq.
 
-    (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
-    and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
-    mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
+    (67) of
+    `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
+       and Eq. (1) of `Blandford & Kochanek 1987
+    <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_, mapped to Eq. (8) of
+    `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds
     """
 

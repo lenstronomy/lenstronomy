@@ -165,8 +165,9 @@ class LensEquationSolver(object):
         magnification_limit=None,
         **kwargs_solver,
     ):
-        """Solves the lens equation. Only supports EPL-like (plus shear) models. Uses a
-        specialized recipe that solves a one-dimensional lens equation that is easier
+        """Solves the lens equation.
+
+        Only supports EPL-like (plus shear) models. Uses a specialized recipe that solves a one-dimensional lens equation that is easier
         and more reliable to solve than the usual two-dimensional lens equation.
 
         :param x: source position in units of angle, an array of positions is also supported.
@@ -293,8 +294,9 @@ class LensEquationSolver(object):
         non_linear=False,
         magnification_limit=None,
     ):
-        """Finds image position  given source position and lens model. The solver first
-        samples does a grid search in the lens plane, and the grid points that are
+        """Finds image position  given source position and lens model.
+
+        The solver first samples does a grid search in the lens plane, and the grid points that are
         closest to the supplied source position are fed to a specialized gradient-based
         root finder that finds the exact solutions. Works with all lens models.
 
@@ -633,7 +635,6 @@ class LensEquationSolver(object):
          abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
-
         x_mins, y_mins = self.image_position_from_source(
             sourcePos_x,
             sourcePos_y,
@@ -669,7 +670,6 @@ class LensEquationSolver(object):
         :param kwargs_lens: keyword arguments of lens model
         :return: sorted lists of x_mins and y_mins
         """
-
         if hasattr(self.lensModel, "_no_potential"):
             raise Exception(
                 "Instance of `LensModel` passed to this class does not compute the lensing potential, "

@@ -52,7 +52,6 @@ class Solver(object):
         :param y_pos: y-position constraints on images
         :return: updated lens model that satisfies the lens equation for the point sources
         """
-
         if not len(x_pos) == self._num_images:
             raise ValueError(
                 "Point source number %s must be as specified by the solver with number of images %s"

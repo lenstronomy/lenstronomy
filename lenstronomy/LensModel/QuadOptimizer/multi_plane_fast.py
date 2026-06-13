@@ -40,7 +40,6 @@ class MultiplaneFast(object):
          they will be re-computed
         :param tol_source: source plane chi^2 sigma
         """
-
         self.lensModel = LensModel(
             lens_model_list,
             z_lens,
@@ -127,7 +126,6 @@ class MultiplaneFast(object):
 
     def _ray_shooting_fast_foreground(self):
         """Does the ray tracing through the foreground halos only once."""
-
         if self._foreground_rays is None:
             # These do not depend on the kwargs being optimized for
             kw = self._param_class.kwargs_lens

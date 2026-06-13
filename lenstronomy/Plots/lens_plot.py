@@ -356,9 +356,11 @@ def point_source_plot(
     color="k",
     **kwargs_plot: "Unpack[plot_util.PlotKwargs]",
 ):
-    """Plots and illustrates images of a point source. The plotting routine orders the
-    image labels according to the arrival time and illustrates a diamond shape of the
-    size of the magnification. The coordinates are chosen in pixel coordinates.
+    """Plots and illustrates images of a point source.
+
+    The plotting routine orders the image labels according to the arrival time and
+    illustrates a diamond shape of the size of the magnification. The coordinates are
+    chosen in pixel coordinates.
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
@@ -375,13 +377,15 @@ def point_source_plot(
     :type source_y: float
     :param name_list: Names of images
     :type name_list: list
-    :param name_list: Strings, longer or equal the number of point sources. If changing this parameter, input as name_list=[[...], [...]]
+    :param name_list: Strings, longer or equal the number of point sources. If changing
+        this parameter, input as name_list=[[...], [...]]
     :type name_list: list
     :param index: number of sources, an integer number. Default None.
     :type index: int or None
     :param color: Representing the color for the source's images. Default "k".
     :type color: str
-    :param solver_type: Type of solver to find the image positions ('lenstronomy', 'analytical' or 'stochastic')
+    :param solver_type: Type of solver to find the image positions ('lenstronomy',
+        'analytical' or 'stochastic')
     :type solver_type: str
     :param kwargs_solver: keyword arguments for the solver
     :type kwargs_solver: dict
@@ -648,7 +652,6 @@ def curved_arc_illustration(
     :type color: str
     :return: matplotlib axis instance
     """
-
     # loop through lens models
     # check whether curved arc
     lens_model_list = lens_model.lens_model_list
@@ -1038,7 +1041,6 @@ def stretch_plot(
     :type patch_kwargs: dict
     :return: matplotlib axis instance with figure
     """
-
     if plot_grid is None:
         # define default ellipse grid (20x20 spanning from -2 to 2)
         plot_grid = PixelGrid(20, 20, np.array([[1, 0], [0, 1]]) * 0.2, -2, -2)
@@ -1104,7 +1106,6 @@ def shear_plot(
     :type kwargs_quiver: dict
     :return: matplotlib axis instance with figure
     """
-
     if plot_grid is None:
         # define default ellipse grid (20x20 spanning from -2 to 2)
         plot_grid = PixelGrid(20, 20, np.array([[1, 0], [0, 1]]) * 0.2, -2, -2)

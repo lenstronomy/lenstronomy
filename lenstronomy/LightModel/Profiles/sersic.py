@@ -122,7 +122,6 @@ class SersicElliptic(SersicUtil):
         :param max_R_frac: maximum window outside which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic profile value at (x, y)
         """
-
         R_sersic = np.maximum(0, R_sersic)
         R = self.get_distance_from_center(x, y, e1, e2, center_x, center_y)
         result = self._r_sersic(R, R_sersic, n_sersic, max_R_frac)
@@ -184,7 +183,6 @@ class SersicElliptic_qPhi(SersicUtil):
         :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic profile value at (x, y)
         """
-
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         return self._sersic_e1e2.function(
             x, y, amp, R_sersic, n_sersic, e1, e2, center_x, center_y, max_R_frac

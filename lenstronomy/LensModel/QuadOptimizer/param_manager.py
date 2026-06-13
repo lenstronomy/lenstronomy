@@ -56,7 +56,6 @@ class PowerLawParamManager(object):
 
         :param kwargs_lens_init: the initial kwargs_lens before optimizing
         """
-
         self.kwargs_lens = kwargs_lens_init
 
     def param_chi_square_penalty(self, args):
@@ -64,8 +63,9 @@ class PowerLawParamManager(object):
 
     @property
     def to_vary_index(self):
-        """The number of lens models being varied in this routine. This is set to 2
-        because the first three lens models are EPL and SHEAR, and their parameters are
+        """The number of lens models being varied in this routine.
+
+        This is set to 2 because the first three lens models are EPL and SHEAR, and their parameters are
         being optimized.
 
         The kwargs_list is split at to to_vary_index with indicies < to_vary_index
@@ -75,7 +75,6 @@ class PowerLawParamManager(object):
         Note that this requires a specific ordering of lens_model_list
         :return:
         """
-
         return 2
 
     def bounds(self, re_optimize, scale=1.0):
@@ -88,7 +87,6 @@ class PowerLawParamManager(object):
         :param scale: scales the size of the uncertainty window
         :return:
         """
-
         args = self.kwargs_to_args(self.kwargs_lens)
 
         if re_optimize:
@@ -125,7 +123,6 @@ class PowerLawParamManager(object):
         :param kwargs: keyword arguments corresponding to the lens model parameters being optimized
         :return: array of lens model parameters
         """
-
         thetaE = kwargs[0]["theta_E"]
         center_x = kwargs[0]["center_x"]
         center_y = kwargs[0]["center_y"]
@@ -148,7 +145,6 @@ class PowerLawFreeShear(PowerLawParamManager):
         :param args: array of lens model parameters
         :return: dictionary of lens model parameters
         """
-
         gamma = self.kwargs_lens[0]["gamma"]
         kwargs_epl = {
             "theta_E": args[0],
@@ -219,8 +215,9 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
 
     @property
     def to_vary_index(self):
-        """The number of lens models being varied in this routine. This is set to 3
-        because the first three lens models are EPL, SHEAR, and MULTIPOLE, and their
+        """The number of lens models being varied in this routine.
+
+        This is set to 3 because the first three lens models are EPL, SHEAR, and MULTIPOLE, and their
         parameters are being optimized.
 
         The kwargs_list is split at to to_vary_index with indicies < to_vary_index
@@ -230,7 +227,6 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
         Note that this requires a specific ordering of lens_model_list
         :return:
         """
-
         return 3
 
     def args_to_kwargs(self, args):
@@ -270,8 +266,9 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
 
     @property
     def to_vary_index(self):
-        """The number of lens models being varied in this routine. This is set to 3
-        because the first three lens models are EPL, SHEAR, and MULTIPOLE, and their
+        """The number of lens models being varied in this routine.
+
+        This is set to 3 because the first three lens models are EPL, SHEAR, and MULTIPOLE, and their
         parameters are being optimized.
 
         The kwargs_list is split at to to_vary_index with indicies < to_vary_index
@@ -281,7 +278,6 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
         Note that this requires a specific ordering of lens_model_list
         :return:
         """
-
         return 3
 
     def args_to_kwargs(self, args):

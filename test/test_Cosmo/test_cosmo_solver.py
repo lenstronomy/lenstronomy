@@ -93,9 +93,9 @@ class TestInvertCosmo(object):
         npt.assert_almost_equal(H0_new, H0, decimal=1)
         npt.assert_almost_equal(omega_m_new, omega_m, decimal=2)
 
-        #H0_new, omega_m_new = self.invertCosmo_default.get_cosmo(Dd, Ds_Dds)
-        #npt.assert_almost_equal(H0_new, H0, decimal=1)
-        #npt.assert_almost_equal(omega_m_new, omega_m, decimal=3)
+        # H0_new, omega_m_new = self.invertCosmo_default.get_cosmo(Dd, Ds_Dds)
+        # npt.assert_almost_equal(H0_new, H0, decimal=1)
+        # npt.assert_almost_equal(omega_m_new, omega_m, decimal=3)
 
         H0_new, omega_m_new = self.invertCosmo.get_cosmo(Dd=1, Ds_Dds=1)
         assert H0_new == -1

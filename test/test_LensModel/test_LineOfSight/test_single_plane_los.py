@@ -234,7 +234,7 @@ class TestSinglePlaneLOS(object):
         gamma2_ds = 0.03
 
         def d(z1, z2):
-            return cosmo.angular_diameter_distance_z1z2(z1, z2).to_value()
+            return cosmo.angular_diameter_distance(z1, z2).to_value()
 
         # conversion of linear LOS shears to lenstronomy convention
         gamma1_f = gamma1_od * (

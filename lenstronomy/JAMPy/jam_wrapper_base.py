@@ -111,11 +111,18 @@ class JAMWrapperBase(object):
         # convert to units of M_sun / pc^2
         surf_mass *= self.cosmo.epsilon_crit * 1e-12
 
+        _, q_lum = ellipticity2phi_q(*self._extract_ellipticity(kwargs_light))
+        _, q_mass = ellipticity2phi_q(*self._extract_ellipticity(kwargs_mass))
+
+        if self.axisymmetric:
+            # convert from product-average ellipticity definition to major axis
+            sigma_lum = sigma_lum / np.sqrt(q_lum)
+            sigma_mass = sigma_mass / np.sqrt(q_mass)
+
         beta = self._anisotropy.jampy_params(kwargs_anisotropy)
         if not self._anisotropy.use_logistic:
             beta = beta * np.ones_like(surf_lum)
-        _, q_lum = ellipticity2phi_q(*self._extract_ellipticity(kwargs_light))
-        _, q_mass = ellipticity2phi_q(*self._extract_ellipticity(kwargs_mass))
+
         if not convolved:
             psf_sigmas = 0.0
             delta_pix = 0.0

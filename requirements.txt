@@ -18,6 +18,7 @@ tqdm
 zeus-mcmc
 cobaya
 nautilus-sampler>=0.7
+tqdm
 
 
 schwimmbad>=0.3.2

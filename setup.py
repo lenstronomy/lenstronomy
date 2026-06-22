@@ -27,7 +27,7 @@ history = open("HISTORY.rst").read().replace(".. :changelog:", "")
 desc = open("README.rst").read()
 requires = [
     "numpy>=1.13",
-    "scipy>=0.19.1",
+    "scipy>=0.19.1,<1.18.0",
     "configparser",
     "astropy",
     "mpmath",

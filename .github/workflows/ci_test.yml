@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.version }}
+  cancel-in-progress: false
+
 jobs:
   build:
 

@@ -27,7 +27,7 @@ history = open("HISTORY.rst").read().replace(".. :changelog:", "")
 desc = open("README.rst").read()
 requires = [
     "numpy>=1.13",
-    "scipy>=0.19.1",
+    "scipy>=0.19.1,<1.18.0",
     "configparser",
     "astropy",
     "mpmath",
@@ -41,7 +41,7 @@ requires = [
     "pyxdg",
     "schwimmbad",
     "multiprocess>=0.70.8",
-    "jampy",
+    "jampy<9.0.0",
     "mgefit",  # required by jampy
 ]
 tests_require = [
@@ -85,8 +85,9 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
     tests_require=tests_require,
 )

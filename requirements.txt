@@ -1,6 +1,6 @@
 numpy
 astropy
-scipy>=0.19.1
+scipy>=0.19.1, <1.18.0
 mpmath
 emcee>=3.0.0
 matplotlib

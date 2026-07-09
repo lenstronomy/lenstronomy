@@ -28,5 +28,5 @@ Module contents
 
 .. automodule:: lenstronomy
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

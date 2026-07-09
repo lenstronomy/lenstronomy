@@ -476,3 +476,7 @@ History
 * Minor changes in parameter namings
 * improved JamPy integration
 * Improved Euclid configurations
+
+1.14.2 (2026-07-09)
++++++++++++++++++++
+* Minor numerics stability improvements

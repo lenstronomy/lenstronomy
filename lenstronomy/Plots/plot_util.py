@@ -705,6 +705,6 @@ def cmap_conf(cmap_string):
         cmap = cmap_string
     # cmap_new = cmap.copy()
     cmap_new = copy.deepcopy(cmap)
-    cmap_new.set_bad(color="k", alpha=1.0)
-    cmap_new.set_under("k")
+    cmap_new.with_extremes(bad="k")
+    cmap_new.with_extremes(under="k")
     return cmap_new

@@ -55,7 +55,7 @@ def magnitude2cps(magnitude, magnitude_zero_point):
     :return: counts per second of astronomical object
     """
     delta_m = magnitude - magnitude_zero_point
-    counts = 10 ** (-delta_m / 2.5)
+    counts = np.float_power(10, -delta_m / 2.5)
     return counts
 
 

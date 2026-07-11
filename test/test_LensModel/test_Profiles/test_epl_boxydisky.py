@@ -186,7 +186,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                             kwargs_multipole = {
                                 "m": 4,
                                 "a_m": a4_a * theta_E,
-                                "varphi_m": 0.,
+                                "varphi_m": 0.0,
                                 "q": q,
                                 "phi_ref": phi,
                             }
@@ -223,7 +223,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                             kwargs_multipole = {
                                 "m": 4,
                                 "a_m": a4_a * theta_E,
-                                "varphi_m": 0.,
+                                "varphi_m": 0.0,
                                 "q": q,
                                 "phi_ref": phi,
                             }
@@ -266,7 +266,7 @@ class TestEPL_BOXYDISKY_ELL(object):
                             kwargs_multipole = {
                                 "m": 4,
                                 "a_m": a4_a * theta_E,
-                                "varphi_m": 0.,
+                                "varphi_m": 0.0,
                                 "q": q,
                                 "phi_ref": phi,
                             }

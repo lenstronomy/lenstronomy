@@ -159,13 +159,22 @@ class EllipticalMultipole(LensProfileBase):
 
     m : int, multipole order, (m=1, m=3 or m=4)
     a_m : float, multipole strength
-    varphi_m : float, multipole orientation in radians 
+    varphi_m : float, multipole orientation in radians
                 (NB: this is NOT a polar angle, but the eccentric anomaly relative to the semi-major axis of the reference ellipses)
     q : axis ratio of the reference ellipses
     phi_ref : position angle (polar coordinates) of the reference ellipses
     """
 
-    param_names = ["m", "a_m", "varphi_m", "q", "phi_ref", "center_x", "center_y", "r_E"]
+    param_names = [
+        "m",
+        "a_m",
+        "varphi_m",
+        "q",
+        "phi_ref",
+        "center_x",
+        "center_y",
+        "r_E",
+    ]
 
     lower_limit_default = {
         "m": 1,
@@ -188,8 +197,9 @@ class EllipticalMultipole(LensProfileBase):
         "r_E": 100,
     }
 
-
-    def function(self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1):
+    def function(
+        self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1
+    ):
         """Lensing potential of multipole contribution (for 1 component with m=1, m=3 or
         m=4)
 
@@ -197,10 +207,11 @@ class EllipticalMultipole(LensProfileBase):
         :param y: y-coordinate to evaluate function
         :param m: int, multipole order (m=1, m=3 or m=4)
         :param a_m: float, multipole strength
-        :param varphi_m: float, multipole orientation in radian (eccentric anomaly relative to the semi-major axis of the reference ellipses)
+        :param varphi_m: float, multipole orientation in radian (eccentric anomaly
+            relative to the semi-major axis of the reference ellipses)
         :param q : float, axis ratio of the reference ellipses
         :param phi_ref : position angle (polar coordinates) of the reference ellipses
-        :param center_x: x-position 
+        :param center_x: x-position
         :param center_y: y-position
         :param r_E: float, normalizing radius (only used for odd m, Einstein radius by
             default)
@@ -209,7 +220,7 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
-        phi -= phi_ref #rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
+        phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
@@ -262,14 +273,17 @@ class EllipticalMultipole(LensProfileBase):
 
         return f_
 
-    def derivatives(self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1):
+    def derivatives(
+        self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1
+    ):
         """Deflection of a multipole contribution (for 1 component with m=1, m=3 or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
         :param m: int, multipole order (m=1, m=3 or m=4)
         :param a_m: float, multipole strength
-        :param varphi_m: float, multipole orientation in radian (eccentric anomaly relative to the semi-major axis of the reference ellipses)
+        :param varphi_m: float, multipole orientation in radian (eccentric anomaly
+            relative to the semi-major axis of the reference ellipses)
         :param q : float, axis ratio of the reference ellipses
         :param phi_ref : position angle (polar coordinates) of the reference ellipses
         :param center_x: x-position
@@ -281,7 +295,7 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
-        phi -= phi_ref #rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
+        phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
@@ -347,18 +361,23 @@ class EllipticalMultipole(LensProfileBase):
                     "Implementation of multipoles perturbation for general axis ratio q only available for m=1, m=3 or m=4."
                 )
 
-        f_x_, f_y_ = util.rotate(f_x, f_y, -phi_ref) #rotate back to the original coordinate system
-        
+        f_x_, f_y_ = util.rotate(
+            f_x, f_y, -phi_ref
+        )  # rotate back to the original coordinate system
+
         return f_x_, f_y_
 
-    def hessian(self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1):
+    def hessian(
+        self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1
+    ):
         """Hessian of a multipole contribution (for 1 component with m=1, m=3 or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
         :param m: int, multipole order (m=1, m=3 or m=4)
         :param a_m: float, multipole strength
-        :param varphi_m: float, multipole orientation in radian (eccentric anomaly relative to the semi-major axis of the reference ellipses)
+        :param varphi_m: float, multipole orientation in radian (eccentric anomaly
+            relative to the semi-major axis of the reference ellipses)
         :param q : float, axis ratio of the reference ellipses
         :param phi_ref : position angle (polar coordinates) of the reference ellipses
         :param center_x: x-position
@@ -369,7 +388,7 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
-        phi -= phi_ref #rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
+        phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
@@ -454,10 +473,18 @@ class EllipticalMultipole(LensProfileBase):
                     "Implementation of multipoles perturbation for general axis ratio q only available for m=1, m=3 or m=4."
                 )
 
-        #rotate back to the original coordinate system
-        f_xx_ = np.cos(phi_ref) **2 * f_xx - np.sin(2 * phi_ref) * f_xy + np.sin(phi_ref) **2 * f_yy
+        # rotate back to the original coordinate system
+        f_xx_ = (
+            np.cos(phi_ref) ** 2 * f_xx
+            - np.sin(2 * phi_ref) * f_xy
+            + np.sin(phi_ref) ** 2 * f_yy
+        )
         f_xy_ = np.cos(2 * phi_ref) * f_xy + np.sin(2 * phi_ref) * (f_xx - f_yy) / 2
-        f_yy_ = np.sin(phi_ref) **2 * f_xx + np.sin(2 * phi_ref) * f_xy + np.cos(phi_ref) **2 * f_yy
+        f_yy_ = (
+            np.sin(phi_ref) ** 2 * f_xx
+            + np.sin(2 * phi_ref) * f_xy
+            + np.cos(phi_ref) ** 2 * f_yy
+        )
         return f_xx_, f_xy_, f_xy_, f_yy_
 
 

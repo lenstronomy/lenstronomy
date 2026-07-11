@@ -84,7 +84,7 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
         kwargs_multipole = {
             "m": self._m,
             "a_m": a4_a * theta_E,
-            "varphi_m": 0, #perturbation aligned with reference ellipse
+            "varphi_m": 0,  # perturbation aligned with reference ellipse
             "q": q,
             "phi_ref": phi,
             "center_x": center_x,

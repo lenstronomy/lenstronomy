@@ -1,9 +1,11 @@
 __author__ = "dangilman"
 
+import numpy as np
 import numpy.testing as npt
 import pytest
 import copy
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.epl_multipole_m1m3m4 import (
     EPL_MULTIPOLE_M1M3M4,
     EPL_MULTIPOLE_M1M3M4_ELL,

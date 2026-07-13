@@ -225,8 +225,10 @@ class TestEllipticalMultipole(object):
         xx_rot, yy_rot = rr * np.cos(phi - phi_rot_test), rr * np.sin(
             phi - phi_rot_test
         )  # coordinates in non-rotated frame
-        f_x_nonrot, f_y_nonrot = self.Multipole.derivatives(  # values in non-rotated frame
-            xx_nonrot, yy_nonrot, m, a_m, varphi_m, q, phi_ref=phi_rot_test
+        f_x_nonrot, f_y_nonrot = (
+            self.Multipole.derivatives(  # values in non-rotated frame
+                xx_nonrot, yy_nonrot, m, a_m, varphi_m, q, phi_ref=phi_rot_test
+            )
         )
         f_x_rot, f_y_rot = self.Multipole.derivatives(  # values in rotated frame
             xx_rot, yy_rot, m, a_m, varphi_m, q, phi_ref=0.0

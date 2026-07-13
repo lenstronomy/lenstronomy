@@ -11,7 +11,7 @@ import numpy.testing as npt
 
 
 class TestMultipole(object):
-    """Tests the Gaussian methods."""
+    """Tests the (circular) Multipole class."""
 
     def setup_method(self):
         self.Multipole = Multipole()
@@ -121,7 +121,7 @@ class TestMultipole(object):
 
 
 class TestEllipticalMultipole(object):
-    """Tests the Gaussian methods."""
+    """Tests the EllipticalMultipole class."""
 
     def setup_method(self):
         self.Multipole = EllipticalMultipole()
@@ -225,10 +225,10 @@ class TestEllipticalMultipole(object):
         xx_rot, yy_rot = rr * np.cos(phi - phi_rot_test), rr * np.sin(
             phi - phi_rot_test
         )  # coordinates in non-rotated frame
-        f_x_nonrot, f_y_nonrot = Multipole.derivatives(  # values in non-rotated frame
+        f_x_nonrot, f_y_nonrot = self.Multipole.derivatives(  # values in non-rotated frame
             xx_nonrot, yy_nonrot, m, a_m, varphi_m, q, phi_ref=phi_rot_test
         )
-        f_x_rot, f_y_rot = Multipole.derivatives(  # values in rotated frame
+        f_x_rot, f_y_rot = self.Multipole.derivatives(  # values in rotated frame
             xx_rot, yy_rot, m, a_m, varphi_m, q, phi_ref=0.0
         )
         f_x_rerot, f_y_rerot = util.rotate(f_x_nonrot, f_y_nonrot, phi_rot_test)
@@ -329,12 +329,12 @@ class TestEllipticalMultipole(object):
             phi - phi_rot_test
         )  # coordinates in non-rotated frame
         f_xx_nonrot, f_xy_nonrot, f_yx_nonrot, f_yy_nonrot = (
-            Multipole.hessian(  # values in non-rotated frame
+            self.Multipole.hessian(  # values in non-rotated frame
                 xx_nonrot, yy_nonrot, m, a_m, varphi_m, q, phi_ref=phi_rot_test
             )
         )
         f_xx_rot, f_xy_rot, f_yx_rot, f_yy_rot = (
-            Multipole.hessian(  # values in rotated frame
+            self.Multipole.hessian(  # values in rotated frame
                 xx_rot, yy_rot, m, a_m, varphi_m, q, phi_ref=0.0
             )
         )

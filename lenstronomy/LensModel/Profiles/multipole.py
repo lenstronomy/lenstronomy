@@ -1,7 +1,8 @@
-__author__ = "lynevdv"
+__author__ = "lynevdv", "Hadrien-Pgnt"
 
 import numpy as np
 
+import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
@@ -158,16 +159,29 @@ class EllipticalMultipole(LensProfileBase):
 
     m : int, multipole order, (m=1, m=3 or m=4)
     a_m : float, multipole strength
-    phi_m : float, multipole orientation in radian
+    varphi_m : float, multipole orientation in radians
+                (NB: this is NOT a polar angle, but the eccentric anomaly relative to the semi-major axis of the reference ellipses)
     q : axis ratio of the reference ellipses
+    phi_ref : position angle (polar coordinates) of the reference ellipses
     """
 
-    param_names = ["m", "a_m", "phi_m", "q", "center_x", "center_y", "r_E"]
+    param_names = [
+        "m",
+        "a_m",
+        "varphi_m",
+        "q",
+        "phi_ref",
+        "center_x",
+        "center_y",
+        "r_E",
+    ]
+
     lower_limit_default = {
         "m": 1,
         "a_m": 0,
-        "phi_m": -np.pi,
+        "varphi_m": -np.pi,
         "q": 0.001,
+        "phi_ref": -np.pi,
         "center_x": -100,
         "center_y": -100,
         "r_E": 0,
@@ -175,14 +189,17 @@ class EllipticalMultipole(LensProfileBase):
     upper_limit_default = {
         "m": 100,
         "a_m": 100,
-        "phi_m": np.pi,
+        "varphi_m": np.pi,
         "q": 1,
+        "phi_ref": np.pi,
         "center_x": 100,
         "center_y": 100,
         "r_E": 100,
     }
 
-    def function(self, x, y, m, a_m, phi_m, q, center_x=0, center_y=0, r_E=1):
+    def function(
+        self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1
+    ):
         """Lensing potential of multipole contribution (for 1 component with m=1, m=3 or
         m=4)
 
@@ -190,7 +207,10 @@ class EllipticalMultipole(LensProfileBase):
         :param y: y-coordinate to evaluate function
         :param m: int, multipole order (m=1, m=3 or m=4)
         :param a_m: float, multipole strength
-        :param phi_m: float, multipole orientation in radian
+        :param varphi_m: float, multipole orientation in radian (eccentric anomaly
+            relative to the semi-major axis of the reference ellipses)
+        :param q : float, axis ratio of the reference ellipses
+        :param phi_ref : position angle (polar coordinates) of the reference ellipses
         :param center_x: x-position
         :param center_y: y-position
         :param r_E: float, normalizing radius (only used for odd m, Einstein radius by
@@ -200,13 +220,14 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
+        phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
         ):  # avoid numerical instability when q is too close to 1 by taking circular multipole solution
             sph_multipole = Multipole()
             f_ = sph_multipole.function(
-                x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
+                x, y, m, a_m, varphi_m, center_x=center_x, center_y=center_y, r_E=r_E
             )
 
         else:
@@ -215,9 +236,9 @@ class EllipticalMultipole(LensProfileBase):
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * _potential_m1_1(r, phi, q, r_E)
+                        np.cos(m * varphi_m) * _potential_m1_1(r, phi, q, r_E)
                         - (1 / q)
-                        * np.sin(m * phi_m)
+                        * np.sin(m * varphi_m)
                         * _potential_m1_1(r, phi + np.pi / 2, 1 / q, r_E)
                     )
                 )
@@ -227,9 +248,9 @@ class EllipticalMultipole(LensProfileBase):
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * _potential_m3_1(r, phi, q, r_E)
+                        np.cos(m * varphi_m) * _potential_m3_1(r, phi, q, r_E)
                         + (1 / q)
-                        * np.sin(m * phi_m)
+                        * np.sin(m * varphi_m)
                         * _potential_m3_1(r, phi + np.pi / 2, 1 / q, r_E)
                     )
                 )
@@ -240,8 +261,8 @@ class EllipticalMultipole(LensProfileBase):
                     * np.sqrt(q)
                     * r
                     * (
-                        _F_m4_1(phi, q=q) * np.cos(m * phi_m)
-                        + _F_m4_2(phi, q=q) * np.sin(m * phi_m)
+                        _F_m4_1(phi, q=q) * np.cos(m * varphi_m)
+                        + _F_m4_2(phi, q=q) * np.sin(m * varphi_m)
                     )
                 )
 
@@ -252,14 +273,19 @@ class EllipticalMultipole(LensProfileBase):
 
         return f_
 
-    def derivatives(self, x, y, m, a_m, phi_m, q, center_x=0, center_y=0, r_E=1):
+    def derivatives(
+        self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1
+    ):
         """Deflection of a multipole contribution (for 1 component with m=1, m=3 or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
         :param m: int, multipole order (m=1, m=3 or m=4)
         :param a_m: float, multipole strength
-        :param phi_m: float, multipole orientation in radian
+        :param varphi_m: float, multipole orientation in radian (eccentric anomaly
+            relative to the semi-major axis of the reference ellipses)
+        :param q : float, axis ratio of the reference ellipses
+        :param phi_ref : position angle (polar coordinates) of the reference ellipses
         :param center_x: x-position
         :param center_y: y-position
         :param r_E: float, normalizing radius (only used for odd m, Einstein radius by
@@ -269,13 +295,14 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
+        phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
         ):  # avoid numerical instability when q is too close to 1 by taking circular multipole solution
             sph_multipole = Multipole()
             f_x, f_y = sph_multipole.derivatives(
-                x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
+                x, y, m, a_m, varphi_m, center_x=center_x, center_y=center_y, r_E=r_E
             )
 
         else:
@@ -286,16 +313,16 @@ class EllipticalMultipole(LensProfileBase):
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * alpha_x_1
-                        - (1 / q) * np.sin(m * phi_m) * alpha_y_2
+                        np.cos(m * varphi_m) * alpha_x_1
+                        - (1 / q) * np.sin(m * varphi_m) * alpha_y_2
                     )
                 )
                 f_y = (
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * alpha_y_1
-                        + (1 / q) * np.sin(m * phi_m) * alpha_x_2
+                        np.cos(m * varphi_m) * alpha_y_1
+                        + (1 / q) * np.sin(m * varphi_m) * alpha_x_2
                     )
                 )
 
@@ -306,26 +333,26 @@ class EllipticalMultipole(LensProfileBase):
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * alpha_x_1
-                        + (1 / q) * np.sin(m * phi_m) * alpha_y_2
+                        np.cos(m * varphi_m) * alpha_x_1
+                        + (1 / q) * np.sin(m * varphi_m) * alpha_y_2
                     )
                 )
                 f_y = (
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * alpha_y_1
-                        - (1 / q) * np.sin(m * phi_m) * alpha_x_2
+                        np.cos(m * varphi_m) * alpha_y_1
+                        - (1 / q) * np.sin(m * varphi_m) * alpha_x_2
                     )
                 )
 
             elif m == 4:
-                F_m4 = _F_m4_1(phi, q=q) * np.cos(m * phi_m) + _F_m4_2(
+                F_m4 = _F_m4_1(phi, q=q) * np.cos(m * varphi_m) + _F_m4_2(
                     phi, q=q
-                ) * np.sin(m * phi_m)
+                ) * np.sin(m * varphi_m)
                 F_m4_prime = _F_m4_1_derivative(phi, q=q) * np.cos(
-                    m * phi_m
-                ) + _F_m4_2_derivative(phi, q=q) * np.sin(m * phi_m)
+                    m * varphi_m
+                ) + _F_m4_2_derivative(phi, q=q) * np.sin(m * varphi_m)
                 f_x = a_m * np.sqrt(q) * (F_m4 * np.cos(phi) - F_m4_prime * np.sin(phi))
                 f_y = a_m * np.sqrt(q) * (F_m4 * np.sin(phi) + F_m4_prime * np.cos(phi))
 
@@ -334,16 +361,25 @@ class EllipticalMultipole(LensProfileBase):
                     "Implementation of multipoles perturbation for general axis ratio q only available for m=1, m=3 or m=4."
                 )
 
-        return f_x, f_y
+        f_x_, f_y_ = util.rotate(
+            f_x, f_y, -phi_ref
+        )  # rotate back to the original coordinate system
 
-    def hessian(self, x, y, m, a_m, phi_m, q, center_x=0, center_y=0, r_E=1):
+        return f_x_, f_y_
+
+    def hessian(
+        self, x, y, m, a_m, varphi_m, q, phi_ref, center_x=0, center_y=0, r_E=1
+    ):
         """Hessian of a multipole contribution (for 1 component with m=1, m=3 or m=4)
 
         :param x: x-coordinate to evaluate function
         :param y: y-coordinate to evaluate function
         :param m: int, multipole order (m=1, m=3 or m=4)
         :param a_m: float, multipole strength
-        :param phi_m: float, multipole orientation in radian
+        :param varphi_m: float, multipole orientation in radian (eccentric anomaly
+            relative to the semi-major axis of the reference ellipses)
+        :param q : float, axis ratio of the reference ellipses
+        :param phi_ref : position angle (polar coordinates) of the reference ellipses
         :param center_x: x-position
         :param center_y: y-position
         :param r_E: float, normalizing radius (not used for Hessian)
@@ -352,13 +388,14 @@ class EllipticalMultipole(LensProfileBase):
 
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
+        phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
 
         if (
             np.abs(1 - q**2) ** ((m + 1) / 2) < 1e-8
         ):  # avoid numerical instability when q is too close to 1 by taking circular multipole solution
             sph_multipole = Multipole()
             f_xx, f_xy, f_xy, f_yy = sph_multipole.hessian(
-                x, y, m, a_m, phi_m, center_x=center_x, center_y=center_y, r_E=r_E
+                x, y, m, a_m, varphi_m, center_x=center_x, center_y=center_y, r_E=r_E
             )
 
         else:
@@ -371,24 +408,24 @@ class EllipticalMultipole(LensProfileBase):
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * d2psi_dx2_1
-                        - (1 / q) * np.sin(m * phi_m) * d2psi_dy2_2
+                        np.cos(m * varphi_m) * d2psi_dx2_1
+                        - (1 / q) * np.sin(m * varphi_m) * d2psi_dy2_2
                     )
                 )
                 f_yy = (
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * d2psi_dy2_1
-                        - (1 / q) * np.sin(m * phi_m) * d2psi_dx2_2
+                        np.cos(m * varphi_m) * d2psi_dy2_1
+                        - (1 / q) * np.sin(m * varphi_m) * d2psi_dx2_2
                     )
                 )
                 f_xy = (
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * d2psi_dxdy_1
-                        + (1 / q) * np.sin(m * phi_m) * d2psi_dxdy_2
+                        np.cos(m * varphi_m) * d2psi_dxdy_1
+                        + (1 / q) * np.sin(m * varphi_m) * d2psi_dxdy_2
                     )
                 )
 
@@ -401,24 +438,24 @@ class EllipticalMultipole(LensProfileBase):
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * d2psi_dx2_1
-                        + (1 / q) * np.sin(m * phi_m) * d2psi_dy2_2
+                        np.cos(m * varphi_m) * d2psi_dx2_1
+                        + (1 / q) * np.sin(m * varphi_m) * d2psi_dy2_2
                     )
                 )
                 f_yy = (
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * d2psi_dy2_1
-                        + (1 / q) * np.sin(m * phi_m) * d2psi_dx2_2
+                        np.cos(m * varphi_m) * d2psi_dy2_1
+                        + (1 / q) * np.sin(m * varphi_m) * d2psi_dx2_2
                     )
                 )
                 f_xy = (
                     a_m
                     * np.sqrt(q)
                     * (
-                        np.cos(m * phi_m) * d2psi_dxdy_1
-                        - (1 / q) * np.sin(m * phi_m) * d2psi_dxdy_2
+                        np.cos(m * varphi_m) * d2psi_dxdy_1
+                        - (1 / q) * np.sin(m * varphi_m) * d2psi_dxdy_2
                     )
                 )
 
@@ -426,7 +463,7 @@ class EllipticalMultipole(LensProfileBase):
                 phi_ell = np.angle(q * r * np.cos(phi) + 1j * r * np.sin(phi))
                 R = np.sqrt(q * (r * np.cos(phi)) ** 2 + (r * np.sin(phi)) ** 2 / q)
 
-                delta_r = a_m * np.cos(m * (phi_ell - phi_m)) * r / R
+                delta_r = a_m * np.cos(m * (phi_ell - varphi_m)) * r / R
                 f_xx = np.sin(phi) ** 2 * delta_r / r
                 f_yy = np.cos(phi) ** 2 * delta_r / r
                 f_xy = -np.sin(phi) * np.cos(phi) * delta_r / r
@@ -436,7 +473,19 @@ class EllipticalMultipole(LensProfileBase):
                     "Implementation of multipoles perturbation for general axis ratio q only available for m=1, m=3 or m=4."
                 )
 
-        return f_xx, f_xy, f_xy, f_yy
+        # rotate back to the original coordinate system
+        f_xx_ = (
+            np.cos(phi_ref) ** 2 * f_xx
+            - np.sin(2 * phi_ref) * f_xy
+            + np.sin(phi_ref) ** 2 * f_yy
+        )
+        f_xy_ = np.cos(2 * phi_ref) * f_xy + np.sin(2 * phi_ref) * (f_xx - f_yy) / 2
+        f_yy_ = (
+            np.sin(phi_ref) ** 2 * f_xx
+            + np.sin(2 * phi_ref) * f_xy
+            + np.cos(phi_ref) ** 2 * f_yy
+        )
+        return f_xx_, f_xy_, f_xy_, f_yy_
 
 
 def _phi_ell(phi, q):

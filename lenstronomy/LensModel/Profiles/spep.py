@@ -108,7 +108,6 @@ class SPEP(LensProfileBase):
         :param center_y: profile center
         :return: alpha_x, alpha_y
         """
-
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
@@ -151,7 +150,6 @@ class SPEP(LensProfileBase):
         :param center_y: profile center
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
@@ -231,8 +229,9 @@ class SPEP(LensProfileBase):
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: radius within the mass is computed
@@ -252,7 +251,6 @@ class SPEP(LensProfileBase):
         :param q: axis ratio
         :return: bounded :math:`\gamma` and :math:`q`
         """
-
         if gamma < 1.4:
             gamma = 1.4
         if gamma > 2.9:

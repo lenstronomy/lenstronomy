@@ -45,7 +45,6 @@ class PointSourceVariability(object):
         :param kwargs_lens_light_mag:
         :param kwargs_ps_mag:
         """
-
         # create background SimAPI class instance
         sim_api_bkg = SimAPI(num_pix, kwargs_single_band, kwargs_model)
         image_model_bkg = sim_api_bkg.image_model_class(kwargs_numerics)

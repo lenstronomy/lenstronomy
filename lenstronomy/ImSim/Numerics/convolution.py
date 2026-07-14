@@ -140,7 +140,7 @@ class PixelKernelConvolution(object):
         elif mode == "valid":
             return _centered(ret, s1 - s2 + 1)
         else:
-            raise ValueError("Acceptable mode flags are 'valid'," " 'same', or 'full'.")
+            raise ValueError("Acceptable mode flags are 'valid',"  " 'same', or 'full'.")
 
     def _static_pre_compute(self, image):
         """Pre-compute Fourier transformed kernel and shape quantities to speed up
@@ -242,7 +242,6 @@ class SubgridKernelConvolution(object):
         :param image: 2d array (high resoluton image) to be convolved and re-sized
         :return: convolved image
         """
-
         image_high_res_conv = self._high_res_conv.convolution2d(image)
         image_resized_conv = image_util.re_size(
             image_high_res_conv, self._supersampling_factor
@@ -384,7 +383,6 @@ class FWHMGaussianConvolution(object):
         :param image: 2d numpy array, image to be convolved
         :return: convolved image, 2d numpy array
         """
-
         image_conv = ndimage.filters.gaussian_filter(
             image, self._sigma, mode="nearest", truncate=self._truncation
         )

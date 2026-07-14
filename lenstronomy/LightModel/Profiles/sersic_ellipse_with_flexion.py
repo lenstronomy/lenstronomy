@@ -113,7 +113,6 @@ class SersicEllipseWithFlexion(SersicUtil):
         :param d2: imaginary part of the complex number d in the above formula
         :return: Sersic flexion profile value at (x, y)
         """
-
         R_sersic = np.maximum(0, R_sersic)
         b, c, d = b1 + 1j * b2, c1 + 1j * c2, d1 + 1j * d2
         z, center = x + 1j * y, center_x + 1j * center_y

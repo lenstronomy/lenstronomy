@@ -22,7 +22,6 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     :param order: interpolation order for sub-pixel shift of the kernel to be added
     :return: image with added layer, cut to original size
     """
-
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
     shift_x = x_int - x_pos
@@ -42,7 +41,6 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     :param kernel: the layer to be added to the image
     :return: image with added layer
     """
-
     k_rows, k_cols = np.shape(kernel)
     if k_rows % 2 == 0 or k_cols % 2 == 0:
         raise ValueError("kernel dimensions must be odd")
@@ -105,7 +103,6 @@ def add_poisson(image, exp_time):
     :param exp_time: exposure time
     :return: Poisson noise realization of input image
     """
-
     # Gaussian approximation for Poisson distribution, normalized to exposure time
     sigma = np.sqrt(np.abs(image) / exp_time)
     nx, ny = np.shape(image)
@@ -135,8 +132,9 @@ def shift_image(img, shift):
 
 @export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
-    """Resizes 2d array (i.e. image) to new coordinates. So far only works with square
-    output aligned with coordinate axis.
+    """Resizes 2d array (i.e. image) to new coordinates.
+
+    So far only works with square output aligned with coordinate axis.
 
     :param x_in:
     :param y_in:

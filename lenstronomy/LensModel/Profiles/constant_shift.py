@@ -22,7 +22,6 @@ class Shift(LensProfileBase):
         :param alpha_y: shift in y-direction (angle)
         :return: lensing potential
         """
-
         return np.zeros_like(x)
 
     def derivatives(self, x, y, alpha_x, alpha_y):

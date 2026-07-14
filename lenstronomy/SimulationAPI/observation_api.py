@@ -299,8 +299,10 @@ class SingleBand(Instrument, Observation):
         return noise
 
     def flux_iid(self, flux_per_second):
-        """IID counts. This can be used by lenstronomy to estimate the Poisson errors
-        keeping the assumption that the counts are IIDs (even if they are not).
+        """IID counts.
+
+        This can be used by lenstronomy to estimate the Poisson errors keeping the
+        assumption that the counts are IIDs (even if they are not).
 
         :param flux_per_second: flux count per second in the units set in this class
             (ADU or e-)

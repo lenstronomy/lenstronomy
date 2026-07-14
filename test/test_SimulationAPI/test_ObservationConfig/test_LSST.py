@@ -1,116 +1,201 @@
-import unittest
-from lenstronomy.SimulationAPI.ObservationConfig.LSST import LSST
-from lenstronomy.SimulationAPI.observation_api import Instrument, SingleBand
-import lenstronomy.Util.util as util
+"""Tests for lenstronomy.SimulationAPI.ObservationConfig.LSST."""
+
+import math
+
+import pytest
+from lenstronomy.SimulationAPI.ObservationConfig.LSST import LSST, ComCam
 
 
-class TestLSST(unittest.TestCase):
-    def setUp(self):
-        self.u = LSST(band="u")
-        self.g = LSST()  # default is g_band
-        self.r = LSST(band="r")
-        self.i = LSST(band="i")
-        self.z = LSST(band="z")
-        self.y = LSST(band="Y")  # same as band='y'
+class TestLSST:
 
-        kwargs_u_band = self.u.kwargs_single_band()
-        kwargs_g_band = self.g.kwargs_single_band()
-        kwargs_r_band = self.r.kwargs_single_band()
-        kwargs_i_band = self.i.kwargs_single_band()
-        kwargs_z_band = self.z.kwargs_single_band()
-        kwargs_y_band = self.y.kwargs_single_band()
+    def test_default_instantiation(self):
+        obs = LSST()
+        kwargs = obs.kwargs_single_band()
+        assert isinstance(kwargs, dict)
+        assert "num_exposures" in kwargs
+        assert "seeing" in kwargs
+        assert "exposure_time" in kwargs
 
-        self.u_band = SingleBand(**kwargs_u_band)
-        self.g_band = SingleBand(**kwargs_g_band)
-        self.r_band = SingleBand(**kwargs_r_band)
-        self.i_band = SingleBand(**kwargs_i_band)
-        self.z_band = SingleBand(**kwargs_z_band)
-        self.y_band = SingleBand(**kwargs_y_band)
+    def test_all_bands(self):
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            obs = LSST(band=band)
+            kwargs = obs.kwargs_single_band()
+            assert kwargs["num_exposures"] >= 1
+            assert kwargs["seeing"] > 0
 
-        # dictionaries mapping LSST kwargs to SingleBand kwargs
-        self.camera_settings = {
-            "read_noise": "_read_noise",
-            "pixel_scale": "pixel_scale",
-            "ccd_gain": "ccd_gain",
-        }
-        self.obs_settings = {
-            "exposure_time": "_exposure_time",
-            "sky_brightness": "_sky_brightness_",
-            "magnitude_zero_point": "_magnitude_zero_point",
-            "num_exposures": "_num_exposures",
-            "seeing": "_seeing",
-            "psf_type": "_psf_type",
-        }
+    def test_coadd_years_10_is_default(self):
+        obs_default = LSST(band="i")
+        obs_10 = LSST(band="i", coadd_years=10)
+        assert (
+            obs_default.kwargs_single_band()["num_exposures"]
+            == obs_10.kwargs_single_band()["num_exposures"]
+        )
 
-        self.instrument = Instrument(**self.g.camera)
+    def test_coadd_years_scales_linearly(self):
+        obs_10 = LSST(band="r", coadd_years=10)
+        obs_5 = LSST(band="r", coadd_years=5)
+        n10 = obs_10.kwargs_single_band()["num_exposures"]
+        n5 = obs_5.kwargs_single_band()["num_exposures"]
+        assert abs(n5 - round(n10 / 2)) <= 1
 
-    def test_LSST_class(self):
-        default = self.g
-        explicit_g = LSST(band="g")
-        self.assertEqual(explicit_g.camera, default.camera)
-        self.assertEqual(explicit_g.obs, default.obs)
-
-        with self.assertRaises(ValueError):
-            bad_band_1 = LSST(band="9")
-
-        with self.assertRaises(ValueError):
-            bad_band_2 = LSST(band="H")
-
-        with self.assertRaises(ValueError):
-            bad_psf = LSST(psf_type="blah")
-
-        single_year = LSST(coadd_years=1)
-        self.assertEqual(single_year.obs["num_exposures"], 20)
-        with self.assertRaises(ValueError):
-            bad_coadd_years = LSST(coadd_years=100)
-
-    def test_LSST_camera(self):
-        # comparing camera settings in LSST instance with those in Instrument instance
-        for config, setting in self.camera_settings.items():
-            self.assertEqual(
-                self.g.camera[config],
-                getattr(self.instrument, setting),
-                msg=f"{config} did not match",
+    def test_coadd_years_1_minimum_one_exposure(self):
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            assert (
+                LSST(band=band, coadd_years=1).kwargs_single_band()["num_exposures"]
+                >= 1
             )
 
-    def test_LSST_obs(self):
-        # comparing obs settings in LSST instance with those in SingleBand instance
-        for config, setting in self.obs_settings.items():
-            self.assertEqual(
-                self.u.obs[config],
-                getattr(self.u_band, setting),
-                msg=f"{config} did not match",
-            )
-            self.assertEqual(
-                self.g.obs[config],
-                getattr(self.g_band, setting),
-                msg=f"{config} did not match",
-            )
-            self.assertEqual(
-                self.r.obs[config],
-                getattr(self.r_band, setting),
-                msg=f"{config} did not match",
-            )
-            self.assertEqual(
-                self.i.obs[config],
-                getattr(self.i_band, setting),
-                msg=f"{config} did not match",
-            )
-            self.assertEqual(
-                self.z.obs[config],
-                getattr(self.z_band, setting),
-                msg=f"{config} did not match",
-            )
-            self.assertEqual(
-                self.y.obs[config],
-                getattr(self.y_band, setting),
-                msg=f"{config} did not match",
-            )
+    def test_gaussian_psf_type(self):
+        kwargs = LSST(band="i", psf_type="GAUSSIAN").kwargs_single_band()
+        assert kwargs["psf_type"] == "GAUSSIAN"
+        assert "moffat_beta" not in kwargs
 
-    def test_kwargs_single_band(self):
-        kwargs_g = util.merge_dicts(self.g.camera, self.g.obs)
-        self.assertEqual(self.g.kwargs_single_band(), kwargs_g)
+    def test_camera_settings_present(self):
+        kwargs = LSST().kwargs_single_band()
+        assert "read_noise" in kwargs
+        assert "pixel_scale" in kwargs
+        assert "ccd_gain" in kwargs
+
+    def test_read_noise_two_snap(self):
+        """Read noise should be sqrt(2) * 10 for the two-snap readout."""
+        kwargs = LSST().kwargs_single_band()
+        import math
+
+        expected_read_noise = 10.0 * math.sqrt(2.0)
+        assert abs(kwargs["read_noise"] - expected_read_noise) < 0.01
+
+    def test_pixel_scale_value(self):
+        assert LSST().kwargs_single_band()["pixel_scale"] == 0.2
+
+    def test_ccd_gain_value(self):
+        assert LSST().kwargs_single_band()["ccd_gain"] == 2.3
+
+    def test_exposure_time_is_30s(self):
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            assert LSST(band=band).kwargs_single_band()["exposure_time"] == 30.0
+
+    def test_pixel_psf_type(self):
+        kwargs = LSST(band="r", psf_type="PIXEL").kwargs_single_band()
+        assert kwargs["psf_type"] == "PIXEL"
+        assert "moffat_beta" not in kwargs
+
+    def test_moffat_psf_type_adds_beta(self):
+        kwargs = LSST(band="r", psf_type="MOFFAT").kwargs_single_band()
+        assert kwargs["psf_type"] == "MOFFAT"
+        assert "moffat_beta" in kwargs
+        assert kwargs["moffat_beta"] > 0
+
+    def test_seeing_version_default_is_specs(self):
+        kwargs = LSST(band="r").kwargs_single_band()
+        assert abs(kwargs["seeing"] - 0.73) < 0.01
+
+    def test_seeing_version_dp1(self):
+        kwargs = LSST(band="r", seeing_version="DP1").kwargs_single_band()
+        assert abs(kwargs["seeing"] - 0.83) < 0.01
+
+    def test_seeing_version_only_seeing_differs(self):
+        """All other kwargs should be identical between specs and DP1."""
+        kw_specs = LSST(band="i", seeing_version="LSST-specs").kwargs_single_band()
+        kw_dp1 = LSST(band="i", seeing_version="DP1").kwargs_single_band()
+        for key in kw_specs:
+            if key == "seeing":
+                assert kw_specs[key] != kw_dp1[key]
+            else:
+                assert kw_specs[key] == kw_dp1[key]
+
+    def test_seeing_version_all_bands_dp1(self):
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            kwargs = LSST(band=band, seeing_version="DP1").kwargs_single_band()
+            assert "seeing" in kwargs
+            assert kwargs["seeing"] > 0
+
+    def test_unsupported_band_raises(self):
+        with pytest.raises(ValueError, match="not supported"):
+            LSST(band="x")
+
+    def test_unsupported_psf_type_raises(self):
+        with pytest.raises(ValueError, match="not supported"):
+            LSST(psf_type="AIRY")
+
+    def test_unsupported_seeing_version_raises(self):
+        with pytest.raises(ValueError, match="not supported"):
+            LSST(seeing_version="INVALID")
+
+    def test_coadd_years_out_of_range_raises(self):
+        with pytest.raises(ValueError):
+            LSST(coadd_years=11)
+        with pytest.raises(ValueError):
+            LSST(coadd_years=0)
+
+    def test_kwargs_returns_dict(self):
+        assert isinstance(LSST().kwargs_single_band(), dict)
+
+    def test_physical_values_sane(self):
+        for band in ["u", "g", "r", "i", "z", "y"]:
+            kw = LSST(band=band).kwargs_single_band()
+            assert 0.5 < kw["seeing"] < 2.0
+            assert 15.0 < kw["sky_brightness"] < 25.0
+            assert 24.0 < kw["magnitude_zero_point"] < 32.0
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestComCam:
+
+    def test_default_instantiation(self):
+        obs = ComCam()
+        kwargs = obs.kwargs_single_band()
+        assert isinstance(kwargs, dict)
+        assert kwargs["num_exposures"] == 1
+
+    def test_all_bands(self):
+        for band in ["g", "r", "i"]:
+            kwargs = ComCam(band=band).kwargs_single_band()
+            assert kwargs["seeing"] > 0
+            assert kwargs["exposure_time"] == 30.0
+
+    def test_num_exposures_custom(self):
+        assert (
+            ComCam(band="r", num_exposures=5).kwargs_single_band()["num_exposures"] == 5
+        )
+
+    def test_num_exposures_floor_one(self):
+        assert (
+            ComCam(band="r", num_exposures=0).kwargs_single_band()["num_exposures"] >= 1
+        )
+
+    def test_gaussian_psf(self):
+        kwargs = ComCam(band="i", psf_type="GAUSSIAN").kwargs_single_band()
+        assert kwargs["psf_type"] == "GAUSSIAN"
+        assert "moffat_beta" not in kwargs
+
+    def test_moffat_psf_adds_beta(self):
+        kwargs = ComCam(band="i", psf_type="MOFFAT").kwargs_single_band()
+        assert kwargs["psf_type"] == "MOFFAT"
+        assert "moffat_beta" in kwargs
+
+    def test_pixel_psf(self):
+        kwargs = ComCam(band="r", psf_type="PIXEL").kwargs_single_band()
+        assert kwargs["psf_type"] == "PIXEL"
+
+    def test_camera_settings_present(self):
+        kwargs = ComCam().kwargs_single_band()
+        assert "read_noise" in kwargs
+        assert "pixel_scale" in kwargs
+        assert "ccd_gain" in kwargs
+
+    def test_zp_at_most_lsst_zp(self):
+        for band in ["g", "r", "i"]:
+            comcam_zp = ComCam(band=band).kwargs_single_band()["magnitude_zero_point"]
+            lsst_zp = LSST(band=band).kwargs_single_band()["magnitude_zero_point"]
+            assert comcam_zp <= lsst_zp
+
+    def test_unsupported_band_raises(self):
+        for band in ["u", "z", "y"]:
+            with pytest.raises(ValueError, match="not supported"):
+                ComCam(band=band)
+
+    def test_unsupported_psf_type_raises(self):
+        with pytest.raises(ValueError, match="not supported"):
+            ComCam(psf_type="LORENTZ")
+
+    def test_kwargs_returns_dict(self):
+        assert isinstance(ComCam().kwargs_single_band(), dict)

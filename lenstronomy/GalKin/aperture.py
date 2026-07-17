@@ -7,18 +7,25 @@ from lenstronomy.GalKin.aperture_types import (
     Frame,
     IFUGrid,
     IFUBinned,
+    GeneralAperture,
     downsample_values_to_bins,
 )
 
 __all__ = ["Aperture", "downsample_values_to_bins"]
 """Class that defines the aperture of the measurement (e.g. slit, integral field
-spectroscopy regions etc).
+spectroscopy regions etc). All apertures have optional kwargs delta_pix and
+padding_arcsec for psf convolution.
 
 Available aperture types:
 -------------------------
 
 'slit': length, width, center_ra, center_dec, angle
 'shell': r_in, r_out, center_ra, center_dec
+'frame': width_outer,  width_inner, center_ra, center_dec, angle
+'IFU_grid': x_grid, y_grid
+'IFU_shells': r_bins, center_ra, center_dec
+'IFU_binned': x_grid, y_grid, bins
+'general_aperture': x_cords, y_cords, bins
 """
 
 
@@ -44,6 +51,8 @@ class Aperture(object):
             self._aperture = IFUGrid(**kwargs_aperture)
         elif aperture_type == "IFU_binned":
             self._aperture = IFUBinned(**kwargs_aperture)
+        elif aperture_type == "general_aperture":
+            self._aperture = GeneralAperture(**kwargs_aperture)
         else:
             raise ValueError(
                 "aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. "

@@ -780,8 +780,8 @@ def downsample_values_to_bins(values, bins):
     :param bins: bin ids in the same shape as values
     :return: 1d array with binned values
     """
-    n_bins = int(np.max(bins)) + 1
-    binned_values = np.zeros(n_bins)
-    for n in range(n_bins):
-        binned_values[n] = np.mean(values[bins == n])
+    bin_ids = np.unique(bins[bins >= 0])
+    binned_values = np.zeros(len(bin_ids))
+    for i, b in enumerate(bin_ids):
+        binned_values[i] = np.mean(values[bins == b])
     return binned_values

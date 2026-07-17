@@ -78,8 +78,32 @@ class Anisotropy(object):
         if hasattr(self._model, "delete_cache"):
             self._model.delete_cache()
 
-    def jampy_params(self, kwargs):
-        return self._model.jampy_params(**kwargs)
+    def jampy_beta(self, kwargs, symmetry='spherical'):
+        """Returns the anisotropy parameter in the new Jampy spectral
+        method format. Either a constant anisotropy or a callable
+        beta(r, theta). Currently only a radial variation is supported.
+
+        :param kwargs: anisotropy model parameters
+        :param symmetry: either 'spherical' or 'axi_sph'
+        :return:
+        """
+        ani_params = self._model.jampy_params(**kwargs)
+        if symmetry == 'spherical':
+            return ani_params
+        elif symmetry == 'axi_sph':
+            if not self.use_logistic:
+                beta_const = ani_params
+                return beta_const
+            else:
+                r_ani, beta_0, beta_inf, alpha = ani_params
+                def beta_fun(r, theta):
+                    beta = beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
+                    beta_dtheta = 0
+                    return beta, beta_dtheta
+                return beta_fun
+        else:
+            raise ValueError("symmetry must be 'spherical' or 'axi_sph'")
+
 
     @property
     def type(self):

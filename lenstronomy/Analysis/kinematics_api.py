@@ -171,6 +171,8 @@ class KinematicsAPI(object):
                 )
         if axial_symmetry not in ["spherical", "axi_sph", "axi_cyl"]:
             raise ValueError(f"Axial symmetry option {axial_symmetry} not recognized.")
+        if axial_symmetry == "axi_cyl":
+            raise ValueError("axi_cyl was deprecated in favor of axi_sph.")
         if analytic_kinematics and (kinematics_backend == "jampy"):
             raise ValueError(
                 "Analytic kinematics not supported with the jampy backend."

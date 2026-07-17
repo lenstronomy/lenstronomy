@@ -386,77 +386,76 @@ class TestJAMWrapperBaseAxiSph(object):
         )
         npt.assert_allclose(IR_jam, IR_galkin, rtol=5e-2)
 
-
-# axi_cyl was deprecated with the latest Jampy release in favor of
-# a radially variable anisotropy
-# TODO: reimplement using the spectral method
-# class TestJAMWrapperBaseIsoAxiCyl(object):
-#
-#     def setup_method(self):
-#         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
-#         self.cosmo = LensCosmo(0.5, 1.2, cosmo=cosmo)
-#
-#         self.r_test = np.logspace(-1.5, 1.5, 100)  # arcsec
-#
-#         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 0.5}
-#         kwargs_cosmo = {
-#             "d_d": self.cosmo.dd,
-#             "d_s": self.cosmo.ds,
-#             "d_ds": self.cosmo.dds,
-#         }
-#         kwargs_numerics_lenstronomy = {
-#             "interpol_grid_num": 2000,
-#             "log_integration": True,
-#             "max_integrate": 1e3,
-#             "min_integrate": 1e-3,
-#         }
-#         kwargs_numerics_mge = {
-#             "mge_n_gauss": 50,
-#             "mge_min_r": 1e-4,
-#             "mge_max_r": 100,
-#             "mge_n_radial": 500,
-#             "mge_linear_solver": True,
-#         }
-#         kwargs_aperture = {  # not used in this test
-#             "aperture_type": "slit",
-#             "length": 3,
-#             "width": 0.2,
-#         }
-#         kwargs_model_galkin = {
-#             "mass_profile_list": ["SPP"],
-#             "light_profile_list": ["HERNQUIST"],
-#             "anisotropy_model": "const",
-#         }
-#         kwargs_model_jampy = {
-#             "mass_profile_list": ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"],
-#             "light_profile_list": ["MULTI_GAUSSIAN_ELLIPSE"],
-#             "anisotropy_model": "const",
-#             "symmetry": "axi_cyl",
-#         }
-#         self.jam_spherical = JAMWrapperBase(
-#             kwargs_model=kwargs_model_jampy,
-#             kwargs_cosmo=kwargs_cosmo,
-#             # kwargs_numerics=kwargs_numerics_mge,
-#         )
-#         self.kwargs_light = [{"Rs": 0.5, "amp": 1.0}]
-#         self.kwargs_lens_mass = [{"theta_E": 1.0, "gamma": 2.1}]
-#         self.kwargs_anisotropy = {"beta": 0.0}
-#
-#         self.galkin = Galkin(
-#             kwargs_model=kwargs_model_galkin,
-#             kwargs_aperture=kwargs_aperture,
-#             kwargs_psf=kwargs_psf,
-#             kwargs_cosmo=kwargs_cosmo,
-#             kwargs_numerics=kwargs_numerics_lenstronomy,
-#             analytic_kinematics=False,
-#         )
-#
-#         light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
-#         amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
-#         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
-#         mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
-#         amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
-#         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
+    # axi_cyl was deprecated with the latest Jampy release in favor of
+    # a radially variable anisotropy
+    # TODO: reimplement using the spectral method
+    # class TestJAMWrapperBaseIsoAxiCyl(object):
+    #
+    #     def setup_method(self):
+    #         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+    #         self.cosmo = LensCosmo(0.5, 1.2, cosmo=cosmo)
+    #
+    #         self.r_test = np.logspace(-1.5, 1.5, 100)  # arcsec
+    #
+    #         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": 0.5}
+    #         kwargs_cosmo = {
+    #             "d_d": self.cosmo.dd,
+    #             "d_s": self.cosmo.ds,
+    #             "d_ds": self.cosmo.dds,
+    #         }
+    #         kwargs_numerics_lenstronomy = {
+    #             "interpol_grid_num": 2000,
+    #             "log_integration": True,
+    #             "max_integrate": 1e3,
+    #             "min_integrate": 1e-3,
+    #         }
+    #         kwargs_numerics_mge = {
+    #             "mge_n_gauss": 50,
+    #             "mge_min_r": 1e-4,
+    #             "mge_max_r": 100,
+    #             "mge_n_radial": 500,
+    #             "mge_linear_solver": True,
+    #         }
+    #         kwargs_aperture = {  # not used in this test
+    #             "aperture_type": "slit",
+    #             "length": 3,
+    #             "width": 0.2,
+    #         }
+    #         kwargs_model_galkin = {
+    #             "mass_profile_list": ["SPP"],
+    #             "light_profile_list": ["HERNQUIST"],
+    #             "anisotropy_model": "const",
+    #         }
+    #         kwargs_model_jampy = {
+    #             "mass_profile_list": ["MULTI_GAUSSIAN_ELLIPSE_KAPPA"],
+    #             "light_profile_list": ["MULTI_GAUSSIAN_ELLIPSE"],
+    #             "anisotropy_model": "const",
+    #             "symmetry": "axi_cyl",
+    #         }
+    #         self.jam_spherical = JAMWrapperBase(
+    #             kwargs_model=kwargs_model_jampy,
+    #             kwargs_cosmo=kwargs_cosmo,
+    #             # kwargs_numerics=kwargs_numerics_mge,
+    #         )
+    #         self.kwargs_light = [{"Rs": 0.5, "amp": 1.0}]
+    #         self.kwargs_lens_mass = [{"theta_E": 1.0, "gamma": 2.1}]
+    #         self.kwargs_anisotropy = {"beta": 0.0}
+    #
+    #         self.galkin = Galkin(
+    #             kwargs_model=kwargs_model_galkin,
+    #             kwargs_aperture=kwargs_aperture,
+    #             kwargs_psf=kwargs_psf,
+    #             kwargs_cosmo=kwargs_cosmo,
+    #             kwargs_numerics=kwargs_numerics_lenstronomy,
+    #             analytic_kinematics=False,
+    #         )
+    #
+    #         light_mge = MGELight(kwargs_model_galkin["light_profile_list"], {"n_comp": 50})
+    #         amp_l, sigma_l = light_mge.mge_fit(self.kwargs_light)
+    #         self.kwargs_light_mge = [{"amp": amp_l, "sigma": sigma_l}]
+    #         mass_mge = MGEMass(kwargs_model_galkin["mass_profile_list"], {"n_comp": 50})
+    #         amp_m, sigma_m = mass_mge.mge_fit(self.kwargs_lens_mass)
+    #         self.kwargs_mass_mge = [{"amp": amp_m, "sigma": sigma_m}]
 
     def test_dispersion_points_unconvolved(self):
         sigma_v_jam, IR_jam = self.jam_spherical.dispersion_points(

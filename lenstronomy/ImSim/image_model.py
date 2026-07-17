@@ -192,15 +192,16 @@ class ImageModel(object):
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         return logL
 
-    def variance_map(self,
-                     kwargs_lens=None,
-                     kwargs_source=None,
-                     kwargs_lens_light=None,
-                     kwargs_ps=None,
-                     kwargs_extinction=None,
-                     kwargs_special=None,):
-        """
-        map of uncertainty variances per pixel for the given model
+    def variance_map(
+        self,
+        kwargs_lens=None,
+        kwargs_source=None,
+        kwargs_lens_light=None,
+        kwargs_ps=None,
+        kwargs_extinction=None,
+        kwargs_special=None,
+    ):
+        """Map of uncertainty variances per pixel for the given model.
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition
             of different lens profiles
@@ -228,7 +229,7 @@ class ImageModel(object):
             kwargs_lens, kwargs_ps=kwargs_ps, kwargs_special=kwargs_special
         )
         c_d = self.Data.C_D_model(im_sim)
-        variance_map = (c_d + np.abs(model_error))
+        variance_map = c_d + np.abs(model_error)
         return variance_map
 
     def source_surface_brightness(

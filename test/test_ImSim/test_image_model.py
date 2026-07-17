@@ -227,8 +227,12 @@ class TestImageModel(object):
             self.kwargs_ps,
             no_noise=True,
         )
-        variances = self.imageModel.variance_map(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                                 kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps)
+        variances = self.imageModel.variance_map(
+            kwargs_lens=self.kwargs_lens,
+            kwargs_source=self.kwargs_source,
+            kwargs_lens_light=self.kwargs_lens_light,
+            kwargs_ps=self.kwargs_ps,
+        )
 
         data = self.imageModel.Data.data
 
@@ -236,12 +240,13 @@ class TestImageModel(object):
             self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_special=None
         )
 
-        reduced_residuals = self.imageModel.reduced_residuals(model, error_map=model_error)
+        reduced_residuals = self.imageModel.reduced_residuals(
+            model, error_map=model_error
+        )
 
         reduced_residuals_new = (data - model) / np.sqrt(variances)
 
         npt.assert_almost_equal(reduced_residuals, reduced_residuals_new, decimal=3)
-
 
     def test_numData_evaluate(self):
         numData = self.imageModel.num_data_evaluate

@@ -114,6 +114,7 @@ class TestAperture(object):
         assert bool is True
         assert i == 3
 
+
 class TestRaise(unittest.TestCase):
     def test_raise(self):
         with self.assertRaises(ValueError):

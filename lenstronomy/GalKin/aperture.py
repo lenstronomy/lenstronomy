@@ -13,8 +13,8 @@ from lenstronomy.GalKin.aperture_types import (
 
 __all__ = ["Aperture", "downsample_values_to_bins"]
 """Class that defines the aperture of the measurement (e.g. slit, integral field
-spectroscopy regions etc). 
-All apertures have optional kwargs delta_pix and padding_arcsec for psf convolution
+spectroscopy regions etc). All apertures have optional kwargs delta_pix and
+padding_arcsec for psf convolution.
 
 Available aperture types:
 -------------------------

@@ -45,7 +45,7 @@ class Background(object):
         :param z_source: source redshift
         :return: angular diameter distance in units of Mpc
         """
-        D_xy = self.cosmo.angular_diameter_distance_z1z2(z_observer, z_source)
+        D_xy = self.cosmo.angular_diameter_distance(z_observer, z_source)
         return D_xy.value
 
     def ddt(self, z_lens, z_source):
@@ -105,10 +105,10 @@ class Background(object):
         """
         if z_source_1 == z_source_2:
             return 1
-        ds1 = self.cosmo.angular_diameter_distance(z=z_source_1).value
-        dds1 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_1).value
-        ds2 = self.cosmo.angular_diameter_distance(z=z_source_2).value
-        dds2 = self.cosmo.angular_diameter_distance_z1z2(z1=z_lens, z2=z_source_2).value
+        ds1 = self.cosmo.angular_diameter_distance(z_source_1).value
+        dds1 = self.cosmo.angular_diameter_distance(z_lens, z_source_1).value
+        ds2 = self.cosmo.angular_diameter_distance(z_source_2).value
+        dds2 = self.cosmo.angular_diameter_distance(z_lens, z_source_2).value
         beta = dds1 / ds1 * ds2 / dds2
         return beta
 

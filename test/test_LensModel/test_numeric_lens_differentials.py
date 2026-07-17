@@ -466,8 +466,9 @@ class TestNumericsProfile(object):
         kwargs = {
             "m": 4,
             "a_m": 0.05,
-            "phi_m": 0.1,
+            "varphi_m": 0.1,
             "q": 0.6,
+            "phi_ref": np.pi / 13,
             "center_x": 0.01,
             "center_y": 0.5,
         }
@@ -476,8 +477,9 @@ class TestNumericsProfile(object):
         kwargs = {
             "m": 3,
             "a_m": 0.07,
-            "phi_m": 0.2,
+            "varphi_m": 0.2,
             "q": 0.5,
+            "phi_ref": np.pi / 11,
             "center_x": -0.01,
             "center_y": -0.5,
             "r_E": 1.0,
@@ -488,8 +490,9 @@ class TestNumericsProfile(object):
         kwargs = {
             "m": 1,
             "a_m": 0.1,
-            "phi_m": 0.3,
+            "varphi_m": 0.3,
             "q": 0.5,
+            "phi_ref": np.pi / 7,
             "center_x": 0.0,
             "center_y": 0.0,
             "r_E": 1.0,

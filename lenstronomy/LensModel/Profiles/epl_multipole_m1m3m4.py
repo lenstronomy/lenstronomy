@@ -1,4 +1,4 @@
-__author__ = "dangilman"
+__author__ = "dangilman", "Hadrien-Pgnt"
 
 import numpy as np
 import lenstronomy.Util.param_util as param_util
@@ -91,17 +91,23 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
             shape related to the physical amplitude of the MULTIPOLE_ELL profile by a
             scaling theta_E
         :param delta_phi_m1: orientation of the m=1 multipole perturbation relative to
-            EPL
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m3: orientation of the m=3 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m4: orientation of the m=4 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param center_x: center of the profile
         :param center_y: center of the profile
         :return: the keyword arguments for the joint profile
@@ -119,8 +125,9 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         kwargs_multipole_m1 = {
             "m": 1,
             "a_m": a1_a * theta_E,
+            "varphi_m": delta_phi_m1,
             "q": q,
-            "phi_m": phi + delta_phi_m1,
+            "phi_ref": phi,
             "center_x": center_x,
             "center_y": center_y,
             "r_E": theta_E,
@@ -128,8 +135,9 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         kwargs_multipole_m3 = {
             "m": 3,
             "a_m": a3_a * theta_E,
+            "varphi_m": delta_phi_m3,
             "q": q,
-            "phi_m": phi + delta_phi_m3,
+            "phi_ref": phi,
             "center_x": center_x,
             "center_y": center_y,
             "r_E": theta_E,
@@ -137,8 +145,9 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
         kwargs_multipole_m4 = {
             "m": 4,
             "a_m": a4_a * theta_E,
+            "varphi_m": delta_phi_m4,
             "q": q,
-            "phi_m": phi + delta_phi_m4,
+            "phi_ref": phi,
             "center_x": center_x,
             "center_y": center_y,
         }
@@ -173,17 +182,23 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
             shape related to the physical amplitude of the MULTIPOLE_ELL profile by a
             scaling theta_E
         :param delta_phi_m1: orientation of the m=1 multipole perturbation relative to
-            EPL
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m3: orientation of the m=3 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m4: orientation of the m=4 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param center_x: center of the profile
         :param center_y: center of the profile
         :return: lensing potential.
@@ -240,17 +255,23 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
             shape related to the physical amplitude of the MULTIPOLE_ELL profile by a
             scaling theta_E
         :param delta_phi_m1: orientation of the m=1 multipole perturbation relative to
-            EPL
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m3: orientation of the m=3 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m4: orientation of the m=4 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param center_x: center of the profile
         :param center_y: center of the profile
         :return: alpha_x, alpha_y.
@@ -315,17 +336,23 @@ class EPL_MULTIPOLE_M1M3M4_ELL(LensProfileBase):
             shape related to the physical amplitude of the MULTIPOLE_ELL profile by a
             scaling theta_E
         :param delta_phi_m1: orientation of the m=1 multipole perturbation relative to
-            EPL
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a3_a: amplitude of the m=3 multiple deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m3: orientation of the m=3 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m3: orientation of the m=3 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param a4_a: amplitude of the m=4 multipole deviation from pure elliptical shape
             related to the physical amplitude of the MULTIPOLE_ELL profile by a scaling
             theta_E
-        :param delta_phi_m4: orientation of the m=4 profile relative to the position
-            angle of the EPL profile
+        :param delta_phi_m4: orientation of the m=4 multipole perturbation relative to
+            the semi-major axis of the EPL profile (NB: this is a value of eccentric
+            anomaly, NOT a polar angle ! The corresponding polar angle depends on the
+            axis ratio and orientation of the reference ellipse )
         :param center_x: center of the profile
         :param center_y: center of the profile
         :return: f_xx, f_xy, f_yx, f_yy.

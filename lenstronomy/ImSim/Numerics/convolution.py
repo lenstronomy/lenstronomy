@@ -255,6 +255,7 @@ class SubgridKernelConvolution(object):
     def re_size_convolve(self, image_low_res, image_high_res):
         """
 
+        :param image_low_res: low resolution image
         :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
         :return: convolved and re-sized image
         """
@@ -334,6 +335,7 @@ class MultiGaussianConvolution(object):
     def re_size_convolve(self, image_low_res, image_high_res):
         """
 
+        :param image_low_res: regular pixel grid image
         :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
         :return: convolved and re-sized image
         """

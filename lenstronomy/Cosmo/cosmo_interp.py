@@ -88,7 +88,7 @@ class CosmoInterp(object):
         """
         return self._comoving_distance_interpolation_func(z)
 
-    def angular_diameter_distance(self, z):
+    def angular_diameter_distance(self, z, z2=None):
         """Angular diameter distance in Mpc at a given redshift.
 
         This gives the proper (sometimes called 'physical') transverse
@@ -102,6 +102,8 @@ class CosmoInterp(object):
         ----------
         z : array_like
           Input redshifts.  Must be 1D or scalar.
+        z2: array_like or None
+          Redshift of end (optional)
 
         Returns
         -------
@@ -111,8 +113,10 @@ class CosmoInterp(object):
 
         if isiterable(z):
             z = np.asarray(z)
-
-        return self.comoving_transverse_distance(z) / (1.0 + z)
+        if z2 is None:
+            return self.comoving_transverse_distance(z) / (1.0 + z)
+        else:
+            return self.angular_diameter_distance_z1z2(z, z2)
 
     def angular_diameter_distance_z1z2(self, z1, z2):
         """Angular diameter distance between objects at 2 redshifts. Useful for

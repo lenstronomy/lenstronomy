@@ -218,6 +218,36 @@ class TestImageModel(object):
         chi2 = self.imageModel.reduced_chi2(model, error_map=0)
         npt.assert_almost_equal(chi2, 1, decimal=1)
 
+    def test_variance_map(self):
+        model = sim_util.simulate_simple(
+            self.imageModel,
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            no_noise=True,
+        )
+        variances = self.imageModel.variance_map(
+            kwargs_lens=self.kwargs_lens,
+            kwargs_source=self.kwargs_source,
+            kwargs_lens_light=self.kwargs_lens_light,
+            kwargs_ps=self.kwargs_ps,
+        )
+
+        data = self.imageModel.Data.data
+
+        model_error = self.imageModel._error_map_model(
+            self.kwargs_lens, kwargs_ps=self.kwargs_ps, kwargs_special=None
+        )
+
+        reduced_residuals = self.imageModel.reduced_residuals(
+            model, error_map=model_error
+        )
+
+        reduced_residuals_new = (data - model) / np.sqrt(variances)
+
+        npt.assert_almost_equal(reduced_residuals, reduced_residuals_new, decimal=3)
+
     def test_numData_evaluate(self):
         numData = self.imageModel.num_data_evaluate
         assert numData == 10000

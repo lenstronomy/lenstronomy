@@ -158,50 +158,63 @@ class TestAnisotropy(object):
         assert anisoClass.type == "const"
         assert anisoClass.use_logistic is False
         kwargs = {"beta": 0.5}
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == 0.5
 
         anisoClass = Anisotropy(anisotropy_type="Colin")
         kwargs = {"r_ani": 3}
         assert anisoClass.type == "Colin"
         assert anisoClass.use_logistic is True
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == [3, 0.0, 0.5, 1.0]
 
         anisoClass = Anisotropy(anisotropy_type="radial")
         kwargs = {}
         assert anisoClass.type == "radial"
         assert anisoClass.use_logistic is False
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == 0.999
 
         anisoClass = Anisotropy(anisotropy_type="isotropic")
         kwargs = {}
         assert anisoClass.type == "isotropic"
         assert anisoClass.use_logistic is False
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == 0.0
 
         anisoClass = Anisotropy(anisotropy_type="OM")
         kwargs = {"r_ani": 3}
         assert anisoClass.type == "OM"
         assert anisoClass.use_logistic is True
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == [3, 0.0, 1.0, 2.0]
 
         anisoClass = Anisotropy(anisotropy_type="GOM")
         kwargs = {"r_ani": 3, "beta_inf": 0.8}
         assert anisoClass.type == "GOM"
         assert anisoClass.use_logistic is True
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == [3, 0.0, 0.8, 2.0]
 
         anisoClass = Anisotropy(anisotropy_type="logistic")
         kwargs = {"r_ani": 3, "beta_0": 0.1, "beta_inf": 0.8, "alpha": 1.5}
         assert anisoClass.type == "logistic"
         assert anisoClass.use_logistic is True
-        jampy_params = anisoClass.jampy_params(kwargs)
+        jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == [3, 0.1, 0.8, 1.5]
+
+        jampy_func = anisoClass.jampy_beta(kwargs, symmetry="axi_sph")
+        beta_r, beta_deriv_theta = jampy_func(np.array([0.1, 0.8, 1.5]), np.zeros(3))
+        npt.assert_allclose(
+            beta_r,
+            np.array([0.104234, 0.184727, 0.282843]),
+            atol=1e-6,
+        )
+        npt.assert_allclose(
+            beta_deriv_theta,
+            np.zeros(3),
+            atol=1e-6,
+        )
 
 
 class TestRaise(unittest.TestCase):

@@ -90,6 +90,29 @@ class TestAperture(object):
         assert bool is True
         assert i == 1
 
+        # general aperture
+        x, y = np.linspace(-3, 3, 9), np.linspace(-3, 3, 9)
+        bins = np.array([0, 0, 1, 1, 2, 2, 3, 3, 4, 4])
+        kwargs_general = {"x_cords": x, "y_cords": y, "bins": bins, "delta_pix": 0.1}
+        general_ap = Aperture(aperture_type="general_aperture", **kwargs_general)
+        # number of bins
+        assert general_ap.num_segments == 5
+        # outside the grid
+        bool, i = general_ap.aperture_select(5, 5)
+        assert bool is False
+        assert i is None
+        # inside but not in a bin
+        bool, i = general_ap.aperture_select(-2.5, 2.5)
+        assert bool is False
+        assert i is None
+        # in bin 2
+        bool, i = general_ap.aperture_select(0.0, 0.0)
+        assert bool is True
+        assert i == 2
+        # in bin 3
+        bool, i = general_ap.aperture_select(1.5, 1.5)
+        assert bool is True
+        assert i == 3
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):

@@ -80,12 +80,15 @@ class Anisotropy(object):
 
     def jampy_beta(self, kwargs, symmetry="spherical"):
         """Returns the anisotropy parameter in the new Jampy spectral method format.
-        Either a constant anisotropy or a callable beta(r, theta). Currently only a
-        radial variation is supported.
+        Either a constant anisotropy or a callable beta(r, theta).
+        The callable beta(r, theta) takes the radial and angular position
+        in an axisymmetric coordinate system and returns a tuple (beta, beta_dtheta),
+        the anisotropy at that location, and the angular derivative at that location.
+        Currently only a radial variation is supported.
 
         :param kwargs: anisotropy model parameters
         :param symmetry: either 'spherical' or 'axi_sph'
-        :return:
+        :return: beta(r, theta), either a constant beta or a callable beta(r, theta)
         """
         ani_params = self._model.jampy_params(**kwargs)
         if symmetry == "spherical":

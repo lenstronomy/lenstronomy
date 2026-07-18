@@ -2,6 +2,7 @@ __author__ = "furcelay", "sibirrer"
 
 # Jampy 9 requires python >3.11
 import sys
+
 if sys.version_info < (3, 12):
     raise RuntimeError(
         "Jampy 9 requires Python 3.12 or newer. "

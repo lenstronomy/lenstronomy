@@ -1,5 +1,14 @@
 __author__ = "furcelay", "sibirrer"
 
+# Jampy 9 requires python >3.11
+import sys
+if sys.version_info < (3, 12):
+    raise RuntimeError(
+        "Jampy 9 requires Python 3.12 or newer. "
+        f"Detected Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}."
+    )
+
+
 from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.Util.param_util import ellipticity2phi_q

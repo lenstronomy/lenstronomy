@@ -385,25 +385,25 @@ class TestKinematicsAPI(object):
         assert jampy_models[0].axisymmetric is True
         assert jampy_models[0].symmetry == "axi_sph"
 
-        # kinematicAPI = KinematicsAPI(
-        #     z_lens,
-        #     z_source,
-        #     kwargs_model,
-        #     kwargs_aperture=kwargs_aperture,
-        #     kwargs_seeing=kwargs_psf,
-        #     analytic_kinematics=False,
-        #     anisotropy_model=anisotropy_model,
-        #     kwargs_mge_light=kwargs_mge,
-        #     kwargs_mge_mass=kwargs_mge,
-        #     sampling_number=1000,
-        #     kinematics_backend="jampy",
-        #     axial_symmetry="axi_cyl",
-        # )
-        # jampy_models, kwargs_profile, kwargs_light = kinematicAPI.jam_model_settings(
-        #     kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
-        # )
-        # assert jampy_models[0].axisymmetric is True
-        # assert jampy_models[0].symmetry == "axi_cyl"
+        kinematicAPI = KinematicsAPI(
+            z_lens,
+            z_source,
+            kwargs_model,
+            kwargs_aperture=kwargs_aperture,
+            kwargs_seeing=kwargs_psf,
+            analytic_kinematics=False,
+            anisotropy_model=anisotropy_model,
+            kwargs_mge_light=kwargs_mge,
+            kwargs_mge_mass=kwargs_mge,
+            sampling_number=1000,
+            kinematics_backend="jampy",
+            axial_symmetry="axi_cyl",
+        )
+        jampy_models, kwargs_profile, kwargs_light = kinematicAPI.jam_model_settings(
+            kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None
+        )
+        assert jampy_models[0].axisymmetric is True
+        assert jampy_models[0].symmetry == "axi_cyl"
 
     def test_kinematic_light_profile(self):
         z_lens = 0.5
@@ -1909,21 +1909,6 @@ class TestRiseJAMPy(object):
                 MGE_mass=True,
                 kinematics_backend="jampy",
                 axial_symmetry="wrong",
-            )
-
-    def test_deprecated_axi_cyl(self):
-        with pytest.raises(ValueError, match="axi_cyl was deprecated"):
-            KinematicsAPI(
-                z_lens=0.5,
-                z_source=1.0,
-                kwargs_model={},
-                kwargs_aperture={},
-                kwargs_seeing={},
-                anisotropy_model="const",
-                MGE_light=True,
-                MGE_mass=True,
-                kinematics_backend="jampy",
-                axial_symmetry="axi_cyl",
             )
 
     def test_jampy_analytical(self):

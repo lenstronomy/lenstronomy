@@ -64,16 +64,13 @@ class JAMWrapperBase(object):
         elif self.symmetry == "axi_sph":
             self.axisymmetric = True
             self.align = "sph"
-        # The new Jampy spectral method removes the direct use of a cylindrical alignment
-        # this is replaced with an angular variable anisotropy ellipse, using a callable
-        # TODO: implement the angular variable anisotropy
-        # elif self.symmetry == "axi_cyl":
-        #     self.axisymmetric = True
-        #     self.align = "cyl"
+        elif self.symmetry == "axi_cyl":
+            self.axisymmetric = True
+            self.align = "cyl"
         else:
             msg = (
                 f"Invalid symmetry type '{self.symmetry}' for JAMWrapper, "
-                f"options are 'spherical' or 'axi_sph'."
+                f"options are 'spherical', 'axi_sph' and 'axi_cyl'."
             )
             raise ValueError(msg)
 

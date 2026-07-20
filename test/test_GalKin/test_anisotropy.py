@@ -203,16 +203,65 @@ class TestAnisotropy(object):
         jampy_params = anisoClass.jampy_beta(kwargs)
         assert jampy_params == [3, 0.1, 0.8, 1.5]
 
-        jampy_func = anisoClass.jampy_beta(kwargs, symmetry="axi_sph")
-        beta_r, beta_deriv_theta = jampy_func(np.array([0.1, 0.8, 1.5]), np.zeros(3))
+    def test_jampy_params_axi(self):
+        anisoClass = Anisotropy(anisotropy_type="logistic")
+        beta = 0.8
+        ratio = np.sqrt(1 - beta)
+        kwargs = {"r_ani": 1, "beta_0": beta, "beta_inf": beta, "alpha": 1}
+        jampy_func_sph = anisoClass.jampy_beta(kwargs, symmetry="axi_sph")
+        beta_r, beta_deriv_theta = jampy_func_sph(np.array([0.1, 0.8, 1.5]), np.zeros(3))
+        ratio_r = np.sqrt(1 - beta_r)
         npt.assert_allclose(
-            beta_r,
-            np.array([0.104234, 0.184727, 0.282843]),
+            ratio_r,
+            ratio,
             atol=1e-6,
         )
         npt.assert_allclose(
             beta_deriv_theta,
-            np.zeros(3),
+            0,
+            atol=1e-6,
+        )
+
+        # along the equatorial axis
+        jampy_func_cyl = anisoClass.jampy_beta(kwargs, symmetry="axi_cyl")
+        beta_r_eq, beta_deriv_theta_eq = jampy_func_cyl(np.array([0.1, 0.8, 1.5]), np.ones(3) * np.pi / 2)
+        ratio_eq = np.sqrt(1 - beta_r_eq)
+        npt.assert_allclose(
+            ratio_eq,
+            ratio,
+            atol=1e-6,
+        )
+        npt.assert_allclose(
+            beta_deriv_theta_eq,
+            0,
+            atol=1e-6,
+        )
+
+        # along the symmetry axis
+        beta_r_sym, beta_deriv_theta_sym = jampy_func_cyl(np.array([0.1, 0.8, 1.5]), np.zeros(3))
+        ratio_sym = np.sqrt(1 - beta_r_sym)
+        npt.assert_allclose(
+            ratio_sym,
+            1 / ratio,
+            atol=1e-6,
+        )
+        npt.assert_allclose(
+            beta_deriv_theta_sym,
+        0,
+            atol=1e-6,
+        )
+
+        # other axis
+        beta_r, beta_deriv_theta = jampy_func_cyl(np.array([0.1, 0.8, 1.5]),  np.array([0.05, 0.1, 0.2]))
+        ratio_r = np.sqrt(1 - beta_r)
+        npt.assert_allclose(
+            ratio_r,
+            np.array([2.227096, 2.200486, 2.098442]),
+            atol=1e-6,
+        )
+        npt.assert_allclose(
+            beta_deriv_theta,
+            np.array([1.59389 , 3.096508, 5.519689]),
             atol=1e-6,
         )
 
@@ -243,6 +292,10 @@ class TestRaise(unittest.TestCase):
             logistic = Anisotropy(anisotropy_type="logistic")
             kwargs = {"r_ani": 1, "beta_0": 0, "beta_inf": 1.0, "alpha": 2}
             logistic.anisotropy_solution(r=1, **kwargs)
+
+        with self.assertRaises(ValueError):
+            ani = Anisotropy(anisotropy_type="const")
+            ani.jampy_beta({"beta": 1}, symmetry="wrong")
 
 
 if __name__ == "__main__":

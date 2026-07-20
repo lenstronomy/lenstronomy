@@ -119,8 +119,12 @@ class Anisotropy(object):
                     # angular variation
                     ratio = np.sqrt(1 - beta_const)
                     beta = 1 - ratio ** (2 * np.cos(2 * theta))
-                    beta_dtheta = (-4 * np.log(ratio) *
-                                   ratio**(-2 * np.cos(2 * theta)) * np.sin(2 * theta))
+                    beta_dtheta = (
+                        -4
+                        * np.log(ratio)
+                        * ratio ** (-2 * np.cos(2 * theta))
+                        * np.sin(2 * theta)
+                    )
                     return beta, beta_dtheta
 
                 return beta_fun
@@ -133,7 +137,7 @@ class Anisotropy(object):
                     ratio = np.sqrt(1 - beta_r)
                     ratio_2_th = ratio ** (-2 * np.cos(2 * theta))
                     beta = 1 - ratio_2_th
-                    beta_dtheta = (-4 * np.log(ratio) * ratio_2_th * np.sin(2 * theta))
+                    beta_dtheta = -4 * np.log(ratio) * ratio_2_th * np.sin(2 * theta)
                     return beta, beta_dtheta
 
                 return beta_fun

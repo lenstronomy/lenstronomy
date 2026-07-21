@@ -6,7 +6,6 @@ from lenstronomy.Util.param_util import ellipticity2phi_q
 import numpy as np
 import sys
 
-
 # Jampy 9 requires python >3.11
 if sys.version_info >= (3, 12):
     import jampy as jam

@@ -318,7 +318,9 @@ class TestKinematicsAPI(object):
         )
         npt.assert_almost_equal(kwargs_light[0][0]["Rs"], 1, decimal=2)
 
-    @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
+    @pytest.mark.skipif(
+        sys.version_info < (3, 12), reason="requires python 3.12 or higher"
+    )
     def test_jam_settings_symmetry(self):
         z_lens = 0.5
         z_source = 1.5
@@ -1181,7 +1183,9 @@ class TestKinematicsAPI(object):
         )
         npt.assert_allclose(vel_map_bins, [259.646809, 273.450448], rtol=1e-3)
 
-    @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
+    @pytest.mark.skipif(
+        sys.version_info < (3, 12), reason="requires python 3.12 or higher"
+    )
     def test_multi_obs_dispersion(self):
         anisotropy_model = "const"
         kwargs_aperture = {
@@ -1710,7 +1714,9 @@ class TestKinematicsAPIJAMPy(object):
         assert mass_profile_list == ["EPL"]
         assert len(kwargs_profile) == 1
 
-    @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
+    @pytest.mark.skipif(
+        sys.version_info < (3, 12), reason="requires python 3.12 or higher"
+    )
     def test_velocity_dispersion(self):
         z_lens = 0.5
         z_source = 1.5

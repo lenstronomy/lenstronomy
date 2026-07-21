@@ -78,8 +78,71 @@ class Anisotropy(object):
         if hasattr(self._model, "delete_cache"):
             self._model.delete_cache()
 
-    def jampy_params(self, kwargs):
-        return self._model.jampy_params(**kwargs)
+    def jampy_beta(self, kwargs, symmetry="spherical"):
+        """Return the anisotropy in the Jampy spectral-method format (Cappellari 2026).
+
+        The output is either a constant anisotropy value or a callable ``beta(r, theta)``.
+        The callable takes the 3D radius ``r`` and polar angle ``theta`` and returns a tuple
+        ``(beta, beta_dtheta)``, where ``beta`` is the anisotropy and ``beta_dtheta`` is its
+        angular derivative. Supported symmetry cases are ``spherical``, ``axi_sph``, and
+        ``axi_cyl``; the latter uses a smooth angular transition between the equatorial plane
+        and the symmetry axis. Note that this is different to the ``axi_cyl`` implementation
+        in (Cappellari 2008).
+
+        :param kwargs: anisotropy model parameters
+        :param symmetry: either 'spherical', 'axi_sph' or 'axi_cyl'
+        :return: beta(r, theta), either a constant beta or a callable beta(r, theta)
+        """
+        ani_params = self._model.jampy_params(**kwargs)
+        if symmetry == "spherical":
+            return ani_params
+        elif symmetry == "axi_sph":
+            if not self.use_logistic:
+                beta_const = ani_params
+                return beta_const
+            else:
+                r_ani, beta_0, beta_inf, alpha = ani_params
+
+                def beta_fun(r, theta):
+                    # radial logisitic function
+                    beta = beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
+                    beta_dtheta = 0
+                    return beta, beta_dtheta
+
+                return beta_fun
+
+        elif symmetry == "axi_cyl":
+            if not self.use_logistic:
+                beta_const = ani_params
+
+                def beta_fun(r, theta):
+                    # angular variation
+                    ratio = np.sqrt(1 - beta_const)
+                    beta = 1 - ratio ** (2 * np.cos(2 * theta))
+                    beta_dtheta = (
+                        -4
+                        * np.log(ratio)
+                        * ratio ** (-2 * np.cos(2 * theta))
+                        * np.sin(2 * theta)
+                    )
+                    return beta, beta_dtheta
+
+                return beta_fun
+            else:
+                r_ani, beta_0, beta_inf, alpha = ani_params
+
+                def beta_fun(r, theta):
+                    # radial logistic plus angular variation
+                    beta_r = beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
+                    ratio = np.sqrt(1 - beta_r)
+                    ratio_2_th = ratio ** (-2 * np.cos(2 * theta))
+                    beta = 1 - ratio_2_th
+                    beta_dtheta = -4 * np.log(ratio) * ratio_2_th * np.sin(2 * theta)
+                    return beta, beta_dtheta
+
+                return beta_fun
+        else:
+            raise ValueError("symmetry must be 'spherical', 'axi_sph' or 'axi_cyl'")
 
     @property
     def type(self):

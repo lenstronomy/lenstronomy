@@ -3,8 +3,12 @@ __author__ = "furcelay", "sibirrer"
 from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.Util.param_util import ellipticity2phi_q
-import jampy as jam
 import numpy as np
+import sys
+
+# Jampy 9 requires python >3.11
+if sys.version_info >= (3, 12):
+    import jampy as jam
 
 __all__ = ["JAMWrapperBase"]
 
@@ -23,6 +27,12 @@ class JAMWrapperBase(object):
         kwargs_model,
         kwargs_cosmo,
     ):
+        if sys.version_info < (3, 12):
+            raise RuntimeError(
+                "Jampy 9 requires Python 3.12 or newer. "
+                f"Detected Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}."
+            )
+
         self.mass_profile_list = kwargs_model.get("mass_profile_list")
         self.light_profile_list = kwargs_model.get("light_profile_list")
         if (len(self.mass_profile_list) > 1) or (
@@ -60,7 +70,7 @@ class JAMWrapperBase(object):
         else:
             msg = (
                 f"Invalid symmetry type '{self.symmetry}' for JAMWrapper, "
-                f"options are 'spherical', 'axi_sph' or 'axi_cyl'."
+                f"options are 'spherical', 'axi_sph' and 'axi_cyl'."
             )
             raise ValueError(msg)
 
@@ -119,9 +129,7 @@ class JAMWrapperBase(object):
             sigma_lum = sigma_lum / np.sqrt(q_lum)
             sigma_mass = sigma_mass / np.sqrt(q_mass)
 
-        beta = self._anisotropy.jampy_params(kwargs_anisotropy)
-        if not self._anisotropy.use_logistic:
-            beta = beta * np.ones_like(surf_lum)
+        beta = self._anisotropy.jampy_beta(kwargs_anisotropy, symmetry=self.symmetry)
 
         if not convolved:
             psf_sigmas = 0.0
@@ -232,19 +240,13 @@ class JAMWrapperBase(object):
         if jam_kwargs is None:
             jam_kwargs = {}
         jam_model = jam.axi.proj(
-            surf_lum,
-            sigma_lum,
-            q_lum,
-            surf_mass,
-            sigma_mass,
-            q_mass,
+            model_lum_proj=(surf_lum, sigma_lum, q_lum),
+            model_pot_proj=(surf_mass, sigma_mass, q_mass),
             xbin=x,
             ybin=y,
             inc=inclination,
-            align=self.align,
             distance=self.cosmo.dd,
             beta=beta,
-            logistic=self._anisotropy.use_logistic,
             mbh=black_hole_mass,
             sigmapsf=sigma_psf,
             normpsf=norm_psf,
@@ -273,6 +275,8 @@ class JAMWrapperBase(object):
     ):
         if jam_kwargs is None:
             jam_kwargs = {}
+        if not self._anisotropy.use_logistic:
+            beta = np.ones_like(surf_lum) * beta
         jam_model = jam.sph.proj(
             surf_lum,
             sigma_lum,

@@ -2,9 +2,9 @@ __author__ = "sibirrer"
 
 import numpy as np
 import copy
+from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.galkin_shells import GalkinShells
-from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
 from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator

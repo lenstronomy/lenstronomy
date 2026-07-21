@@ -1,16 +1,18 @@
 import numpy as np
 import numpy.testing as npt
 import pytest
-from lenstronomy.JAMPy.jam_wrapper_base import JAMWrapperBase
 from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+from lenstronomy.JAMPy.jam_wrapper_base import JAMWrapperBase
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
 from lenstronomy.Util.param_util import phi_q2_ellipticity
+import sys
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBase(object):
 
     def setup_method(self):
@@ -107,6 +109,7 @@ class TestJAMWrapperBase(object):
         npt.assert_allclose(IR_jam, IR_galkin, rtol=5e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBaseOM(object):
 
     def setup_method(self):
@@ -187,6 +190,7 @@ class TestJAMWrapperBaseOM(object):
         npt.assert_allclose(sigma_v_jam, sigma_v_galkin, rtol=5e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBaseAnalytical(object):
 
     def setup_method(self):
@@ -290,6 +294,7 @@ class TestJAMWrapperBaseAnalytical(object):
         return sigma_v
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBaseAxiSph(object):
 
     def setup_method(self):
@@ -387,6 +392,7 @@ class TestJAMWrapperBaseAxiSph(object):
         npt.assert_allclose(IR_jam, IR_galkin, rtol=5e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBaseIsoAxiCyl(object):
 
     def setup_method(self):
@@ -474,6 +480,7 @@ class TestJAMWrapperBaseIsoAxiCyl(object):
         npt.assert_allclose(sigma_v_jam, sigma_v_galkin, rtol=5e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBaseAxiCylSpectral(object):
 
     def setup_method(self):
@@ -629,6 +636,7 @@ class TestJAMWrapperBaseAxiCylSpectral(object):
         npt.assert_allclose(sigma_v_jam_spectral, sigma_v_jam_old, rtol=5e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperBaseAxiElliptical(object):
     """Test the elliptical case (not spherical limit)"""
 
@@ -694,6 +702,7 @@ class TestJAMWrapperBaseAxiElliptical(object):
         npt.assert_allclose(surf_bright_jampy, surf_bright_lenstronomy, rtol=1e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestRaise(object):
     def test_invalid_mass_profile(self):
         kwargs_cosmo = {
@@ -738,6 +747,23 @@ class TestRaise(object):
             "symmetry": "invalid_symmetry",
         }
         with pytest.raises(ValueError, match="Invalid symmetry type"):
+            JAMWrapperBase(kwargs_model=kwargs_model_jampy, kwargs_cosmo=kwargs_cosmo)
+
+    def test_invalid_python_version(self):
+        if sys.version_info >= (3, 12):
+            pytest.skip("This test is only for Python versions < 3.12")
+        kwargs_cosmo = {
+            "d_d": 1.0,
+            "d_s": 1.0,
+            "d_ds": 1.0,
+        }
+        kwargs_model_jampy = {
+            "mass_profile_list": ["MULTI_GAUSSIAN"],
+            "light_profile_list": ["MULTI_GAUSSIAN"],
+            "anisotropy_model": "const",
+            "symmetry": "spherical",
+        }
+        with pytest.raises(RuntimeError, match="Jampy requires Python 3.12 or higher"):
             JAMWrapperBase(kwargs_model=kwargs_model_jampy, kwargs_cosmo=kwargs_cosmo)
 
 

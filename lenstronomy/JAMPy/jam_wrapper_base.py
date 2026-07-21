@@ -1,20 +1,15 @@
 __author__ = "furcelay", "sibirrer"
 
-# Jampy 9 requires python >3.11
-import sys
-
-if sys.version_info < (3, 12):
-    raise RuntimeError(
-        "Jampy 9 requires Python 3.12 or newer. "
-        f"Detected Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}."
-    )
-
-
 from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.Util.param_util import ellipticity2phi_q
-import jampy as jam
 import numpy as np
+import sys
+
+
+# Jampy 9 requires python >3.11
+if sys.version_info >= (3, 12):
+    import jampy as jam
 
 __all__ = ["JAMWrapperBase"]
 
@@ -33,6 +28,12 @@ class JAMWrapperBase(object):
         kwargs_model,
         kwargs_cosmo,
     ):
+        if sys.version_info < (3, 12):
+            raise RuntimeError(
+                "Jampy 9 requires Python 3.12 or newer. "
+                f"Detected Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}."
+            )
+
         self.mass_profile_list = kwargs_model.get("mass_profile_list")
         self.light_profile_list = kwargs_model.get("light_profile_list")
         if (len(self.mass_profile_list) > 1) or (

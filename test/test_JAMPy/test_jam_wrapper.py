@@ -1,16 +1,17 @@
 import numpy as np
 import numpy.testing as npt
 import pytest
-
-from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
+import sys
 from lenstronomy.JAMPy.mge import MGEMass, MGELight
 from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+from lenstronomy.JAMPy.jam_wrapper import JAMWrapper
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.galkin_shells import GalkinShells
 from scipy.signal import convolve2d
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperSpherical(object):
     """Test JAMWrapper against Lenstronomy Galkin module for spherical symmetry."""
 
@@ -299,6 +300,7 @@ class TestJAMWrapperSpherical(object):
         npt.assert_allclose(sigma_v_jam, sigma_v_conv, rtol=1e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperAxiSph(object):
     """Test JAMWrapper with axisymmetric-spherical symmetry but in the spherical limit
     q=1, against Lenstronomy Galkin module for spherical symmetry."""
@@ -476,6 +478,7 @@ class TestJAMWrapperAxiSph(object):
         npt.assert_allclose(sigma_v_jam, sigma_v_galkin, rtol=5e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestJAMWrapperAxiCyl(object):
     """Test JAMWrapper with axisymmetric-cylindrical symmetry but in the spherical and
     isotropic limit q=1, beta=0, against Lenstronomy Galkin module for spherical
@@ -579,6 +582,7 @@ class TestJAMWrapperAxiCyl(object):
         npt.assert_allclose(sigma_v_jam, sigma_v_galkin, rtol=1e-2)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python 3.12 or higher")
 class TestRaiseWarnings(object):
     def setup_method(self):
         kwargs_psf = {

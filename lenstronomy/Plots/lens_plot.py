@@ -311,9 +311,8 @@ def caustics_plot(
         # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
         # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
     kwargs_caustics = dict(kwargs_caustics)
-    kwargs_caustics.setdefault("color", "g")
-    kwargs_caustics.setdefault("critical_curve_color", "r")
 
+    caustic_color = kwargs_caustics.pop("color", "g")
     critical_curve_color = kwargs_caustics.pop("critical_curve_color", "r")
 
     plot_util.plot_line_set(
@@ -325,9 +324,10 @@ def caustics_plot(
         flipped_x=coord_inverse,
         points_only=points_only,
         label="caustics",
+        color=caustic_color,
         **kwargs_caustics,
     )
-    kwargs_caustics.setdefault("color", critical_curve_color)
+    
     plot_util.plot_line_set(
         ax,
         pixel_grid,
@@ -337,6 +337,7 @@ def caustics_plot(
         flipped_x=coord_inverse,
         points_only=points_only,
         label="critical curves",
+        color=critical_curve_color,
         **kwargs_caustics,
     )
     return ax

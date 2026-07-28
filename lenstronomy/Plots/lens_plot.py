@@ -327,7 +327,7 @@ def caustics_plot(
         color=caustic_color,
         **kwargs_caustics,
     )
-    
+
     plot_util.plot_line_set(
         ax,
         pixel_grid,

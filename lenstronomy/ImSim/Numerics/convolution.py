@@ -118,8 +118,10 @@ class PixelKernelConvolution(object):
         # sure we only call rfftn/irfftn from one thread at a time.
         if not complex_result and (_rfft_mt_safe or _rfft_lock.acquire(False)):
             try:
-                sp1 = np.fft.rfftn(in1, fshape)
-                ret = np.fft.irfftn(sp1 * sp2, fshape)[fslice].copy()
+                sp1 = np.fft.rfftn(in1, fshape, axes=tuple(range(in1.ndim)))
+                ret = np.fft.irfftn(sp1 * sp2, fshape, axes=tuple(range(sp1.ndim)))[
+                    fslice
+                ].copy()
             finally:
                 if not _rfft_mt_safe:
                     _rfft_lock.release()
@@ -171,7 +173,7 @@ class PixelKernelConvolution(object):
         # sure we only call rfftn/irfftn from one thread at a time.
         if not complex_result and (_rfft_mt_safe or _rfft_lock.acquire(False)):
             try:
-                sp2 = np.fft.rfftn(in2, fshape)
+                sp2 = np.fft.rfftn(in2, fshape, axes=tuple(range(in2.ndim)))
             finally:
                 if not _rfft_mt_safe:
                     _rfft_lock.release()

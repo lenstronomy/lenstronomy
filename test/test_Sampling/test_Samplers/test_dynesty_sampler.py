@@ -1,5 +1,7 @@
 __author__ = "aymgal"
 
+import sys
+import types
 import pytest
 import numpy as np
 import numpy.testing as npt
@@ -83,6 +85,58 @@ class TestDynestySampler(object):
         assert logL < 0
         # npt.assert_almost_equal(logL, -47.167446538898204)
         # assert logL == -1e15
+
+    def test_sampler_init_mpi_branch(
+        self, simple_einstein_ring_likelihood, monkeypatch
+    ):
+        likelihood, kwargs_truths = simple_einstein_ring_likelihood
+        prior_means = likelihood.param.kwargs2args(**kwargs_truths)
+        prior_sigmas = np.ones_like(prior_means)
+
+        class _FakeDynamicNestedSampler(object):
+            def __init__(self, **kwargs):
+                self.kwargs = kwargs
+
+        def _fake_check_install(self):
+            self._dynesty_installed = True
+            self._dynesty = types.SimpleNamespace(
+                DynamicNestedSampler=_FakeDynamicNestedSampler
+            )
+
+        pool_kwargs = []
+
+        class _FakeMPIPool(object):
+            def __init__(self, **kwargs):
+                pool_kwargs.append(kwargs)
+
+            @staticmethod
+            def is_master():
+                return True
+
+        nested_calls = []
+
+        def _fake_set_nested(likelihood_module, n_dims):
+            nested_calls.append((likelihood_module, n_dims))
+
+        monkeypatch.setattr(DynestySampler, "_check_install", _fake_check_install)
+        fake_schwimmbad = types.SimpleNamespace(MPIPool=_FakeMPIPool)
+        monkeypatch.setitem(sys.modules, "schwimmbad", fake_schwimmbad)
+        monkeypatch.setattr(
+            "lenstronomy.Sampling.Samplers.dynesty_sampler.set_nested_likelihood_module",
+            _fake_set_nested,
+        )
+
+        sampler = DynestySampler(
+            likelihood,
+            prior_type="uniform",
+            prior_means=prior_means,
+            prior_sigmas=prior_sigmas,
+            use_mpi=True,
+        )
+
+        assert pool_kwargs == [{}]
+        assert len(nested_calls) == 1
+        assert sampler._sampler.kwargs["loglikelihood"].__name__ == "nested_logl_worker"
 
 
 if __name__ == "__main__":

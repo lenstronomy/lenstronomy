@@ -47,6 +47,8 @@ def short(_laconic=False):
         image_model = ls.ImSim.image_model.ImageModel(...)
     """
     import pkgutil
+    import sys
+    from importlib.util import module_from_spec
     import lenstronomy
 
     to_add = dict()
@@ -59,9 +61,10 @@ def short(_laconic=False):
             continue
 
         # Load the module
-        module = all_modules[module_name] = loader.find_module(module_name).load_module(
-            module_name
-        )
+        spec = loader.find_spec(module_name)
+        module = all_modules[module_name] = module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules[module_name] = module
 
         if "." in module_name:
             # Submodule, e.g. Data.psf

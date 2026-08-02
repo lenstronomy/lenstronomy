@@ -18,17 +18,17 @@ class TestSingleBandMultiModel(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 10  # cutout pixel size
-        deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 10  # cutout pixel size
+        delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = simulation_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
-        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": deltaPix}
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": delta_pix}
         psf_class = PSF(**kwargs_psf)
         kwargs_spemd = {
             "theta_E": 1.0,
@@ -242,7 +242,7 @@ class TestSingleBandMultiModel(object):
         npt.assert_almost_equal(extinction_map, 1)
 
     def test_error_map_source(self):
-        x_grid, y_grid = util.make_grid(numPix=10, deltapix=0.1)
+        x_grid, y_grid = util.make_grid(num_pix=10, delta_pix=0.1)
         error = self.single_band_no_linear.error_map_source(
             [None], x_grid, y_grid, None
         )

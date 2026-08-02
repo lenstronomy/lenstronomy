@@ -50,7 +50,7 @@ class LensProfileAnalysis(object):
             kwargs_lens, center_x, center_y
         )
 
-        x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
+        x_grid, y_grid = util.make_grid(num_pix=grid_num, delta_pix=grid_spacing)
         x_grid += center_x
         y_grid += center_y
         kappa = self._lens_model.kappa(x_grid, y_grid, kwargs_lens, k=model_bool_list)
@@ -344,7 +344,7 @@ class LensProfileAnalysis(object):
         return amplitudes, sigmas, center_x, center_y
 
     def mass_fraction_within_radius(
-        self, kwargs_lens, center_x, center_y, theta_E, numPix=100
+        self, kwargs_lens, center_x, center_y, theta_E, num_pix=100
     ):
         """Computes the mean convergence of all the different lens model components
         within a spherical aperture.
@@ -355,7 +355,9 @@ class LensProfileAnalysis(object):
         :param theta_E: radius of aperture
         :return: list of average convergences for all the model components
         """
-        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=2.0 * theta_E / numPix)
+        x_grid, y_grid = util.make_grid(
+            num_pix=num_pix, delta_pix=2.0 * theta_E / num_pix
+        )
         x_grid += center_x
         y_grid += center_y
         mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x, center_y, theta_E)
@@ -382,7 +384,7 @@ class LensProfileAnalysis(object):
         :param model_bool_list: bool list (optional) to include certain models or not
         :return: center_x, center_y
         """
-        x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
+        x_grid, y_grid = util.make_grid(num_pix=grid_num, delta_pix=grid_spacing)
         x_grid += center_x_init
         y_grid += center_y_init
 

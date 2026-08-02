@@ -22,20 +22,20 @@ class TestFittingSequence(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 10  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 10  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**self.kwargs_data)
         kwargs_psf_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
             "truncation": 3,
         }
         psf_gaussian = PSF(**kwargs_psf_gaussian)
@@ -390,19 +390,19 @@ class TestFittingSequence(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 10  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 10  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
             "truncation": 3,
         }
         psf_gaussian = PSF(**kwargs_psf_gaussian)
@@ -510,20 +510,20 @@ class TestFittingSequence(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 10  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 10  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
             "truncation": 3,
         }
         psf_gaussian = PSF(**kwargs_psf_gaussian)
@@ -772,6 +772,11 @@ class TestFittingSequence(object):
         fitting_list.append(["dynesty", kwargs_dynesty])
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
+        output = chain_list[0]
+        assert len(output) == 7
+        assert output[0] == "dynesty"
+        assert len(output[2]) == output[1].shape[1]
+        assert len(output[3]) == len(output[1])
 
     def test_nautilus(self):
         np.random.seed(42)
@@ -796,6 +801,17 @@ class TestFittingSequence(object):
 
         fitting_list.append(["Nautilus", kwargs_nautilus])
         chain_list = fittingSequence.fit_sequence(fitting_list)
+        output = chain_list[0]
+        assert len(output) == 7
+        assert output[0] == "Nautilus"
+        assert len(output[2]) == output[1].shape[1]
+        assert len(output[3]) == len(output[1])
+        assert np.isfinite(output[5])
+        legacy_output = output[6]
+        assert "points" in legacy_output
+        assert "log_l" in legacy_output
+        assert "log_w" in legacy_output
+        assert len(legacy_output["log_l"]) == len(legacy_output["points"])
 
     def test_dypolychord(self):
         fittingSequence = FittingSequence(

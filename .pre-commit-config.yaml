@@ -30,4 +30,5 @@ repos:
     hooks:
       - id: docformatter
         args: [-r, --black, --in-place]
+        language_version: python3.12
 

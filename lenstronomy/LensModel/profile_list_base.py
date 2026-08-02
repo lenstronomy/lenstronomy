@@ -77,6 +77,7 @@ _SUPPORTED_MODELS = [
     "PJAFFE",
     "PJAFFE_ELLIPSE_POTENTIAL",
     "POINT_MASS",
+    "POINT_MASS_LOG_SCALED",
     "PSEUDO_DPL",
     "SERSIC",
     "SERSIC_ELLIPSE_GAUSS_DEC",
@@ -664,6 +665,12 @@ def lens_class(
         from lenstronomy.LensModel.Profiles.point_mass import PointMass
 
         return PointMass(**profile_kwargs)
+    elif lens_type == "POINT_MASS_LOG_SCALED":
+        from lenstronomy.LensModel.Profiles.point_mass_log_scaled import (
+            PointMassLogScaled,
+        )
+
+        return PointMassLogScaled(**profile_kwargs)
     elif lens_type == "PSEUDO_DPL":
         from lenstronomy.LensModel.Profiles.pseudo_double_powerlaw import (
             PseudoDoublePowerlaw,

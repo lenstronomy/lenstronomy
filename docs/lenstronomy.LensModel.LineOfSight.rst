@@ -21,6 +21,14 @@ lenstronomy.LensModel.LineOfSight.single\_plane\_los module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.LineOfSight.single\_plane\_los\_flexion module
+---------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.LineOfSight.single_plane_los_flexion
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Module contents
 ---------------
 

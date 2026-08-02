@@ -28,6 +28,14 @@ lenstronomy.LensModel.Profiles.blank\_plane module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.bpl module
+-----------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.bpl
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.chameleon module
 -----------------------------------------------
 
@@ -196,6 +204,14 @@ lenstronomy.LensModel.Profiles.epl\_boxydisky module
    :undoc-members:
    :show-inheritance:
 
+lenstronomy.LensModel.Profiles.epl\_multipole\_m1m3m4 module
+------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.epl_multipole_m1m3m4
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.LensModel.Profiles.epl\_multipole\_m3m4 module
 ----------------------------------------------------------
 
@@ -272,6 +288,14 @@ lenstronomy.LensModel.Profiles.gnfw module
 ------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.gnfw
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.LensModel.Profiles.greenboschnfw module
+---------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.greenboschnfw
    :members:
    :undoc-members:
    :show-inheritance:

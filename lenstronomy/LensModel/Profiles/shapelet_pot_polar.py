@@ -36,7 +36,7 @@ class PolarShapelets(LensProfileBase):
     def function(self, x, y, coeffs, beta, center_x=0, center_y=0):
         shapelets = self._createShapelet(coeffs)
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
-        f_ = self._shapeletOutput(r, phi, beta, shapelets)
+        f_ = self._shapelet_output(r, phi, beta, shapelets)
         return f_
 
     def derivatives(self, x, y, coeffs, beta, center_x=0, center_y=0):
@@ -44,8 +44,8 @@ class PolarShapelets(LensProfileBase):
         shapelets = self._createShapelet(coeffs)
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         alpha1_shapelets, alpha2_shapelets = self._alphaShapelets(shapelets, beta)
-        f_x = self._shapeletOutput(r, phi, beta, alpha1_shapelets)
-        f_y = self._shapeletOutput(r, phi, beta, alpha2_shapelets)
+        f_x = self._shapelet_output(r, phi, beta, alpha1_shapelets)
+        f_y = self._shapelet_output(r, phi, beta, alpha2_shapelets)
         return f_x, f_y
 
     def hessian(self, x, y, coeffs, beta, center_x=0, center_y=0):
@@ -55,9 +55,9 @@ class PolarShapelets(LensProfileBase):
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         kappa_shapelets = self._kappaShapelets(shapelets, beta)
         gamma1_shapelets, gamma2_shapelets = self._gammaShapelets(shapelets, beta)
-        kappa_value = self._shapeletOutput(r, phi, beta, kappa_shapelets)
-        gamma1_value = self._shapeletOutput(r, phi, beta, gamma1_shapelets)
-        gamma2_value = self._shapeletOutput(r, phi, beta, gamma2_shapelets)
+        kappa_value = self._shapelet_output(r, phi, beta, kappa_shapelets)
+        gamma1_value = self._shapelet_output(r, phi, beta, gamma1_shapelets)
+        gamma2_value = self._shapelet_output(r, phi, beta, gamma2_shapelets)
         f_xx = kappa_value + gamma1_value
         f_xy = gamma2_value
         f_yy = kappa_value - gamma1_value
@@ -98,7 +98,7 @@ class PolarShapelets(LensProfileBase):
                 i += 1
         return shapelets
 
-    def _shapeletOutput(self, r, phi, beta, shapelets):
+    def _shapelet_output(self, r, phi, beta, shapelets):
         """Returns the the numerical values of a set of shapelets at polar coordinates.
 
         :param shapelets: set of shapelets [l=,r=,a_lr=]

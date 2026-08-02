@@ -35,11 +35,11 @@ class TestGaussian(object):
 
     def test_total_flux(self):
         gauss = Gaussian()
-        deltapix = 0.1
+        delta_pix = 0.1
         amp = 1
-        x_grid, y_gird = util.make_grid(100, deltapix=deltapix)
+        x_grid, y_gird = util.make_grid(100, delta_pix=delta_pix)
         flux = gauss.function(x_grid, y_gird, amp=amp, sigma=1)
-        flux_integral = np.sum(flux) * deltapix**2
+        flux_integral = np.sum(flux) * delta_pix**2
         npt.assert_almost_equal(flux_integral, amp, decimal=3)
         # make grid
         # sum grid

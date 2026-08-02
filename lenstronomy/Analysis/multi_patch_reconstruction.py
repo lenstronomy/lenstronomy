@@ -85,15 +85,17 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             "dec_at_xy_0": kwargs_data["dec_at_xy_0"],
         }
         pixel_grid = PixelGrid(**kwargs_pixel_grid)
-        Mpix2a = pixel_grid.transform_pix2angle
+        transform_pix2angle = pixel_grid.transform_pix2angle
 
         # set up joint coordinate system and pixel size to include all frames
         for i in range(len(multi_band_list)):
             kwargs_data = multi_band_list[i][0]
             data_class_i = ImageData(**kwargs_data)
-            Mpix2a_i = data_class_i.transform_pix2angle
+            transform_pix2angle_i = data_class_i.transform_pix2angle
             # check we are operating in the same coordinate system/rotation and pixel scale
-            npt.assert_almost_equal(Mpix2a, Mpix2a_i, decimal=5)
+            npt.assert_almost_equal(
+                transform_pix2angle, transform_pix2angle_i, decimal=5
+            )
 
             # evaluate pixel of zero point with the base coordinate system
             ra0, dec0 = data_class_i.radec_at_xy_0
@@ -197,13 +199,13 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         :return: 2d surface brightness grid of the reconstructed source and PixelGrid()
             instance of source grid
         """
-        Mpix2coord = (
+        transform_pix2coord = (
             self._pixel_grid_joint.transform_pix2angle
             * delta_pix
             / self._pixel_grid_joint.pixel_width
         )
         x_grid_source, y_grid_source = util.make_grid_transformed(
-            num_pix, Mpix2Angle=Mpix2coord
+            num_pix, transform_pix2angle=transform_pix2coord
         )
         ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
 
@@ -224,7 +226,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         pixel_grid = PixelGrid(
             nx=num_pix,
             ny=num_pix,
-            transform_pix2angle=Mpix2coord,
+            transform_pix2angle=transform_pix2coord,
             ra_at_xy_0=ra_at_xy_0 + center_x,
             dec_at_xy_0=dec_at_xy_0 + center_y,
         )

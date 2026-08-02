@@ -44,6 +44,14 @@ lenstronomy.ImSim.Numerics.numerics module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.ImSim.Numerics.numerics\_subframe module
+----------------------------------------------------
+
+.. automodule:: lenstronomy.ImSim.Numerics.numerics_subframe
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.ImSim.Numerics.partial\_image module
 ------------------------------------------------
 

@@ -9,8 +9,8 @@ def light2mass_interpol(
     lens_light_model_list,
     kwargs_lens_light,
     lens_light_profile_kwargs_list=None,
-    numPix=100,
-    deltaPix=0.05,
+    num_pix=100,
+    delta_pix=0.05,
     subgrid_res=5,
     center_x=0,
     center_y=0,
@@ -26,8 +26,8 @@ def light2mass_interpol(
         initialize lens light profile classes in the same order of the
         lens_light_model_list. If any of the profile_kwargs are None, then that profile
         will be initialized using default settings.
-    :param numPix: number of pixels per axis for the return interpolation
-    :param deltaPix: interpolation/pixel size
+    :param num_pix: number of pixels per axis for the return interpolation
+    :param delta_pix: interpolation/pixel size
     :param center_x: center of the grid
     :param center_y: center of the grid
     :param subgrid_res: subgrid for the numerical integrals
@@ -35,12 +35,12 @@ def light2mass_interpol(
     """
     # make super-sampled grid
     x_grid_sub, y_grid_sub = util.make_grid(
-        numPix=numPix * 5, deltapix=deltaPix, subgrid_res=subgrid_res
+        num_pix=num_pix * 5, delta_pix=delta_pix, subgrid_res=subgrid_res
     )
     import lenstronomy.Util.mask_util as mask_util
 
     mask = mask_util.mask_azimuthal(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
-    x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+    x_grid, y_grid = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
     # compute light on the subgrid
     lightModel = LightModel(
         light_model_list=lens_light_model_list,
@@ -54,10 +54,10 @@ def light2mass_interpol(
     # compute lensing quantities with subgrid
     convergence_sub = util.array2image(flux)
     f_x_sub, f_y_sub = integral.deflection_from_kappa_grid(
-        convergence_sub, grid_spacing=deltaPix / float(subgrid_res)
+        convergence_sub, grid_spacing=delta_pix / float(subgrid_res)
     )
     f_sub = integral.potential_from_kappa_grid(
-        convergence_sub, grid_spacing=deltaPix / float(subgrid_res)
+        convergence_sub, grid_spacing=delta_pix / float(subgrid_res)
     )
     # interpolation function on lensing quantities
     x_axes_sub, y_axes_sub = util.get_axes(x_grid_sub, y_grid_sub)

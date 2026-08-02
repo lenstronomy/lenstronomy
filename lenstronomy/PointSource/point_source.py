@@ -247,6 +247,7 @@ class PointSource(object):
         k=None,
         original_position=False,
         additional_images=False,
+        width_search_factor=1,
     ):
         """Image positions as observed on the sky of the point sources.
 
@@ -261,10 +262,20 @@ class PointSource(object):
         :param additional_images: if True, solves the lens equation for additional
             images
         :type additional_images: bool
+        :param width_search_factor: searches on wider area than default setting (usually
+            tided to image frame)
+        :type width_search_factor: int of float >1
         :return: list of: list of image positions per point source model component
         """
         x_image_list = []
         y_image_list = []
+        if width_search_factor != 1 and hasattr(
+            self._kwargs_lens_eqn_solver, "search_window"
+        ):
+            kwargs_lens_eqn_solver = copy.deepcopy(self._kwargs_lens_eqn_solver)
+            kwargs_lens_eqn_solver["search_window"] *= width_search_factor
+        else:
+            kwargs_lens_eqn_solver = self._kwargs_lens_eqn_solver
         for i, model in enumerate(self._point_source_list):
             if k is None or k == i:
                 kwargs = kwargs_ps[i]
@@ -272,7 +283,7 @@ class PointSource(object):
                     kwargs,
                     kwargs_lens,
                     magnification_limit=self._magnification_limit,
-                    kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver,
+                    kwargs_lens_eqn_solver=kwargs_lens_eqn_solver,
                     additional_images=additional_images,
                 )
                 # this takes action when new images are computed not necessary in order

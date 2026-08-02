@@ -34,7 +34,7 @@ class PixelatedSourceReconstruction(object):
             - If the PSF kernel size is improperly sized for interferometric likelihood methods.
         """
 
-        self._numPix = data_class.num_pixel_axes[0]
+        self._num_pix = data_class.num_pixel_axes[0]
         self._image_data = data_class.data
         self._noise_rms = data_class.background_rms
         self._C_D = data_class.C_D
@@ -73,9 +73,9 @@ class PixelatedSourceReconstruction(object):
         # Validate PSF kernel size specifically for interferometric likelihood
         if self._logL_method == "interferometry_natwt":
             for check_dim in range(2):
-                if self._shape_kernel[check_dim] < 2 * self._numPix - 1:
+                if self._shape_kernel[check_dim] < 2 * self._num_pix - 1:
                     raise ValueError(
-                        "PSF kernel size must be at least (2 * numPix - 1) "
+                        "PSF kernel size must be at least (2 * num_pix - 1) "
                         "in each dimension for interferometry_natwt likelihood."
                     )
 
@@ -138,7 +138,7 @@ class PixelatedSourceReconstruction(object):
         if verbose:
             print("Step 2: Convolve the lensed pixels")
         N_lensed = len(lensed_sp)
-        lensed_pixel_conv_set = np.zeros((N_lensed, self._numPix, self._numPix))
+        lensed_pixel_conv_set = np.zeros((N_lensed, self._num_pix, self._num_pix))
         for i in range(N_lensed):
             lensed_pixel_conv_set[i] = self.sparse_convolution(
                 lensed_sp[i], self._kernel
@@ -276,8 +276,8 @@ class PixelatedSourceReconstruction(object):
             w01 *= self._primary_beam
             w11 *= self._primary_beam
 
-        for i in range(self._numPix):
-            for j in range(self._numPix):
+        for i in range(self._num_pix):
+            for j in range(self._num_pix):
                 # Skip if the lensed image pixel falls entirely outside the source region
                 if (
                     x_ceiling[i][j] < 0
@@ -350,7 +350,7 @@ class PixelatedSourceReconstruction(object):
                 f"source grid class dimension ({self._ny_source}, {self._nx_source})."
             )
 
-        lensed_image = np.zeros((self._numPix, self._numPix))
+        lensed_image = np.zeros((self._num_pix, self._num_pix))
 
         beta_x_grid_2d, beta_y_grid_2d = self._lens_model_class.ray_shooting(
             self._x_grid_data, self._y_grid_data, kwargs=kwargs_lens
@@ -359,11 +359,11 @@ class PixelatedSourceReconstruction(object):
         beta_y_grid = util.image2array(beta_y_grid_2d)
 
         # Iterate through each pixel in the image plane (i, j)
-        for i in range(self._numPix):
-            for j in range(self._numPix):
+        for i in range(self._num_pix):
+            for j in range(self._num_pix):
                 # Calculate the linear index for accessing pre-computed ray-shot coordinates
                 n_beta = (
-                    i * self._numPix + j
+                    i * self._num_pix + j
                 )  # Assuming beta_x_grid and beta_y_grid are flattened row-major
 
                 # Get the source plane angular coordinates (beta_x, beta_y) corresponding
@@ -485,7 +485,7 @@ class PixelatedSourceReconstruction(object):
         :returns: A 2D NumPy array representing the full image.
         :rtype: numpy.ndarray
         """
-        image = np.zeros((self._numPix, self._numPix))
+        image = np.zeros((self._num_pix, self._num_pix))
         num_of_elements = len(sparse)
         for i in range(num_of_elements):
             image[sparse[i][0], sparse[i][1]] = sparse[i][2]
@@ -559,7 +559,7 @@ class PixelatedSourceReconstruction(object):
         kernel_center = int(
             len(kernel) / 2
         )  # Assumes kernel is square and has odd dimensions
-        convolved = np.zeros((self._numPix, self._numPix))
+        convolved = np.zeros((self._num_pix, self._num_pix))
         num_element_sparse = len(sp)
 
         for i in range(num_element_sparse):
@@ -568,20 +568,20 @@ class PixelatedSourceReconstruction(object):
             # Calculate slice indices for the kernel relative to the sparse element
             slice_y_start = np.max([kernel_center - y_sp, 0])
             slice_y_end = np.min(
-                [kernel_center - y_sp + self._numPix, self._shape_kernel[0]]
+                [kernel_center - y_sp + self._num_pix, self._shape_kernel[0]]
             )
             slice_x_start = np.max([kernel_center - x_sp, 0])
             slice_x_end = np.min(
-                [kernel_center - x_sp + self._numPix, self._shape_kernel[1]]
+                [kernel_center - x_sp + self._num_pix, self._shape_kernel[1]]
             )
 
             convolved_image_y_start = y_sp - np.min([y_sp, kernel_center])
             convolved_image_y_end = y_sp + np.min(
-                [self._numPix - y_sp, self._shape_kernel[0] - kernel_center]
+                [self._num_pix - y_sp, self._shape_kernel[0] - kernel_center]
             )
             convolved_image_x_start = x_sp - np.min([x_sp, kernel_center])
             convolved_image_x_end = x_sp + np.min(
-                [self._numPix - x_sp, self._shape_kernel[1] - kernel_center]
+                [self._num_pix - x_sp, self._shape_kernel[1] - kernel_center]
             )
 
             convolved[

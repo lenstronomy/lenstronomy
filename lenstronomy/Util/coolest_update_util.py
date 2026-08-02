@@ -291,7 +291,7 @@ def sie_update(mass, kwargs_lens, kwargs_lens_mcmc=None):
     """Update the COOLEST SIE mass model with results in kwargs_lens.
 
     :param mass: coolest.template.classes.profiles.mass.SIE object
-    :param kwargs_lens : dictionnary with the point estimate
+    :param kwargs_lens: dictionnary with the point estimate
     :return: updated mass
     """
 

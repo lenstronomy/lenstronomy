@@ -21,7 +21,7 @@ class TestEPL_BOXYDISKY(object):
 
         self.epl_boxydisky = EPL_BOXYDISKY()
 
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
         self.theta_E_list = [0.5, 1, 2]
         self.gamma_list = [1.8, 2.0, 2.2]
         self.e1_list = [-0.2, 0.0, 0.2]
@@ -163,7 +163,7 @@ class TestEPL_BOXYDISKY_ELL(object):
 
         self.epl_boxydisky = EPL_BOXYDISKY_ELL()
 
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
         self.theta_E_list = [0.5, 1, 2]
         self.gamma_list = [1.8, 2.0, 2.2]
         self.e1_list = [-0.2, 0.0, 0.2]
@@ -186,8 +186,9 @@ class TestEPL_BOXYDISKY_ELL(object):
                             kwargs_multipole = {
                                 "m": 4,
                                 "a_m": a4_a * theta_E,
-                                "phi_m": phi,
+                                "varphi_m": 0.0,
                                 "q": q,
+                                "phi_ref": phi,
                             }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
@@ -222,8 +223,9 @@ class TestEPL_BOXYDISKY_ELL(object):
                             kwargs_multipole = {
                                 "m": 4,
                                 "a_m": a4_a * theta_E,
-                                "phi_m": phi,
+                                "varphi_m": 0.0,
                                 "q": q,
+                                "phi_ref": phi,
                             }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,
@@ -264,8 +266,9 @@ class TestEPL_BOXYDISKY_ELL(object):
                             kwargs_multipole = {
                                 "m": 4,
                                 "a_m": a4_a * theta_E,
-                                "phi_m": phi,
+                                "varphi_m": 0.0,
                                 "q": q,
+                                "phi_ref": phi,
                             }
                             kwargs_epl_boxydisky = {
                                 "theta_E": theta_E,

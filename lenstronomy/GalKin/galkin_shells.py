@@ -46,7 +46,9 @@ class GalkinShells(Galkin):
         self._num_pix = 100
         # factor of 1.5 to allow outside flux to be convolved into the largest bin
         self._delta_pix = 1.5 * r_max * 2 / self._num_pix
-        x_grid, y_grid = util.make_grid(numPix=self._num_pix, deltapix=self._delta_pix)
+        x_grid, y_grid = util.make_grid(
+            num_pix=self._num_pix, delta_pix=self._delta_pix
+        )
         self._r_grid = np.sqrt(x_grid**2 + y_grid**2)
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, **kwargs):

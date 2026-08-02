@@ -17,7 +17,7 @@ class FluxCalibration(object):
         calibration fitting.
 
         :param kwargs_imaging: keyword argument related to imaging data and imaging
-            likelihood. Feeds into ImageLikelihood(**kwargs_imaging)
+            likelihood. Feeds into ImageLikelihood(\*\*kwargs_imaging)
         :param kwargs_model: keyword argument of model components
         :param kwargs_params: keyword argument of model parameters
         :param calibrate_bands: state which bands the flux calibration is applied to
@@ -63,7 +63,7 @@ class FluxCalibration(object):
         :return: multi_band_list, [chi2_list, pos_list, vel_list]
         """
         init_pos = self.chain.get_args(self.chain.multi_band_list)
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount)
         num_param = self.chain.num_param
         lower_limit = [scaling_lower_limit] * num_param
         upper_limit = [scaling_upper_limit] * num_param

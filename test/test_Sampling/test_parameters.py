@@ -176,6 +176,10 @@ class TestParam(object):
         assert lens_dict["center_y"] == 0.0
         assert lens_light_dict_list[0]["center_x"] == -0.06
 
+        # this flag is set whenever the param class is called from jaxtronomy
+        self.param_class._jax = True
+        kwargs_return = self.param_class.args2kwargs(args)
+
     def test_get_cosmo(self):
         kwargs_model = {
             "lens_model_list": ["SPEP"],
@@ -239,7 +243,7 @@ class TestParam(object):
             kwargs_ps=kwargs_true_ps,
             kwargs_special={"D_dt": 1000},
         )
-        assert param_class.specialParams._D_dt_sampling.on
+        assert param_class.special_params._D_dt_sampling.on
 
     def test_mass_scaling(self):
         kwargs_model = {
@@ -653,6 +657,34 @@ class TestParam(object):
             **kwargs_param
         )
         self.param_class.print_setting()
+
+    def test_jax_flag(self):
+        kwargs_model = {
+            "lens_model_list": ["EPL"],
+            "source_light_model_list": ["GAUSSIAN"],
+            "lens_light_model_list": ["SERSIC"],
+            "point_source_model_list": ["LENSED_POSITION"],
+            "multi_plane": False,
+        }
+        kwargs_param = {
+            "num_point_source_list": [2],
+        }
+        kwargs_fixed_lens = [{"gamma": 1.9}]
+        kwargs_fixed_source = [{"sigma": 0.1, "center_x": 0.2, "center_y": 0.2}]
+        kwargs_fixed_ps = [{"ra_image": [-1, 1], "dec_image": [-1, 1]}]
+        kwargs_fixed_lens_light = [{}]
+        kwargs_fixed_cosmo = [{}]
+        param_class = Param(
+            kwargs_model,
+            kwargs_fixed_lens=kwargs_fixed_lens,
+            kwargs_fixed_source=kwargs_fixed_source,
+            kwargs_fixed_lens_light=kwargs_fixed_lens_light,
+            kwargs_fixed_ps=kwargs_fixed_ps,
+            kwargs_fixed_special=kwargs_fixed_cosmo,
+            _jax=True,
+            **kwargs_param
+        )
+        param_class.print_setting()
 
 
 class TestRaise(unittest.TestCase):

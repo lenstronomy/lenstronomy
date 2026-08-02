@@ -3,6 +3,10 @@ __author__ = "aymgal, johannesulf"
 import numpy as np
 
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
+from lenstronomy.Sampling.Pool.parallelization_util import (
+    nested_logl_worker,
+    set_nested_likelihood_module,
+)
 import lenstronomy.Util.sampling_util as utils
 
 __all__ = ["DynestySampler"]
@@ -55,14 +59,15 @@ class DynestySampler(NestedSampler):
             from schwimmbad import MPIPool
             import sys
 
-            # use_dill=True not supported for some versions of schwimmbad
-            pool = MPIPool(use_dill=True)
+            set_nested_likelihood_module(self._ll, self.n_dims)
+
+            pool = MPIPool()
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)
 
             self._sampler = self._dynesty.DynamicNestedSampler(
-                loglikelihood=self.log_likelihood,
+                loglikelihood=nested_logl_worker,
                 prior_transform=self.prior,
                 ndim=self.n_dims,
                 bound=bound,

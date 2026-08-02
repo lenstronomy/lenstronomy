@@ -37,7 +37,7 @@ class TestPointSourceVariability(object):
 
         kwargs_single_band["data_count_unit"] = "e-"
         kwargs_numerics = {}
-        numpix = 20
+        num_pix = 20
         # source position
         source_x, source_y = 0.01, 0.1
         # lens light
@@ -85,7 +85,7 @@ class TestPointSourceVariability(object):
             source_x,
             source_y,
             var_func,
-            numpix,
+            num_pix,
             kwargs_single_band,
             kwargs_model_time_var,
             kwargs_numerics,

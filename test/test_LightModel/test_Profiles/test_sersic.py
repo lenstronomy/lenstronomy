@@ -167,8 +167,8 @@ class TestSersic(object):
         npt.assert_almost_equal(values[2], 0.0032541063777438853, decimal=6)
 
     def test_total_flux(self):
-        deltapix = 0.1
-        x_grid, y_grid = util.make_grid(numPix=400, deltapix=deltapix)
+        delta_pix = 0.1
+        x_grid, y_grid = util.make_grid(num_pix=400, delta_pix=delta_pix)
         r_eff = 1
         I_eff = 1.0
         n_sersic = 2
@@ -178,7 +178,7 @@ class TestSersic(object):
         flux_grid = self.sersic.function(
             x_grid, y_grid, R_sersic=r_eff, n_sersic=n_sersic, amp=I_eff
         )
-        flux_numeric = np.sum(flux_grid) * deltapix**2
+        flux_numeric = np.sum(flux_grid) * delta_pix**2
         npt.assert_almost_equal(flux_numeric / flux_analytic, 1, decimal=2)
 
         # and here we check with ellipticity
@@ -190,7 +190,7 @@ class TestSersic(object):
         flux_grid = sersic_elliptic_major.function(
             x_grid, y_grid, R_sersic=r_eff, n_sersic=n_sersic, amp=I_eff, e1=e1, e2=e2
         )
-        flux_numeric_ell = np.sum(flux_grid) * deltapix**2
+        flux_numeric_ell = np.sum(flux_grid) * delta_pix**2
         npt.assert_almost_equal(flux_numeric_ell / flux_analytic_ell, 1, decimal=2)
 
         e1, e2 = 0.1, 0
@@ -203,7 +203,7 @@ class TestSersic(object):
         flux_grid = sersic_elliptic_product.function(
             x_grid, y_grid, R_sersic=r_eff, n_sersic=n_sersic, amp=I_eff, e1=e1, e2=e2
         )
-        flux_numeric_ell = np.sum(flux_grid) * deltapix**2
+        flux_numeric_ell = np.sum(flux_grid) * delta_pix**2
         npt.assert_almost_equal(flux_numeric_ell / flux_analytic_ell, 1, decimal=2)
 
     def test_qphi(self):

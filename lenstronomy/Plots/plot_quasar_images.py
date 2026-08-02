@@ -22,14 +22,21 @@ def plot_quasar_images(
     choices for grid_radius_arcsec and grid_resolution.
 
     :param lens_model: an instance of LensModel
+    :type lens_model: LensModel
     :param x_image: a list or array of x coordinates [units arcsec]
+    :type x_image: list or numpy.ndarray
     :param y_image: a list or array of y coordinates [units arcsec]
+    :type y_image: list or numpy.ndarray
     :param kwargs_lens: keyword arguments for the lens model
-    :param source_size: the size of the background source [units parsec]
+    :type kwargs_lens: list
     :param source_light_model: instance of LightModel for the source
-    :param source_light_kwargs: the keyword arguments for the source light
+    :type source_light_model: LightModel
+    :param kwargs_light_source: the keyword arguments for the source light
+    :type kwargs_light_source: list
     :param grid_resolution: the grid resolution in units arcsec/pixel
+    :type grid_resolution: float
     :param grid_radius_arcsec: the size of the ray tracing region in arcsec
+    :type grid_radius_arcsec: float
     """
     magnifications = []
     images = []

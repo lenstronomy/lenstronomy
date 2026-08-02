@@ -13,6 +13,7 @@ Subpackages
    lenstronomy.Data
    lenstronomy.GalKin
    lenstronomy.ImSim
+   lenstronomy.JAMPy
    lenstronomy.LensModel
    lenstronomy.LightModel
    lenstronomy.Plots
@@ -27,5 +28,5 @@ Module contents
 
 .. automodule:: lenstronomy
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

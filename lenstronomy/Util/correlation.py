@@ -46,5 +46,5 @@ def power_spectrum_1d(image):
     """
     psd2D = power_spectrum_2d(image)
     # Calculate the azimuthally averaged 1D power spectrum
-    psd1D, r = analysis_util.azimuthalAverage(psd2D)
+    psd1D, r = analysis_util.azimuthal_average(psd2D)
     return psd1D, r

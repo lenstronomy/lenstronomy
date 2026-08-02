@@ -283,7 +283,7 @@ class SubgridNumbaConvolution(object):
         i0 = delta  # index where to start kernel for i=0
         j0 = delta  # index where to start kernel for j=0  (should be symmetric)
         kernel_super_match[i0 + i : i0 + i + n, j0 + j : j0 + j + n] = kernel_super
-        # kernel_super_match = image_util.cut_edges(kernel_super_match, numPix=n)
+        # kernel_super_match = image_util.cut_edges(kernel_super_match, num_pix=n)
         kernel = image_util.re_size(
             kernel_super_match, factor=self._supersampling_factor
         )

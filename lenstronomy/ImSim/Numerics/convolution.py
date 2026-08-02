@@ -118,8 +118,10 @@ class PixelKernelConvolution(object):
         # sure we only call rfftn/irfftn from one thread at a time.
         if not complex_result and (_rfft_mt_safe or _rfft_lock.acquire(False)):
             try:
-                sp1 = np.fft.rfftn(in1, fshape)
-                ret = np.fft.irfftn(sp1 * sp2, fshape)[fslice].copy()
+                sp1 = np.fft.rfftn(in1, fshape, axes=tuple(range(in1.ndim)))
+                ret = np.fft.irfftn(sp1 * sp2, fshape, axes=tuple(range(sp1.ndim)))[
+                    fslice
+                ].copy()
             finally:
                 if not _rfft_mt_safe:
                     _rfft_lock.release()
@@ -171,7 +173,7 @@ class PixelKernelConvolution(object):
         # sure we only call rfftn/irfftn from one thread at a time.
         if not complex_result and (_rfft_mt_safe or _rfft_lock.acquire(False)):
             try:
-                sp2 = np.fft.rfftn(in2, fshape)
+                sp2 = np.fft.rfftn(in2, fshape, axes=tuple(range(in2.ndim)))
             finally:
                 if not _rfft_mt_safe:
                     _rfft_lock.release()
@@ -214,11 +216,11 @@ class SubgridKernelConvolution(object):
         """
         # n_high = len(kernel_supersampled)
         self._supersampling_factor = supersampling_factor
-        # numPix = int(n_high / self._supersampling_factor)
+        # num_pix = int(n_high / self._supersampling_factor)
         # if self._supersampling_factor % 2 == 0:
         #    self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)
         # else:
-        #    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)
+        #    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, num_pix=num_pix)
         if supersampling_kernel_size is None:
             kernel_low_res, kernel_high_res = np.zeros((3, 3)), kernel_supersampled
             self._low_res_convolution = False
@@ -255,6 +257,7 @@ class SubgridKernelConvolution(object):
     def re_size_convolve(self, image_low_res, image_high_res):
         """
 
+        :param image_low_res: low resolution image
         :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
         :return: convolved and re-sized image
         """
@@ -334,6 +337,7 @@ class MultiGaussianConvolution(object):
     def re_size_convolve(self, image_low_res, image_high_res):
         """
 
+        :param image_low_res: regular pixel grid image
         :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
         :return: convolved and re-sized image
         """
@@ -355,7 +359,7 @@ class MultiGaussianConvolution(object):
         from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
 
         mg = MultiGaussian()
-        x, y = util.make_grid(numPix=num_pix, deltapix=1)
+        x, y = util.make_grid(num_pix=num_pix, delta_pix=1)
         kernel = mg.function(x, y, amp=self._fraction_list, sigma=self._sigmas_scaled)
         kernel = util.array2image(kernel)
         return kernel / np.sum(kernel)

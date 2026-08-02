@@ -40,13 +40,13 @@ class MultiLinear(MultiDataBase):
          that they get overwritten by the linear solver solution.
         """
         self.type = "multi-linear"
-        imageModel_list = []
+        image_model_list = []
         if linear_solver is False and len(multi_band_list) > 1:
             raise ValueError(
                 'Multi-linear mode with more than one band does not support "linear_solver" = False.'
             )
         for band_index in range(len(multi_band_list)):
-            imageModel = SingleBandMultiModel(
+            image_model = SingleBandMultiModel(
                 multi_band_list,
                 kwargs_model,
                 likelihood_mask_list=likelihood_mask_list,
@@ -54,8 +54,8 @@ class MultiLinear(MultiDataBase):
                 kwargs_pixelbased=kwargs_pixelbased,
                 linear_solver=linear_solver,
             )
-            imageModel_list.append(imageModel)
-        super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
+            image_model_list.append(image_model)
+        super(MultiLinear, self).__init__(image_model_list, compute_bool=compute_bool)
 
     def image_linear_solve(
         self,
@@ -87,7 +87,7 @@ class MultiLinear(MultiDataBase):
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                wls_model, error_map, cov_param, param = self._imageModel_list[
+                wls_model, error_map, cov_param, param = self._image_model_list[
                     i
                 ].image_linear_solve(
                     kwargs_lens,
@@ -138,7 +138,7 @@ class MultiLinear(MultiDataBase):
             linear_prior = [None for i in range(self._num_bands)]
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL_i, param_i = self._imageModel_list[i].likelihood_data_given_model(
+                logL_i, param_i = self._image_model_list[i].likelihood_data_given_model(
                     kwargs_lens,
                     kwargs_source,
                     kwargs_lens_light,
@@ -175,6 +175,6 @@ class MultiLinear(MultiDataBase):
         :param kwargs_ps: list of keyword arguments for point sources
         :return: updated list of kwargs with linear parameter values for specific band
         """
-        return self._imageModel_list[model_band].update_linear_kwargs(
+        return self._image_model_list[model_band].update_linear_kwargs(
             param[model_band], kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
         )

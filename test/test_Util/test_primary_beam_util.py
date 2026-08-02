@@ -8,10 +8,10 @@ from lenstronomy.Util import primary_beam_util
 
 def test_primary_beam_value_at_coords():
 
-    numPix = 100
-    primary_beam = np.zeros((numPix, numPix))
-    for i in range(numPix):
-        for j in range(numPix):
+    num_pix = 100
+    primary_beam = np.zeros((num_pix, num_pix))
+    for i in range(num_pix):
+        for j in range(num_pix):
             primary_beam[i, j] = np.exp(-1e-4 * ((i - 78) ** 2 + (j - 56) ** 2))
     primary_beam /= np.max(primary_beam)
 
@@ -22,11 +22,11 @@ def test_primary_beam_value_at_coords():
     # Test points outside of the image sent to zero
     output2_1 = primary_beam_util.primary_beam_value_at_coords(-0.001, 10, primary_beam)
     output2_2 = primary_beam_util.primary_beam_value_at_coords(
-        numPix - 1 + 0.001, 10, primary_beam
+        num_pix - 1 + 0.001, 10, primary_beam
     )
     output2_3 = primary_beam_util.primary_beam_value_at_coords(50, -0.001, primary_beam)
     output2_4 = primary_beam_util.primary_beam_value_at_coords(
-        50, numPix - 1 + 0.001, primary_beam
+        50, num_pix - 1 + 0.001, primary_beam
     )
     assert output2_1 == 0.0
     assert output2_2 == 0.0

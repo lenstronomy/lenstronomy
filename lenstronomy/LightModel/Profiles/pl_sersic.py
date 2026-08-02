@@ -116,7 +116,8 @@ class PL_Sersic(object):
         """PL-Sérsic 2D surface brightness from a 3D PL-Sérsic luminosity density:
 
         I(R) = 2 amp r_c \\tilde{z} 2F1(alpha_c/2, 1; 3/2; \\tilde{z}^2)
-               + 2 \int_{r_c}^{\infty} j(r) r dr / sqrt(r^2 - R^2)     (R < r_c)
+               + 2 \\int_{r_c}^{\\infty} j(r) r dr / sqrt(r^2 - R^2)     (R < r_c)
+
         I(R) = I_0 exp[-(R/s)^nu]                                      (R >= r_c)
         """
         R = self.get_distance_from_center_bpl(x, y, e1, e2, center_x, center_y)

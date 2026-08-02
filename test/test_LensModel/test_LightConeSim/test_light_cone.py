@@ -43,7 +43,7 @@ class TestLightCone(object):
         kwargs_lens_interp = []
         grid_spacing = 0.01  # spacing of the convergence grid in units arc seconds
         x_grid, y_grid = util.make_grid(
-            numPix=500, deltapix=grid_spacing
+            num_pix=500, delta_pix=grid_spacing
         )  # we create the grid coordinates centered at zero
         x_axes, y_axes = util.get_axes(
             x_grid, y_grid

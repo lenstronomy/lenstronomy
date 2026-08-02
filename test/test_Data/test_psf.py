@@ -11,17 +11,17 @@ import lenstronomy.Util.image_util as image_util
 
 class TestData(object):
     def setup_method(self):
-        self.deltaPix = 0.05
+        self.delta_pix = 0.05
         fwhm = 0.2
         kwargs_gaussian = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": self.deltaPix,
+            "pixel_size": self.delta_pix,
         }
         self.psf_gaussian = PSF(**kwargs_gaussian)
         kernel_point_source = kernel_util.kernel_gaussian(
-            num_pix=17, delta_pix=self.deltaPix, fwhm=fwhm
+            num_pix=17, delta_pix=self.delta_pix, fwhm=fwhm
         )
         kwargs_pixel = {"psf_type": "PIXEL", "kernel_point_source": kernel_point_source}
         self.psf_pixel = PSF(**kwargs_pixel)
@@ -50,8 +50,8 @@ class TestData(object):
         npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=9)
 
     def test_kernel_subsampled(self):
-        deltaPix = 0.05  # pixel size of image
-        numPix = 40  # number of pixels per axis
+        delta_pix = 0.05  # pixel size of image
+        num_pix = 40  # number of pixels per axis
         subsampling_res = 3  # subsampling scale factor (in each dimension)
         fwhm = 0.3  # FWHM of the PSF kernel
         fwhm_object = 0.2  # FWHM of the Gaussian source to be convolved
@@ -60,7 +60,7 @@ class TestData(object):
         # first we create the sub-sampled kernel
         kernel_point_source_subsampled = kernel_util.kernel_gaussian(
             num_pix=11 * subsampling_res,
-            delta_pix=deltaPix / subsampling_res,
+            delta_pix=delta_pix / subsampling_res,
             fwhm=fwhm,
         )
         # to have the same consistent kernel, we re-size (average over the sub-sampled pixels) the sub-sampled kernel
@@ -90,8 +90,8 @@ class TestData(object):
         )
         npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=8)
 
-        deltaPix = 0.05  # pixel size of image
-        numPix = 40  # number of pixels per axis
+        delta_pix = 0.05  # pixel size of image
+        num_pix = 40  # number of pixels per axis
         subsampling_res = 4  # subsampling scale factor (in each dimension)
         fwhm = 0.3  # FWHM of the PSF kernel
         fwhm_object = 0.2  # FWHM of the Gaussian source to be convolved
@@ -100,7 +100,7 @@ class TestData(object):
         # first we create the sub-sampled kernel
         kernel_point_source_subsampled = kernel_util.kernel_gaussian(
             num_pix=11 * subsampling_res + 1,
-            delta_pix=deltaPix / subsampling_res,
+            delta_pix=delta_pix / subsampling_res,
             fwhm=fwhm,
         )
 
@@ -128,12 +128,12 @@ class TestData(object):
         # test to retrieve the original supersampled kernel despite in the intermediate steps using
         # a different supersampling factor
         subsampling_res = 5
-        deltaPix = 0.05  # pixel size of image
+        delta_pix = 0.05  # pixel size of image
         fwhm = 0.3  # FWHM of the PSF kernel
 
         kernel_point_source_subsampled = kernel_util.kernel_gaussian(
             num_pix=11 * subsampling_res,
-            delta_pix=deltaPix / subsampling_res,
+            delta_pix=delta_pix / subsampling_res,
             fwhm=fwhm,
         )
 
@@ -155,23 +155,23 @@ class TestData(object):
         )
 
     def test_fwhm(self):
-        deltaPix = 1.0
+        delta_pix = 1.0
         fwhm = 5.6
         kwargs = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
         }
         psf_kernel = PSF(**kwargs)
         fwhm_compute = psf_kernel.fwhm
         assert fwhm_compute == fwhm
 
-        kernel = kernel_util.kernel_gaussian(num_pix=31, delta_pix=deltaPix, fwhm=fwhm)
+        kernel = kernel_util.kernel_gaussian(num_pix=31, delta_pix=delta_pix, fwhm=fwhm)
         kwargs = {
             "psf_type": "PIXEL",
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
             "kernel_point_source": kernel,
         }
         psf_kernel = PSF(**kwargs)
@@ -181,7 +181,7 @@ class TestData(object):
         kwargs = {
             "psf_type": "PIXEL",
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
             "kernel_point_source": kernel,
             "point_source_supersampling_factor": 1,
         }
@@ -190,13 +190,13 @@ class TestData(object):
         npt.assert_almost_equal(fwhm_compute, fwhm, decimal=1)
 
     def test_kernel_pixel(self):
-        deltaPix = 1.0
+        delta_pix = 1.0
         fwhm = 5.6
         kwargs = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
         }
         psf_kernel = PSF(**kwargs)
         kernel_pixel = psf_kernel.kernel_pixel
@@ -205,20 +205,20 @@ class TestData(object):
         )
 
     def test_psf_error_map(self):
-        deltaPix = 1.0
+        delta_pix = 1.0
         fwhm = 5.6
         kwargs = {
             "psf_type": "GAUSSIAN",
             "fwhm": fwhm,
             "truncation": 5,
-            "pixel_size": deltaPix,
+            "pixel_size": delta_pix,
         }
         psf_kernel = PSF(**kwargs)
         error_map = psf_kernel.psf_variance_map
         assert error_map.all() == 0
 
     def test_warning(self):
-        deltaPix = 0.05  # pixel size of image
+        delta_pix = 0.05  # pixel size of image
         subsampling_res = 4  # subsampling scale factor (in each dimension)
         fwhm = 0.3  # FWHM of the PSF kernel
 
@@ -226,7 +226,7 @@ class TestData(object):
         # first we create the sub-sampled kernel
         kernel_point_source_subsampled = kernel_util.kernel_gaussian(
             num_pix=11 * subsampling_res + 1,
-            delta_pix=deltaPix / subsampling_res,
+            delta_pix=delta_pix / subsampling_res,
             fwhm=fwhm,
         )
         print(len(kernel_point_source_subsampled), "test")
@@ -251,6 +251,47 @@ class TestData(object):
         assert len(kernel_odd) == 3
         kernel_odd_new = kernel_util.kernel_make_odd(kernel_point_source)
         npt.assert_almost_equal(kernel_odd_new, kernel_odd, decimal=16)
+
+    def test_jax_array_psf_variance_map(self):
+        """Test that jax arrays in kernel_point_source or psf_variance_map are handled
+        correctly during normalisation (covers the jax.Array branch in psf.py)."""
+        jnp = pytest.importorskip("jax.numpy")
+
+        kernel_np = kernel_util.kernel_gaussian(
+            num_pix=17, delta_pix=self.delta_pix, fwhm=0.2
+        )
+        psf_variance_map = np.ones_like(kernel_np)
+
+        # Case 1: kernel_point_source is a jax array
+        kernel_jax = jnp.array(kernel_np)
+        kwargs_psf = {
+            "psf_type": "PIXEL",
+            "kernel_point_source": kernel_jax,
+            "psf_variance_map": psf_variance_map,
+            "kernel_point_source_normalisation": True,
+        }
+        psf = PSF(**kwargs_psf)
+        # After normalisation by sum(kernel)^2 ≈ 1, the total should remain close to original
+        npt.assert_almost_equal(
+            np.sum(psf.psf_variance_map),
+            np.sum(psf_variance_map) / np.sum(kernel_np) ** 2,
+            decimal=6,
+        )
+
+        # Case 2: psf_variance_map is a jax array
+        variance_jax = jnp.ones_like(kernel_np)
+        kwargs_psf2 = {
+            "psf_type": "PIXEL",
+            "kernel_point_source": kernel_np,
+            "psf_variance_map": variance_jax,
+            "kernel_point_source_normalisation": True,
+        }
+        psf2 = PSF(**kwargs_psf2)
+        npt.assert_almost_equal(
+            np.sum(psf2.psf_variance_map),
+            np.sum(np.asarray(variance_jax)) / np.sum(kernel_np) ** 2,
+            decimal=6,
+        )
 
     def test_unnormalized(self):
         psf_norm_factor = 0.1

@@ -57,8 +57,8 @@ class TestShapeletSet(object):
     def test_shapelet_basis(self):
         num_order = 5
         beta = 1
-        numPix = 10
-        kernel_list = self.shapeletSet.shapelet_basis_2d(num_order, beta, numPix)
+        num_pix = 10
+        kernel_list = self.shapeletSet.shapelet_basis_2d(num_order, beta, num_pix)
         npt.assert_almost_equal(kernel_list[0][4, 4], 0.4393912894677224, decimal=9)
 
     def test_decomposition(self):
@@ -68,14 +68,14 @@ class TestShapeletSet(object):
         """
         n_max = 2
         beta = 10.0
-        deltaPix = 1
+        delta_pix = 1
         amp = np.array([1, 1, 1, 1, 1, 1])
-        x, y = util.make_grid(100, deltaPix, 1)
+        x, y = util.make_grid(100, delta_pix, 1)
         input = self.shapeletSet.function(
             x, y, amp, n_max, beta, center_x=0, center_y=0
         )
         amp_out = self.shapeletSet.decomposition(
-            input, x, y, n_max, beta, deltaPix, center_x=0, center_y=0
+            input, x, y, n_max, beta, delta_pix, center_x=0, center_y=0
         )
         for i in range(len(amp)):
             npt.assert_almost_equal(amp_out[i], amp[i], decimal=4)
@@ -83,9 +83,9 @@ class TestShapeletSet(object):
     def test_function_split(self):
         n_max = 2
         beta = 10.0
-        deltaPix = 0.1
+        delta_pix = 0.1
         amp = np.array([1, 1, 1, 1, 1, 1])
-        x, y = util.make_grid(10, deltaPix, 1)
+        x, y = util.make_grid(10, delta_pix, 1)
         function_set = self.shapeletSet.function_split(
             x, y, amp, n_max, beta, center_x=0, center_y=0
         )

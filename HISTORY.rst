@@ -466,3 +466,17 @@ History
 1.13.6 (2026-03-25)
 +++++++++++++++++++
 * Updated configurations for Roman Space Telescope
+
+1.14.0 (2026-04-14)
++++++++++++++++++++
+* JamPy implementation for kinematics calculation
+
+1.14.1 (2026-06-05)
++++++++++++++++++++
+* Minor changes in parameter namings
+* improved JamPy integration
+* Improved Euclid configurations
+
+1.14.2 (2026-07-09)
++++++++++++++++++++
+* Minor numerics stability improvements

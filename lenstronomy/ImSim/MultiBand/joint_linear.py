@@ -100,7 +100,7 @@ class JointLinear(MultiLinear):
         A = []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                A_i = self._imageModel_list[i].linear_response_matrix(
+                A_i = self._image_model_list[i].linear_response_matrix(
                     kwargs_lens,
                     kwargs_source,
                     kwargs_lens_light,
@@ -124,7 +124,7 @@ class JointLinear(MultiLinear):
         d = []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                d_i = self._imageModel_list[i].data_response
+                d_i = self._image_model_list[i].data_response
                 if len(d) == 0:
                     d = d_i
                 else:
@@ -143,7 +143,7 @@ class JointLinear(MultiLinear):
             if self._compute_bool[i] is True:
                 num_data = self.num_response_list[i]
                 array_i = array[k : k + num_data]
-                image_i = self._imageModel_list[i].array_masked2image(array_i)
+                image_i = self._image_model_list[i].array_masked2image(array_i)
                 image_list.append(image_i)
                 k += num_data
         return image_list
@@ -158,9 +158,9 @@ class JointLinear(MultiLinear):
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(
-                    kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
-                )
+                C_D_response_i, model_error_i = self._image_model_list[
+                    i
+                ].error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
                 model_error.append(model_error_i)
                 if len(C_D_response) == 0:
                     C_D_response = C_D_response_i
@@ -208,9 +208,9 @@ class JointLinear(MultiLinear):
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL += self._imageModel_list[i].Data.log_likelihood(
+                logL += self._image_model_list[i].Data.log_likelihood(
                     im_sim_list[index],
-                    self._imageModel_list[i].likelihood_mask,
+                    self._image_model_list[i].likelihood_mask,
                     model_error_list[index],
                 )
                 index += 1
@@ -218,7 +218,7 @@ class JointLinear(MultiLinear):
             marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
         if check_positive_flux is True and self._num_bands > 0:
-            bool_ = self._imageModel_list[0].check_positive_flux(
+            bool_ = self._image_model_list[0].check_positive_flux(
                 kwargs_source, kwargs_lens_light, kwargs_ps
             )
             if bool_ is False:
@@ -244,7 +244,7 @@ class JointLinear(MultiLinear):
         :param kwargs_ps:
         :return:
         """
-        model_band = self._imageModel_list[model_band]
+        model_band = self._image_model_list[model_band]
         # TODO: this might not work if certain linear parameters are only used in certain imaging bands and
         #  the param array does not match
         return model_band.update_linear_kwargs(

@@ -47,6 +47,7 @@ class TestTDCosmography(object):
             kwargs_aperture=kwargs_aperture,
             kwargs_seeing=kwargs_seeing,
             light_model_kinematics_bool=None,
+            kinematics_backend="galkin",
         )
         self.lens = LensModel(
             lens_model_list=["SIE"], cosmo=cosmo, z_lens=z_lens, z_source=z_source

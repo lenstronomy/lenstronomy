@@ -11,14 +11,14 @@ class TestTracerPlot(object):
         # imagng data specifics
         background_rms = 0.005  # background noise per pixel
         exp_time = 500.0  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 60  # cutout pixel size per axis
+        num_pix = 60  # cutout pixel size per axis
         pixel_scale = 0.05  # pixel size in arcsec (area per pixel = pixel_scale**2)
         fwhm = 0.05  # full width at half maximum of PSF
         psf_type = "GAUSSIAN"  # 'GAUSSIAN', 'PIXEL', 'NONE'
 
         # tracer measurements specifics
         tracer_noise_map = np.ones(
-            (numPix, numPix)
+            (num_pix, num_pix)
         )  # variance of metallicity measurement for each pixel
 
         # lensing quantities
@@ -99,11 +99,11 @@ class TestTracerPlot(object):
             dec_at_xy_0,
             _,
             _,
-            Mpix2coord,
+            transform_pix2coord,
             _,
         ) = util.make_grid_with_coordtransform(
-            numPix=numPix,
-            deltapix=pixel_scale,
+            num_pix=num_pix,
+            delta_pix=pixel_scale,
             center_ra=0,
             center_dec=0,
             subgrid_res=1,
@@ -115,9 +115,9 @@ class TestTracerPlot(object):
             "exposure_time": exp_time,  # exposure time (or a map per pixel)
             "ra_at_xy_0": ra_at_xy_0,  # RA at (0,0) pixel
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
-            "transform_pix2angle": Mpix2coord,
+            "transform_pix2angle": transform_pix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix)),
+            "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 
@@ -131,7 +131,7 @@ class TestTracerPlot(object):
         }
 
         # if you are using a PSF estimate from e.g. a star in the FoV of your exposure, you can set
-        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': deltaPix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
+        # kwargs_psf = {'psf_type': 'PIXEL', 'pixel_size': delta_pix, 'kernel_point_source': 'odd numbered 2d grid with centered star/PSF model'}
 
         psf_class = PSF(**kwargs_psf)
         kwargs_numerics = {
@@ -169,9 +169,9 @@ class TestTracerPlot(object):
             "noise_map": tracer_noise_map,  # variance of pixels
             "ra_at_xy_0": ra_at_xy_0,  # RA at (0,0) pixel
             "dec_at_xy_0": dec_at_xy_0,  # DEC at (0,0) pixel
-            "transform_pix2angle": Mpix2coord,
+            "transform_pix2angle": transform_pix2coord,
             # matrix to translate shift in pixel in shift in relative RA/DEC (2x2 matrix). Make sure it's units are arcseconds or the angular units you want to model.
-            "image_data": np.zeros((numPix, numPix)),
+            "image_data": np.zeros((num_pix, num_pix)),
             # 2d data vector, here initialized with zeros as place holders that get's overwritten once a simulated image with noise is created.
         }
 
@@ -234,8 +234,6 @@ class TestTracerPlot(object):
             self.kwargs_model,
             self.kwargs_params,
             self.kwargs_likelihood,
-            arrow_size=0.02,
-            cmap_string="gist_heat",
             fast_caustic=True,
         )
 
@@ -243,19 +241,84 @@ class TestTracerPlot(object):
 
         tracer_plot.data_plot(ax=axes[0, 0])
         tracer_plot.model_plot(ax=axes[0, 1])
-        tracer_plot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        tracer_plot.normalized_residual_plot(ax=axes[0, 2], vmin=-6, vmax=6)
         tracer_plot.source_plot(
             ax=axes[1, 0],
-            deltaPix_source=0.01,
-            numPix=100,
+            delta_pix_source=0.01,
+            num_pix=100,
             plot_scale="log",
-            v_min=None,
-            v_max=None,
         )
-        tracer_plot.convergence_plot(ax=axes[1, 1], v_max=1)
+        tracer_plot.source_plot(
+            ax=axes[1, 0],
+            delta_pix_source=0.01,
+            num_pix=100,
+            plot_scale="log",
+            kwargs_caustics={"color": "b"},
+        )
+        tracer_plot.convergence_plot(ax=axes[1, 1], vmax=1)
         tracer_plot.magnification_plot(ax=axes[1, 2])
         f.tight_layout()
         f.subplots_adjust(
             left=None, bottom=None, right=None, top=None, wspace=0.0, hspace=0.05
         )
+        plt.close()
+
+    def test_tracer_plot_extended_paths(self):
+        tracer_plot = TracerPlot(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_params,
+            self.kwargs_likelihood,
+            fast_caustic=False,
+        )
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.model_plot(ax=ax, image_names=True, image_name_list=["A", "B", "C"])
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.absolute_residual_plot(ax=ax)
+        plt.close()
+
+        source_lin, _ = tracer_plot.source(
+            num_pix=20,
+            delta_pix=0.02,
+            center=(0.01, -0.01),
+            image_orientation=False,
+        )
+        assert source_lin.shape == (20, 20)
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.source_plot(
+            ax=ax,
+            num_pix=30,
+            delta_pix_source=0.02,
+            plot_scale="linear",
+            kwargs_caustics={"linewidth": 2},
+        )
+        plt.close()
+
+        old_font_size = tracer_plot.font_size
+        tracer_plot.font_size = old_font_size + 1
+        assert tracer_plot.font_size == old_font_size + 1
+
+        with np.testing.assert_raises(ValueError):
+            f, ax = plt.subplots(1, 1, figsize=(4, 4))
+            tracer_plot.source_plot(
+                ax=ax,
+                num_pix=20,
+                delta_pix_source=0.02,
+                plot_scale="invalid",
+            )
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.deflection_plot(ax=ax, axis=1, kwargs_caustics={"color": "b"})
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        tracer_plot.deflection_plot(ax=ax, kwargs_caustics={"color": "b"})
+        plt.close()
+
+        tracer_plot.plot_main(kwargs_caustics={"color": "b"})
         plt.close()

@@ -15,7 +15,7 @@ class Nautilus(object):
         -----------
         .. [1] Johannes Lange, in prep, https://github.com/johannesulf/nautilus
 
-        :param likelihood_module: LikelihoodModule() instance
+        :param likelihood_module: Likelihood() instance
         """
         self._likelihood_module = likelihood_module
         self._num_param, _ = self._likelihood_module.param.num_param()
@@ -57,7 +57,7 @@ class Nautilus(object):
                 "prior_type %s is not supported for Nautilus wrapper." % prior_type
             )
         # loop through prior
-        pool = choose_pool(mpi=mpi, processes=thread_count, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=thread_count)
         sampler = Sampler(
             prior,
             likelihood=self.likelihood,

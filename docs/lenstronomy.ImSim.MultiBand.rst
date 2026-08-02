@@ -12,6 +12,14 @@ lenstronomy.ImSim.MultiBand.joint\_linear module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.ImSim.MultiBand.joint\_linear\_vary\_background module
+------------------------------------------------------------------
+
+.. automodule:: lenstronomy.ImSim.MultiBand.joint_linear_vary_background
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.ImSim.MultiBand.multi\_data\_base module
 ----------------------------------------------------
 

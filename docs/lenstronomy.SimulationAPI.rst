@@ -19,6 +19,14 @@ lenstronomy.SimulationAPI.data\_api module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.SimulationAPI.mag\_amp\_conversion module
+-----------------------------------------------------
+
+.. automodule:: lenstronomy.SimulationAPI.mag_amp_conversion
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.SimulationAPI.model\_api module
 -------------------------------------------
 

@@ -49,6 +49,7 @@ class GalkinMultiObservation(GalkinModel):
                 GalkinObservation(
                     kwargs_aperture=kwargs_aperture_list[i],
                     kwargs_psf=kwargs_psf_list[i],
+                    backend="galkin",
                 )
             )
 

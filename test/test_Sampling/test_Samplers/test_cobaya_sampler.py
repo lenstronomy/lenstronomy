@@ -17,7 +17,7 @@ def import_fixture(simple_einstein_ring_likelihood):
     means = likelihood.param.kwargs2args(**kwargs_truths)
     sigmas = np.ones_like(means) * 0.1
     sampler = CobayaSampler(
-        likelihood_module=likelihood, mean_start=means, sigma_start=sigmas
+        likelihood_class=likelihood, mean_start=means, sigma_start=sigmas
     )
     return sampler, likelihood, means, sigmas
 

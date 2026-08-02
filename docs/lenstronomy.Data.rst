@@ -4,6 +4,14 @@ lenstronomy.Data package
 Submodules
 ----------
 
+lenstronomy.Data.angular\_sensitivity module
+--------------------------------------------
+
+.. automodule:: lenstronomy.Data.angular_sensitivity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lenstronomy.Data.coord\_transforms module
 -----------------------------------------
 
@@ -16,6 +24,14 @@ lenstronomy.Data.image\_noise module
 ------------------------------------
 
 .. automodule:: lenstronomy.Data.image_noise
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lenstronomy.Data.kinematic\_bin\_2D module
+------------------------------------------
+
+.. automodule:: lenstronomy.Data.kinematic_bin_2D
    :members:
    :undoc-members:
    :show-inheritance:

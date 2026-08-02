@@ -41,7 +41,7 @@ class TestCurvedArcSPT(object):
         kwargs_arc_spt["gamma1"] = -e1
         kwargs_arc_spt["gamma2"] = -e2
 
-        x, y = util.make_grid(numPix=100, deltapix=0.01)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.01)
         f_x_sis, f_y_sis = self._curve_regular.derivatives(x, y, **kwargs_arc_sis_mst)
         beta_x_sis = x - f_x_sis
         beta_y_sis = y - f_y_sis

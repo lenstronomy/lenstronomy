@@ -24,12 +24,12 @@ class TestJointLinear_VaryBG(object):
     def setup_method(self):
         sigma_bkg = 0.05
         exp_time = 100
-        numPix = 100
-        deltaPix = 0.05
+        num_pix = 100
+        delta_pix = 0.05
         fwhm = 0.5
 
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "truncation": 5}

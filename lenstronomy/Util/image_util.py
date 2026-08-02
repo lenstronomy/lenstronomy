@@ -190,7 +190,7 @@ def findOverlap(x_mins, y_mins, min_distance):
 
 
 @export
-def coordInImage(x_coord, y_coord, num_pix, deltapix):
+def coord_in_image(x_coord, y_coord, num_pix, delta_pix):
     """
     checks whether image positions are within the pixel image in units of arcsec
     if not: remove it
@@ -198,8 +198,8 @@ def coordInImage(x_coord, y_coord, num_pix, deltapix):
     :returns: image positions within the pixel image
     """
     idex = []
-    min_ = -deltapix * num_pix / 2
-    max_ = deltapix * num_pix / 2
+    min_ = -delta_pix * num_pix / 2
+    max_ = delta_pix * num_pix / 2
     for i in range(len(x_coord)):  # sum over image positions
         if (
             x_coord[i] < min_
@@ -243,20 +243,20 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :param bin_size: number of pixels (per axis) to merge
     :return:
     """
-    numPix = int(len(image) / bin_size)
-    numPix_precut = numPix * bin_size
-    factor = int(len(image) / numPix)
-    if not numPix * bin_size == len(image):
-        image_precut = image[0:numPix_precut, 0:numPix_precut]
+    num_pix = int(len(image) / bin_size)
+    num_pix_precut = num_pix * bin_size
+    factor = int(len(image) / num_pix)
+    if not num_pix * bin_size == len(image):
+        image_precut = image[0:num_pix_precut, 0:num_pix_precut]
     else:
         image_precut = image
     image_resized = re_size(image_precut, factor)
     image_resized *= bin_size**2
-    wht_map_resized = re_size(wht_map[0:numPix_precut, 0:numPix_precut], factor)
+    wht_map_resized = re_size(wht_map[0:num_pix_precut, 0:num_pix_precut], factor)
     sigma_bkg_resized = bin_size * sigma_bkg
-    ra_coords_resized = re_size(ra_coords[0:numPix_precut, 0:numPix_precut], factor)
-    dec_coords_resized = re_size(dec_coords[0:numPix_precut, 0:numPix_precut], factor)
-    idex_mask_resized = re_size(idex_mask[0:numPix_precut, 0:numPix_precut], factor)
+    ra_coords_resized = re_size(ra_coords[0:num_pix_precut, 0:num_pix_precut], factor)
+    dec_coords_resized = re_size(dec_coords[0:num_pix_precut, 0:num_pix_precut], factor)
+    idex_mask_resized = re_size(idex_mask[0:num_pix_precut, 0:num_pix_precut], factor)
     idex_mask_resized[idex_mask_resized > 0] = 1
     return (
         image_resized,
@@ -269,24 +269,26 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
 
 
 @export
-def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix):
+def rebin_coord_transform(
+    factor, x_at_radec_0, y_at_radec_0, transform_pix2coord, transform_coord2pix
+):
     """Adopt coordinate system and transformation between angular and pixel coordinates
     of a re-binned image."""
     factor = int(factor)
-    Mcoord2pix_resized = Mcoord2pix / factor
-    Mpix2coord_resized = Mpix2coord * factor
+    transform_coord2pix_resized = transform_coord2pix / factor
+    transform_pix2coord_resized = transform_pix2coord * factor
     x_at_radec_0_resized = (x_at_radec_0 + 0.5) / factor - 0.5
     y_at_radec_0_resized = (y_at_radec_0 + 0.5) / factor - 0.5
     ra_at_xy_0_resized, dec_at_xy_0_resized = util.map_coord2pix(
-        -x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, Mpix2coord_resized
+        -x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, transform_pix2coord_resized
     )
     return (
         ra_at_xy_0_resized,
         dec_at_xy_0_resized,
         x_at_radec_0_resized,
         y_at_radec_0_resized,
-        Mpix2coord_resized,
-        Mcoord2pix_resized,
+        transform_pix2coord_resized,
+        transform_coord2pix_resized,
     )
 
 
@@ -311,12 +313,12 @@ def stack_images(image_list, wht_list, sigma_list):
 
 @export
 def cut_edges(image, num_pix):
-    """Cuts out the edges of a 2d image and returns re-sized image to numPix center is
+    """Cuts out the edges of a 2d image and returns re-sized image to num_pix center is
     well defined for odd pixel sizes.
 
     :param image: 2d numpy array
     :param num_pix: square size of cut out image
-    :return: cutout image with size numPix
+    :return: cutout image with size num_pix
     """
     nx, ny = image.shape
     if nx < num_pix or ny < num_pix:

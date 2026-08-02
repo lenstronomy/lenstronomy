@@ -6,7 +6,7 @@ import unittest
 
 class TestDataAPI(object):
     def setup_method(self):
-        numpix = 10
+        num_pix = 10
         self.ccd_gain = 4.0
         self.pixel_scale = 0.13
         self.read_noise = 10.0
@@ -31,7 +31,7 @@ class TestDataAPI(object):
             "kernel_point_source": None,
         }
         self.kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
-        self.api = DataAPI(numpix=numpix, data_count_unit="ADU", **self.kwargs_data)
+        self.api = DataAPI(num_pix=num_pix, data_count_unit="ADU", **self.kwargs_data)
 
         kwargs_observations = {
             "exposure_time": exposure_time,
@@ -43,7 +43,7 @@ class TestDataAPI(object):
             "kernel_point_source": np.ones((3, 3)),
         }
         kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
-        self.api_pixel = DataAPI(numpix=numpix, data_count_unit="ADU", **kwargs_data)
+        self.api_pixel = DataAPI(num_pix=num_pix, data_count_unit="ADU", **kwargs_data)
 
         self.ra_at_xy_0 = 0.02
         self.dec_at_xy_0 = 0.02
@@ -54,7 +54,7 @@ class TestDataAPI(object):
             "transform_pix2angle": self.transform_pix2angle,
         }
         self.api_pixel_grid = DataAPI(
-            numpix=numpix,
+            num_pix=num_pix,
             kwargs_pixel_grid=kwargs_pixel_grid,
             data_count_unit="ADU",
             **self.kwargs_data
@@ -79,7 +79,7 @@ class TestDataAPI(object):
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
-        numpix = 10
+        num_pix = 10
         self.ccd_gain = 4.0
         self.pixel_scale = 0.13
         self.read_noise = 10.0
@@ -104,10 +104,10 @@ class TestRaise(unittest.TestCase):
             "kernel_point_source": None,
         }
         kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
-        data_api = DataAPI(numpix=numpix, data_count_unit="ADU", **kwargs_data)
+        data_api = DataAPI(num_pix=num_pix, data_count_unit="ADU", **kwargs_data)
         print(data_api._psf_type)
         with self.assertRaises(ValueError):
-            data_api = DataAPI(numpix=numpix, data_count_unit="ADU", **kwargs_data)
+            data_api = DataAPI(num_pix=num_pix, data_count_unit="ADU", **kwargs_data)
             psf_class = data_api.psf_class
 
         kwargs_observations = {
@@ -121,12 +121,12 @@ class TestRaise(unittest.TestCase):
         }
         kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
         with self.assertRaises(ValueError):
-            data_api = DataAPI(numpix=numpix, data_count_unit="ADU", **kwargs_data)
+            data_api = DataAPI(num_pix=num_pix, data_count_unit="ADU", **kwargs_data)
             psf_class = data_api.psf_class
 
         kwargs_data["kernel_point_source"] = np.ones((3, 3))
         kwargs_pixel_grid = {"ra_at_xy_0": 0.02, "dec_at_xy_0": 0.02}
         with self.assertRaises(ValueError):
             data_api = DataAPI(
-                numpix=numpix, kwargs_pixel_grid=kwargs_pixel_grid, **kwargs_data
+                num_pix=num_pix, kwargs_pixel_grid=kwargs_pixel_grid, **kwargs_data
             )

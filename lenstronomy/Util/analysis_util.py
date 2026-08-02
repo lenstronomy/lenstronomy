@@ -58,7 +58,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
 
 
 @export
-def azimuthalAverage(image, center=None):
+def azimuthal_average(image, center=None):
     """Calculate the azimuthally averaged radial profile.
 
     image - The 2D image
@@ -107,8 +107,8 @@ def moments(I_xy_input, x, y):
     I_xy = copy.deepcopy(I_xy_input)
     background = np.minimum(0, np.min(I_xy))
     I_xy -= background
-    x_ = np.sum(I_xy * x)
-    y_ = np.sum(I_xy * y)
+    x_ = np.sum(I_xy * x) / np.sum(I_xy)
+    y_ = np.sum(I_xy * y) / np.sum(I_xy)
     r = (np.max(x) - np.min(x)) / 3.0
     mask = mask_util.mask_azimuthal(x, y, center_x=x_, center_y=y_, r=r)
     Q_xx = np.sum(I_xy * mask * (x - x_) ** 2)

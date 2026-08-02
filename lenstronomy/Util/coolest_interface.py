@@ -453,17 +453,16 @@ def update_coolest_from_lenstronomy(
     :param file_name: str, name (with path) of the json file to update
     :param kwargs_results: dict, lenstronomy kwargs_results {'kwargs_lens': [{..},{..}], 'kwargs_source': [{..}],...}
     :param kwargs_mcmc: dict, {'args_lens':args_lens,'args_source':args_source,'args_lens_light':args_lens_light,
-                        'args_ps': args_ps}
-                        with args_lens being a list, each element of the list being lens results of type
-                        kwargs_results['kwargs_lens'] for a given MCMC point.
-                        ex: {'args_lens': [[{'theta_E':0.71,...},{'gamma1':...}],
-                                           [{'theta_E':0.709,...},{'gamma1':...}],
-                                           [{'theta_E':0.711,...},{'gamma1':...}], ...],
-                             'args_source': [[{'R_sersic':0.11,...}], [{'R_sersic':0.115,...}, ...]], ...}
-                 if None, will not perform the Posterior update
+        'args_ps': args_ps}
+        with args_lens being a list, each element of the list being lens results of type
+        kwargs_results['kwargs_lens'] for a given MCMC point.
+        ex: {'args_lens': [[{'theta_E':0.71,...},{'gamma1':...}],
+        [{'theta_E':0.709,...},{'gamma1':...}],
+        [{'theta_E':0.711,...},{'gamma1':...}], ...],
+        'args_source': [[{'R_sersic':0.11,...}], [{'R_sersic':0.115,...}, ...]], ...}
+        if None, will not perform the Posterior update
     :param ending: str, ending of the name for saving the updated json file
-
-     :return:   the new json file is saved with the updated kwargs.
+    :return: the new json file is saved with the updated kwargs.
     """
 
     decoder = JSONSerializer(file_name, **kwargs_serializer)

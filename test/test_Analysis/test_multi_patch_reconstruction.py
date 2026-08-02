@@ -24,14 +24,14 @@ class TestMultiPatchReconstruction(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel (Gaussian)
         exp_time = 100.0  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 100  # cutout pixel size
+        delta_pix = 0.05  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.1  # full width half max of PSF (only valid when psf_type='gaussian')
         psf_type = "GAUSSIAN"  # 'GAUSSIAN', 'PIXEL', 'NONE'
 
         # generate the coordinate grid and image properties
         kwargs_data = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         kwargs_data["exposure_time"] = exp_time * np.ones_like(
             kwargs_data["image_data"]
@@ -39,8 +39,8 @@ class TestMultiPatchReconstruction(object):
         data_class = ImageData(**kwargs_data)
         # generate the psf variables
 
-        kwargs_psf = {"psf_type": psf_type, "pixel_size": deltaPix, "fwhm": fwhm}
-        # kwargs_psf = sim_util.psf_configure_simple(psf_type=psf_type, fwhm=fwhm, kernelsize=kernel_size, deltaPix=deltaPix, kernel=kernel)
+        kwargs_psf = {"psf_type": psf_type, "pixel_size": delta_pix, "fwhm": fwhm}
+        # kwargs_psf = sim_util.psf_configure_simple(psf_type=psf_type, fwhm=fwhm, kernelsize=kernel_size, delta_pix=delta_pix, kernel=kernel)
         psf_class = PSF(**kwargs_psf)
 
         # lensing quantities
@@ -86,13 +86,13 @@ class TestMultiPatchReconstruction(object):
         source_model_class = LightModel(light_model_list=source_model_list)
 
         lensEquationSolver = LensEquationSolver(lens_model_class)
-        x_image, y_image = lensEquationSolver.findBrightImage(
+        x_image, y_image = lensEquationSolver.find_bright_image(
             source_x,
             source_y,
             kwargs_lens_true,
             numImages=4,
-            min_distance=deltaPix,
-            search_window=numPix * deltaPix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         mag = lens_model_class.magnification(x_image, y_image, kwargs=kwargs_lens_true)
 
@@ -165,8 +165,8 @@ class TestMultiPatchReconstruction(object):
 
         # test multi_patch with initial pixel grid
         kwargs_pixel_grid = {
-            "nx": numPix,
-            "ny": numPix,
+            "nx": num_pix,
+            "ny": num_pix,
             "transform_pix2angle": kwargs_data["transform_pix2angle"],
             "ra_at_xy_0": kwargs_data["ra_at_xy_0"],
             "dec_at_xy_0": kwargs_data["dec_at_xy_0"],

@@ -331,7 +331,7 @@ class TestLightModel(object):
         assert total_flux_list[8] > 0
 
     def test_delete_interpol_caches(self):
-        x, y = util.make_grid(numPix=20, deltapix=1.0)
+        x, y = util.make_grid(num_pix=20, delta_pix=1.0)
         gauss = Gaussian()
         flux = gauss.function(x, y, amp=1.0, center_x=0.0, center_y=0.0, sigma=1.0)
         image = util.array2image(flux)

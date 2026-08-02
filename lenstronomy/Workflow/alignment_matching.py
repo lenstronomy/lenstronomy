@@ -64,7 +64,7 @@ class AlignmentFitting(object):
         """
         init_pos = self.chain.get_args(self.chain.kwargs_data_init)
         lower_limit, upper_limit = self.chain.lower_upper_limit(delta_shift, delta_rot)
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount)
 
         pso = ParticleSwarmOptimizer(
             self.chain, lower_limit, upper_limit, n_particles, pool=pool

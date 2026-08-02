@@ -141,8 +141,8 @@ class LensEquationSolver(object):
         :raises: AttributeError, KeyError
         """
         # compute number of pixels to cover the search window with the required min_distance
-        numPix = int(round(search_window / min_distance) + 0.5)
-        x_grid, y_grid = util.make_grid(numPix, min_distance)
+        num_pix = int(round(search_window / min_distance) + 0.5)
+        x_grid, y_grid = util.make_grid(num_pix, min_distance)
         x_grid += x_center
         y_grid += y_center
         # ray-shoot to find the relative distance to the required source position for each grid point
@@ -593,7 +593,7 @@ class LensEquationSolver(object):
         else:
             return x_new, y_new, delta_new, iter_num
 
-    def findBrightImage(
+    def find_bright_image(
         self,
         sourcePos_x,
         sourcePos_y,

@@ -7,8 +7,7 @@ __author__ = "ajshajib"
 import numpy as np
 import abc
 from scipy.special import comb
-from scipy.special import hyp2f1
-
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.multi_gaussian_ellipse_kappa import (
     MultiGaussianEllipseKappa,
 )
@@ -29,7 +28,10 @@ __all__ = [
 
 
 @export
-class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
+class GaussDecompositionAbstract(
+    LensProfileBase,
+    metaclass=abc.ABCMeta,
+):
     """This abstract class sets up a template for computing lensing properties of an
     elliptical convergence through Shajib (2019)'s Gauss decomposition."""
 
@@ -82,6 +84,8 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
             epsilons[2 * p - k] = epsilons[2 * p - k + 1] + 1 / 2.0**p * comb(p, k)
 
         self.etas = (-1.0) ** kes * epsilons * 10.0 ** (p / 3.0) * 2.0 * _SQRT_2PI
+
+        super(GaussDecompositionAbstract, self).__init__()
 
     def gauss_decompose(self, **kwargs):
         r"""Compute the amplitudes and sigmas of Gaussian components using the integral

@@ -87,7 +87,7 @@ class AdaptiveGrid(Coordinates1D):
 
         :return: 1d arrays of subpixel grid coordinates
         """
-        if not hasattr(self, "_x_sub_grid"):
+        if not hasattr(self, "_x_high_res"):
             self._subpixel_coordinates()
         return self._x_high_res, self._y_high_res
 

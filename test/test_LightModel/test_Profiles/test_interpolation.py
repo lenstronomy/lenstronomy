@@ -18,7 +18,7 @@ class TestInterpol(object):
         :return:
         """
         for len_x, len_y in [(20, 20), (14, 20)]:
-            x, y = util.make_grid(numPix=(len_x, len_y), deltapix=1.0)
+            x, y = util.make_grid(num_pix=(len_x, len_y), delta_pix=1.0)
             gauss = Gaussian()
             flux = gauss.function(x, y, amp=1.0, center_x=0.0, center_y=0.0, sigma=1.0)
             image = util.array2image(flux, nx=len_x, ny=len_y)
@@ -89,7 +89,7 @@ class TestInterpol(object):
         interp = Interpol()
         delta_pix = 0.1
         len_x, len_y = 21, 21
-        x, y = util.make_grid(numPix=(len_x, len_y), deltapix=delta_pix)
+        x, y = util.make_grid(num_pix=(len_x, len_y), delta_pix=delta_pix)
         gauss = Gaussian()
         flux = gauss.function(x, y, amp=1.0, center_x=0.0, center_y=0.0, sigma=0.3)
         image = util.array2image(flux, nx=len_y, ny=len_x)
@@ -109,7 +109,7 @@ class TestInterpol(object):
         # test for scale !=1
         # demands same surface brightness values. We rescale the pixel grid by the same amount as the image
         scale = 0.5
-        x, y = util.make_grid(numPix=(len_x, len_y), deltapix=delta_pix * scale)
+        x, y = util.make_grid(num_pix=(len_x, len_y), delta_pix=delta_pix * scale)
         kwargs_interp = {
             "image": image,
             "scale": delta_pix * scale,
@@ -122,7 +122,7 @@ class TestInterpol(object):
         npt.assert_almost_equal(output / image_interp, 1, decimal=5)
 
     def test_delete_cache(self):
-        x, y = util.make_grid(numPix=20, deltapix=1.0)
+        x, y = util.make_grid(num_pix=20, delta_pix=1.0)
         gauss = Gaussian()
         flux = gauss.function(x, y, amp=1.0, center_x=0.0, center_y=0.0, sigma=1.0)
         image = util.array2image(flux)

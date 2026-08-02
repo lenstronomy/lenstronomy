@@ -25,8 +25,8 @@ class TestSolver4Point(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
-        deltapix = 0.05
-        numPix = 150
+        delta_pix = 0.05
+        num_pix = 150
         gamma = 1.9
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -41,13 +41,13 @@ class TestSolver4Point(object):
             },
             {"theta_E": 0.1, "center_x": 0.5, "center_y": 0},
         ]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(
+        x_pos, y_pos = lensEquationSolver.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
             numImages=4,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         kwargs_lens_init = [
             {

@@ -42,7 +42,7 @@ class TestNumerics(object):
         npt.assert_almost_equal(output_num, output, decimal=5)
 
     def test_differentials(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.5)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.5)
         f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x, y, self.kwargs)
         f_xx_num, f_xy_num, f_yx_num, f_yy_num = self.lensModel.hessian(
             x, y, self.kwargs, diff=0.00001
@@ -466,8 +466,9 @@ class TestNumericsProfile(object):
         kwargs = {
             "m": 4,
             "a_m": 0.05,
-            "phi_m": 0.1,
+            "varphi_m": 0.1,
             "q": 0.6,
+            "phi_ref": np.pi / 13,
             "center_x": 0.01,
             "center_y": 0.5,
         }
@@ -476,8 +477,9 @@ class TestNumericsProfile(object):
         kwargs = {
             "m": 3,
             "a_m": 0.07,
-            "phi_m": 0.2,
+            "varphi_m": 0.2,
             "q": 0.5,
+            "phi_ref": np.pi / 11,
             "center_x": -0.01,
             "center_y": -0.5,
             "r_E": 1.0,
@@ -488,8 +490,9 @@ class TestNumericsProfile(object):
         kwargs = {
             "m": 1,
             "a_m": 0.1,
-            "phi_m": 0.3,
+            "varphi_m": 0.3,
             "q": 0.5,
+            "phi_ref": np.pi / 7,
             "center_x": 0.0,
             "center_y": 0.0,
             "r_E": 1.0,

@@ -6,7 +6,7 @@ import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.likelihood import Likelihood
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
@@ -15,7 +15,7 @@ from lenstronomy.Sampling.Likelihoods import kinematic_NN_call
 import lenstronomy.Util.kernel_util as kernel_util
 
 
-class TestLikelihoodModule(object):
+class TestLikelihood(object):
     """Test the fitting sequences."""
 
     def setup_method(self):
@@ -24,8 +24,8 @@ class TestLikelihoodModule(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 50  # cutout pixel size
-        deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+        num_pix = 50  # cutout pixel size
+        delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
         fwhm = 0.5  # full width half max of PSF
 
         kwargs_model = {
@@ -38,10 +38,10 @@ class TestLikelihoodModule(object):
 
         # PSF specification
         kwargs_band = sim_util.data_configure_simple(
-            numPix, deltaPix, exp_time, sigma_bkg
+            num_pix, delta_pix, exp_time, sigma_bkg
         )
         data_class = ImageData(**kwargs_band)
-        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": deltaPix}
+        kwargs_psf = {"psf_type": "GAUSSIAN", "fwhm": fwhm, "pixel_size": delta_pix}
         psf_class = PSF(**kwargs_psf)
         print(np.shape(psf_class.kernel_point_source), "test kernel shape -")
         kwargs_spep = {
@@ -172,7 +172,7 @@ class TestLikelihoodModule(object):
             point_source_class,
             kwargs_numerics=kwargs_numerics,
         )
-        self.Likelihood = LikelihoodModule(
+        self.Likelihood = Likelihood(
             kwargs_data_joint=self.kwargs_data,
             kwargs_model=kwargs_model,
             param_class=self.param_class,
@@ -180,7 +180,7 @@ class TestLikelihoodModule(object):
         )
         self.kwargs_band = kwargs_band
         self.kwargs_psf = kwargs_psf
-        self.numPix = numPix
+        self.num_pix = num_pix
 
     def test_logL(self):
         args = self.param_class.kwargs2args(
@@ -199,7 +199,7 @@ class TestLikelihoodModule(object):
         kwargs_likelihood = {
             "time_delay_likelihood": True,
         }
-        likelihood = LikelihoodModule(
+        likelihood = Likelihood(
             kwargs_data_joint=self.kwargs_data,
             kwargs_model=self.kwargs_model,
             param_class=self.param_class,
@@ -259,7 +259,7 @@ class TestLikelihoodModule(object):
                 "time_delay_likelihood": False,
             }
             param_class = Param(kwargs_model, **kwargs_constraints)
-            Likelihood = LikelihoodModule(
+            Likelihood = Likelihood(
                 kwargs_data_joint=self.kwargs_data,
                 kwargs_model=kwargs_model,
                 param_class=param_class,
@@ -284,15 +284,15 @@ class TestLikelihoodModule(object):
 
             # Now add kinematic likelihood
             # for simplicity, set kin image data to same as light data
-            numPix = 50  # cutout pixel size
-            deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+            num_pix = 50  # cutout pixel size
+            delta_pix = 0.1  # pixel size in arcsec (area per pixel = delta_pix**2)
 
             binmap = np.zeros_like(
                 self.kwargs_band["image_data"]
             )  # one single bin across whole image
             binned_dummy_data = np.array([200])
-            delta_pix_kin = deltaPix
-            npix_kin = numPix
+            delta_pix_kin = delta_pix
+            npix_kin = num_pix
 
             kwargs_kin = {
                 "bin_data": binned_dummy_data,
@@ -327,7 +327,7 @@ class TestLikelihoodModule(object):
 
             kwargs_constraints["kinematic_sampling"] = True
             param_class = Param(kwargs_model, **kwargs_constraints)
-            Likelihood = LikelihoodModule(
+            Likelihood = Likelihood(
                 kwargs_data_joint=kwargs_data_kin,
                 kwargs_model=kwargs_model,
                 param_class=param_class,
@@ -359,7 +359,7 @@ class TestLikelihoodModule(object):
 
     def test_pixelbased_modelling(self):
         ss_source = 2
-        numPix_source = self.numPix * ss_source
+        num_pix_source = self.num_pix * ss_source
         n_scales = 3
         kwargs_pixelbased = {
             "source_interpolation": "nearest",
@@ -391,7 +391,7 @@ class TestLikelihoodModule(object):
         kwargs_fixed_source = [
             {
                 "n_scales": n_scales,
-                "n_pixels": numPix_source**2,
+                "n_pixels": num_pix_source**2,
                 "scale": 1,
                 "center_x": 0,
                 "center_y": 0,
@@ -400,7 +400,7 @@ class TestLikelihoodModule(object):
         kwargs_fixed_lens_light = [
             {
                 "n_scales": n_scales,
-                "n_pixels": self.numPix**2,
+                "n_pixels": self.num_pix**2,
                 "scale": 1,
                 "center_x": 0,
                 "center_y": 0,
@@ -414,15 +414,15 @@ class TestLikelihoodModule(object):
             **kwargs_constraints,
         )
 
-        likelihood = LikelihoodModule(
+        likelihood = Likelihood(
             kwargs_data_joint=kwargs_data,
             kwargs_model=kwargs_model,
             param_class=param_class,
             **kwargs_likelihood,
         )
 
-        kwargs_source = [{"amp": np.ones(n_scales * numPix_source**2)}]
-        kwargs_lens_light = [{"amp": np.ones(n_scales * self.numPix**2)}]
+        kwargs_source = [{"amp": np.ones(n_scales * num_pix_source**2)}]
+        kwargs_lens_light = [{"amp": np.ones(n_scales * self.num_pix**2)}]
         kwargs_special = {"delta_x_source_grid": 0, "delta_y_source_grid": 0}
         args = param_class.kwargs2args(
             kwargs_lens=self.kwargs_lens,
@@ -547,7 +547,7 @@ class TestLikelihoodModule(object):
 
         param_class = Param(kwargs_model=kwargs_model)
 
-        likelihood = LikelihoodModule(
+        likelihood = Likelihood(
             kwargs_data_joint=kwargs_data,
             kwargs_model=kwargs_model,
             param_class=param_class,

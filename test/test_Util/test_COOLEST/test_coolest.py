@@ -243,10 +243,10 @@ class TestCOOLESTinterface(object):
         kwargs_ps = [kwargs_ps_0]
         point_source_class = PointSource(point_source_model_list)
 
-        numPix = 100
+        num_pix = 100
         kwargs_out["kwargs_data"]["background_rms"] = background_rms
         kwargs_out["kwargs_data"]["exposure_time"] = exp_time
-        kwargs_out["kwargs_data"]["image_data"] = np.zeros((numPix, numPix))
+        kwargs_out["kwargs_data"]["image_data"] = np.zeros((num_pix, num_pix))
         kwargs_out["kwargs_data"].pop("noise_map")
 
         data_class = ImageData(**kwargs_out["kwargs_data"])

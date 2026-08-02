@@ -21,7 +21,7 @@ class TestEPL_MULTIPOLE_M3M4(object):
         self.epl = EPL()
         self.multipole = Multipole()
         self.epl_multipole = EPL_MULTIPOLE_M3M4()
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
         self.lens_model_split = LensModel(["EPL", "MULTIPOLE", "MULTIPOLE"])
         self.lens_model = LensModel(["EPL_MULTIPOLE_M3M4"])
         self.lens_model_eplboxydisky = LensModel(["EPL_BOXYDISKY"])
@@ -262,7 +262,7 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
         self.epl = EPL()
         self.multipole = EllipticalMultipole()
         self.epl_multipole = EPL_MULTIPOLE_M3M4_ELL()
-        self.x, self.y = util.make_grid(numPix=10, deltapix=0.2)
+        self.x, self.y = util.make_grid(num_pix=10, delta_pix=0.2)
         self.lens_model_split = LensModel(["EPL", "MULTIPOLE_ELL", "MULTIPOLE_ELL"])
         self.lens_model = LensModel(["EPL_MULTIPOLE_M3M4_ELL"])
         self.lens_model_eplboxydisky = LensModel(["EPL_BOXYDISKY_ELL"])
@@ -303,8 +303,9 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
-            "phi_m": phi_q + delta_phi_m3,
+            "varphi_m": delta_phi_m3,
             "q": q,
+            "phi_ref": phi_q,
             "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
         }
         kwargs_multipole_m4 = {
@@ -312,8 +313,9 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a4_a * rescale,
-            "phi_m": phi_q + delta_phi_m4,
+            "varphi_m": delta_phi_m4,
             "q": q,
+            "phi_ref": phi_q,
         }
         kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         function_joint = self.lens_model.potential(
@@ -377,8 +379,9 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
-            "phi_m": phi_q + delta_phi_m3,
+            "varphi_m": delta_phi_m3,
             "q": q,
+            "phi_ref": phi_q,
             "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
         }
         kwargs_multipole_m4 = {
@@ -386,8 +389,9 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a4_a * rescale,
-            "phi_m": phi_q + delta_phi_m4,
+            "varphi_m": delta_phi_m4,
             "q": q,
+            "phi_ref": phi_q,
         }
         kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         alpha_x, alpha_y = self.lens_model.alpha(
@@ -455,8 +459,9 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a3_a * rescale,
-            "phi_m": phi_q + delta_phi_m3,
+            "varphi_m": delta_phi_m3,
             "q": q,
+            "phi_ref": phi_q,
             "r_E": kwargs_epl_multipole_m3m4[0]["theta_E"],
         }
         kwargs_multipole_m4 = {
@@ -464,8 +469,9 @@ class TestEPL_MULTIPOLE_M3M4_ELL(object):
             "center_x": 0.1,
             "center_y": 0.0,
             "a_m": a4_a * rescale,
-            "phi_m": phi_q + delta_phi_m4,
+            "varphi_m": delta_phi_m4,
             "q": q,
+            "phi_ref": phi_q,
         }
         kwargs_split = [kwargs_epl, kwargs_multipole_m3, kwargs_multipole_m4]
         fxx, fxy, fyx, fyy = self.lens_model.hessian(

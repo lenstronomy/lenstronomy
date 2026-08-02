@@ -65,14 +65,14 @@ def draw_moffat_r(FWHM, beta):
     :return: draw from radial Moffat distribution
     """
     alpha = moffat_fwhm_alpha(FWHM, beta)
-    y = draw_cdf_Y(beta)
+    y = draw_cdf_y(beta)
     # equation B3 in Berge et al. paper
     X = alpha * np.sqrt((y - 1))
     return X
 
 
 @export
-def displace_PSF_moffat(x, y, FWHM, beta):
+def displace_psf_moffat(x, y, FWHM, beta):
     """
 
     :param x: x-coordinate of light ray
@@ -87,7 +87,7 @@ def displace_PSF_moffat(x, y, FWHM, beta):
 
 
 @export
-def draw_cdf_Y(beta):
+def draw_cdf_y(beta):
     """Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
     cdf(Y) = 1-Y**(1-beta)
 

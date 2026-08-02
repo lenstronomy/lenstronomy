@@ -375,16 +375,16 @@ class TestLightAnalysis(object):
     def test_light2mass_mge(self):
         from lenstronomy.LightModel.Profiles.gaussian import MultiGaussianEllipse
         multiGaussianEllipse = MultiGaussianEllipse()
-        x_grid, y_grid = util.make_grid(numPix=100, deltapix=0.05)
+        x_grid, y_grid = util.make_grid(num_pix=100, delta_pix=0.05)
         kwargs_light = [{'amp': [2, 1], 'sigma': [0.1, 1], 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0}]
         light_model_list = ['MULTI_GAUSSIAN_ELLIPSE']
         lensAnalysis = ProfileAnalysis(kwargs_model={'lens_light_model_list': light_model_list})
-        kwargs_mge = lensAnalysis.light2mass_mge(kwargs_lens_light=kwargs_light, numPix=100, deltaPix=0.05, elliptical=True)
+        kwargs_mge = lensAnalysis.light2mass_mge(kwargs_lens_light=kwargs_light, num_pix=100, delta_pix=0.05, elliptical=True)
         npt.assert_almost_equal(kwargs_mge['e1'], kwargs_light[0]['e1'], decimal=2)
 
         del kwargs_light[0]['center_x']
         del kwargs_light[0]['center_y']
-        kwargs_mge = lensAnalysis.light2mass_mge(kwargs_lens_light=kwargs_light, numPix=100, deltaPix=0.05,
+        kwargs_mge = lensAnalysis.light2mass_mge(kwargs_lens_light=kwargs_light, num_pix=100, delta_pix=0.05,
                                                  elliptical=False)
         npt.assert_almost_equal(kwargs_mge['center_x'], 0, decimal=2)
 
@@ -399,8 +399,8 @@ class TestLightAnalysis(object):
              'e2': -0.12430547471424626}]
         light_model_list = ['SERSIC_ELLIPSE', 'SERSIC_ELLIPSE']
         lensAnalysis = ProfileAnalysis({'lens_light_model_list': light_model_list})
-        kwargs_mge = lensAnalysis.light2mass_mge(lens_light_kwargs, model_bool_list=None, elliptical=True, numPix=500,
-                                                 deltaPix=0.5)
+        kwargs_mge = lensAnalysis.light2mass_mge(lens_light_kwargs, model_bool_list=None, elliptical=True, num_pix=500,
+                                                 delta_pix=0.5)
         print(kwargs_mge)
         npt.assert_almost_equal(kwargs_mge['e1'], 0.22, decimal=2)
 
@@ -409,7 +409,7 @@ class TestLightAnalysis(object):
         theta_E = 1.1
         kwargs_lens = [{'theta_E': 1.1, 'center_x': center_x, 'center_y': center_y}]
         lensAnalysis = ProfileAnalysis(kwargs_model={'lens_model_list': ['SIS']})
-        kappa_mean_list = lensAnalysis.mass_fraction_within_radius(kwargs_lens, center_x, center_y, theta_E, numPix=100)
+        kappa_mean_list = lensAnalysis.mass_fraction_within_radius(kwargs_lens, center_x, center_y, theta_E, num_pix=100)
         npt.assert_almost_equal(kappa_mean_list[0], 1, 2)
 
     def test_point_source(self):
@@ -451,7 +451,7 @@ class TestLightAnalysis(object):
             analysis.multi_gaussian_lens(kwargs_lens=[{'theta_E'}])
         with self.assertRaises(ValueError):
             analysis = ProfileAnalysis(kwargs_model={'lens_light_model_list': ['GAUSSIAN']})
-            analysis.flux_components(kwargs_light=[{}], n_grid=400, delta_grid=0.01, deltaPix=1., type="wrong")
+            analysis.flux_components(kwargs_light=[{}], n_grid=400, delta_grid=0.01, delta_pix=1., type="wrong")
 
 """
 

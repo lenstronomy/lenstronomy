@@ -37,6 +37,8 @@ class Anisotropy(object):
             self._model = GeneralizedOM()
         elif self._type == "Colin":
             self._model = Colin()
+        elif self._type == "logistic":
+            self._model = Logistic()
         else:
             raise ValueError("anisotropy type %s not supported!" % self._type)
 
@@ -76,13 +78,88 @@ class Anisotropy(object):
         if hasattr(self._model, "delete_cache"):
             self._model.delete_cache()
 
+    def jampy_beta(self, kwargs, symmetry="spherical"):
+        """Return the anisotropy in the Jampy spectral-method format (Cappellari 2026).
+
+        The output is either a constant anisotropy value or a callable ``beta(r, theta)``.
+        The callable takes the 3D radius ``r`` and polar angle ``theta`` and returns a tuple
+        ``(beta, beta_dtheta)``, where ``beta`` is the anisotropy and ``beta_dtheta`` is its
+        angular derivative. Supported symmetry cases are ``spherical``, ``axi_sph``, and
+        ``axi_cyl``; the latter uses a smooth angular transition between the equatorial plane
+        and the symmetry axis. Note that this is different to the ``axi_cyl`` implementation
+        in (Cappellari 2008).
+
+        :param kwargs: anisotropy model parameters
+        :param symmetry: either 'spherical', 'axi_sph' or 'axi_cyl'
+        :return: beta(r, theta), either a constant beta or a callable beta(r, theta)
+        """
+        ani_params = self._model.jampy_params(**kwargs)
+        if symmetry == "spherical":
+            return ani_params
+        elif symmetry == "axi_sph":
+            if not self.use_logistic:
+                beta_const = ani_params
+                return beta_const
+            else:
+                r_ani, beta_0, beta_inf, alpha = ani_params
+
+                def beta_fun(r, theta):
+                    # radial logisitic function
+                    beta = beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
+                    beta_dtheta = 0
+                    return beta, beta_dtheta
+
+                return beta_fun
+
+        elif symmetry == "axi_cyl":
+            if not self.use_logistic:
+                beta_const = ani_params
+
+                def beta_fun(r, theta):
+                    # angular variation
+                    ratio = np.sqrt(1 - beta_const)
+                    beta = 1 - ratio ** (2 * np.cos(2 * theta))
+                    beta_dtheta = (
+                        -4
+                        * np.log(ratio)
+                        * ratio ** (-2 * np.cos(2 * theta))
+                        * np.sin(2 * theta)
+                    )
+                    return beta, beta_dtheta
+
+                return beta_fun
+            else:
+                r_ani, beta_0, beta_inf, alpha = ani_params
+
+                def beta_fun(r, theta):
+                    # radial logistic plus angular variation
+                    beta_r = beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
+                    ratio = np.sqrt(1 - beta_r)
+                    ratio_2_th = ratio ** (-2 * np.cos(2 * theta))
+                    beta = 1 - ratio_2_th
+                    beta_dtheta = -4 * np.log(ratio) * ratio_2_th * np.sin(2 * theta)
+                    return beta, beta_dtheta
+
+                return beta_fun
+        else:
+            raise ValueError("symmetry must be 'spherical', 'axi_sph' or 'axi_cyl'")
+
+    @property
+    def type(self):
+        return self._type
+
+    @property
+    def use_logistic(self):
+        return self._model.use_logistic
+
 
 @export
 class Const(object):
     """Constant anisotropy model class See Mamon & Lokas 2005 for details."""
 
     def __init__(self):
-        pass
+        self.use_logistic = False
+        self._logistic_kwargs = {}
 
     @staticmethod
     def K(r, R, beta):
@@ -124,6 +201,10 @@ class Const(object):
         """
         raise ValueError("routine not supported yet for constant anisotropy model!")
 
+    @staticmethod
+    def jampy_params(beta):
+        return np.minimum(beta, 0.999)  # Jampy requires beta < 1
+
 
 @export
 class Isotropic(object):
@@ -131,7 +212,8 @@ class Isotropic(object):
     details."""
 
     def __init__(self):
-        pass
+        self.use_logistic = False
+        self._logistic_kwargs = {}
 
     @staticmethod
     def K(r, R):
@@ -164,13 +246,18 @@ class Isotropic(object):
         """
         return 1
 
+    @staticmethod
+    def jampy_params():
+        return 0.0
+
 
 @export
 class Radial(object):
     """Class for radial (beta=1) stellar orbits See Mamon & Lokas 2005 for details."""
 
     def __init__(self):
-        pass
+        self.use_logistic = False
+        self._logistic_kwargs = {}
 
     @staticmethod
     def K(r, R):
@@ -206,13 +293,18 @@ class Radial(object):
         """
         return r**2
 
+    @staticmethod
+    def jampy_params():
+        return 0.999  # Jampy requires beta < 1
+
 
 @export
 class OsipkovMerritt(object):
     """Class for Osipkov&Merrit stellar orbits See Mamon & Lokas 2005 for details."""
 
     def __init__(self):
-        pass
+        self.use_logistic = True
+        self._logistic_kwargs = {"beta_0": 0.0, "beta_inf": 1.0, "alpha": 2.0}
 
     @staticmethod
     def K(r, R, r_ani):
@@ -254,6 +346,9 @@ class OsipkovMerritt(object):
         """
         return r**2 + r_ani**2
 
+    def jampy_params(self, r_ani):
+        return _logistic_function_params(r_ani=r_ani, **self._logistic_kwargs)
+
 
 @export
 class GeneralizedOM(object):
@@ -266,6 +361,8 @@ class GeneralizedOM(object):
     def __init__(self):
         self._z_interp = np.append(-np.flip(np.logspace(-1, 3, 200) ** 2), 0)
         # self._z_interp = -np.linspace(-200, 0, 200)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
+        self.use_logistic = True
+        self._logistic_kwargs = {"beta_0": 0.0, "alpha": 2.0}
 
     @staticmethod
     def beta_r(r, r_ani, beta_inf):
@@ -394,6 +491,11 @@ class GeneralizedOM(object):
                 )
             return np.array(_F_array, dtype=float)
 
+    def jampy_params(self, r_ani, beta_inf):
+        return _logistic_function_params(
+            r_ani=r_ani, beta_inf=beta_inf, **self._logistic_kwargs
+        )
+
 
 @export
 class Colin(object):
@@ -403,7 +505,8 @@ class Colin(object):
     """
 
     def __init__(self):
-        pass
+        self.use_logistic = True
+        self._logistic_kwargs = {"beta_0": 0.0, "beta_inf": 0.5, "alpha": 1.0}
 
     @staticmethod
     def K(r, R, r_ani):
@@ -457,3 +560,55 @@ class Colin(object):
         :return: beta
         """
         return 1.0 / 2 * r / (r + r_ani)
+
+    def jampy_params(self, r_ani):
+        return _logistic_function_params(r_ani=r_ani, **self._logistic_kwargs)
+
+
+class Logistic(object):
+
+    def __init__(self):
+        self.use_logistic = True
+        self._logistic_kwargs = {}
+
+    def beta_r(self, r, r_ani, beta_0, beta_inf, alpha):
+        """Anisotropy as a function of radius.
+
+        beta(r) = beta_0 + (beta_inf - beta_0)/[1 + (r_a/r)^alpha]
+
+        :param r: 3d radius
+        :param r_ani: anisotropy radius
+        :param beta_0: beta at r = 0
+        :param beta_inf: beta at r -> infinity
+        :param alpha: radius exponent
+        :return: beta
+        """
+        return beta_0 + (beta_inf - beta_0) / (1 + (r_ani / r) ** alpha)
+
+    def K(self, r, R, r_ani, beta_0, beta_inf, alpha):
+        raise NotImplementedError("K(r) is not implemented for Logistic anisotropy.")
+
+    def anisotropy_solution(self, r, r_ani, beta_0, beta_inf, alpha):
+        raise NotImplementedError(
+            "anisotropy_solution(r) is not implemented for Logistic anisotropy."
+        )
+
+    @staticmethod
+    def jampy_params(r_ani, beta_0, beta_inf, alpha):
+        return _logistic_function_params(
+            r_ani=r_ani, beta_0=beta_0, beta_inf=beta_inf, alpha=alpha
+        )
+
+
+def _logistic_function_params(beta_0, beta_inf, r_ani, alpha):
+    """Return the logistic function parameters for Jampy beta(r) format.
+
+    beta(r) = beta_0 + (beta_inf - beta_0)/[1 + (r_a/r)^alpha]
+
+    :param beta_0: float, central anisotropy value (beta at r=0)
+    :param beta_inf: float, asymptotic anisotropy value (beta at r
+    :param r_ani: float, anisotropy radius (scale of transition)
+    :param alpha: float, slope of the transition
+    :return: list
+    """
+    return [r_ani, beta_0, beta_inf, alpha]

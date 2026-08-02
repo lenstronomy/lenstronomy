@@ -33,13 +33,13 @@ class KDELikelihood(object):
             self._kde.fit(values.T)
         self._kde_type = kde_type
 
-    def logLikelihood(self, D_d, D_delta_t):
+    def log_likelihood(self, D_d, D_delta_t):
         """Likelihood of the data (represented in the distribution of this class) given
         a model with predicted angular diameter distances.
 
         :param D_d: model predicted angular diameter distance
         :param D_delta_t: model predicted time-delay distance
-        :return: loglikelihood (log of KDE value)
+        :return: log likelihood (log of KDE value)
         """
         if self._kde_type == "scipy_gaussian":
             density = self._PDF_kernel([D_d, D_delta_t])

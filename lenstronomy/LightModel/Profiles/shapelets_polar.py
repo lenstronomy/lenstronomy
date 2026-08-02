@@ -411,7 +411,9 @@ class ShapeletSetPolar(object):
         """
         return L_list[i]
 
-    def decomposition(self, image, x, y, n_max, beta, deltaPix, center_x=0, center_y=0):
+    def decomposition(
+        self, image, x, y, n_max, beta, delta_pix, center_x=0, center_y=0
+    ):
         """Decomposes an image into the shapelet coefficients in same order as for the
         function call :param image:
 
@@ -425,7 +427,7 @@ class ShapeletSetPolar(object):
         """
         num_param = self.shapelets.num_param(n_max)
         param_list = np.zeros(num_param)
-        amp_norm = 1.0 * deltaPix**2
+        amp_norm = 1.0 * delta_pix**2
         L_list = self._pre_calc(x, y, beta, n_max, center_x, center_y)
         for i in range(num_param):
             base = self._pre_calc_function(L_list, i) * amp_norm

@@ -19,7 +19,7 @@ class TestCalcUtil(object):
         y = 0
         out = calc_util.d_r_dx(x, y)
         assert out == 1
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         dx = 0.000001
         out = calc_util.d_r_dx(x, y)
         r, phi = param_util.cart2polar(x, y)
@@ -32,7 +32,7 @@ class TestCalcUtil(object):
         y = 0
         out = calc_util.d_r_dy(x, y)
         assert out == 0
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         dy = 0.000001
         out = calc_util.d_r_dy(x, y)
         r, phi = param_util.cart2polar(x, y)
@@ -98,7 +98,7 @@ class TestCalcUtil(object):
         npt.assert_almost_equal(d_phi_dy, d_phi_dy_num, decimal=4)
 
     def test_d_phi_dxx(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         delta = 0.00001
         d_phi_dx = calc_util.d_phi_dx(x, y)
         d_phi_dx_delta = calc_util.d_phi_dx(x + delta, y)
@@ -118,7 +118,7 @@ class TestCalcUtil(object):
         npt.assert_almost_equal(d_phi_dxy_num, d_phi_dxy, decimal=1)
 
     def test_d_r_dxx(self):
-        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        x, y = util.make_grid(num_pix=10, delta_pix=0.1)
         delta = 0.00001
         d_r_dx = calc_util.d_r_dx(x, y)
         d_r_dx_delta = calc_util.d_r_dx(x + delta, y)

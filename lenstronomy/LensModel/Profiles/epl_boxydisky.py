@@ -1,4 +1,4 @@
-__author__ = "Maverick-Oh"
+__author__ = "Maverick-Oh", "Hadrien-Pgnt"
 
 import numpy as np
 import lenstronomy.Util.util as util
@@ -84,8 +84,9 @@ class EPL_BOXYDISKY_ELL(LensProfileBase):
         kwargs_multipole = {
             "m": self._m,
             "a_m": a4_a * theta_E,
-            "phi_m": phi,
+            "varphi_m": 0,  # perturbation aligned with reference ellipse
             "q": q,
+            "phi_ref": phi,
             "center_x": center_x,
             "center_y": center_y,
         }

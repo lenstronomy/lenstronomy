@@ -13,9 +13,9 @@ class TestInterpol(object):
         pass
 
     def test_do_interpol(self):
-        numPix = 101
-        deltaPix = 0.1
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        num_pix = 101
+        delta_pix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         sis = SIS()
         kwargs_SIS = {"theta_E": 1.0, "center_x": 0.5, "center_y": -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
@@ -90,9 +90,9 @@ class TestInterpol(object):
         # test all
 
     def test_call(self):
-        numPix = 101
-        deltaPix = 0.1
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        num_pix = 101
+        delta_pix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         sis = SIS()
         kwargs_SIS = {"theta_E": 1.0, "center_x": 0.5, "center_y": -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
@@ -117,9 +117,9 @@ class TestInterpol(object):
         assert alpha_x == 0.31622776601683794
 
     def test_kwargs_interpolation(self):
-        numPix = 101
-        deltaPix = 0.1
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        num_pix = 101
+        delta_pix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         sis = SIS()
         kwargs_SIS = {"theta_E": 1.0, "center_x": 0.5, "center_y": -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
@@ -154,9 +154,9 @@ class TestInterpol(object):
         npt.assert_almost_equal(f_, f_true, decimal=10)
 
     def test_hessian_finite_differential(self):
-        numPix = 101
-        deltaPix = 0.1
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        num_pix = 101
+        delta_pix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         sis = SIS()
         kwargs_SIS = {"theta_E": 1.0, "center_x": 0.5, "center_y": -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
@@ -179,9 +179,9 @@ class TestInterpol(object):
         npt.assert_almost_equal(f_yy, f_yy_true, decimal=1)
 
     def test_interp_func_scaled(self):
-        numPix = 101
-        deltaPix = 0.1
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        num_pix = 101
+        delta_pix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         sis = SIS()
         kwargs_SIS = {"theta_E": 1.0, "center_x": 0.5, "center_y": -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
@@ -218,16 +218,16 @@ class TestInterpol(object):
         npt.assert_almost_equal(f_xy, -0.18973665961010275, decimal=8)
         npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
-        x_grid, y_grid = util.make_grid(10, deltaPix)
+        x_grid, y_grid = util.make_grid(10, delta_pix)
         f_xx, f_xy, f_yx, f_yy = interp_func.hessian(
             x_grid, y_grid, scale_factor=1.0, **kwargs_interp
         )
         npt.assert_almost_equal(f_xx[0], 0, decimal=2)
 
     def test_shift(self):
-        numPix = 101
-        deltaPix = 0.1
-        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        num_pix = 101
+        delta_pix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(num_pix, delta_pix)
         sis = SIS()
 
         kwargs_SIS = {"theta_E": 1.0, "center_x": 0.5, "center_y": -0.5}

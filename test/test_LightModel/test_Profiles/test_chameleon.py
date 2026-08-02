@@ -56,7 +56,7 @@ class TestChameleon(object):
         chameleon_lens = ChameleonLens()
         chameleon = Chameleon()
 
-        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        x, y = util.make_grid(num_pix=100, delta_pix=0.1)
         e1, e2 = 0.0, 0
         w_c, w_t = 0.5, 1.0
         kwargs_light = {"amp": 1.0, "w_c": w_c, "w_t": w_t, "e1": e1, "e2": e2}

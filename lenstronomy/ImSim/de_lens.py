@@ -20,15 +20,17 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     :return: 1-d array of parameter values
     """
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)
+    cond_inv = _cond_inv(M)
+
     if inv_bool:
-        if np.linalg.cond(M) < 5 / sys.float_info.epsilon:
+        if cond_inv:
             M_inv = _stable_inv(M)
         else:
             M_inv = np.zeros_like(M)
         R = A.T.dot(np.multiply(C_D_inv, d))
         B = M_inv.dot(R)
     else:
-        if np.linalg.cond(M) < 5 / sys.float_info.epsilon:
+        if cond_inv:
             R = A.T.dot(np.multiply(C_D_inv, d))
             B = _solve_stable(M, R)
             # try:
@@ -56,14 +58,15 @@ def get_param_WLS_interferometry(M, b, inv_bool=True):
     :return: param_amps: 1-d array of linear parameter values,
         M_inv the covariance matrix of linear parameters
     """
+    cond_inv = _cond_inv(M)
     if inv_bool:
-        if np.linalg.cond(M) < 5 / sys.float_info.epsilon:
+        if cond_inv:
             M_inv = _stable_inv(M)
         else:
             M_inv = np.zeros_like(M)
         param_amps = M_inv.dot(b)
     else:
-        if np.linalg.cond(M) < 5 / sys.float_info.epsilon:
+        if cond_inv:
             param_amps = _solve_stable(M, b)
         else:
             param_amps = np.zeros(b.shape[0])
@@ -83,6 +86,24 @@ def marginalisation_const(M_inv):
     if sign == 0:
         return -(10**15)
     return sign * log_det / 2
+
+
+@export
+def _cond_inv(M):
+    """Check for condition to attempt inverting matrix (or solving for linear solution.
+
+    :param M: matrix to be inverted or solved for
+    :return: bool, True: solve for it. False: do not attempt to solve it
+    """
+    try:
+        cond = np.linalg.cond(M)
+        if cond < 5 / sys.float_info.epsilon:
+            cond_inv = True
+        else:
+            cond_inv = False
+    except np.linalg.LinAlgError:
+        cond_inv = False
+    return cond_inv
 
 
 @export

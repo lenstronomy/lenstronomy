@@ -9,9 +9,9 @@ import lenstronomy.Data.image_noise as image_noise
 
 class TestData(object):
     def setup_method(self):
-        self.numPix = 10
+        self.num_pix = 10
         kwargs_noise = {
-            "image_data": np.zeros((self.numPix, self.numPix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
             "exposure_time": 1,
             "background_rms": 1,
             "noise_map": None,
@@ -20,8 +20,8 @@ class TestData(object):
         self.Noise = ImageNoise(**kwargs_noise)
 
         kwargs_noise = {
-            "image_data": np.zeros((self.numPix, self.numPix)),
-            "exposure_time": np.ones((self.numPix, self.numPix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
+            "exposure_time": np.ones((self.num_pix, self.num_pix)),
             "background_rms": 1,
             "noise_map": None,
             "verbose": True,
@@ -37,9 +37,9 @@ class TestData(object):
         assert result[1] == 1.2
 
     def test_noise_map(self):
-        noise_map = np.ones((self.numPix, self.numPix))
+        noise_map = np.ones((self.num_pix, self.num_pix))
         kwargs_noise = {
-            "image_data": np.zeros((self.numPix, self.numPix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
             "exposure_time": 1,
             "background_rms": 1,
             "noise_map": noise_map,
@@ -49,11 +49,11 @@ class TestData(object):
         noise_map_out = noise.C_D
         npt.assert_almost_equal(noise_map_out, noise_map, decimal=8)
 
-        noise_map_out = noise.C_D_model(model=np.ones((self.numPix, self.numPix)))
+        noise_map_out = noise.C_D_model(model=np.ones((self.num_pix, self.num_pix)))
         npt.assert_almost_equal(noise_map_out, noise_map, decimal=8)
 
         kwargs_noise = {
-            "image_data": np.zeros((self.numPix, self.numPix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
             "exposure_time": 1,
             "noise_map": noise_map,
             "verbose": True,
@@ -64,7 +64,7 @@ class TestData(object):
 
     def test_exposure_time(self):
         kwargs_noise = {
-            "image_data": np.zeros((self.numPix, self.numPix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
             "exposure_time": 0.0,
             "background_rms": 1,
             "noise_map": None,
@@ -76,7 +76,7 @@ class TestData(object):
 
     def test_gradient_boost(self):
         kwargs_noise = {
-            "image_data": np.zeros((self.numPix, self.numPix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
             "exposure_time": 1000000000000,
             "background_rms": 1,
             "noise_map": None,
@@ -84,10 +84,10 @@ class TestData(object):
             "verbose": True,
         }
         noise = ImageNoise(**kwargs_noise)
-        model = np.zeros((self.numPix, self.numPix))
+        model = np.zeros((self.num_pix, self.num_pix))
         CD_zero = noise.C_D_model(model)
 
-        model = np.ones((self.numPix, self.numPix))
+        model = np.ones((self.num_pix, self.num_pix))
         CD_one = noise.C_D_model(model)
         npt.assert_almost_equal(CD_zero, CD_one)
 

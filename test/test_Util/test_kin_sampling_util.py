@@ -38,7 +38,7 @@ class TestKinSamplingUtil(object):
             "offset_x": 0,
             "offset_y": 0,
         }
-        self.kinNN_inputs = {"image": self.image, "deltaPix": 1}
+        self.kinNN_inputs = {"image": self.image, "delta_pix": 1}
 
     def define_spectra_kwargs_from_rotation_angle(self, rotation_angle):
         transform_pix2angle = np.array(

@@ -67,55 +67,55 @@ def test_map_coord2pix():
 
 
 def test_make_grid():
-    numPix = 11
-    deltapix = 1.0
+    num_pix = 11
+    delta_pix = 1.0
 
-    grid = util.make_grid(numPix, deltapix)
+    grid = util.make_grid(num_pix, delta_pix)
     assert grid[0][0] == -5
     assert np.sum(grid[0]) == 0.0
 
-    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.0)
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix, subgrid_res=2.0)
     assert np.sum(x_grid) == 0.0
     assert x_grid[0] == -5.25
 
-    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1, left_lower=True)
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix, subgrid_res=1, left_lower=True)
     assert x_grid[0] == 0.0
     assert y_grid[0] == 0.0
 
     # Similar tests for a non-rectangular grid
 
-    x_grid, y_grid = util.make_grid((numPix, numPix - 1), deltapix)
+    x_grid, y_grid = util.make_grid((num_pix, num_pix - 1), delta_pix)
     assert x_grid[0] == -5.0
     assert y_grid[0] == -4.5
     assert np.sum(x_grid) == np.sum(y_grid) == 0
 
-    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.0)
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix, subgrid_res=2.0)
     assert np.sum(x_grid) == np.sum(y_grid) == 0
     assert x_grid[0] == -5.25
 
-    x_grid, y_grid = util.make_grid(numPix, deltapix, left_lower=True)
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix, left_lower=True)
     assert x_grid[0] == 0
     assert y_grid[0] == 0
 
 
 def test_make_grid_transform():
-    numPix = 11
+    num_pix = 11
     theta = np.pi / 2
-    deltaPix = 0.05
-    Mpix2coord = (
+    delta_pix = 0.05
+    transform_pix2coord = (
         np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
-        * deltaPix
+        * delta_pix
     )
-    ra_coord, dec_coord = util.make_grid_transformed(numPix, Mpix2coord)
+    ra_coord, dec_coord = util.make_grid_transformed(num_pix, transform_pix2coord)
     ra2d = util.array2image(ra_coord)
     assert ra2d[5, 5] == 0
-    assert ra2d[4, 5] == deltaPix
+    assert ra2d[4, 5] == delta_pix
     npt.assert_almost_equal(ra2d[5, 4], 0, decimal=10)
 
 
 def test_grid_with_coords():
-    numPix = 11
-    deltaPix = 1.0
+    num_pix = 11
+    delta_pix = 1.0
     (
         x_grid,
         y_grid,
@@ -123,19 +123,19 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=False
+        num_pix, delta_pix, subgrid_res=1, left_lower=False
     )
     ra = 0
     dec = 0
-    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
+    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, transform_coord2pix)
     assert x == 5
     assert y == 5
 
-    numPix = 11
-    deltaPix = 0.1
+    num_pix = 11
+    delta_pix = 0.1
     (
         x_grid,
         y_grid,
@@ -143,19 +143,19 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=False
+        num_pix, delta_pix, subgrid_res=1, left_lower=False
     )
     ra = 0
     dec = 0
-    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
+    x, y = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, transform_coord2pix)
     assert x == 5
     assert y == 5
 
-    numPix = 11
-    deltaPix = 1.0
+    num_pix = 11
+    delta_pix = 1.0
     (
         x_grid,
         y_grid,
@@ -163,18 +163,18 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=True
+        num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=True
     )
     x_, y_ = 0, 0
-    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, transform_pix2coord)
     assert ra == 5
     assert dec == -5
 
-    numPix = 11
-    deltaPix = 1.0
+    num_pix = 11
+    delta_pix = 1.0
     (
         x_grid,
         y_grid,
@@ -182,18 +182,18 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=False
+        num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=False
     )
     x_, y_ = 0, 0
-    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, transform_pix2coord)
     assert ra == -5
     assert dec == -5
 
-    numPix = 11
-    deltaPix = 0.1
+    num_pix = 11
+    delta_pix = 0.1
     (
         x_grid,
         y_grid,
@@ -201,21 +201,23 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=False
+        num_pix, delta_pix, subgrid_res=1, left_lower=False
     )
     x_, y_ = 0, 0
-    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    ra, dec = util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, transform_pix2coord)
     assert ra == 0.5
     assert dec == -0.5
-    x__, y__ = util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
+    x__, y__ = util.map_coord2pix(
+        ra, dec, x_at_radec_0, y_at_radec_0, transform_coord2pix
+    )
     assert x__ == x_
     assert y__ == y_
 
-    numPix = 11
-    deltaPix = 0.1
+    num_pix = 11
+    delta_pix = 0.1
     (
         x_grid,
         y_grid,
@@ -223,16 +225,16 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=True
+        num_pix, delta_pix, subgrid_res=1, left_lower=True
     )
     assert ra_at_xy_0 == 0
     assert dec_at_xy_0 == 0
 
-    numPix = 11
-    deltaPix = 0.1
+    num_pix = 11
+    delta_pix = 0.1
     (
         x_grid,
         y_grid,
@@ -240,10 +242,10 @@ def test_grid_with_coords():
         dec_at_xy_0,
         x_at_radec_0,
         y_at_radec_0,
-        Mpix2coord,
-        Mcoord2pix,
+        transform_pix2coord,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
-        numPix, deltaPix, subgrid_res=1, left_lower=True, center_ra=2, center_dec=3
+        num_pix, delta_pix, subgrid_res=1, left_lower=True, center_ra=2, center_dec=3
     )
     assert ra_at_xy_0 == 2
     assert dec_at_xy_0 == 3
@@ -261,7 +263,7 @@ def test_centered_coordinate_system():
         x_at_radec_0,
         y_at_radec_0,
         transform_pix2angle,
-        Mcoord2pix,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=False
     )
@@ -277,7 +279,7 @@ def test_centered_coordinate_system():
         x_at_radec_0,
         y_at_radec_0,
         transform_pix2angle,
-        Mcoord2pix,
+        transform_coord2pix,
     ) = util.make_grid_with_coordtransform(
         num_pix, delta_pix, subgrid_res=1, left_lower=False, inverse=True
     )
@@ -350,9 +352,9 @@ def test_cube2array2cube():
 
 
 def test_get_axes():
-    numPix = 11
-    deltapix = 0.1
-    x_grid, y_grid = util.make_grid(numPix, deltapix)
+    num_pix = 11
+    delta_pix = 0.1
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix)
     x_axes, y_axes = util.get_axes(x_grid, y_grid)
     npt.assert_almost_equal(x_axes[0], -0.5, decimal=12)
     npt.assert_almost_equal(y_axes[0], -0.5, decimal=12)
@@ -423,7 +425,7 @@ def test_selectBest():
     assert array_select[0] == 3
     assert array_select[3] == 4
 
-    array_select = util.selectBest(array, select, numSelect=10, highest=False)
+    array_select = util.selectBest(array, select, num_select=10, highest=False)
     assert len(array_select) == len(array)
 
 
@@ -477,16 +479,16 @@ def test_neighborSelect():
     a[41] = 0
     x = np.linspace(0, 99, 100)
     y = np.linspace(0, 99, 100)
-    x_mins, y_mins, values = util.neighborSelect(a, x, y)
+    x_mins, y_mins, values = util.neighbor_select(a, x, y)
     assert x_mins[0] == 41
     assert y_mins[0] == 41
     assert values[0] == 0
 
 
 def test_make_subgrid():
-    numPix = 101
-    deltapix = 1
-    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1)
+    num_pix = 101
+    delta_pix = 1
+    x_grid, y_grid = util.make_grid(num_pix, delta_pix, subgrid_res=1)
     x_sub_grid, y_sub_grid = util.make_subgrid(x_grid, y_grid, subgrid_res=2)
     assert np.sum(x_grid) == 0
     assert len(x_grid) == 101 * 101
@@ -563,7 +565,7 @@ class TestRaise(unittest.TestCase):
             util.get_axes(x, y)
         with self.assertRaises(ValueError):
             util.selectBest(
-                array=np.ones(6), criteria=np.ones(5), numSelect=1, highest=True
+                array=np.ones(6), criteria=np.ones(5), num_select=1, highest=True
             )
         with self.assertRaises(ValueError):
             util.select_best(
@@ -578,9 +580,9 @@ class TestRaise(unittest.TestCase):
 
     def test_raise_make_grid(self):
         with self.assertRaises(ValueError):
-            util.make_grid(numPix=1.1, deltapix=1)
+            util.make_grid(num_pix=1.1, delta_pix=1)
         with self.assertRaises(ValueError):
-            util.make_grid(numPix=[1.1, 1], deltapix=1)
+            util.make_grid(num_pix=[1.1, 1], delta_pix=1)
 
 
 if __name__ == "__main__":

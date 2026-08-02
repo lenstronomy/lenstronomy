@@ -16,15 +16,15 @@ class DataAPI(SingleBand):
     are interested in.
     """
 
-    def __init__(self, numpix, kwargs_pixel_grid=None, **kwargs_single_band):
+    def __init__(self, num_pix, kwargs_pixel_grid=None, **kwargs_single_band):
         """
 
-        :param numpix: number of pixels per axis in the simulation to be modelled
+        :param num_pix: number of pixels per axis in the simulation to be modelled
         :param kwargs_pixel_grid: if None, uses default pixel grid option
             if defined, must contain keyword arguments PixelGrid() class
         :param kwargs_single_band: keyword arguments used to create instance of SingleBand class
         """
-        self.numpix = numpix
+        self.num_pix = num_pix
         if kwargs_pixel_grid is not None:
             required_keys = ["ra_at_xy_0", "dec_at_xy_0", "transform_pix2angle"]
             if not all(k in kwargs_pixel_grid for k in required_keys):
@@ -62,8 +62,8 @@ class DataAPI(SingleBand):
                 transform_pix2angle,
                 _,
             ) = util.make_grid_with_coordtransform(
-                numPix=self.numpix,
-                deltapix=self.pixel_scale,
+                num_pix=self.num_pix,
+                delta_pix=self.pixel_scale,
                 subgrid_res=1,
                 left_lower=False,
                 inverse=False,
@@ -76,7 +76,7 @@ class DataAPI(SingleBand):
         # CCD gain corrected exposure time to allow a direct Poisson estimates based on IID counts
         scaled_exposure_time = self.flux_iid(1)
         kwargs_data = {
-            "image_data": np.zeros((self.numpix, self.numpix)),
+            "image_data": np.zeros((self.num_pix, self.num_pix)),
             "ra_at_xy_0": ra_at_xy_0,
             "dec_at_xy_0": dec_at_xy_0,
             "transform_pix2angle": transform_pix2angle,

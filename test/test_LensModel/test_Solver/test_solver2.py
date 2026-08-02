@@ -46,7 +46,7 @@ class TestSolver(object):
                 "center_y": -0.1,
             }
         ]
-        x_pos, y_pos = image_position_spep.findBrightImage(
+        x_pos, y_pos = image_position_spep.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
@@ -112,8 +112,8 @@ class TestSolver(object):
         image_position_nfw = LensEquationSolver(LensModel(["SPEP", "NFW"]))
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
-        numPix = 100
+        delta_pix = 0.05
+        num_pix = 100
         gamma = 1.9
         Rs = 0.1
         nfw = NFW()
@@ -131,13 +131,13 @@ class TestSolver(object):
             },
             {"Rs": Rs, "alpha_Rs": alpha_Rs, "center_x": -0.5, "center_y": 0.5},
         ]
-        x_pos, y_pos = image_position_nfw.findBrightImage(
+        x_pos, y_pos = image_position_nfw.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(len(x_pos), "number of images")
         x_pos = x_pos[:2]
@@ -158,13 +158,13 @@ class TestSolver(object):
             x_pos, y_pos, kwargs_init
         )
         source_x, source_y = spep.ray_shooting(x_pos[0], y_pos[0], kwargs_out_center)
-        x_pos_new, y_pos_new = image_position_nfw.findBrightImage(
+        x_pos_new, y_pos_new = image_position_nfw.find_bright_image(
             source_x,
             source_y,
             kwargs_out_center,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         print(kwargs_out_center, "kwargs_out_center")
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=2)
@@ -209,8 +209,8 @@ class TestSolver(object):
         image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
-        numPix = 100
+        delta_pix = 0.05
+        num_pix = 100
         gamma = 1.9
         kwargs_lens = [
             {
@@ -223,13 +223,13 @@ class TestSolver(object):
             },
             {"theta_E": 0.6, "center_x": -0.5, "center_y": 0.5},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-10),
         )
         print(len(x_pos), "number of images")
@@ -252,13 +252,13 @@ class TestSolver(object):
         )
         print(kwargs_out_center, "output")
         source_x, source_y = spep.ray_shooting(x_pos[0], y_pos[0], kwargs_out_center)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out_center,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
@@ -301,20 +301,20 @@ class TestSolver(object):
         image_position = LensEquationSolver(lens)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
-        numPix = 100
+        delta_pix = 0.05
+        num_pix = 100
 
         kwargs_lens = [
             {"coeffs": [1.0, 0.0, 0.1, 1.0], "beta": 1.0},
             {"theta_E": 1.0, "center_x": -0.1, "center_y": 0.1},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-10),
         )
         print(len(x_pos), "number of images")
@@ -328,13 +328,13 @@ class TestSolver(object):
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, "output")
         source_x, source_y = lens.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
@@ -353,8 +353,8 @@ class TestSolver(object):
         image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
-        numPix = 100
+        delta_pix = 0.05
+        num_pix = 100
         gamma = 1.9
         kwargs_lens = [
             {
@@ -367,13 +367,13 @@ class TestSolver(object):
             },
             {"gamma1": 0.03, "gamma2": 0.0},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-15),
         )
         print(len(x_pos), "number of images")
@@ -394,13 +394,13 @@ class TestSolver(object):
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, "output")
         source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
@@ -422,8 +422,8 @@ class TestSolver(object):
         image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
-        deltapix = 0.05
-        numPix = 100
+        delta_pix = 0.05
+        num_pix = 100
         gamma = 1.9
         kwargs_lens = [
             {
@@ -436,13 +436,13 @@ class TestSolver(object):
             },
             {"gamma1": 0.03, "gamma2": 0.0},
         ]
-        x_pos, y_pos = image_position.findBrightImage(
+        x_pos, y_pos = image_position.find_bright_image(
             sourcePos_x,
             sourcePos_y,
             kwargs_lens,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
             precision_limit=10 ** (-15),
         )
         print(len(x_pos), "number of images")
@@ -463,13 +463,13 @@ class TestSolver(object):
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, "output")
         source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
-        x_pos_new, y_pos_new = image_position.findBrightImage(
+        x_pos_new, y_pos_new = image_position.find_bright_image(
             source_x,
             source_y,
             kwargs_out,
             numImages=2,
-            min_distance=deltapix,
-            search_window=numPix * deltapix,
+            min_distance=delta_pix,
+            search_window=num_pix * delta_pix,
         )
         npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)

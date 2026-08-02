@@ -13,15 +13,17 @@ class TestConvergenceIntegrals(object):
 
     def test_potential_from_kappa(self):
         sis = SIS()
-        deltaPix = 0.005
-        x_grid, y_grid = util.make_grid(numPix=2000, deltapix=deltaPix)
+        delta_pix = 0.005
+        x_grid, y_grid = util.make_grid(num_pix=2000, delta_pix=delta_pix)
         kwargs_sis = {"theta_E": 1.0, "center_x": 0, "center_y": 0}
 
         f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         f_ = sis.function(x_grid, y_grid, **kwargs_sis)
         f_ = util.array2image(f_)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
-        potential_num = convergence_integrals.potential_from_kappa_grid(kappa, deltaPix)
+        potential_num = convergence_integrals.potential_from_kappa_grid(
+            kappa, delta_pix
+        )
 
         x1, y1 = 560, 500
         x2, y2 = 550, 500
@@ -32,20 +34,20 @@ class TestConvergenceIntegrals(object):
 
     def test_potential_from_kappa_adaptiv(self):
         sis = SIS()
-        deltaPix = 0.01
+        delta_pix = 0.01
         kwargs_sis = {"theta_E": 1.0, "center_x": 0, "center_y": 0}
         low_res_factor = 5
         high_res_kernel_size = 5
-        x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
+        x_grid, y_grid = util.make_grid(num_pix=1000, delta_pix=delta_pix)
 
         f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_num = convergence_integrals.potential_from_kappa_grid_adaptive(
-            kappa, deltaPix, low_res_factor, high_res_kernel_size
+            kappa, delta_pix, low_res_factor, high_res_kernel_size
         )
 
         x_grid_low, y_grid_low = util.make_grid(
-            numPix=1000 / low_res_factor, deltapix=deltaPix * low_res_factor
+            num_pix=1000 / low_res_factor, delta_pix=delta_pix * low_res_factor
         )
         f_low = sis.function(x_grid_low, y_grid_low, **kwargs_sis)
         f_low = util.array2image(f_low)
@@ -58,8 +60,8 @@ class TestConvergenceIntegrals(object):
 
     def test_deflection_from_kappa(self):
         sis = SIS()
-        deltaPix = 0.01
-        x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
+        delta_pix = 0.01
+        x_grid, y_grid = util.make_grid(num_pix=1000, delta_pix=delta_pix)
         kwargs_sis = {"theta_E": 1.0, "center_x": 0, "center_y": 0}
 
         f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
@@ -67,7 +69,7 @@ class TestConvergenceIntegrals(object):
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
-            kappa, deltaPix
+            kappa, delta_pix
         )
 
         x1, y1 = 550, 500
@@ -76,20 +78,20 @@ class TestConvergenceIntegrals(object):
 
     def test_deflection_from_kappa_adaptiv(self):
         sis = SIS()
-        deltaPix = 0.01
+        delta_pix = 0.01
         kwargs_sis = {"theta_E": 1.0, "center_x": 0, "center_y": 0}
         low_res_factor = 5
         high_res_kernel_size = 5
-        x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
+        x_grid, y_grid = util.make_grid(num_pix=1000, delta_pix=delta_pix)
 
         f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid_adaptive(
-            kappa, deltaPix, low_res_factor, high_res_kernel_size
+            kappa, delta_pix, low_res_factor, high_res_kernel_size
         )
 
         x_grid_low, y_grid_low = util.make_grid(
-            numPix=1000 / low_res_factor, deltapix=deltaPix * low_res_factor
+            num_pix=1000 / low_res_factor, delta_pix=delta_pix * low_res_factor
         )
         f_x_low, f_y_low = sis.derivatives(x_grid_low, y_grid_low, **kwargs_sis)
         f_x_low = util.array2image(f_x_low)
@@ -120,9 +122,9 @@ class TestConvergenceIntegrals(object):
             "center_x": 0,
             "center_y": 0,
         }
-        deltaPix = 0.01
-        numPix = 1000
-        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        delta_pix = 0.01
+        num_pix = 1000
+        x_grid, y_grid = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
         x_grid2d = util.array2image(x_grid)
         y_grid2d = util.array2image(y_grid)
 
@@ -131,12 +133,12 @@ class TestConvergenceIntegrals(object):
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
-            kappa, deltaPix
+            kappa, delta_pix
         )
         x1, y1 = 500, 550
-        x0, y0 = int(numPix / 2.0), int(numPix / 2.0)
+        x0, y0 = int(num_pix / 2.0), int(num_pix / 2.0)
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
-        f_num = convergence_integrals.potential_from_kappa_grid(kappa, deltaPix)
+        f_num = convergence_integrals.potential_from_kappa_grid(kappa, delta_pix)
         f_ = sersic_lens.function(x_grid2d[x1, y1], y_grid2d[x1, y1], **kwargs_lens)
         f_00 = sersic_lens.function(x_grid2d[x0, y0], y_grid2d[x0, y0], **kwargs_lens)
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)
@@ -147,9 +149,9 @@ class TestConvergenceIntegrals(object):
         )
 
         pdpl = PseudoDoublePowerlaw()
-        deltaPix = 0.005
-        numPix = 2000
-        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        delta_pix = 0.005
+        num_pix = 2000
+        x_grid, y_grid = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
 
         kwargs_lens = {
             "alpha_Rs": 1.2,
@@ -162,7 +164,7 @@ class TestConvergenceIntegrals(object):
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
-            kappa, deltaPix
+            kappa, delta_pix
         )
         x1, y1 = 500, 550
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
@@ -178,7 +180,7 @@ class TestConvergenceIntegrals(object):
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
-            kappa, deltaPix
+            kappa, delta_pix
         )
         x1, y1 = 500, 550
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
@@ -187,9 +189,9 @@ class TestConvergenceIntegrals(object):
         from lenstronomy.LensModel.Profiles.nfw_core_truncated import TNFWC
 
         tnfwc = TNFWC()
-        deltaPix = 0.005
-        numPix = 2000
-        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        delta_pix = 0.005
+        num_pix = 2000
+        x_grid, y_grid = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
 
         kwargs_lens = {"alpha_Rs": 1.2, "Rs": 0.8, "r_trunc": 3.5, "r_core": 0.45}
         f_xx, _, _, f_yy = tnfwc.hessian(x_grid, y_grid, **kwargs_lens)
@@ -197,7 +199,7 @@ class TestConvergenceIntegrals(object):
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
-            kappa, deltaPix
+            kappa, delta_pix
         )
         x1, y1 = 500, 550
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
@@ -208,7 +210,7 @@ class TestConvergenceIntegrals(object):
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.0)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(
-            kappa, deltaPix
+            kappa, delta_pix
         )
         x1, y1 = 500, 550
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)

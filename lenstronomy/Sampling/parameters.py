@@ -158,6 +158,9 @@ class Param(object):
         distance_ratio_sampling=False,
         cosmology_sampling=False,
         solver_param_module=None,
+        multi_band_offset=False,
+        num_bands=1,
+        reference_band=0,
         _jax=False,
     ):
         """
@@ -520,6 +523,9 @@ class Param(object):
             num_z_sampling=num_z_sampling,
             source_grid_offset=source_grid_offset,
             kinematic_sampling=kinematic_sampling,
+            multi_band_offset=multi_band_offset,
+            num_bands=num_bands,
+            reference_band=reference_band,
         )
         self.tracer_source_params = LightParam(
             self._tracer_source_model_list,

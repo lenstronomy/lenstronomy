@@ -5,7 +5,7 @@ parameters you can safely ignore this.
 """
 
 __author__ = "jhodonnell"
-__all__ = ["ModelParamGroup", "SingleParam", "ArrayParam"]
+__all__ = ["ModelParamGroup", "SingleParam", "ArrayParam", "MultiBandOffsetParam"]
 
 import numpy as np
 
@@ -340,6 +340,221 @@ class ArrayParam(ModelParamGroup):
         for name, count in self.param_names.items():
             out[name] = [self._kwargs_upper[name]] * count
         return out
+
+    @property
+    def on(self):
+        return self._on
+
+class MultiBandOffsetParam(ModelParamGroup):
+    """
+    Parameter group for jointly sampling multi-band astrometric offsets.
+
+    Each non-reference band has three possible parameters:
+    dx, dy, and rotation angle.
+
+    The reference band is fixed and therefore has no sampled parameters.
+    """
+
+    def __init__(self, on=False, num_bands=1, reference_band=0):
+        self._on = bool(on)
+        self._num_bands = num_bands
+        self._reference_band = reference_band
+
+
+    def num_params(self, kwargs_fixed):
+
+        if not self.on:
+            return 0, []
+        n_params = 0
+        names = []
+
+        fixed_offsets = kwargs_fixed.get(
+            "kwargs_offsets",
+            [{} for _ in range(self._num_bands)]
+        )
+
+        for band in range(self._num_bands):
+            if band == self._reference_band:
+                continue
+
+            fixed_band = (
+                fixed_offsets[band]
+                if band < len(fixed_offsets)
+                else {}
+            )
+
+            for param in ["dx", "dy", "angle"]:
+                if param not in fixed_band:
+                    n_params += 1
+                    names.append(
+                        f"{param}_band_{band}"
+                    )
+
+        return n_params, names
+
+
+    def set_params(self, kwargs, kwargs_fixed):
+        if not self.on:
+            return []
+        args = []
+
+        sampled_offsets = kwargs.get("kwargs_offsets")
+        if sampled_offsets is None:
+            sampled_offsets = [
+                {}
+                for _ in range(self._num_bands)
+            ]
+
+        fixed_offsets = kwargs_fixed.get(
+            "kwargs_offsets",
+            [{} for _ in range(self._num_bands)]
+        )
+
+        for band in range(self._num_bands):
+            # The reference band is fixed and does not contribute sampled parameters.
+            if band == self._reference_band:
+                continue
+
+            offset = (
+                sampled_offsets[band]
+                if band < len(sampled_offsets)
+                else {}
+            )
+            fixed_band = (
+                fixed_offsets[band]
+                if band < len(fixed_offsets)
+                else {}
+            )
+            for param in ["dx", "dy", "angle"]:
+                if param not in fixed_band:
+                    args.append(
+                        offset.get(param, 0)
+                    )
+        return args
+
+    def get_params(
+        self,
+        args,
+        i,
+        kwargs_fixed,
+        kwargs_lower=None,
+        kwargs_upper=None
+    ):
+        if not self.on:
+            return {}, i
+
+        kwargs_offsets = [
+            {}
+            for _ in range(self._num_bands)
+        ]
+
+        fixed_offsets = kwargs_fixed.get(
+            "kwargs_offsets",
+            [{} for _ in range(self._num_bands)]
+        )
+
+        lower_offsets = (
+            kwargs_lower.get("kwargs_offsets", [])
+            if kwargs_lower is not None
+            else []
+        )
+        if lower_offsets is None:
+            lower_offsets = []
+
+        upper_offsets = (
+            kwargs_upper.get("kwargs_offsets", [])
+            if kwargs_upper is not None
+            else []
+        )
+        if upper_offsets is None:
+            upper_offsets = []
+
+        for band in range(self._num_bands):
+            if band == self._reference_band:
+                continue
+
+            fixed_band = (
+                fixed_offsets[band]
+                if band < len(fixed_offsets)
+                else {}
+            )
+
+            lower_band = (
+                lower_offsets[band]
+                if band < len(lower_offsets)
+                else {}
+            )
+
+            upper_band = (
+                upper_offsets[band]
+                if band < len(upper_offsets)
+                else {}
+            )
+
+            band_dict = {}
+
+            for param in ["dx", "dy", "angle"]:
+                if param not in fixed_band:
+                    value = args[i]
+                    i += 1
+                    
+                    if param in lower_band:
+                        value = np.maximum(
+                            value,
+                            lower_band[param]
+                        )
+
+                    if param in upper_band:
+                        value = np.minimum(
+                            value,
+                            upper_band[param]
+                        )
+
+                    band_dict[param] = value
+
+                else:
+                    band_dict[param] = fixed_band[param]
+
+            kwargs_offsets[band] = band_dict
+
+        return {"kwargs_offsets": kwargs_offsets}, i
+
+    @property
+    def kwargs_lower(self):
+        if not self.on:
+            return {}
+
+        return {
+            "kwargs_offsets":
+            [
+                {}
+                if band == self._reference_band
+                else {
+                    "dx": -1,
+                    "dy": -1,
+                    "angle": -0.5
+                }
+                for band in range(self._num_bands)
+            ]
+        }
+
+    @property
+    def kwargs_upper(self):
+        if not self.on:
+            return {}
+        return {
+            "kwargs_offsets":
+            [
+                {}
+                if band == self._reference_band
+                else {
+                    "dx": 1,
+                    "dy": 1,
+                    "angle": 0.5
+                }
+                for band in range(self._num_bands)
+            ]
+        }
 
     @property
     def on(self):

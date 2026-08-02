@@ -345,9 +345,9 @@ class ArrayParam(ModelParamGroup):
     def on(self):
         return self._on
 
+
 class MultiBandOffsetParam(ModelParamGroup):
-    """
-    Parameter group for jointly sampling multi-band astrometric offsets.
+    """Parameter group for jointly sampling multi-band astrometric offsets.
 
     Each non-reference band has three possible parameters:
     dx, dy, and rotation angle.
@@ -360,7 +360,6 @@ class MultiBandOffsetParam(ModelParamGroup):
         self._num_bands = num_bands
         self._reference_band = reference_band
 
-
     def num_params(self, kwargs_fixed):
 
         if not self.on:
@@ -369,29 +368,21 @@ class MultiBandOffsetParam(ModelParamGroup):
         names = []
 
         fixed_offsets = kwargs_fixed.get(
-            "kwargs_offsets",
-            [{} for _ in range(self._num_bands)]
+            "kwargs_offsets", [{} for _ in range(self._num_bands)]
         )
 
         for band in range(self._num_bands):
             if band == self._reference_band:
                 continue
 
-            fixed_band = (
-                fixed_offsets[band]
-                if band < len(fixed_offsets)
-                else {}
-            )
+            fixed_band = fixed_offsets[band] if band < len(fixed_offsets) else {}
 
             for param in ["dx", "dy", "angle"]:
                 if param not in fixed_band:
                     n_params += 1
-                    names.append(
-                        f"{param}_band_{band}"
-                    )
+                    names.append(f"{param}_band_{band}")
 
         return n_params, names
-
 
     def set_params(self, kwargs, kwargs_fixed):
         if not self.on:
@@ -400,14 +391,10 @@ class MultiBandOffsetParam(ModelParamGroup):
 
         sampled_offsets = kwargs.get("kwargs_offsets")
         if sampled_offsets is None:
-            sampled_offsets = [
-                {}
-                for _ in range(self._num_bands)
-            ]
+            sampled_offsets = [{} for _ in range(self._num_bands)]
 
         fixed_offsets = kwargs_fixed.get(
-            "kwargs_offsets",
-            [{} for _ in range(self._num_bands)]
+            "kwargs_offsets", [{} for _ in range(self._num_bands)]
         )
 
         for band in range(self._num_bands):
@@ -415,56 +402,31 @@ class MultiBandOffsetParam(ModelParamGroup):
             if band == self._reference_band:
                 continue
 
-            offset = (
-                sampled_offsets[band]
-                if band < len(sampled_offsets)
-                else {}
-            )
-            fixed_band = (
-                fixed_offsets[band]
-                if band < len(fixed_offsets)
-                else {}
-            )
+            offset = sampled_offsets[band] if band < len(sampled_offsets) else {}
+            fixed_band = fixed_offsets[band] if band < len(fixed_offsets) else {}
             for param in ["dx", "dy", "angle"]:
                 if param not in fixed_band:
-                    args.append(
-                        offset.get(param, 0)
-                    )
+                    args.append(offset.get(param, 0))
         return args
 
-    def get_params(
-        self,
-        args,
-        i,
-        kwargs_fixed,
-        kwargs_lower=None,
-        kwargs_upper=None
-    ):
+    def get_params(self, args, i, kwargs_fixed, kwargs_lower=None, kwargs_upper=None):
         if not self.on:
             return {}, i
 
-        kwargs_offsets = [
-            {}
-            for _ in range(self._num_bands)
-        ]
+        kwargs_offsets = [{} for _ in range(self._num_bands)]
 
         fixed_offsets = kwargs_fixed.get(
-            "kwargs_offsets",
-            [{} for _ in range(self._num_bands)]
+            "kwargs_offsets", [{} for _ in range(self._num_bands)]
         )
 
         lower_offsets = (
-            kwargs_lower.get("kwargs_offsets", [])
-            if kwargs_lower is not None
-            else []
+            kwargs_lower.get("kwargs_offsets", []) if kwargs_lower is not None else []
         )
         if lower_offsets is None:
             lower_offsets = []
 
         upper_offsets = (
-            kwargs_upper.get("kwargs_offsets", [])
-            if kwargs_upper is not None
-            else []
+            kwargs_upper.get("kwargs_offsets", []) if kwargs_upper is not None else []
         )
         if upper_offsets is None:
             upper_offsets = []
@@ -473,23 +435,11 @@ class MultiBandOffsetParam(ModelParamGroup):
             if band == self._reference_band:
                 continue
 
-            fixed_band = (
-                fixed_offsets[band]
-                if band < len(fixed_offsets)
-                else {}
-            )
+            fixed_band = fixed_offsets[band] if band < len(fixed_offsets) else {}
 
-            lower_band = (
-                lower_offsets[band]
-                if band < len(lower_offsets)
-                else {}
-            )
+            lower_band = lower_offsets[band] if band < len(lower_offsets) else {}
 
-            upper_band = (
-                upper_offsets[band]
-                if band < len(upper_offsets)
-                else {}
-            )
+            upper_band = upper_offsets[band] if band < len(upper_offsets) else {}
 
             band_dict = {}
 
@@ -497,18 +447,12 @@ class MultiBandOffsetParam(ModelParamGroup):
                 if param not in fixed_band:
                     value = args[i]
                     i += 1
-                    
+
                     if param in lower_band:
-                        value = np.maximum(
-                            value,
-                            lower_band[param]
-                        )
+                        value = np.maximum(value, lower_band[param])
 
                     if param in upper_band:
-                        value = np.minimum(
-                            value,
-                            upper_band[param]
-                        )
+                        value = np.minimum(value, upper_band[param])
 
                     band_dict[param] = value
 
@@ -525,15 +469,12 @@ class MultiBandOffsetParam(ModelParamGroup):
             return {}
 
         return {
-            "kwargs_offsets":
-            [
-                {}
-                if band == self._reference_band
-                else {
-                    "dx": -1,
-                    "dy": -1,
-                    "angle": -0.5
-                }
+            "kwargs_offsets": [
+                (
+                    {}
+                    if band == self._reference_band
+                    else {"dx": -1, "dy": -1, "angle": -0.5}
+                )
                 for band in range(self._num_bands)
             ]
         }
@@ -543,15 +484,8 @@ class MultiBandOffsetParam(ModelParamGroup):
         if not self.on:
             return {}
         return {
-            "kwargs_offsets":
-            [
-                {}
-                if band == self._reference_band
-                else {
-                    "dx": 1,
-                    "dy": 1,
-                    "angle": 0.5
-                }
+            "kwargs_offsets": [
+                {} if band == self._reference_band else {"dx": 1, "dy": 1, "angle": 0.5}
                 for band in range(self._num_bands)
             ]
         }

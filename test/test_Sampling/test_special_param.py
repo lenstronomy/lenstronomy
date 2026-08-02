@@ -221,6 +221,7 @@ if __name__ == "__main__":
 import numpy as np
 from lenstronomy.Sampling.special_param import SpecialParam
 
+
 def test_get_params_multiband_offset():
     special = SpecialParam(
         multi_band_offset=True,
@@ -228,8 +229,12 @@ def test_get_params_multiband_offset():
         reference_band=0,
     )
     args = [
-        0.10, -0.20, 0.05,     # band 1
-        0.30,  0.40, -0.02,    # band 2
+        0.10,
+        -0.20,
+        0.05,  # band 1
+        0.30,
+        0.40,
+        -0.02,  # band 2
     ]
 
     kwargs_special, i = special.get_params(args, 0)
@@ -253,6 +258,7 @@ def test_get_params_multiband_offset():
     assert kwargs_special["kwargs_offsets"] == expected
 
     print("✓ args -> kwargs_special passed")
+
 
 def test_set_params_multiband_offset():
     special = SpecialParam(
@@ -292,6 +298,7 @@ def test_set_params_multiband_offset():
 
     print("✓ kwargs_special -> args passed")
 
+
 def test_round_trip():
     special = SpecialParam(
         multi_band_offset=True,
@@ -304,14 +311,11 @@ def test_round_trip():
         0.2,
         0.1,
         0.05,
-
         # band 1 is the reference band and has no sampled parameters
-
         # band 2
         -0.4,
         0.6,
         -0.01,
-        
         # band 3
         0.3,
         -0.7,
@@ -327,6 +331,7 @@ def test_round_trip():
 
     print("✓ round-trip passed")
 
+
 def test_reference_band_is_empty():
 
     special = SpecialParam(
@@ -336,15 +341,20 @@ def test_reference_band_is_empty():
     )
 
     args = [
-        0.1,0.2,0.01,
-        0.3,0.4,0.02,
+        0.1,
+        0.2,
+        0.01,
+        0.3,
+        0.4,
+        0.02,
     ]
 
-    kwargs_special, _ = special.get_params(args,0)
+    kwargs_special, _ = special.get_params(args, 0)
 
     assert kwargs_special["kwargs_offsets"][1] == {}
 
     print("✓ reference band fixed")
+
 
 if __name__ == "__main__":
     test_get_params_multiband_offset()

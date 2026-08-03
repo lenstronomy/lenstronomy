@@ -86,36 +86,3 @@ class PixelGrid(Coordinates):
         :return: RA coords, DEC coords
         """
         return self._x_grid, self._y_grid
-
-    def _transformed_grid(self, ra_shift=None, dec_shift=None, phi_rot=None):
-        """
-        transforms original coordinate system while not over-writing it.
-        Applies first a rotation (to keep rotation around the same pixel coordinate of the data frame)
-        and then a translation.
-
-        :param ra_shift: shift of RA coordinates in pixel grid
-        :type ra_shift: float or None
-        :param dec_shift: shift in DEC coordinates in pixel grid
-        :type dec_shift: float or None
-        :param phi_rot: rotation angle applied to coordinate grid around RA/DEC (0,0) [radian]
-        :type phi_rot: float or None
-        :return: RA coords, DEC coords
-        """
-        # rotate coordinates
-        x_grid, y_grid = self._x_grid, self._y_grid
-        if phi_rot is not None and phi_rot != 0:
-            cos_phi, sin_phi = np.cos(phi_rot), np.sin(phi_rot)
-            x_grid = (
-                    x_grid * cos_phi
-                    + y_grid * -sin_phi
-            )
-            y_grid = (
-                    x_grid * sin_phi
-                    + y_grid * cos_phi
-            )
-        # shift coordinates
-        if ra_shift is not None and ra_shift != 0:
-            x_grid = x_grid + ra_shift
-        if dec_shift is not None and ra_shift != 0:
-            y_grid = y_grid + dec_shift
-        return x_grid, y_grid

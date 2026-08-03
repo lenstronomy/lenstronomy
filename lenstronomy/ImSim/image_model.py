@@ -130,8 +130,10 @@ class ImageModel(object):
             self.source_mapping = Image2SourceMapping(
                 lens_model=lens_model_class, source_model=source_model_class
             )
-
-        self._pb = data_class.primary_beam
+        if hasattr(data_class, "primary_beam"):
+            self._pb = data_class.primary_beam
+        else:
+            self._pb = None
         if self._pb is not None:
             self._pb_1d = util.image2array(self._pb)
         else:

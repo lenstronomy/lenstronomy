@@ -30,14 +30,14 @@ class Coordinates(object):
         )
 
     def update_coord_transform(self, ra_shift=None, dec_shift=None, phi_rot=None):
-        """
-        updates the coordinate centers and rotation
+        """Updates the coordinate centers and rotation.
 
         :param ra_shift: shift of RA coordinates in pixel grid
         :type ra_shift: float or None
         :param dec_shift: shift in DEC coordinates in pixel grid
         :type dec_shift: float or None
-        :param phi_rot: rotation angle applied to coordinate grid around ra_at_xy_0, dec_at_xy_0 [radian]
+        :param phi_rot: rotation angle applied to coordinate grid around ra_at_xy_0,
+            dec_at_xy_0 [radian]
         :type phi_rot: float or None
         :return: new Coordinate() class and pixel grid
         """
@@ -48,7 +48,9 @@ class Coordinates(object):
             if phi_rot is not None and phi_rot != 0:
                 cos_phi, sin_phi = np.cos(phi_rot), np.sin(phi_rot)
                 rot_matrix = np.array([[cos_phi, -sin_phi], [sin_phi, cos_phi]])
-                transform_pix2angle_rot = np.dot(self._transform_pix2angle_ref, rot_matrix)
+                transform_pix2angle_rot = np.dot(
+                    self._transform_pix2angle_ref, rot_matrix
+                )
             else:
                 transform_pix2angle_rot = self._transform_pix2angle_ref
             if ra_shift is not None and ra_shift != 0:

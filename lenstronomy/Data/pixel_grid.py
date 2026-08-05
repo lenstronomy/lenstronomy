@@ -23,8 +23,12 @@ class PixelGrid(Coordinates):
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         """
-        Coordinates.__init__(self, transform_pix2angle=transform_pix2angle, ra_at_xy_0=ra_at_xy_0,
-                             dec_at_xy_0=dec_at_xy_0)
+        Coordinates.__init__(
+            self,
+            transform_pix2angle=transform_pix2angle,
+            ra_at_xy_0=ra_at_xy_0,
+            dec_at_xy_0=dec_at_xy_0,
+        )
         self._nx = nx
         self._ny = ny
         self._x_grid, self._y_grid = self.coordinate_grid(nx, ny)
@@ -38,11 +42,14 @@ class PixelGrid(Coordinates):
         :type ra_shift: float or None
         :param dec_shift: shift in DEC coordinates in pixel grid
         :type dec_shift: float or None
-        :param phi_rot: rotation angle applied to coordinate grid around ra_at_xy_0, dec_at_xy_0 [radian]
+        :param phi_rot: rotation angle applied to coordinate grid around ra_at_xy_0,
+            dec_at_xy_0 [radian]
         :type phi_rot: float or None
         :return: new Coordinate() class and pixel grid
         """
-        self.update_coord_transform(ra_shift=ra_shift, dec_shift=dec_shift, phi_rot=phi_rot)
+        self.update_coord_transform(
+            ra_shift=ra_shift, dec_shift=dec_shift, phi_rot=phi_rot
+        )
         self._x_grid, self._y_grid = self.coordinate_grid(self._nx, self._ny)
 
     @property
@@ -71,8 +78,8 @@ class PixelGrid(Coordinates):
 
     @property
     def center(self):
-        """
-        center RA, DEC of original coordinate frame (not including shift and rotations)
+        """Center RA, DEC of original coordinate frame (not including shift and
+        rotations)
 
         :return: center_x, center_y of coordinate system
         """
@@ -80,8 +87,7 @@ class PixelGrid(Coordinates):
 
     @property
     def pixel_coordinates(self):
-        """
-        coordinates (2d) of the pixel grid
+        """Coordinates (2d) of the pixel grid.
 
         :return: RA coords, DEC coords
         """

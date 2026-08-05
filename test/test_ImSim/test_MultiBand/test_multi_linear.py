@@ -238,10 +238,14 @@ class TestImageModel(object):
         )
         npt.assert_almost_equal(logL_new, logL, decimal=8)
 
-        kwargs_special["kwargs_offsets"] = [{"ra_shift": 0.1, "dec_shift": -0.1, "phi_rot": 0}]
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0.1, "dec_shift": -0.1, "phi_rot": 0}
+        ]
         self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
 
-        kwargs_special["kwargs_offsets"] = [{"ra_shift": 0, "dec_shift": 0, "phi_rot": 0}]
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0, "dec_shift": 0, "phi_rot": 0}
+        ]
         self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
 
         logL_new, _ = self.imageModel.likelihood_data_given_model(
@@ -253,10 +257,14 @@ class TestImageModel(object):
         )
         npt.assert_almost_equal(logL_new, logL, decimal=8)
 
-        kwargs_special["kwargs_offsets"] = [{"ra_shift": 0, "dec_shift": 0, "phi_rot": 0.1}]
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0, "dec_shift": 0, "phi_rot": 0.1}
+        ]
         self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
 
-        kwargs_special["kwargs_offsets"] = [{"ra_shift": 0, "dec_shift": 0, "phi_rot": 0}]
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0, "dec_shift": 0, "phi_rot": 0}
+        ]
         self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
 
         logL_new, _ = self.imageModel.likelihood_data_given_model(

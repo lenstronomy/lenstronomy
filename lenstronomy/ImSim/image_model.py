@@ -147,11 +147,11 @@ class ImageModel(object):
         self._psf_error_map_bool_list = psf_error_map_bool_list
 
     def update_pixel_grid_coordinates(self, kwargs_special, model_index=0):
-        """
-        updates the coordinate grid with shifts and rotations
+        """Updates the coordinate grid with shifts and rotations.
 
-        :param kwargs_special: special parameter dictionary. should contain "kwargs_offsets" to contain a list
-            of dictionaries with "ra_shift", "dec_shift", "phi_rot" consistent with PixelGrid.update_coordinate_grid()
+        :param kwargs_special: special parameter dictionary. should contain
+            "kwargs_offsets" to contain a list of dictionaries with "ra_shift",
+            "dec_shift", "phi_rot" consistent with PixelGrid.update_coordinate_grid()
             definition.
         :type kwargs_special: dict
         :param model_index: index of model band
@@ -165,8 +165,10 @@ class ImageModel(object):
                 pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics
             )
             if self._pixelbased_bool is True:
-                raise NotImplementedError("updated pixel coordinates are not supported with pixel-based source "
-                                          "reconstruction")
+                raise NotImplementedError(
+                    "updated pixel coordinates are not supported with pixel-based source "
+                    "reconstruction"
+                )
 
     def likelihood_data_given_model(
         self,

@@ -35,8 +35,7 @@ class PixelGrid(Coordinates):
         # self.primary_beam = None  # this needs to be set to be compatible with ImageModel class requirements
 
     def update_coordinate_grid(self, ra_shift=None, dec_shift=None, phi_rot=None):
-        """
-        updates the coordinate grid with shifts and rotations
+        """Updates the coordinate grid with shifts and rotations.
 
         :param ra_shift: shift of RA coordinates in pixel grid
         :type ra_shift: float or None

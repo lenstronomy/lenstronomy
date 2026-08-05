@@ -110,7 +110,7 @@ class TestData(object):
         npt.assert_almost_equal(y_coords[0], y_coords_new[0] - y_shift, decimal=10)
 
         data_shift = ImageData(**kwargs_data)
-        data_shift.update_pixel_grid(ra_shift=x_shift, dec_shift=y_shift)
+        data_shift.update_coordinate_grid(ra_shift=x_shift, dec_shift=y_shift)
 
         npt.assert_almost_equal(data_shift.pixel_coordinates[0], data_new.pixel_coordinates[0], decimal=8)
         npt.assert_almost_equal(data_shift.pixel_coordinates[1], data_new.pixel_coordinates[1], decimal=8)

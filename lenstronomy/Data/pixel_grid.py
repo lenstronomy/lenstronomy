@@ -30,7 +30,7 @@ class PixelGrid(Coordinates):
         self._x_grid, self._y_grid = self.coordinate_grid(nx, ny)
         # self.primary_beam = None  # this needs to be set to be compatible with ImageModel class requirements
 
-    def update_pixel_grid(self, ra_shift=None, dec_shift=None, phi_rot=None):
+    def update_coordinate_grid(self, ra_shift=None, dec_shift=None, phi_rot=None):
         """
         updates the coordinate grid with shifts and rotations
 

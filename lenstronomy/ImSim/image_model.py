@@ -63,6 +63,7 @@ class ImageModel(object):
         self.ImageNumerics = NumericsSubFrame(
             pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics
         )
+        self._kwargs_numerics = kwargs_numerics
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
@@ -144,6 +145,28 @@ class ImageModel(object):
                 self.PointSource.point_source_type_list
             )
         self._psf_error_map_bool_list = psf_error_map_bool_list
+
+    def update_pixel_grid_coordinates(self, kwargs_special, model_index=0):
+        """
+        updates the coordinate grid with shifts and rotations
+
+        :param kwargs_special: special parameter dictionary. should contain "kwargs_offsets" to contain a list
+            of dictionaries with "ra_shift", "dec_shift", "phi_rot" consistent with PixelGrid.update_coordinate_grid()
+            definition.
+        :type kwargs_special: dict
+        :param model_index: index of model band
+        :type model_index: int >=0
+        :return: new Coordinate() class and pixel grid
+        """
+        kwargs_offset = kwargs_special.get("kwargs_offsets", None)
+        if kwargs_offset is not None:
+            self.Data.update_coordinate_grid(**kwargs_offset[model_index])
+            self.ImageNumerics = NumericsSubFrame(
+                pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics
+            )
+            if self._pixelbased_bool is True:
+                raise NotImplementedError("updated pixel coordinates are not supported with pixel-based source "
+                                          "reconstruction")
 
     def likelihood_data_given_model(
         self,
@@ -684,7 +707,7 @@ class ImageModel(object):
         """Update the instance of the class with a new instance of PSF() with a
         potentially different point spread function.
 
-        :param psi_class: instance of lenstronomy.Data.psf.PSF class
+        :param psf_class: instance of lenstronomy.Data.psf.PSF class
         :return: no return. Class is updated.
         """
         self.PSF = psf_class

@@ -183,7 +183,9 @@ class ImageLinearFit(ImageModel):
         :return: 2d array of surface brightness pixels of the optimal solution of the
             linear parameters to match the data
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         _, model_error = ImageModel.error_response(
             self, kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
         )
@@ -234,7 +236,9 @@ class ImageLinearFit(ImageModel):
             likelihood if so.
         :return: log likelihood (natural logarithm), linear parameter list
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         im_sim, model_error, cov_matrix, param = ImageLinearFit.image_linear_solve(
             self,
             kwargs_lens,
@@ -361,7 +365,9 @@ class ImageLinearFit(ImageModel):
         :param unconvolved: bool, if True, computes components without convolution kernel (will not work for point sources)
         :return: response matrix (m x n)
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
 
         source_light_response, n_source = self.source_mapping.image_flux_split(

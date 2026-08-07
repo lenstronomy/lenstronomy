@@ -295,7 +295,9 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros(self.Data.num_pixel_axes)
         if self._pixelbased_bool is True:
@@ -563,7 +565,9 @@ class ImageModel(object):
         :param k: int or tuple, only evaluate the k-th point source model
         :return: image of point source
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         point_source_image = np.zeros((self.Data.num_pixel_axes))
         if self.PointSource is None:
             return point_source_image
@@ -622,7 +626,9 @@ class ImageModel(object):
         :param point_source_add: if True, add point sources, otherwise without
         :return: 2d array of surface brightness pixels of the simulation
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         model = np.zeros(self.Data.num_pixel_axes)
         if source_add is True:
             model += ImageModel.source_surface_brightness(
@@ -660,7 +666,9 @@ class ImageModel(object):
         :param kwargs_special: keyword arguments, additional parameter to the extinction
         :return: 2d array of size of the image
         """
-        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         extinction = self._extinction.extinction(
             ra_grid,

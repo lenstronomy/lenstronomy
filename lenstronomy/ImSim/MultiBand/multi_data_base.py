@@ -24,8 +24,9 @@ class MultiDataBase(object):
         self._compute_bool = compute_bool
         self._image_model_list = image_model_list
         self._num_response_list = []
-        for imageModel in image_model_list:
+        for i, imageModel in enumerate(image_model_list):
             self._num_response_list.append(imageModel.num_data_evaluate)
+            imageModel.image_index = i
 
     @property
     def num_bands(self):
@@ -90,3 +91,22 @@ class MultiDataBase(object):
                 )
                 index += 1
         return residual_list
+
+    def update_pixel_grid_coordinates(self, kwargs_special):
+        """Updates the coordinate grid with shifts and rotations.
+
+        :param kwargs_special: special parameter dictionary. should contain
+            "kwargs_offsets" to contain a list of dictionaries with "ra_shift",
+            "dec_shift", "phi_rot" consistent with PixelGrid.update_coordinate_grid()
+            definition.
+        :type kwargs_special: dict
+        :return: new Coordinate() class and pixel grid for all bands that are being
+            modeled
+        """
+        if kwargs_special is not None:
+            if "kwargs_offsets" in kwargs_special:
+                for i in range(self._num_bands):
+                    if self._compute_bool[i] is True:
+                        self._image_model_list[i].update_pixel_grid_coordinates(
+                            kwargs_special, model_index=i
+                        )

@@ -92,8 +92,7 @@ class TestData(object):
         }
 
         data = ImageData(**kwargs_data)
-        data_new = copy.deepcopy(data)
-        data_new.shift_coordinate_system(x_shift, y_shift, pixel_unit=False)
+        data_new = ImageData(ra_shift=x_shift, dec_shift=y_shift, **kwargs_data)
         ra, dec = 0, 0
         x, y = data.map_coord2pix(ra, dec)
         x_new, y_new = data_new.map_coord2pix(ra + x_shift, dec + y_shift)
@@ -109,6 +108,16 @@ class TestData(object):
         x_coords_new, y_coords_new = data_new.pixel_coordinates
         npt.assert_almost_equal(x_coords[0], x_coords_new[0] - x_shift, decimal=10)
         npt.assert_almost_equal(y_coords[0], y_coords_new[0] - y_shift, decimal=10)
+
+        data_shift = ImageData(**kwargs_data)
+        data_shift.update_coordinate_grid(ra_shift=x_shift, dec_shift=y_shift)
+
+        npt.assert_almost_equal(
+            data_shift.pixel_coordinates[0], data_new.pixel_coordinates[0], decimal=8
+        )
+        npt.assert_almost_equal(
+            data_shift.pixel_coordinates[1], data_new.pixel_coordinates[1], decimal=8
+        )
 
     def test_update_data(self):
         kwargs_data = {

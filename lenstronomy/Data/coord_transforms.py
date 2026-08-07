@@ -19,12 +19,61 @@ class Coordinates(object):
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
         """
         self._transform_pix2angle = transform_pix2angle
-        self._transform_angle2pix = linalg.inv(self._transform_pix2angle)
         self._ra_at_xy_0 = ra_at_xy_0
         self._dec_at_xy_0 = dec_at_xy_0
+        self._transform_pix2angle_ref = transform_pix2angle
+        self._ra_at_xy_0_ref = ra_at_xy_0
+        self._dec_at_xy_0_ref = dec_at_xy_0
+        self._ra_shift = 0
+        self._dec_shift = 0
+        self._phi_rot = 0
+        self._transform_angle2pix = linalg.inv(self._transform_pix2angle)
         self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(
             -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._transform_angle2pix
         )
+
+    def update_coord_transform(self, ra_shift=None, dec_shift=None, phi_rot=None):
+        """Updates the coordinate centers and rotation.
+
+        :param ra_shift: shift of RA coordinates in pixel grid
+        :type ra_shift: float or None
+        :param dec_shift: shift in DEC coordinates in pixel grid
+        :type dec_shift: float or None
+        :param phi_rot: rotation angle applied to coordinate grid around ra_at_xy_0,
+            dec_at_xy_0 [radian]
+        :type phi_rot: float or None
+        :return: new Coordinate() class and pixel grid
+        """
+
+        if ra_shift is None and dec_shift is None and phi_rot is None:
+            return False
+        else:
+            updated = False
+            if phi_rot is not None and phi_rot != self._phi_rot:
+                cos_phi, sin_phi = np.cos(phi_rot), np.sin(phi_rot)
+                rot_matrix = np.array([[cos_phi, -sin_phi], [sin_phi, cos_phi]])
+                transform_pix2angle_rot = np.dot(
+                    self._transform_pix2angle_ref, rot_matrix
+                )
+                self._transform_pix2angle = transform_pix2angle_rot
+                self._phi_rot = phi_rot
+                updated = True
+            if ra_shift is not None and ra_shift != self._ra_shift:
+                ra_at_xy_0 = self._ra_at_xy_0_ref + ra_shift
+                self._ra_at_xy_0 = ra_at_xy_0
+                self._ra_shift = ra_shift
+                updated = True
+            if dec_shift is not None and dec_shift != self._dec_shift:
+                dec_at_xy_0 = self._dec_at_xy_0_ref + dec_shift
+                self._dec_at_xy_0 = dec_at_xy_0
+                self._dec_shift = dec_shift
+                updated = True
+        if updated:
+            self._transform_angle2pix = linalg.inv(self._transform_pix2angle)
+            self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(
+                -self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._transform_angle2pix
+            )
+        return updated
 
     @property
     def transform_angle2pix(self):
@@ -110,8 +159,8 @@ class Coordinates(object):
         ra_coords, dec_coords = util.grid_from_coordinate_transform(
             nx, ny, self._transform_pix2angle, self._ra_at_xy_0, self._dec_at_xy_0
         )
-        ra_coords = util.array2image(ra_coords, nx, ny)  # new
-        dec_coords = util.array2image(dec_coords, nx, ny)  # new
+        ra_coords = util.array2image(ra_coords, nx, ny)
+        dec_coords = util.array2image(dec_coords, nx, ny)
         return ra_coords, dec_coords
 
     def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
@@ -136,7 +185,6 @@ class Coordinates(object):
             ra_shift, dec_shift = self.map_pix2coord(x_shift, y_shift)
             ra_shift -= self._ra_at_xy_0
             dec_shift -= self._dec_at_xy_0
-            print(ra_shift, dec_shift, "test")
         else:
             ra_shift, dec_shift = x_shift, y_shift
         self._ra_at_xy_0 += ra_shift

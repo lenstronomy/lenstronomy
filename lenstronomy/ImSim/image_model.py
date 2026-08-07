@@ -31,6 +31,7 @@ class ImageModel(object):
         likelihood_mask=None,
         psf_error_map_bool_list=None,
         kwargs_pixelbased=None,
+        image_index=0,
     ):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
@@ -47,6 +48,8 @@ class ImageModel(object):
             Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
             (see SLITronomy documentation)
+        :param image_index: index of the band that is being modeled here.
+            Primary used when coordinate frames have to be aligned between bands
         """
 
         self.type = "single-band"
@@ -63,6 +66,7 @@ class ImageModel(object):
         self.ImageNumerics = NumericsSubFrame(
             pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics
         )
+        self._kwargs_numerics = kwargs_numerics
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
@@ -130,8 +134,10 @@ class ImageModel(object):
             self.source_mapping = Image2SourceMapping(
                 lens_model=lens_model_class, source_model=source_model_class
             )
-
-        self._pb = data_class.primary_beam
+        if hasattr(data_class, "primary_beam"):
+            self._pb = data_class.primary_beam
+        else:
+            self._pb = None
         if self._pb is not None:
             self._pb_1d = util.image2array(self._pb)
         else:
@@ -142,6 +148,33 @@ class ImageModel(object):
                 self.PointSource.point_source_type_list
             )
         self._psf_error_map_bool_list = psf_error_map_bool_list
+        self.image_index = image_index
+
+    def update_pixel_grid_coordinates(self, kwargs_special=None, model_index=0):
+        """Updates the coordinate grid with shifts and rotations.
+
+        :param kwargs_special: special parameter dictionary. should contain
+            "kwargs_offsets" to contain a list of dictionaries with "ra_shift",
+            "dec_shift", "phi_rot" consistent with PixelGrid.update_coordinate_grid()
+            definition.
+        :type kwargs_special: dict or None
+        :param model_index: index of model band
+        :type model_index: int >=0
+        :return: new Coordinate() class and pixel grid
+        """
+        if kwargs_special is not None:
+            kwargs_offset = kwargs_special.get("kwargs_offsets", None)
+            if kwargs_offset is not None:
+                updated = self.Data.update_coordinate_grid(**kwargs_offset[model_index])
+                if updated:
+                    self.ImageNumerics = NumericsSubFrame(
+                        pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics
+                    )
+                    if self._pixelbased_bool is True:
+                        raise NotImplementedError(
+                            "updated pixel coordinates are not supported with pixel-based source "
+                            "reconstruction"
+                        )
 
     def likelihood_data_given_model(
         self,
@@ -262,6 +295,9 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 2d array of surface brightness pixels
         """
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros(self.Data.num_pixel_axes)
         if self._pixelbased_bool is True:
@@ -529,6 +565,9 @@ class ImageModel(object):
         :param k: int or tuple, only evaluate the k-th point source model
         :return: image of point source
         """
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         point_source_image = np.zeros((self.Data.num_pixel_axes))
         if self.PointSource is None:
             return point_source_image
@@ -587,6 +626,9 @@ class ImageModel(object):
         :param point_source_add: if True, add point sources, otherwise without
         :return: 2d array of surface brightness pixels of the simulation
         """
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         model = np.zeros(self.Data.num_pixel_axes)
         if source_add is True:
             model += ImageModel.source_surface_brightness(
@@ -624,6 +666,9 @@ class ImageModel(object):
         :param kwargs_special: keyword arguments, additional parameter to the extinction
         :return: 2d array of size of the image
         """
+        self.update_pixel_grid_coordinates(
+            kwargs_special=kwargs_special, model_index=self.image_index
+        )
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         extinction = self._extinction.extinction(
             ra_grid,
@@ -682,7 +727,7 @@ class ImageModel(object):
         """Update the instance of the class with a new instance of PSF() with a
         potentially different point spread function.
 
-        :param psi_class: instance of lenstronomy.Data.psf.PSF class
+        :param psf_class: instance of lenstronomy.Data.psf.PSF class
         :return: no return. Class is updated.
         """
         self.PSF = psf_class

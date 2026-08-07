@@ -1,11 +1,10 @@
 import numpy as np
 from lenstronomy.Data.coord_transforms import Coordinates
-from lenstronomy.Data.angular_sensitivity import AngularSensitivity
 
 __all__ = ["PixelGrid"]
 
 
-class PixelGrid(Coordinates, AngularSensitivity):
+class PixelGrid(Coordinates):
     """Class that manages a specified pixel grid (rectangular at the moment) and its
     coordinates."""
 
@@ -16,7 +15,6 @@ class PixelGrid(Coordinates, AngularSensitivity):
         transform_pix2angle,
         ra_at_xy_0,
         dec_at_xy_0,
-        antenna_primary_beam=None,
     ):
         """
 
@@ -24,21 +22,36 @@ class PixelGrid(Coordinates, AngularSensitivity):
         :param ny: number of pixels in y-axis
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
-        :param dec_at_xy_0: dec coordinate at pixel (0,0)
-        :param antenna_primary_beam: 2d numpy array with the same size of imaga_data;
-         more descriptions of the primary beam can be found in the AngularSensitivity class
         """
-        super(PixelGrid, self).__init__(transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
+        Coordinates.__init__(
+            self,
+            transform_pix2angle=transform_pix2angle,
+            ra_at_xy_0=ra_at_xy_0,
+            dec_at_xy_0=dec_at_xy_0,
+        )
         self._nx = nx
         self._ny = ny
         self._x_grid, self._y_grid = self.coordinate_grid(nx, ny)
-        if antenna_primary_beam is not None:
-            pbx, pby = np.shape(antenna_primary_beam)
-            if (pbx, pby) != (nx, ny):
-                raise ValueError(
-                    "The primary beam should have the same size with the image data!"
-                )
-        AngularSensitivity.__init__(self, antenna_primary_beam)
+        # self.primary_beam = None  # this needs to be set to be compatible with ImageModel class requirements
+
+    def update_coordinate_grid(self, ra_shift=None, dec_shift=None, phi_rot=None):
+        """Updates the coordinate grid with shifts and rotations.
+
+        :param ra_shift: shift of RA coordinates in pixel grid
+        :type ra_shift: float or None
+        :param dec_shift: shift in DEC coordinates in pixel grid
+        :type dec_shift: float or None
+        :param phi_rot: rotation angle applied to coordinate grid around ra_at_xy_0,
+            dec_at_xy_0 [radian]
+        :type phi_rot: float or None
+        :return: new Coordinate() class and pixel grid
+        """
+        updated_bool = self.update_coord_transform(
+            ra_shift=ra_shift, dec_shift=dec_shift, phi_rot=phi_rot
+        )
+        if updated_bool:
+            self._x_grid, self._y_grid = self.coordinate_grid(self._nx, self._ny)
+        return updated_bool
 
     @property
     def num_pixel(self):
@@ -66,26 +79,16 @@ class PixelGrid(Coordinates, AngularSensitivity):
 
     @property
     def center(self):
-        """
+        """Center RA, DEC of original coordinate frame (not including shift and
+        rotations)
 
         :return: center_x, center_y of coordinate system
         """
         return np.mean(self._x_grid), np.mean(self._y_grid)
 
-    def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
-        """Shifts the coordinate system.
-
-        :param x_shift: shift in x (or RA)
-        :param y_shift: shift in y (or DEC)
-        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
-        :return: updated data class with change in coordinate system.
-        """
-        self._shift_coordinates(x_shift, y_shift, pixel_unit=pixel_unit)
-        self._x_grid, self._y_grid = self.coordinate_grid(self._nx, self._ny)
-
     @property
     def pixel_coordinates(self):
-        """
+        """Coordinates (2d) of the pixel grid.
 
         :return: RA coords, DEC coords
         """

@@ -213,6 +213,69 @@ class TestImageModel(object):
         assert kwargs_lens_light[0]["amp"] == 10
         assert kwargs_ps[0]["source_amp"] == 10
 
+    def test_update_pixel_grid_coordinates(self):
+
+        kwargs_special = {}
+        kwargs_special["kwargs_offsets"] = [{}]
+
+        logL, _ = self.imageModel.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=False,
+        )
+
+        self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
+        self.imageModel.update_pixel_grid_coordinates(kwargs_special={})
+
+        logL_new, _ = self.imageModel.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=False,
+        )
+        npt.assert_almost_equal(logL_new, logL, decimal=8)
+
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0.1, "dec_shift": -0.1, "phi_rot": 0}
+        ]
+        self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
+
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0, "dec_shift": 0, "phi_rot": 0}
+        ]
+        self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
+
+        logL_new, _ = self.imageModel.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=False,
+        )
+        npt.assert_almost_equal(logL_new, logL, decimal=8)
+
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0, "dec_shift": 0, "phi_rot": 0.1}
+        ]
+        self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
+
+        kwargs_special["kwargs_offsets"] = [
+            {"ra_shift": 0, "dec_shift": 0, "phi_rot": 0}
+        ]
+        self.imageModel.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
+
+        logL_new, _ = self.imageModel.likelihood_data_given_model(
+            self.kwargs_lens,
+            self.kwargs_source,
+            self.kwargs_lens_light,
+            self.kwargs_ps,
+            source_marg=False,
+        )
+        npt.assert_almost_equal(logL_new, logL, decimal=8)
+
 
 if __name__ == "__main__":
     pytest.main()

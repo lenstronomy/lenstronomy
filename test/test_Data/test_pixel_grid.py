@@ -17,7 +17,6 @@ class TestPixelGrid(object):
             transform_pix2angle=transform_pix2angle,
             ra_at_xy_0=ra_at_xy_0,
             dec_at_xy_0=dec_at_xy_0,
-            antenna_primary_beam=None,
         )
 
     def test_num_pix(self):

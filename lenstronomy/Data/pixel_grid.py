@@ -46,10 +46,12 @@ class PixelGrid(Coordinates):
         :type phi_rot: float or None
         :return: new Coordinate() class and pixel grid
         """
-        self.update_coord_transform(
+        updated_bool = self.update_coord_transform(
             ra_shift=ra_shift, dec_shift=dec_shift, phi_rot=phi_rot
         )
-        self._x_grid, self._y_grid = self.coordinate_grid(self._nx, self._ny)
+        if updated_bool:
+            self._x_grid, self._y_grid = self.coordinate_grid(self._nx, self._ny)
+        return updated_bool
 
     @property
     def num_pixel(self):

@@ -132,6 +132,7 @@ class MultiLinear(MultiDataBase):
             individual images), linear parameters
         """
         # generate image
+        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special)
         logL = 0
         param_list = []
         if linear_prior is None:

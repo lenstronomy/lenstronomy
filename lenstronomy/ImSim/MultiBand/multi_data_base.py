@@ -24,8 +24,9 @@ class MultiDataBase(object):
         self._compute_bool = compute_bool
         self._image_model_list = image_model_list
         self._num_response_list = []
-        for imageModel in image_model_list:
+        for i, imageModel in enumerate(image_model_list):
             self._num_response_list.append(imageModel.num_data_evaluate)
+            imageModel.image_index = i
 
     @property
     def num_bands(self):
@@ -102,9 +103,10 @@ class MultiDataBase(object):
         :return: new Coordinate() class and pixel grid for all bands that are being
             modeled
         """
-        if "kwargs_offsets" in kwargs_special:
-            for i in range(self._num_bands):
-                if self._compute_bool[i] is True:
-                    self._image_model_list[i].update_pixel_grid_coordinates(
-                        kwargs_special, model_index=i
-                    )
+        if kwargs_special is not None:
+            if "kwargs_offsets" in kwargs_special:
+                for i in range(self._num_bands):
+                    if self._compute_bool[i] is True:
+                        self._image_model_list[i].update_pixel_grid_coordinates(
+                            kwargs_special, model_index=i
+                        )

@@ -29,6 +29,7 @@ class ImageLinearFit(ImageModel):
         likelihood_mask=None,
         psf_error_map_bool_list=None,
         kwargs_pixelbased=None,
+        image_index=0,
     ):
         """
 
@@ -46,6 +47,8 @@ class ImageLinearFit(ImageModel):
          Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation) being applied to the point sources.
+         :param image_index: index of the band that is being modeled here.
+         Primary used when coordinate frames have to be aligned between bands
         """
         super(ImageLinearFit, self).__init__(
             data_class,
@@ -59,6 +62,7 @@ class ImageLinearFit(ImageModel):
             likelihood_mask=likelihood_mask,
             psf_error_map_bool_list=psf_error_map_bool_list,
             kwargs_pixelbased=kwargs_pixelbased,
+            image_index=image_index,
         )
 
         # prepare to use fft convolution for the natwt linear solver
@@ -179,6 +183,7 @@ class ImageLinearFit(ImageModel):
         :return: 2d array of surface brightness pixels of the optimal solution of the
             linear parameters to match the data
         """
+        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
         _, model_error = ImageModel.error_response(
             self, kwargs_lens, kwargs_ps, kwargs_special=kwargs_special
         )
@@ -191,7 +196,7 @@ class ImageLinearFit(ImageModel):
             init_lens_light_model=init_lens_light_model,
         )
         cov_param = None
-        _, _ = self.update_pixel_kwargs(kwargs_source, kwargs_lens_light)
+        _, _ = self._update_pixel_kwargs(kwargs_source, kwargs_lens_light)
         _, _, _, _ = ImageLinearFit.update_linear_kwargs(
             self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
         )
@@ -229,7 +234,7 @@ class ImageLinearFit(ImageModel):
             likelihood if so.
         :return: log likelihood (natural logarithm), linear parameter list
         """
-
+        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
         im_sim, model_error, cov_matrix, param = ImageLinearFit.image_linear_solve(
             self,
             kwargs_lens,
@@ -356,6 +361,7 @@ class ImageLinearFit(ImageModel):
         :param unconvolved: bool, if True, computes components without convolution kernel (will not work for point sources)
         :return: response matrix (m x n)
         """
+        self.update_pixel_grid_coordinates(kwargs_special=kwargs_special, model_index=self.image_index)
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
 
         source_light_response, n_source = self.source_mapping.image_flux_split(
@@ -440,7 +446,7 @@ class ImageLinearFit(ImageModel):
         param += self.PointSource.linear_param_from_kwargs(kwargs_ps)
         return param
 
-    def update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):
+    def _update_pixel_kwargs(self, kwargs_source, kwargs_lens_light):
         """Update kwargs arguments for pixel-based profiles with fixed properties such
         as their number of pixels, scale, and center coordinates (fixed to the origin).
 

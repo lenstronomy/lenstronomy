@@ -75,9 +75,10 @@ class SynthesisProfile(LensProfileBase):
         return np.matmul(first_term, second_term)
 
     def set_static(self, linear_weights):
-        """Sets weights to be static self values. Useful to call e.g. function many
-        times with the same kwargs. If kwargs_target or kwargs_list change, need to
-        rerun linear fit by using set_dynamic.
+        """Sets weights to be static self values.
+
+        Useful to call e.g. function many times with the same kwargs. If kwargs_target
+        or kwargs_list change, need to rerun linear fit by using set_dynamic.
 
         :param linear_weights: output of LinearWeightMLEFit
         :return: self weights set

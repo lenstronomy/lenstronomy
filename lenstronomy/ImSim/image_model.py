@@ -48,7 +48,6 @@ class ImageModel(object):
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
             (see SLITronomy documentation)
         """
-
         self.type = "single-band"
         self.num_bands = 1
         self.PSF = psf_class

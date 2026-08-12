@@ -34,7 +34,6 @@ class MagAmpConversion(ModelAPI):
             the profile type results in this magnitude for all the light models. These
             keyword arguments conform with the lenstronomy LightModel syntax.
         """
-
         kwargs_lens_light = copy.deepcopy(kwargs_lens_light_mag)
         if kwargs_lens_light_mag is not None:
             for i, kwargs_mag in enumerate(kwargs_lens_light_mag):

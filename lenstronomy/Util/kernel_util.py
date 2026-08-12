@@ -17,8 +17,9 @@ export, __all__ = exporter()
 
 @export
 def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_size=1):
-    """De-shifts a shifted kernel to the center of a pixel. This is performed
-    iteratively.
+    """De-shifts a shifted kernel to the center of a pixel.
+
+    This is performed iteratively.
 
     The input kernel is the solution of a linear interpolated shift of a sharper kernel
     centered in the middle of the pixel. To find the de-shifted kernel, we perform an
@@ -102,7 +103,6 @@ def kernel_make_odd(kernel_even):
     :param kernel_even: n x n kernel with n even, centered
     :return: even kernel with n+1 x n+1 centered
     """
-
     n_row, n_col = np.shape(kernel_even)
     assert n_row == n_col
     if n_row % 2 == 1:

@@ -142,8 +142,9 @@ class SIS(LensProfileBase):
         return rho
 
     def density_lens(self, r, theta_E):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in projected in units of angles (i.e. arc seconds) results in the
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in projected in units of angles (i.e. arc seconds) results in the
         convergence quantity.
 
         :param r: 3d radius

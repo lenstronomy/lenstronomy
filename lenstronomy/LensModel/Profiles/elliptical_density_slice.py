@@ -146,7 +146,6 @@ class ElliSLICE(LensProfileBase):
         :param center_x: float, center on the x axis
         :param center_y: float, center on the y axis
         """
-
         diff = 0.000000001
         alpha_ra, alpha_dec = self.derivatives(
             x, y, a, b, psi, sigma_0, center_x, center_y

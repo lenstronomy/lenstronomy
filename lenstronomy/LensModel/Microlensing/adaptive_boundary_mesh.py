@@ -69,7 +69,6 @@ def within_distance(x, y, test_point, threshold, threshold_2):
         threshold_2 distances.
     :rtype: nparray
     """
-
     distances = ((x - test_point[0]) ** 2 + (y - test_point[1]) ** 2) ** (1 / 2)
     return (distances < threshold) & (distances < threshold_2)
 
@@ -86,39 +85,41 @@ def adaptive_boundary_mesh(
     final_eta,
     kwargs_lens,
 ):
-    """
+    """Original ABM algorithm described in Meena et al.
 
-    Original ABM algorithm described in Meena et al. 2022, https://arxiv.org/abs/2203.08131
-
-    Returns list of those high resolution image-plane pixels that were mapped to
-    within the radius :math:`\\beta_s` around the source position (:math:`\\beta_1`, :math:`\\beta_2`) in the source plane. This
+    2022, https://arxiv.org/abs/2203.08131     Returns list of those high resolution
+    image-plane pixels that were mapped to     within the radius :math:`\\beta_s` around
+    the source position (:math:`\\beta_1`, :math:`\\beta_2`) in the source plane. This
     is done by first loading all image-plane pixels, ray shooting from the image plane
-    to the source plane, and then checking if they are within the radius :math:`\\beta_s`.
+    to the source plane, and then checking if they are within the radius
+    :math:`\\beta_s`.
 
-     :param source_position: Coordinates of the source position (x, y). Source position
-     :type source_position: tuple
-     :param L: Side length of square area in image plane. Same as lenstronomy grid width
-     :type L: float
-     :param beta_0: Initial search radius (delta_beta)
-     :type beta_0: float
-     :param beta_s: Factor of 1/2 because radius
-     :type beta_s: float
-     :param n_p: Number of pixels
-     :type n_p: int
-     :param eta: Factor by which the search radius is reduced in each iteration
-     :type eta: float
-     :param number_of_iterations: Number of iterations
-     :type number_of_iterations: int
-     :param final_eta: Final scale factor
-     :type final_eta: float
-     :param kwargs_lens: Keyword arguments for lens model
-     :type kwargs_lens: dict
-     :return: side_length: updated side length of square area in image plane
-     :rtype: side_length: nparray
-     :return: total_number_of_rays_shot: total number of rays shot
-     :rtype: total_number_of_rays_shot: int
-     :return: subset_image_centers_x, subset_image_centers_y: x and y coordinates of high resolution image-plane pixels that were mapped to within the radius β_s around the source position (β1, β2) in the source plane
-     :rtype: subset_image_centers_x, subset_image_centers_y: nparray
+    :param source_position: Coordinates of the source position (x, y). Source position
+    :type source_position: tuple
+    :param L: Side length of square area in image plane. Same as lenstronomy grid width
+    :type L: float
+    :param beta_0: Initial search radius (delta_beta)
+    :type beta_0: float
+    :param beta_s: Factor of 1/2 because radius
+    :type beta_s: float
+    :param n_p: Number of pixels
+    :type n_p: int
+    :param eta: Factor by which the search radius is reduced in each iteration
+    :type eta: float
+    :param number_of_iterations: Number of iterations
+    :type number_of_iterations: int
+    :param final_eta: Final scale factor
+    :type final_eta: float
+    :param kwargs_lens: Keyword arguments for lens model
+    :type kwargs_lens: dict
+    :return: side_length: updated side length of square area in image plane
+    :rtype: side_length: nparray
+    :return: total_number_of_rays_shot: total number of rays shot
+    :rtype: total_number_of_rays_shot: int
+    :return: subset_image_centers_x, subset_image_centers_y: x and y coordinates of high
+        resolution image-plane pixels that were mapped to within the radius β_s around
+        the source position (β1, β2) in the source plane
+    :rtype: subset_image_centers_x, subset_image_centers_y: nparray
     """
     # default values
 

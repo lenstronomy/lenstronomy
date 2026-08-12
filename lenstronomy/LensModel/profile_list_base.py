@@ -286,7 +286,6 @@ class ProfileListBase(object):
         :return: None or raise ValueError with error message of what parameter is not
             supported.
         """
-
         name_list = self.param_name_list
         if len(kwargs_list) != len(name_list):
             raise ValueError(

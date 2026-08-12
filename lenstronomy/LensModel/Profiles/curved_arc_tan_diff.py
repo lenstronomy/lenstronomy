@@ -120,16 +120,17 @@ class CurvedArcTanDiff(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
-        ATTENTION: there may not be a global lensing potential!
+        """ATTENTION: there may not be a global lensing potential!
 
         :param x:
         :param y:
-        :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+        :param tangential_stretch: float, stretch of intrinsic source in tangential
+            direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
-        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential stretch
+        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential
+            stretch
         :param center_x: center of source in image plane
         :param center_y: center of source in image plane
         :return:

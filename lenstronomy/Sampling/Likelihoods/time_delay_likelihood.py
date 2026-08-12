@@ -31,7 +31,6 @@ class TimeDelayLikelihood(object):
         :param bimodal_measurement: if True, two sets of delays are required. Only allowed for one set of point sources
         :type bimodal_measurement: bool
         """
-
         if time_delays_measured is None:
             raise ValueError(
                 "time_delay_measured need to be specified to evaluate the time-delay likelihood."

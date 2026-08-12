@@ -65,16 +65,17 @@ class Hessian(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, f_xx, f_yy, f_xy, f_yx, ra_0=0, dec_0=0):
-        """Hessian. Attention: If f_xy != f_yx then this function is not accurate!
+        """Hessian.
 
-        :param x: x-coordinate (angle)
-        :param y: y0-coordinate (angle)
-        :param f_xx: dalpha_x/dx
-        :param f_yy: dalpha_y/dy
-        :param f_xy: dalpha_x/dy
-        :param f_yx: dalpha_y/dx
-        :param ra_0: x/ra position where shear deflection is 0
-        :param dec_0: y/dec position where shear deflection is 0
-        :return: f_xx, f_yy, f_xy
+        Attention: If f_xy != f_yx then this function is not accurate!
+                :param x: x-coordinate (angle)
+                :param y: y0-coordinate (angle)
+                :param f_xx: dalpha_x/dx
+                :param f_yy: dalpha_y/dy
+                :param f_xy: dalpha_x/dy
+                :param f_yx: dalpha_y/dx
+                :param ra_0: x/ra position where shear deflection is 0
+                :param dec_0: y/dec position where shear deflection is 0
+                :return: f_xx, f_yy, f_xy
         """
         return f_xx, f_xy, f_yx, f_yy

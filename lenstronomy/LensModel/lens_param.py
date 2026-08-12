@@ -36,7 +36,6 @@ class LensParam(object):
          in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
          profile will be initialized using default settings.
         """
-
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
         self._num_images = num_images
@@ -76,7 +75,6 @@ class LensParam(object):
         :param i: integer, index at the beginning of the tuple for read out to keyword argument convention
         :return: kwargs_list, index at the end of read out of this model component
         """
-
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
@@ -148,7 +146,6 @@ class LensParam(object):
         :param kwargs_list: keyword argument list of lens model components
         :return: tuple of arguments (floats) that are being sampled
         """
-
         args = []
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]

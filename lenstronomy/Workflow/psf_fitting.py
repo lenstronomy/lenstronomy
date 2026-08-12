@@ -672,7 +672,6 @@ class PsfFitting(object):
         :param cutout_size: odd integer, size of cutout.
         :return: list of cutouts
         """
-
         star_cutout_list = []
         for l in range(len(x_pos)):
             x_int = int(round(x_pos[l]))

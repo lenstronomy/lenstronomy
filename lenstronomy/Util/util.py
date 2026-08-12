@@ -60,7 +60,6 @@ def sort_image_index(ximg, yimg, xref, yref):
     :param yref: reference y coordinate
     :return: indexes such that ximg[indexes],yimg[indexes] matches xref,yref
     """
-
     assert len(xref) == len(ximg)
     ximg, yimg = np.array(ximg), np.array(yimg)
     x_self = np.array(list(itertools.permutations(ximg)))
@@ -198,7 +197,6 @@ def make_grid(num_pix, delta_pix, subgrid_res=1, left_lower=False):
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
     """
-
     # Check num_pix is an integer, or 2-sequence of integers
     if isinstance(num_pix, (tuple, list, np.ndarray)):
         assert len(num_pix) == 2
@@ -392,7 +390,6 @@ def averaging(grid, num_grid, num_pix):
         is integer number)
     :return: averaged pixel grid
     """
-
     n_big = num_grid
     n_small = num_pix
     small = (

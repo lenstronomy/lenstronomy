@@ -30,7 +30,6 @@ def data_configure_simple(
     :return: keyword arguments that can be used to construct a Data() class instance of
         lenstronomy
     """
-
     # 1d list of coordinates (x,y) of a num_pix x num_pix square grid, centered to zero
     (
         x_grid,
@@ -88,7 +87,6 @@ def simulate_simple(
     :param point_source_add:
     :return:
     """
-
     image = image_model_class.image(
         kwargs_lens,
         kwargs_source,

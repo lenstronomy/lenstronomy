@@ -16,8 +16,10 @@ __all__ = ["Optimizer"]
 
 
 class Optimizer(object):
-    """Class which executes the optimization routines. Currently implemented as a
-    particle swarm optimization followed by a downhill simplex routine.
+    """Class which executes the optimization routines.
+
+    Currently implemented as a particle swarm optimization followed by a downhill
+    simplex routine.
 
     Particle swarm optimizer is modified from the CosmoHammer particle swarm routine
     with different convergence criteria implemented.
@@ -208,7 +210,6 @@ class Optimizer(object):
         :param tol_simplex_func: tolerance for the downhill simplex optimization
         :param simplex_n_iterations: number of iterations per dimension for the downhill simplex optimization
         """
-
         fast_rayshooting = MultiplaneFast(
             x_image,
             y_image,
@@ -289,7 +290,6 @@ class Optimizer(object):
 
     def _fit_pso(self, n_particles, n_iterations, pool, verbose):
         """Executes the PSO."""
-
         low_bounds, high_bounds = self._param_class.bounds(
             self._re_optimize, self._re_optimize_scale
         )

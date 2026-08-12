@@ -23,7 +23,6 @@ class LensCosmo(object):
         :param z_source: redshift of source
         :param cosmo: ~astropy.cosmology instance
         """
-
         self.z_lens = z_lens
         self.z_source = z_source
         self.background = Background(cosmo=cosmo)
@@ -524,7 +523,6 @@ class LensCosmo(object):
         :param z_source: source redshift
         :return: Einstein radius for a source at redshift z_source
         """
-
         if z_source == z_source_convention:
             theta_E = theta_E_convention
             kappa_ext = kappa_ext_convention

@@ -44,7 +44,6 @@ class Moffat(object):
         :param center_y: y-center
         :return: surface brightness
         """
-
         x_shift = x - center_x
         y_shift = y - center_y
         return amp * (1.0 + (x_shift**2 + y_shift**2) / alpha**2) ** (-beta)

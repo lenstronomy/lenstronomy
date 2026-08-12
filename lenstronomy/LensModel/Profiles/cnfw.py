@@ -95,7 +95,6 @@ class CNFW(LensProfileBase):
 
     def hessian(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
         # raise Exception('Hessian for truncated nfw profile not yet implemented.')
-
         """Returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy."""
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         if Rs < 0.0001:
@@ -122,7 +121,6 @@ class CNFW(LensProfileBase):
         :type rho0: float
         :return: rho(R) density
         """
-
         M0 = 4 * np.pi * rho0 * Rs**3
         return (M0 / 4 / np.pi) * ((r_core + R) * (R + Rs) ** 2) ** -1
 
@@ -230,7 +228,6 @@ class CNFW(LensProfileBase):
 
     def mass_2d(self, R, Rs, rho0, r_core):
         """Analytic solution of the projection integral (convergence)"""
-
         x = R / Rs
         b = r_core / Rs
         b = max(b, 0.000001)
@@ -255,7 +252,6 @@ class CNFW(LensProfileBase):
     def _nfw_func(self, x):
         """Classic NFW function in terms of arctanh and arctan :param x: r/Rs
         :return:"""
-
         # c = 0.000000001
 
         if isinstance(x, np.ndarray):
@@ -288,7 +284,6 @@ class CNFW(LensProfileBase):
         :param X: a dimensionless quantity, either r/rs or r/rc
         :type X: float >0
         """
-
         if b == 1:
             b = 1 + c
 

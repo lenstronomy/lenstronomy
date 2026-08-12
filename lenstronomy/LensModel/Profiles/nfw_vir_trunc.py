@@ -26,7 +26,6 @@ class NFWVirTrunc(LensProfileBase):
         :param z_source: redshift of source
         :param cosmo: astropy cosmology instance
         """
-
         if cosmo is None:
             from astropy.cosmology import FlatLambdaCDM
 

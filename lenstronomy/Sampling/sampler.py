@@ -175,31 +175,38 @@ class Sampler(object):
         backend_filename=None,
         start_from_backend=False,
     ):
-        """Run MCMC with emcee. For details, please have a look at the documentation of
-        the emcee packager.
+        """Run MCMC with emcee.
+
+        For details, please have a look at the documentation of the emcee packager.
 
         :param n_walkers: number of walkers in the emcee process
         :type n_walkers: integer
         :param n_run: number of sampling (after burn-in) of the emcee
         :type n_run: integer
-        :param n_burn: number of burn-in iterations (those will not be saved in the output sample)
+        :param n_burn: number of burn-in iterations (those will not be saved in the
+            output sample)
         :type n_burn: integer
         :param mean_start: mean of the parameter position of the initialising sample
         :type mean_start: numpy array of length the number of parameters
-        :param sigma_start: spread of the parameter values (uncorrelated in each dimension) of the initialising sample
+        :param sigma_start: spread of the parameter values (uncorrelated in each
+            dimension) of the initialising sample
         :type sigma_start: numpy array of length the number of parameters
-        :param mpi: if True, initializes an MPIPool to allow for MPI execution of the sampler
+        :param mpi: if True, initializes an MPIPool to allow for MPI execution of the
+            sampler
         :type mpi: bool
         :param progress: if True, prints the progress bar
         :type progress: bool
-        :param threadCount: number of threats in multi-processing (not applicable for MPI)
+        :param threadCount: number of threats in multi-processing (not applicable for
+            MPI)
         :type threadCount: integer
         :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
-        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :param backend_filename: name of the HDF5 file where sampling state is saved
+            (through emcee backend engine)
         :type backend_filename: string
-        :param start_from_backend: if True, start from the state saved in `backup_filename`.
-         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :param start_from_backend: if True, start from the state saved in
+            `backup_filename`. Otherwise, create a new backup file with name
+            `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array

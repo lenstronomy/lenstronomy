@@ -37,7 +37,6 @@ class CoreBurkert(LensProfileBase):
         :param center_y: center of halo
         :return:
         """
-
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
 
         if Rs < 0.0000001:
@@ -56,7 +55,6 @@ class CoreBurkert(LensProfileBase):
         :param center_y:
         :return:
         """
-
         rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
 
         if Rs < 0.0000001:
@@ -80,7 +78,6 @@ class CoreBurkert(LensProfileBase):
         :param center_y:
         :return:
         """
-
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -105,7 +102,6 @@ class CoreBurkert(LensProfileBase):
         :param rho0: central core density
         :param r_core: core radius
         """
-
         x = R * Rs**-1
         p = Rs * r_core**-1
         gx = self._G(x, p)
@@ -145,7 +141,6 @@ class CoreBurkert(LensProfileBase):
         :type rho0: float
         :return: rho(R) density
         """
-
         M0 = 4 * np.pi * Rs**3 * rho0
 
         return (M0 / (4 * np.pi)) * ((r_core + R) * (Rs**2 + R**2)) ** -1
@@ -175,7 +170,6 @@ class CoreBurkert(LensProfileBase):
         :param rho0: central core density
         :param r_core: core radius
         """
-
         Rs = float(Rs)
         b = r_core * Rs**-1
         c = R * Rs**-1
@@ -431,7 +425,6 @@ class CoreBurkert(LensProfileBase):
         :param p:
         :return:
         """
-
         prefactor = (p + p**3) ** -1 * p
 
         if isinstance(x, np.ndarray):

@@ -13,10 +13,11 @@ __all__ = ["DynestySampler"]
 
 
 class DynestySampler(NestedSampler):
-    """Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle.
+    """Wrapper for dynamical nested sampling algorithm Dynesty by J.
 
-    paper : https://arxiv.org/abs/1904.02180
-    doc : https://dynesty.readthedocs.io/
+    Speagle.
+        paper : https://arxiv.org/abs/1904.02180
+        doc : https://dynesty.readthedocs.io/
     """
 
     def __init__(

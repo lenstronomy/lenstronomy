@@ -53,7 +53,6 @@ class TabulatedDeflections(LensProfileBase):
         :param kwargs: keyword arguments for the custom profile
         :return:
         """
-
         x_ = x - center_x
         y_ = y - center_y
         f_x, f_y = self._custom_lens_class(x_, y_, **kwargs)
@@ -66,7 +65,6 @@ class TabulatedDeflections(LensProfileBase):
         :param center_y: the deflector y coordinate :param kwargs: keyword arguments for
         the profile :return: the derivatives of the deflection angles that make up the
         hessian matrix."""
-
         diff = 1e-6
         alpha_ra, alpha_dec = self.derivatives(
             x, y, center_x=center_x, center_y=center_y, **kwargs

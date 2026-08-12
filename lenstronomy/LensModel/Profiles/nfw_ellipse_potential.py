@@ -153,8 +153,9 @@ class NFWEllipsePotential(LensProfileBase):
         return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
 
     def density_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: 3d radios

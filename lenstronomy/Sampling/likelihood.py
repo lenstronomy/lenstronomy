@@ -452,12 +452,6 @@ class Likelihood(object):
         penalty that grows with the (bound-range-normalized) distance past the violated
         bound(s), summed over all violated parameters.
 
-        A flat penalty (independent of how far a parameter is out of bounds) creates a
-        plateau with no likelihood gradient, which lets samplers with proposals
-        referenced to other walkers' positions (e.g. emcee's stretch move) drift
-        arbitrarily far from the bounds once they land in that region, since every out-
-        of-bounds point looks equally "bad". Scaling the penalty with distance keeps a
-        restoring gradient pointing back toward the allowed region.
         """
         args = np.atleast_1d(args)
         penalty = 0.0

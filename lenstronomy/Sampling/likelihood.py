@@ -451,7 +451,6 @@ class Likelihood(object):
         """Checks whether the parameter vector has left its bounds. If so, returns a
         penalty that grows with the (bound-range-normalized) distance past the violated
         bound(s), summed over all violated parameters.
-
         """
         args = np.atleast_1d(args)
         penalty = 0.0

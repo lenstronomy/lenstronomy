@@ -87,8 +87,8 @@ class GaussianEllipse(object):
     upper_limit_default = {
         "amp": 1000,
         "sigma": 100,
-        "e1": -0.5,
-        "e2": -0.5,
+        "e1": 0.5,
+        "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
     }
@@ -247,8 +247,8 @@ class MultiGaussianEllipse(object):
     upper_limit_default = {
         "amp": 1000,
         "sigma": 100,
-        "e1": -0.5,
-        "e2": -0.5,
+        "e1": 0.5,
+        "e2": 0.5,
         "center_x": 100,
         "center_y": 100,
     }

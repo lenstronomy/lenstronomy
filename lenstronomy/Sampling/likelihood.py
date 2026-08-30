@@ -351,11 +351,6 @@ class Likelihood(object):
                 args, self._lower_limit, self._upper_limit, verbose=verbose
             )
             if bound_hit is True:
-                # the -1e18 floor guarantees any out-of-bounds point scores
-                # worse than a legitimate finite likelihood; it cancels out of
-                # any Metropolis ratio between two out-of-bounds points, so the
-                # (distance-based) penalty is what still provides a restoring
-                # gradient back toward the allowed region
                 return -(10**18) - penalty
         # extract parameters
         kwargs_return = self.param.args2kwargs(args)

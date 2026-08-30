@@ -351,7 +351,12 @@ class Likelihood(object):
                 args, self._lower_limit, self._upper_limit, verbose=verbose
             )
             if bound_hit is True:
-                return -(10**18)
+                # the -1e18 floor guarantees any out-of-bounds point scores
+                # worse than a legitimate finite likelihood; it cancels out of
+                # any Metropolis ratio between two out-of-bounds points, so the
+                # (distance-based) penalty is what still provides a restoring
+                # gradient back toward the allowed region
+                return -(10**18) - penalty
         # extract parameters
         kwargs_return = self.param.args2kwargs(args)
         return self.log_likelihood(kwargs_return, verbose=verbose)
@@ -443,21 +448,34 @@ class Likelihood(object):
 
     @staticmethod
     def check_bounds(args, lowerLimit, upperLimit, verbose=False):
-        """Checks whether the parameter vector has left its bound, if so, adds a big
-        number."""
+        """Checks whether the parameter vector has left its bounds. If so, returns a
+        penalty that grows with the (bound-range-normalized) distance past the
+        violated bound(s), summed over all violated parameters.
+
+        A flat penalty (independent of how far a parameter is out of bounds) creates
+        a plateau with no likelihood gradient, which lets samplers with proposals
+        referenced to other walkers' positions (e.g. emcee's stretch move) drift
+        arbitrarily far from the bounds once they land in that region, since every
+        out-of-bounds point looks equally "bad". Scaling the penalty with distance
+        keeps a restoring gradient pointing back toward the allowed region.
+        """
+        args = np.atleast_1d(args)
         penalty = 0.0
         bound_hit = False
-        args = np.atleast_1d(args)
         for i in range(0, len(args)):
-            if args[i] < lowerLimit[i] or args[i] > upperLimit[i]:
-                penalty = 10.0**5
+            range_i = (upperLimit[i] - lowerLimit[i]) * 1e-2
+
+            if args[i] < lowerLimit[i]:
+                penalty += ((lowerLimit[i] - args[i]) / range_i) ** 2
                 bound_hit = True
-                if verbose is True:
-                    print(
-                        "parameter %s with value %s hit the bounds [%s, %s] "
-                        % (i, args[i], lowerLimit[i], upperLimit[i])
-                    )
-                return penalty, bound_hit
+            elif args[i] > upperLimit[i]:
+                penalty += ((args[i] - upperLimit[i]) / range_i) ** 2
+                bound_hit = True
+            if bound_hit is True and verbose is True:
+                print(
+                    "parameter %s with value %s hit the bounds [%s, %s] "
+                    % (i, args[i], lowerLimit[i], upperLimit[i])
+                )
         return penalty, bound_hit
 
     @property

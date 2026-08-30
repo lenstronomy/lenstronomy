@@ -449,15 +449,15 @@ class Likelihood(object):
     @staticmethod
     def check_bounds(args, lowerLimit, upperLimit, verbose=False):
         """Checks whether the parameter vector has left its bounds. If so, returns a
-        penalty that grows with the (bound-range-normalized) distance past the
-        violated bound(s), summed over all violated parameters.
+        penalty that grows with the (bound-range-normalized) distance past the violated
+        bound(s), summed over all violated parameters.
 
-        A flat penalty (independent of how far a parameter is out of bounds) creates
-        a plateau with no likelihood gradient, which lets samplers with proposals
+        A flat penalty (independent of how far a parameter is out of bounds) creates a
+        plateau with no likelihood gradient, which lets samplers with proposals
         referenced to other walkers' positions (e.g. emcee's stretch move) drift
-        arbitrarily far from the bounds once they land in that region, since every
-        out-of-bounds point looks equally "bad". Scaling the penalty with distance
-        keeps a restoring gradient pointing back toward the allowed region.
+        arbitrarily far from the bounds once they land in that region, since every out-
+        of-bounds point looks equally "bad". Scaling the penalty with distance keeps a
+        restoring gradient pointing back toward the allowed region.
         """
         args = np.atleast_1d(args)
         penalty = 0.0

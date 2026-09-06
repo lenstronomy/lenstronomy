@@ -897,18 +897,18 @@ class TestPixelatedSourceReconstruction(object):
         )
 
         # Test sparse_convolution (when the kernel size is smaller than the image size)
-        conolved1 = psr_small_kernel.sparse_convolution([[0, 0, 0.8]])
-        conolved2 = psr_small_kernel.sparse_convolution([[0, 1, 0.8]])
-        conolved3 = psr_small_kernel.sparse_convolution([[1, 1, 0.8]])
-        conolved4 = psr_small_kernel.sparse_convolution([[4, 4, 0.8]])
+        convolved1 = psr_small_kernel.sparse_convolution([[0, 0, 0.8]])
+        convolved2 = psr_small_kernel.sparse_convolution([[0, 1, 0.8]])
+        convolved3 = psr_small_kernel.sparse_convolution([[1, 1, 0.8]])
+        convolved4 = psr_small_kernel.sparse_convolution([[4, 4, 0.8]])
 
-        compare1 = conolved1.copy()
+        compare1 = convolved1.copy()
         compare1[:2, :2] -= 0.8 * kernel_small[1:, 1:]
-        compare2 = conolved2.copy()
+        compare2 = convolved2.copy()
         compare2[:2, :3] -= 0.8 * kernel_small[1:]
-        compare3 = conolved3.copy()
+        compare3 = convolved3.copy()
         compare3[:3, :3] -= 0.8 * kernel_small
-        compare4 = conolved4.copy()
+        compare4 = convolved4.copy()
         compare4[3:, 3:] -= 0.8 * kernel_small[:2, :2]
 
         assert np.allclose(compare1, 0, atol=1e-5)
@@ -916,6 +916,10 @@ class TestPixelatedSourceReconstruction(object):
         assert np.allclose(compare3, 0, atol=1e-5)
         assert np.allclose(compare4, 0, atol=1e-5)
 
+        # Test sparse_convolution (when the input is an empty list), the result should be an image with all pixels being zero
+        convolved_empty = psr_small_kernel.sparse_convolution([])
+        assert convolved_empty.shape == (5, 5)
+        assert np.all(convolved_empty == 0)
 
 if __name__ == "__main__":
     pytest.main()

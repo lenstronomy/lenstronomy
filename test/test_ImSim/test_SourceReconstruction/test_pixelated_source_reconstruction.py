@@ -921,5 +921,6 @@ class TestPixelatedSourceReconstruction(object):
         assert convolved_empty.shape == (5, 5)
         assert np.all(convolved_empty == 0)
 
+
 if __name__ == "__main__":
     pytest.main()

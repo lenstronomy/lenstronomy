@@ -9,33 +9,33 @@ __all__ = ["PixelatedSourceReconstruction"]
 
 class PixelatedSourceReconstruction(object):
     """This class provides methods for pixelated source-plane reconstruction in
-    gravitational lensing. It is initialized with data, PSF, lens model, and
-    source pixel grid class instances. It provides methods for generating the :math:`M` matrix
+    gravitational lensing. It is initialized with data, PSF, lens model, and source
+    pixel grid class instances. It provides methods for generating the :math:`M` matrix
     and :math:`b` vector using diagonal image noise covariance matrix specified by C_D,
-    or using the interferometric image-plane natwt covariance matrix. Their definitions follow
-    arXiv:2508.08393; see the documentation of ``generate_M_b`` for details. 
+    or using the interferometric image-plane natwt covariance matrix. Their definitions
+    follow arXiv:2508.08393; see the documentation of ``generate_M_b`` for details.
 
     We use a nested list ``lensed_sp`` to store the contribution from source pixels to
     lensed pixels through strong lensing and bilinear interpolation in the source plane.
 
     The length of ``lensed_sp`` is equal to the number of source pixels in the reconstruction.
-    And each element is 
+    And each element is
     ``lensed_sp[idx_s] = [[idx_y_lensed, idx_x_lensed, ratio_contributing], ...]``
-    where ``idx_s``, ``idx_y_lensed``, ``idx_x_lensed`` are integers. 
-    
-    Here, ``idx_s`` is the flattened (1D) index of a source pixel. 
-    Each entry ``[idx_y_lensed, idx_x_lensed, ratio_contributing]`` is a lensed-image pixel that 
-    receives a contribution from this source pixel, where ``idx_y_lensed`` and ``idx_x_lensed`` are 
+    where ``idx_s``, ``idx_y_lensed``, ``idx_x_lensed`` are integers.
+
+    Here, ``idx_s`` is the flattened (1D) index of a source pixel.
+    Each entry ``[idx_y_lensed, idx_x_lensed, ratio_contributing]`` is a lensed-image pixel that
+    receives a contribution from this source pixel, where ``idx_y_lensed`` and ``idx_x_lensed`` are
     its 2D image-plane indices and ``ratio_contributing`` is the corresponding contribution weight.
 
-    For example, if the source pixel has a value of 1.0, it contributes ``1.0 x ratio_contributing`` to the 
+    For example, if the source pixel has a value of 1.0, it contributes ``1.0 x ratio_contributing`` to the
     specified lensed pixel. A lensed pixel may receive contributions from multiple neighboring source pixels.
 
-    For the interferometric likelihood, ``ratio_contributing`` includes the effect of the primary beam, 
+    For the interferometric likelihood, ``ratio_contributing`` includes the effect of the primary beam,
     i.e., ratio_contributing = primary beam x lensing effect, if a primary beam is provided.
 
-    We also refer to each element of lensed_sp, i.e., the list ``[[idx_y_lensed, idx_x_lensed, value], ...]``, 
-    as ``a sparse image`` in the documentation below. It represents an image in which the pixel 
+    We also refer to each element of lensed_sp, i.e., the list ``[[idx_y_lensed, idx_x_lensed, value], ...]``,
+    as ``a sparse image`` in the documentation below. It represents an image in which the pixel
     at [idx_y_lensed, idx_x_lensed] has the corresponding ``value``.
     """
 
@@ -101,26 +101,27 @@ class PixelatedSourceReconstruction(object):
                     )
 
     def generate_M_b(self, kwargs_lens, verbose=False, show_progress=True):
-        """Generates the M matrix and the b vector for source reconstruction based on the selected likelihood method.
+        """Generates the M matrix and the b vector for source reconstruction based on
+        the selected likelihood method.
 
-        :math:`M` and :math:`b` are intermediate quantities used to maximize the likelihood over the source-pixel amplitudes. 
-        
+        :math:`M` and :math:`b` are intermediate quantities used to maximize the likelihood over the source-pixel amplitudes.
+
         For a pixelated source model, the source image is a linear combination of single-pixel basis images:
 
         .. math::
 
             s = \\sum_{i=1}^{N} a_i s_i,
 
-        where :math:`s_i` is the source image containing only the :math:`i`-th source pixel, :math:`a_i` is its amplitude, 
-        and :math:`N` is the total number of source pixels. 
+        where :math:`s_i` is the source image containing only the :math:`i`-th source pixel, :math:`a_i` is its amplitude,
+        and :math:`N` is the total number of source pixels.
         The chi-square is
 
         .. math::
 
             \\chi^2 = (d - BL\\sum_{i=1}^{N}a_i s_i)^T C^{-1}(d - BL\\sum_{j=1}^{N}a_j s_j),
 
-        where :math:`d` is the data, :math:`B` is a data-related linear operator such as PSF convolution, 
-        :math:`L` is the lensing operator, and :math:`C` is the noise covariance matrix. 
+        where :math:`d` is the data, :math:`B` is a data-related linear operator such as PSF convolution,
+        :math:`L` is the lensing operator, and :math:`C` is the noise covariance matrix.
         The source amplitudes :math:`a_i` that minimize :math:`\\chi^2` are obtained by solving
 
         .. math::
@@ -172,8 +173,8 @@ class PixelatedSourceReconstruction(object):
     def generate_M_b_diagonal_likelihood(
         self, kwargs_lens, verbose=False, show_progress=True
     ):
-        """Generates M and b matrices assuming spatially uncorrelated noise with
-        noise covariance specified by data_class.C_D
+        """Generates M and b matrices assuming spatially uncorrelated noise with noise
+        covariance specified by data_class.C_D.
 
         This method performs lensing, convolution, and then computes M and b.
 
@@ -186,7 +187,9 @@ class PixelatedSourceReconstruction(object):
         """
         if verbose:
             print("Step 1: Lensing the source pixels")
-        lensing_matrix = self._lens_pixel_source_of_a_rectangular_region_csc_matrix(kwargs_lens)
+        lensing_matrix = self._lens_pixel_source_of_a_rectangular_region_csc_matrix(
+            kwargs_lens
+        )
         if verbose:
             print("Step 1: Finished!")
 
@@ -214,10 +217,10 @@ class PixelatedSourceReconstruction(object):
         lensed_pixel_conv_set = lensed_pixel_conv_set.reshape(N_lensed, -1)
         image_data = self._image_data.ravel()
         inverse_variance = 1.0 / self._C_D.ravel()
-        
+
         # b_i = (Ls_i)^T(d/sigma_map)
         b = np.matmul(lensed_pixel_conv_set, (image_data * inverse_variance))
-        
+
         # M_ij = (Ls_i/sqrt(sigma_map))^T(Ls_j/sqrt(sigma_map))
         lensed_pixel_conv_set *= np.sqrt(inverse_variance)
         M = np.matmul(lensed_pixel_conv_set, lensed_pixel_conv_set.T)
@@ -245,14 +248,16 @@ class PixelatedSourceReconstruction(object):
         """
         if verbose:
             print("Step 1: Lensing the source pixels")
-        lensing_matrix = self._lens_pixel_source_of_a_rectangular_region_csc_matrix(kwargs_lens)
+        lensing_matrix = self._lens_pixel_source_of_a_rectangular_region_csc_matrix(
+            kwargs_lens
+        )
         if verbose:
             print("Step 1: Finished!")
 
         if verbose:
             print(
                 "Step 2: Compute the matrix M and vector b (including the convolution step)"
-        )
+            )
         N_lensed = lensing_matrix.shape[1]
         lensing_matrix_transpose = lensing_matrix.T.tocsr(copy=False)
         M = np.zeros((N_lensed, N_lensed))
@@ -287,9 +292,9 @@ class PixelatedSourceReconstruction(object):
         source grid, considering lensing deflections and applying bilinear
         interpolation.
 
-        This method computes the contribution of each source pixel to each lensed image pixel. 
-        These contributions form a matrix with shape ``(num_lensed_image_pixels, num_source_pixels)``. 
-        Because most of its elements are zero, the matrix is stored as a :class:`scipy.sparse.csc_matrix`. 
+        This method computes the contribution of each source pixel to each lensed image pixel.
+        These contributions form a matrix with shape ``(num_lensed_image_pixels, num_source_pixels)``.
+        Because most of its elements are zero, the matrix is stored as a :class:`scipy.sparse.csc_matrix`.
         This function is called directly by the ``generate_M_b`` methods to compute :math:`M` and :math:`b`.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
@@ -367,11 +372,11 @@ class PixelatedSourceReconstruction(object):
         source_indices = np.concatenate(source_index_parts)
         weights = np.concatenate(weight_parts)
 
-        #Construct a CSC matrix from image_indices, source_indices, and weights, with data = weights.
-        #The CSC matrix has num_lensed_image_pixels rows, so its indices correspond to image_indices.
-        #The CSC matrix has num_source_pixels columns, so indptr[1:] is the cumulative sum of elements of source_indices.
-        #image_indices, source_indices, and weights should first be sorted in increasing order of source_indices.   
-        
+        # Construct a CSC matrix from image_indices, source_indices, and weights, with data = weights.
+        # The CSC matrix has num_lensed_image_pixels rows, so its indices correspond to image_indices.
+        # The CSC matrix has num_source_pixels columns, so indptr[1:] is the cumulative sum of elements of source_indices.
+        # image_indices, source_indices, and weights should first be sorted in increasing order of source_indices.
+
         order = np.lexsort((image_indices, source_indices))
         image_indices = image_indices[order]
         source_indices = source_indices[order]
@@ -401,28 +406,33 @@ class PixelatedSourceReconstruction(object):
             contributes with `ratio_contributing` to the image plane pixel at `[idx_y_lensed, idx_x_lensed]` when lensed.
         :rtype: list
         """
-        lensing_matrix = (
-            self._lens_pixel_source_of_a_rectangular_region_csc_matrix(kwargs_lens)
+        lensing_matrix = self._lens_pixel_source_of_a_rectangular_region_csc_matrix(
+            kwargs_lens
         )
         return self._csc_matrix_to_lensed_sp(lensing_matrix)
 
     def _csc_matrix_to_lensed_sp(self, csc):
         """Converts a CSC lensing matrix to the lensed_sp.
 
-        :param csc: The CSC matrix with shape = (num_lensed_image_pixels, num_source_pixels).
-        :returns: A nested list containing the image pixel indices and contributions from each
-            source pixel.
+        :param csc: The CSC matrix with shape = (num_lensed_image_pixels,
+            num_source_pixels).
+        :returns: A nested list containing the image pixel indices and contributions
+            from each source pixel.
         :rtype: list
         """
-        
+
         if not isspmatrix_csc(csc):
             raise TypeError("csc must be a scipy.sparse.csc_matrix.")
 
         num_lensed_pixels, num_source_pixels = csc.shape
         if num_lensed_pixels != self._num_pix**2:
-            raise ValueError("The number of rows in the CSC matrix should be equal to the number of lensed image pixels.")
+            raise ValueError(
+                "The number of rows in the CSC matrix should be equal to the number of lensed image pixels."
+            )
         if num_source_pixels != self._num_pixel_source:
-            raise ValueError("The number of columns in the CSC matrix should be equal to the number of source pixels.")
+            raise ValueError(
+                "The number of columns in the CSC matrix should be equal to the number of source pixels."
+            )
 
         if not csc.has_sorted_indices:
             csc = csc.copy()
@@ -436,16 +446,16 @@ class PixelatedSourceReconstruction(object):
             ]
             for source in range(csc.shape[1])
         ]
-        
+
     def lens_an_image_by_rayshooting(self, kwargs_lens, source_image):
-        """Lenses a pixelated source image to the image plane using ray-shooting
-        and bilinear interpolation. The input image should have the same dimension and
+        """Lenses a pixelated source image to the image plane using ray-shooting and
+        bilinear interpolation. The input image should have the same dimension and
         coordinates defined by source_pixel_grid_class.
 
-        This method works by ray-shooting image plane pixels back to the source plane to 
+        This method works by ray-shooting image plane pixels back to the source plane to
         find the corresponding source coordinate, and then interpolating the flux from the input
-        source image at that coordinate. 
-        
+        source image at that coordinate.
+
         Note that the primary beam will NOT be applied on the lensed image for interferometric data.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
@@ -482,10 +492,7 @@ class PixelatedSourceReconstruction(object):
         # If the ray shoots the image pixel outside the defined source image boundaries, valid = False
         # valid = True means the image pixels are rayshot back to the source plane within the source image region
         valid = (
-            (n_x >= 0)
-            & (n_x < self._nx_source)
-            & (n_y >= 0)
-            & (n_y < self._ny_source)
+            (n_x >= 0) & (n_x < self._nx_source) & (n_y >= 0) & (n_y < self._ny_source)
         )
 
         lensed_image = np.zeros(self._num_pix**2)
@@ -521,9 +528,7 @@ class PixelatedSourceReconstruction(object):
                 - beta_y_valid
             )
             * np.abs(
-                self._source_min_x
-                + n_x_valid * self._pixel_width_source
-                - beta_x_valid
+                self._source_min_x + n_x_valid * self._pixel_width_source - beta_x_valid
             )
             / (self._pixel_width_source**2)
         )
@@ -535,22 +540,16 @@ class PixelatedSourceReconstruction(object):
                 - beta_x_valid
             )
             * np.abs(
-                self._source_min_y
-                + n_y_valid * self._pixel_width_source
-                - beta_y_valid
+                self._source_min_y + n_y_valid * self._pixel_width_source - beta_y_valid
             )
             / (self._pixel_width_source**2)
         )
         weight_lower_right = (
             np.abs(
-                self._source_min_x
-                + n_x_valid * self._pixel_width_source
-                - beta_x_valid
+                self._source_min_x + n_x_valid * self._pixel_width_source - beta_x_valid
             )
             * np.abs(
-                self._source_min_y
-                + n_y_valid * self._pixel_width_source
-                - beta_y_valid
+                self._source_min_y + n_y_valid * self._pixel_width_source - beta_y_valid
             )
             / (self._pixel_width_source**2)
         )
@@ -590,8 +589,8 @@ class PixelatedSourceReconstruction(object):
         return lensed_image
 
     def sparse_to_array(self, sparse):
-        """Converts a sparse image representation (list of `[idx_y, idx_x, value]`) 
-        to a 2D NumPy array.
+        """Converts a sparse image representation (list of `[idx_y, idx_x, value]`) to a
+        2D NumPy array.
 
         :param sparse: A list representing non-zero elements of the sparse image.
         :returns: A 2D NumPy array representing the full image.
@@ -673,10 +672,9 @@ class PixelatedSourceReconstruction(object):
             return np.zeros((self._num_pix, self._num_pix))
 
         sparse_array = np.asarray(sp)
-        indices = (
-            sparse_array[:, 0].astype(np.intp) * self._num_pix
-            + sparse_array[:, 1].astype(np.intp)
-        )
+        indices = sparse_array[:, 0].astype(np.intp) * self._num_pix + sparse_array[
+            :, 1
+        ].astype(np.intp)
         return self._sparse_convolution_from_image_indices(
             indices, sparse_array[:, 2], kernel
         )
@@ -703,13 +701,9 @@ class PixelatedSourceReconstruction(object):
 
             # Calculate slice indices for the kernel relative to the sparse element
             slice_y_start = max(kernel_center - y_sp, 0)
-            slice_y_end = min(
-                kernel_center - y_sp + self._num_pix, kernel.shape[0]
-            )
+            slice_y_end = min(kernel_center - y_sp + self._num_pix, kernel.shape[0])
             slice_x_start = max(kernel_center - x_sp, 0)
-            slice_x_end = min(
-                kernel_center - x_sp + self._num_pix, kernel.shape[1]
-            )
+            slice_x_end = min(kernel_center - x_sp + self._num_pix, kernel.shape[1])
 
             convolved_image_y_start = y_sp - min(y_sp, kernel_center)
             convolved_image_y_end = y_sp + min(

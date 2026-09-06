@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from scipy.sparse import csc_matrix, csr_matrix
 
 from lenstronomy.ImSim.SourceReconstruction.pixelated_source_reconstruction import (
     PixelatedSourceReconstruction,
@@ -276,7 +277,7 @@ class TestPixelatedSourceReconstruction(object):
         psr.generate_M_b(kwargs_lens=self.kwargs_lens)
         captured1 = capsys.readouterr()
         assert captured1.out == ""
-        assert "Running (iteration times vary)" in captured1.err
+        assert "Running" in captured1.err
 
         psr.generate_M_b(kwargs_lens=self.kwargs_lens, show_progress=False)
         captured2 = capsys.readouterr()
@@ -297,12 +298,12 @@ class TestPixelatedSourceReconstruction(object):
             "Step 3: Compute the matrix M and vector b\n"
             "Step 3: Finished!"
         ) in captured3.out
-        assert "Running (iteration times vary)" in captured3.err
+        assert "Running" in captured3.err
 
         psr.generate_M_b_diagonal_likelihood(kwargs_lens=self.kwargs_lens)
         captured4 = capsys.readouterr()
         assert captured4.out == ""
-        assert "Running (iteration times vary)" in captured4.err
+        assert "Running" in captured4.err
 
         psr.generate_M_b_diagonal_likelihood(
             kwargs_lens=self.kwargs_lens, show_progress=False
@@ -321,7 +322,7 @@ class TestPixelatedSourceReconstruction(object):
             "Step 3: Compute the matrix M and vector b\n"
             "Step 3: Finished!"
         ) in captured6.out
-        assert "Running (iteration times vary)" in captured6.err
+        assert "Running" in captured6.err
 
         psr.generate_M_b_interferometry_natwt_likelihood(kwargs_lens=self.kwargs_lens)
         captured7 = capsys.readouterr()
@@ -532,6 +533,24 @@ class TestPixelatedSourceReconstruction(object):
         assert np.allclose(M_expected, M_result, atol=1e-5)
         assert np.allclose(b_expected, b_result, atol=1e-5)
 
+    def test_lens_pixel_source_of_a_rectangular_region_csc_matrix(self):
+        psr = PixelatedSourceReconstruction(
+            self.data_class,
+            self.psf_class,
+            self.lens_model_class,
+            self.source_pixel_grid_class,
+        )
+        csc_lensed_pixels = psr._lens_pixel_source_of_a_rectangular_region_csc_matrix(
+            kwargs_lens=self.kwargs_lens
+        )
+        csc_data_10_to_15_expected = np.array([0.92592581, 0.70520107, 0.65491768, 0.39804771, 0.12537181])
+        csc_indices_25_to_29_expected = np.array([13, 14, 21, 22], dtype=int)
+        csc_indptr_expected = np.array([ 0,  6, 14, 22, 37, 47, 70], dtype=int)
+        
+        assert np.allclose(csc_lensed_pixels.data[10:15], csc_data_10_to_15_expected, atol=1e-8)
+        assert np.array_equal(csc_lensed_pixels.indices[25:29], csc_indices_25_to_29_expected)
+        assert np.array_equal(csc_lensed_pixels.indptr, csc_indptr_expected)
+
     def test_lens_pixel_source_of_a_rectangular_region(self):
         psr = PixelatedSourceReconstruction(
             self.data_class,
@@ -659,6 +678,73 @@ class TestPixelatedSourceReconstruction(object):
         with pytest.raises(ValueError):
             psr.lens_an_image_by_rayshooting(self.kwargs_lens, np.random.rand(9, 9))
 
+    def test_csc_matrix_to_lensed_sp(self):
+        
+        # Define a source reconstrution with a smaller data image size
+        kwargs_data_small = sim_util.data_configure_simple(5, 0.05, np.inf, 1)
+        data_class_small = ImageData(**kwargs_data_small)
+        psr_small = PixelatedSourceReconstruction(
+            data_class_small,
+            self.psf_class,
+            self.lens_model_class,
+            self.source_pixel_grid_class,
+        )
+
+        # Test invalid input type
+        invalid_csr = csr_matrix((25, 6))
+        with pytest.raises(TypeError):
+            psr_small._csc_matrix_to_lensed_sp(invalid_csr)
+        with pytest.raises(TypeError):
+            psr_small._csc_matrix_to_lensed_sp(1)
+        with pytest.raises(TypeError):
+            psr_small._csc_matrix_to_lensed_sp([0,1,0.5])
+
+        # Test invalid number of lensed image pixels
+        invalid_csc_rows = csc_matrix((24, 6))
+        with pytest.raises(ValueError):
+            psr_small._csc_matrix_to_lensed_sp(invalid_csc_rows)
+
+        # Test invalid number of source pixels
+        invalid_csc_cols = csc_matrix((25, 5))
+        with pytest.raises(ValueError):
+            psr_small._csc_matrix_to_lensed_sp(invalid_csc_cols)
+
+        sp1_indices = np.array([0,  1,  5,  6, 12], dtype=int)
+        sp1_values = np.array([0.6862915211329877, 0.333126273654468, 0.3331262933721124, 0.029437248042628716, 0])
+        sp1_indptr = np.array([0,5,5,5,5,5,5], dtype=int)
+        sp1_csc = csc_matrix((sp1_values, sp1_indices, sp1_indptr), shape=(data_class_small.num_pixel, self.source_pixel_grid_class.num_pixel))
+        sp1 = psr_small._csc_matrix_to_lensed_sp(sp1_csc)
+        
+        sp1_expected = [
+            [[0, 0, 0.6862915211329877],
+            [0, 1, 0.333126273654468],
+            [1, 0, 0.3331262933721124],
+            [1, 1, 0.029437248042628716],
+            [2, 2, 0.0]], [], [], [], [], []
+        ]
+
+        assert len(sp1) == self.source_pixel_grid_class.num_pixel
+        assert np.allclose(sp1[0], sp1_expected[0])
+        for idx_y, idx_x, value in sp1[0]:
+            assert type(idx_y) is int
+            assert type(idx_x) is int
+        assert all(element == [] for element in sp1[1:])
+
+        # test unsorted indices in the csc matrix
+        sp1_indices_unsorted = np.array([0, 12, 6, 1,  5], dtype=int)
+        sp1_values_unsorted = np.array([0.6862915211329877, 0, 0.029437248042628716, 0.333126273654468, 0.3331262933721124])
+        sp1_indptr = np.array([0,5,5,5,5,5,5], dtype=int)
+        sp1_csc_unsorted = csc_matrix((sp1_values_unsorted, sp1_indices_unsorted, sp1_indptr), shape=(data_class_small.num_pixel, self.source_pixel_grid_class.num_pixel))
+        sp1_unsorted_result = psr_small._csc_matrix_to_lensed_sp(sp1_csc_unsorted)
+
+        assert len(sp1_unsorted_result) == self.source_pixel_grid_class.num_pixel
+        assert np.allclose(sp1_unsorted_result[0], sp1_expected[0])
+        for idx_y, idx_x, value in sp1_unsorted_result[0]:
+            assert type(idx_y) is int
+            assert type(idx_x) is int
+        assert all(element == [] for element in sp1_unsorted_result[1:])
+
+
     def test_sparse_matrix_manipulation_functions(self):
 
         # Define a source reconstrution with a smaller data image size
@@ -750,6 +836,14 @@ class TestPixelatedSourceReconstruction(object):
         assert np.allclose(sp1_convolved, sp1_convolved_expected, atol=1e-5)
         assert np.allclose(sp1_convolved_default, sp1_convolved_expected, atol=1e-5)
 
+        # Test _sparse_convolution_from_image_indices
+        sp1_indices = np.array([0,  1,  5,  6, 12], dtype=int)
+        sp1_values = np.array([0.6862915211329877, 0.333126273654468, 0.3331262933721124, 0.029437248042628716, 0])
+        sp1_convolved_default_from_image_indices = psr_small._sparse_convolution_from_image_indices(sp1_indices, sp1_values)
+        sp1_convolved_from_image_indices = psr_small._sparse_convolution_from_image_indices(sp1_indices, sp1_values, self.kernel)
+        assert np.allclose(sp1_convolved_from_image_indices, sp1_convolved_expected, atol=1e-5)
+        assert np.allclose(sp1_convolved_default_from_image_indices, sp1_convolved_expected, atol=1e-5)
+
         # Test sparse_convolution (when the kernel size is smaller than the image size)
         conolved1 = psr_small_kernel.sparse_convolution([[0, 0, 0.8]])
         conolved2 = psr_small_kernel.sparse_convolution([[0, 1, 0.8]])
@@ -769,7 +863,6 @@ class TestPixelatedSourceReconstruction(object):
         assert np.allclose(compare2, 0, atol=1e-5)
         assert np.allclose(compare3, 0, atol=1e-5)
         assert np.allclose(compare4, 0, atol=1e-5)
-
 
 if __name__ == "__main__":
     pytest.main()

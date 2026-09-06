@@ -217,9 +217,9 @@ class PixelatedSourceReconstruction(object):
         
         # b_i = (Ls_i)^T(d/sigma_map)
         b = np.matmul(lensed_pixel_conv_set, (image_data * inverse_variance))
-        lensed_pixel_conv_set *= np.sqrt(inverse_variance)
         
         # M_ij = (Ls_i/sqrt(sigma_map))^T(Ls_j/sqrt(sigma_map))
+        lensed_pixel_conv_set *= np.sqrt(inverse_variance)
         M = np.matmul(lensed_pixel_conv_set, lensed_pixel_conv_set.T)
 
         # Enforce exact symmetry to remove small floating-point asymmetries from matrix multiplication.

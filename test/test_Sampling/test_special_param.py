@@ -211,6 +211,7 @@ class TestParam(object):
         assert kwargs_new["param_scale_factor"] == [1, 2]
         assert kwargs_new["param_scale_pow"] == [3, 4]
 
+
 def test_get_params_multiband_offset():
     special = SpecialParam(
         multi_band_offset=True,
@@ -219,8 +220,12 @@ def test_get_params_multiband_offset():
     )
 
     args = [
-        0.10, -0.20, 0.05,     # band 1
-        0.30, 0.40, -0.02,     # band 2
+        0.10,
+        -0.20,
+        0.05,  # band 1
+        0.30,
+        0.40,
+        -0.02,  # band 2
     ]
 
     kwargs_special, i = special.get_params(args, 0)
@@ -293,14 +298,11 @@ def test_round_trip_multiband_offset():
         0.2,
         0.1,
         0.05,
-
         # band 1 is the reference band
-
         # band 2
         -0.4,
         0.6,
         -0.01,
-
         # band 3
         0.3,
         -0.7,
@@ -337,6 +339,7 @@ def test_reference_band_is_empty_multiband_offset():
     assert i == len(args)
     assert kwargs_special["kwargs_offsets"][1] == {}
 
+
 def test_multiband_offset_bounds():
     special = SpecialParam(
         multi_band_offset=True,
@@ -357,6 +360,7 @@ def test_multiband_offset_bounds():
         "dec_shift": 1,
         "phi_rot": 0.5,
     }
+
 
 if __name__ == "__main__":
     pytest.main()

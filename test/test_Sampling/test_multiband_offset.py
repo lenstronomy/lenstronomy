@@ -7,6 +7,7 @@ from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiM
 from lenstronomy.Util import util
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 
+
 # Generate simple two-band mock data
 def make_mock_multiband_data():
     num_pix = 40
@@ -25,7 +26,6 @@ def make_mock_multiband_data():
         "supersampling_factor": 1,
         "supersampling_convolution": False,
     }
-
 
     # same coordinate system initially
     _, _, ra_at_xy_0, dec_at_xy_0, _, _, Mpix2coord, _ = (
@@ -52,12 +52,17 @@ def make_mock_multiband_data():
     kwargs_data_2 = copy.deepcopy(kwargs_data_1)
 
     multi_band_list = [
-        [kwargs_data_1,
+        [
+            kwargs_data_1,
             psf_kwargs,
-            numerics_kwargs,],
-        [kwargs_data_2,
+            numerics_kwargs,
+        ],
+        [
+            kwargs_data_2,
             psf_kwargs,
-            numerics_kwargs,],]
+            numerics_kwargs,
+        ],
+    ]
 
     # --------------------------------------------------------
     # lens model
@@ -159,6 +164,7 @@ def make_mock_multiband_data():
         [],
     )
 
+
 def make_kwargs_special(
     ra_shift=0.0,
     dec_shift=0.0,
@@ -175,6 +181,7 @@ def make_kwargs_special(
         ]
     }
 
+
 def make_likelihood():
 
     (
@@ -184,7 +191,6 @@ def make_likelihood():
         kwargs_source,
         kwargs_lens_light,
     ) = make_mock_multiband_data()
-
 
     kwargs_likelihood = {
         "source_marg": False,
@@ -203,6 +209,7 @@ def make_likelihood():
         kwargs_source,
         kwargs_lens_light,
     )
+
 
 # Test coordinate updates through the ImageModel API
 def test_multiband_offsets_change_image():
@@ -243,7 +250,7 @@ def test_multiband_offsets_restore_reference_image():
     image_model = likelihood.imSim._image_model_list[1]
 
     kwargs_special_zero = make_kwargs_special()
-    
+
     kwargs_special_offset = make_kwargs_special(
         ra_shift=0.05,
         dec_shift=-0.03,
@@ -277,14 +284,14 @@ def test_multiband_offsets_restore_reference_image():
     assert np.max(np.abs(image_offset - image_zero)) > 0
     assert_allclose(image_restored, image_zero)
 
-    
+
 def test_multiband_offsets_restore_reference_coordinates():
     likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
 
     image_model = likelihood.imSim._image_model_list[1]
 
     kwargs_special_zero = make_kwargs_special()
-        
+
     kwargs_special_offset = make_kwargs_special(
         ra_shift=0.05,
         dec_shift=-0.03,
@@ -336,7 +343,7 @@ def test_repeated_multiband_offsets_are_consistent():
     image_model = likelihood.imSim._image_model_list[1]
 
     kwargs_special_zero = make_kwargs_special()
-        
+
     kwargs_special_offset = make_kwargs_special(
         ra_shift=0.05,
         dec_shift=-0.03,
@@ -386,7 +393,7 @@ def test_multiband_offsets_change_likelihood():
     likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
 
     kwargs_special_zero = make_kwargs_special()
-        
+
     kwargs_special_offset = make_kwargs_special(
         ra_shift=0.05,
         dec_shift=-0.03,
@@ -413,6 +420,7 @@ def test_multiband_offsets_change_likelihood():
     assert np.isfinite(logL_offset)
     assert logL_zero != logL_offset
 
+
 def test_correct_multiband_offsets_improve_likelihood():
     (
         kwargs_data_joint,
@@ -430,9 +438,7 @@ def test_correct_multiband_offsets_improve_likelihood():
 
     # Generate band 2 with a known coordinate offset.
 
-    multi_band_list_offset = copy.deepcopy(
-        kwargs_data_joint["multi_band_list"]
-    )
+    multi_band_list_offset = copy.deepcopy(kwargs_data_joint["multi_band_list"])
 
     multi_band_list_offset[1][0].update(true_offsets)
 
@@ -452,9 +458,7 @@ def test_correct_multiband_offsets_improve_likelihood():
 
     # Use the offset image as the observed data with the nominal
     # coordinate frame for fitting.
-    kwargs_data_joint["multi_band_list"][1][0]["image_data"] = (
-        image_2_offset
-    )
+    kwargs_data_joint["multi_band_list"][1][0]["image_data"] = image_2_offset
 
     likelihood = ImageLikelihood(
         multi_band_list=kwargs_data_joint["multi_band_list"],
@@ -511,6 +515,7 @@ def test_correct_multiband_offsets_improve_likelihood():
     # gives a higher likelihood than both zero and the opposite offset.
     assert logL_true > logL_zero
     assert logL_true > logL_wrong
+
 
 if __name__ == "__main__":
     pytest.main()

@@ -243,6 +243,9 @@ class Param(object):
         :param solver_param_module: a class that performs conversions update_kwargs, extract_array, and add_fixed_lens
          for the Solver4Point class with the solver_type = 'CUSTOM' option
         :param _jax: bool, flag that is set to True whenever this class is called from JAXtronomy
+        :param multi_band_offset: whether to sample multi-band astrometric offsets
+        :param num_bands: number of bands for multi-band offset sampling
+        :param reference_band: index of the reference band
         """
 
         self._lens_model_list = kwargs_model.get("lens_model_list", [])

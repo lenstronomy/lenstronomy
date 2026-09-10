@@ -1,370 +1,13 @@
-import numpy as np
-from numpy.testing import assert_almost_equal
-
-# Same transformation logic as implemented in ImageLikelihood
-def apply_coordinate_transformation(
-    ra_0_old,
-    dec_0_old,
-    M_old,
-    nx,
-    ny,
-    dx,
-    dy,
-    angle,
-):
-    """
-    Apply rotation around the geometric center and translation.
-
-    This reproduces the coordinate transformation implemented
-    in the multi-band offset feature.
-    """
-
-    cx, cy = (nx - 1) / 2.0, (ny - 1) / 2.0
-
-    # Compute the original geometric center
-    ra_center = (
-        ra_0_old
-        + M_old[0, 0] * cx
-        + M_old[0, 1] * cy
-    )
-
-    dec_center = (
-        dec_0_old
-        + M_old[1, 0] * cx
-        + M_old[1, 1] * cy
-    )
-
-    # Apply rotation
-    cos_a, sin_a = np.cos(angle), np.sin(angle)
-
-    rot_matrix = np.array(
-        [
-            [cos_a, -sin_a],
-            [sin_a, cos_a],
-        ]
-    )
-
-    M_new = np.dot(rot_matrix, M_old)
-
-    # Keep the geometric center fixed during rotation,
-    # then apply the requested translation
-    ra_0_new = (
-        ra_center
-        - (M_new[0, 0] * cx + M_new[0, 1] * cy)
-        + dx
-    )
-
-    dec_0_new = (
-        dec_center
-        - (M_new[1, 0] * cx + M_new[1, 1] * cy)
-        + dy
-    )
-
-    return ra_0_new, dec_0_new, M_new
-
-
-def test_transformation():
-    """
-    Test combined rotation and translation.
-    """
-
-    # Set up a 10x10 grid with pixel scale of 0.1
-    nx, ny = 10, 10
-
-    M_old = np.array(
-        [
-            [0.1, 0.0],
-            [0.0, 0.1],
-        ]
-    )
-
-    # Initial coordinate origin.
-    # The geometric center is located at (0, 0).
-    ra_0_old = -0.45
-    dec_0_old = -0.45
-
-    # Apply translation and 90-degree rotation
-    dx, dy = 0.2, 0.1
-    angle = np.pi / 2
-
-    ra_0_new, dec_0_new, M_new = apply_coordinate_transformation(
-        ra_0_old,
-        dec_0_old,
-        M_old,
-        nx,
-        ny,
-        dx,
-        dy,
-        angle,
-    )
-
-    cx, cy = (nx - 1) / 2.0, (ny - 1) / 2.0
-
-    # Verify that the new center only changes due to translation
-    new_ra_center = (
-        ra_0_new
-        + M_new[0, 0] * cx
-        + M_new[0, 1] * cy
-    )
-
-    new_dec_center = (
-        dec_0_new
-        + M_new[1, 0] * cx
-        + M_new[1, 1] * cy
-    )
-
-    assert_almost_equal(new_ra_center, dx)
-    assert_almost_equal(new_dec_center, dy)
-
-    # Verify that the transformation matrix is rotated correctly
-    assert_almost_equal(M_new[0, 0], 0.0)
-    assert_almost_equal(M_new[1, 0], 0.1)
-
-    print("Test passed: rotation around the center and translation.")
-
-
-def test_translation_only():
-
-    nx, ny = 10, 10
-
-    M_old = np.array(
-        [
-            [0.1, 0.0],
-            [0.0, 0.1],
-        ]
-    )
-
-    ra_0_old = -0.45
-    dec_0_old = -0.45
-
-    dx = 0.2
-    dy = -0.1
-    angle = 0.0
-
-    ra_0_new, dec_0_new, M_new = apply_coordinate_transformation(
-        ra_0_old,
-        dec_0_old,
-        M_old,
-        nx,
-        ny,
-        dx,
-        dy,
-        angle,
-    )
-
-    cx, cy = (nx - 1) / 2.0, (ny - 1) / 2.0
-
-    # Check the updated coordinate center
-    ra_center_new = (
-        ra_0_new
-        + M_new[0, 0] * cx
-        + M_new[0, 1] * cy
-    )
-
-    dec_center_new = (
-        dec_0_new
-        + M_new[1, 0] * cx
-        + M_new[1, 1] * cy
-    )
-
-    assert_almost_equal(ra_center_new, dx)
-    assert_almost_equal(dec_center_new, dy)
-
-    # Translation should not modify the transformation matrix
-    assert_almost_equal(M_new, M_old)
-
-    print("Test passed: translation only.")
-
-
-def test_rotation_only():
-
-    nx, ny = 10, 10
-
-    M_old = np.array(
-        [
-            [0.1, 0.0],
-            [0.0, 0.1],
-        ]
-    )
-
-    ra_0_old = -0.45
-    dec_0_old = -0.45
-
-    dx = 0.0
-    dy = 0.0
-    angle = np.pi / 2
-
-    ra_0_new, dec_0_new, M_new = apply_coordinate_transformation(
-        ra_0_old,
-        dec_0_old,
-        M_old,
-        nx,
-        ny,
-        dx,
-        dy,
-        angle,
-    )
-
-    cx, cy = (nx - 1) / 2.0, (ny - 1) / 2.0
-
-    # Original center
-    ra_center_old = (
-        ra_0_old
-        + M_old[0, 0] * cx
-        + M_old[0, 1] * cy
-    )
-
-    dec_center_old = (
-        dec_0_old
-        + M_old[1, 0] * cx
-        + M_old[1, 1] * cy
-    )
-
-    # New center after rotation
-    ra_center_new = (
-        ra_0_new
-        + M_new[0, 0] * cx
-        + M_new[0, 1] * cy
-    )
-
-    dec_center_new = (
-        dec_0_new
-        + M_new[1, 0] * cx
-        + M_new[1, 1] * cy
-    )
-
-    # Rotation around the center should preserve the center position
-    assert_almost_equal(ra_center_new, ra_center_old)
-    assert_almost_equal(dec_center_new, dec_center_old)
-
-    # Verify axis rotation
-    assert_almost_equal(M_new[0, 0], 0.0)
-    assert_almost_equal(M_new[1, 0], 0.1)
-
-    print("Test passed: rotation only.")
-
-
-def test_shift_and_rotation():
-
-    nx, ny = 10, 10
-
-    M_old = np.array(
-        [
-            [0.1, 0.0],
-            [0.0, 0.1],
-        ]
-    )
-
-    ra_0_old = -0.45
-    dec_0_old = -0.45
-
-    dx = 0.2
-    dy = 0.1
-    angle = np.pi / 2
-
-    ra_0_new, dec_0_new, M_new = apply_coordinate_transformation(
-        ra_0_old,
-        dec_0_old,
-        M_old,
-        nx,
-        ny,
-        dx,
-        dy,
-        angle,
-    )
-
-    cx, cy = (nx - 1) / 2.0, (ny - 1) / 2.0
-
-    ra_center_new = (
-        ra_0_new
-        + M_new[0, 0] * cx
-        + M_new[0, 1] * cy
-    )
-
-    dec_center_new = (
-        dec_0_new
-        + M_new[1, 0] * cx
-        + M_new[1, 1] * cy
-    )
-
-    # The final center should match the applied translation
-    assert_almost_equal(ra_center_new, dx)
-    assert_almost_equal(dec_center_new, dy)
-
-    print("Test passed: combined shift and rotation.")
-
-
-def test_center_preservation_without_shift():
-
-    nx, ny = 20, 15
-
-    M_old = np.array(
-        [
-            [0.1, 0.0],
-            [0.0, 0.1],
-        ]
-    )
-
-    ra_0_old = -0.95
-    dec_0_old = -0.70
-
-    dx = 0
-    dy = 0
-    angle = 0.3
-
-    ra_0_new, dec_0_new, M_new = apply_coordinate_transformation(
-        ra_0_old,
-        dec_0_old,
-        M_old,
-        nx,
-        ny,
-        dx,
-        dy,
-        angle,
-    )
-
-    cx, cy = (nx - 1)/2, (ny - 1)/2
-
-    old_center = np.array([
-        ra_0_old + M_old[0,0]*cx + M_old[0,1]*cy,
-        dec_0_old + M_old[1,0]*cx + M_old[1,1]*cy,
-    ])
-
-    new_center = np.array([
-        ra_0_new + M_new[0,0]*cx + M_new[0,1]*cy,
-        dec_0_new + M_new[1,0]*cx + M_new[1,1]*cy,
-    ])
-
-    assert_almost_equal(old_center, new_center)
-
-    print("Test passed: rotation preserves geometric center.")
-
-if __name__ == "__main__":
-
-    test_transformation()
-    test_translation_only()
-    test_rotation_only()
-    test_shift_and_rotation()
-    test_center_preservation_without_shift()
-
-# ============================================================
-
 import copy
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
-from lenstronomy.Data.imaging_data import ImageData
-from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Util import util
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 
-# ============================================================
-# 1. Generate simple two-band mock data
-# ============================================================
-
+# Generate simple two-band mock data
 def make_mock_multiband_data():
     num_pix = 40
     delta_pix = 0.1
@@ -387,8 +30,8 @@ def make_mock_multiband_data():
     # same coordinate system initially
     _, _, ra_at_xy_0, dec_at_xy_0, _, _, Mpix2coord, _ = (
         util.make_grid_with_coordtransform(
-            numPix=num_pix,
-            deltapix=delta_pix,
+            num_pix=num_pix,
+            delta_pix=delta_pix,
             center_ra=0,
             center_dec=0,
             subgrid_res=1,
@@ -424,10 +67,6 @@ def make_mock_multiband_data():
         "SIE",
     ]
 
-    lens_model = LensModel(
-        lens_model_list=lens_model_list
-    )
-
     kwargs_lens = [
         {
             "theta_E": 1.0,
@@ -445,10 +84,6 @@ def make_mock_multiband_data():
         "SERSIC_ELLIPSE",
         "SERSIC_ELLIPSE",
     ]
-
-    source_model = LightModel(
-        light_model_list=source_model_list
-    )
 
     kwargs_source = [
         {
@@ -524,10 +159,21 @@ def make_mock_multiband_data():
         [],
     )
 
-
-# ============================================================
-# 2. Build likelihood
-# ============================================================
+def make_kwargs_special(
+    ra_shift=0.0,
+    dec_shift=0.0,
+    phi_rot=0.0,
+):
+    return {
+        "kwargs_offsets": [
+            {},
+            {
+                "ra_shift": ra_shift,
+                "dec_shift": dec_shift,
+                "phi_rot": phi_rot,
+            },
+        ]
+    }
 
 def make_likelihood():
 
@@ -558,162 +204,19 @@ def make_likelihood():
         kwargs_lens_light,
     )
 
-# ============================================================
-# 3. Test apply / restore
-# ============================================================
-
-def test_apply_restore_multiband_offsets():
-
-    likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
-    image_model_list = (
-        likelihood.imSim._imageModel_list
-    )
-    data_band_1 = (
-        image_model_list[1].Data
-    )
-
-    original_ra = data_band_1._ra_at_xy_0
-    original_dec = data_band_1._dec_at_xy_0
-    original_M = np.copy(
-        data_band_1._Mpix2a
-    )
-
-    kwargs_special = {
-        "kwargs_offsets": [
-            {},
-            {
-                "dx": 0.05,
-                "dy": -0.03,
-                "angle": 0.02,
-            },
-
-        ]
-
-    }
-    # --------------------------------------------------------
-    # Apply
-    # --------------------------------------------------------
-    backup = (
-        likelihood._apply_multiband_offsets(
-            kwargs_special
-        )
-    )
-
-    assert not np.isclose(
-        data_band_1._ra_at_xy_0,
-        original_ra,
-    )
-
-    assert not np.isclose(
-        data_band_1._dec_at_xy_0,
-        original_dec,
-    )
-
-    assert not np.allclose(
-        data_band_1._Mpix2a,
-        original_M,
-    )
-
-    print(
-        "PASS: apply_multiband_offsets modifies coordinates"
-    )
-
-    # --------------------------------------------------------
-    # Restore
-    # --------------------------------------------------------
-
-    likelihood._restore_multiband_offsets(
-        backup
-    )
-
-
-    assert_allclose(
-        data_band_1._ra_at_xy_0,
-        original_ra,
-    )
-
-    assert_allclose(
-        data_band_1._dec_at_xy_0,
-        original_dec,
-    )
-
-    assert_allclose(
-        data_band_1._Mpix2a,
-        original_M,
-    )
-
-    print(
-        "PASS: restore_multiband_offsets restores coordinates"
-    )
-
-# ============================================================
-# 4. Test image response to multiband offsets
-# ============================================================
-def test_multiband_offsets_change_image_and_restore():
-
+# Test coordinate updates through the ImageModel API
+def test_multiband_offsets_change_image():
     likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
 
-    image_model = likelihood.imSim._imageModel_list[1]
+    image_model = likelihood.imSim._image_model_list[1]
 
-    kwargs_lens = [
-        {
-            "theta_E": 1.0,
-            "center_x": 0,
-            "center_y": 0,
-            "e1": 0.05,
-            "e2": 0.05,
-        }
-    ]
+    kwargs_special_zero = make_kwargs_special()
 
-    kwargs_source = [
-        {
-            "amp": 10,
-            "R_sersic": 0.2,
-            "n_sersic": 2,
-            "e1": 0,
-            "e2": 0,
-            "center_x": 0,
-            "center_y": 0,
-        },
-        {
-            "amp": 5,
-            "R_sersic": 0.2,
-            "n_sersic": 2,
-            "e1": 0,
-            "e2": 0,
-            "center_x": 0,
-            "center_y": 0,
-        },
-    ]
-
-
-    kwargs_special_zero = {
-        "kwargs_offsets": [
-            {},
-            {
-                "dx": 0,
-                "dy": 0,
-                "angle": 0,
-            },
-        ]
-    }
-
-
-    kwargs_special_true = {
-        "kwargs_offsets": [
-            {},
-            {
-                "dx": 0.05,
-                "dy": -0.03,
-                "angle": 0.02,
-            },
-        ]
-    }
-
-
-    # --------------------------------------------------------
-    # image without offset
-    # --------------------------------------------------------
+    kwargs_special_offset = make_kwargs_special(
+        ra_shift=0.05,
+        dec_shift=-0.03,
+        phi_rot=0.02,
+    )
 
     image_zero = image_model.image(
         kwargs_lens,
@@ -723,115 +226,291 @@ def test_multiband_offsets_change_image_and_restore():
         kwargs_special=kwargs_special_zero,
     )
 
-    # --------------------------------------------------------
-    # image with offset
-    # --------------------------------------------------------
-
-    backup = likelihood._apply_multiband_offsets(
-        kwargs_special_true
+    image_offset = image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_offset,
     )
 
-    image_true = image_model.image(
+    assert np.max(np.abs(image_offset - image_zero)) > 0
+
+
+def test_multiband_offsets_restore_reference_image():
+    likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
+
+    image_model = likelihood.imSim._image_model_list[1]
+
+    kwargs_special_zero = make_kwargs_special()
+    
+    kwargs_special_offset = make_kwargs_special(
+        ra_shift=0.05,
+        dec_shift=-0.03,
+        phi_rot=0.02,
+    )
+
+    image_zero = image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    image_offset = image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_offset,
+    )
+
+    image_restored = image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    assert np.max(np.abs(image_offset - image_zero)) > 0
+    assert_allclose(image_restored, image_zero)
+
+    
+def test_multiband_offsets_restore_reference_coordinates():
+    likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
+
+    image_model = likelihood.imSim._image_model_list[1]
+
+    kwargs_special_zero = make_kwargs_special()
+        
+    kwargs_special_offset = make_kwargs_special(
+        ra_shift=0.05,
+        dec_shift=-0.03,
+        phi_rot=0.02,
+    )
+
+    image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    ra_zero, dec_zero = image_model.ImageNumerics.coordinates_evaluate
+    ra_zero = np.copy(ra_zero)
+    dec_zero = np.copy(dec_zero)
+
+    image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_offset,
+    )
+
+    ra_offset, dec_offset = image_model.ImageNumerics.coordinates_evaluate
+
+    assert not np.allclose(ra_offset, ra_zero)
+    assert not np.allclose(dec_offset, dec_zero)
+
+    image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    ra_restored, dec_restored = image_model.ImageNumerics.coordinates_evaluate
+
+    assert_allclose(ra_restored, ra_zero)
+    assert_allclose(dec_restored, dec_zero)
+
+
+def test_repeated_multiband_offsets_are_consistent():
+    likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
+
+    image_model = likelihood.imSim._image_model_list[1]
+
+    kwargs_special_zero = make_kwargs_special()
+        
+    kwargs_special_offset = make_kwargs_special(
+        ra_shift=0.05,
+        dec_shift=-0.03,
+        phi_rot=0.02,
+    )
+
+    # First application
+    image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    image_offset_1 = image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_offset,
+    )
+
+    # Return to reference frame
+    image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    # Apply the same offset again
+    image_offset_2 = image_model.image(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light=[],
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_offset,
+    )
+
+    assert_allclose(image_offset_1, image_offset_2)
+
+
+# Test likelihood response to offsets
+def test_multiband_offsets_change_likelihood():
+    likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
+
+    kwargs_special_zero = make_kwargs_special()
+        
+    kwargs_special_offset = make_kwargs_special(
+        ra_shift=0.05,
+        dec_shift=-0.03,
+        phi_rot=0.02,
+    )
+
+    logL_zero, _ = likelihood.logL(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
+    )
+
+    logL_offset, _ = likelihood.logL(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_offset,
+    )
+
+    assert np.isfinite(logL_zero)
+    assert np.isfinite(logL_offset)
+    assert logL_zero != logL_offset
+
+def test_correct_multiband_offsets_improve_likelihood():
+    (
+        kwargs_data_joint,
+        kwargs_model,
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+    ) = make_mock_multiband_data()
+
+    true_offsets = {
+        "ra_shift": 0.05,
+        "dec_shift": -0.03,
+        "phi_rot": 0.02,
+    }
+
+    # Generate band 2 with a known coordinate offset.
+
+    multi_band_list_offset = copy.deepcopy(
+        kwargs_data_joint["multi_band_list"]
+    )
+
+    multi_band_list_offset[1][0].update(true_offsets)
+
+    sim_band_2 = SingleBandMultiModel(
+        multi_band_list=multi_band_list_offset,
+        kwargs_model=kwargs_model,
+        likelihood_mask_list=None,
+        band_index=1,
+    )
+
+    image_2_offset = sim_band_2.image(
         kwargs_lens,
         kwargs_source,
         kwargs_lens_light=[],
         kwargs_ps=None,
     )
 
-    likelihood._restore_multiband_offsets(
-        backup
+    # Use the offset image as the observed data with the nominal
+    # coordinate frame for fitting.
+    kwargs_data_joint["multi_band_list"][1][0]["image_data"] = (
+        image_2_offset
     )
 
-    # image should change
-    assert np.max(np.abs(image_true-image_zero)) > 0
-
-    # --------------------------------------------------------
-    # coordinate should change
-    # --------------------------------------------------------
-
-    ra0, dec0 = image_model.ImageNumerics.coordinates_evaluate
-
-    backup = likelihood._apply_multiband_offsets(
-        kwargs_special_true
+    likelihood = ImageLikelihood(
+        multi_band_list=kwargs_data_joint["multi_band_list"],
+        multi_band_type=kwargs_data_joint["multi_band_type"],
+        kwargs_model=kwargs_model,
+        source_marg=False,
     )
 
-    ra1, dec1 = image_model.ImageNumerics.coordinates_evaluate
+    kwargs_special_zero = make_kwargs_special()
 
-    assert np.max(np.abs(ra1-ra0)) > 0
-    assert np.max(np.abs(dec1-dec0)) > 0
-
-
-    likelihood._restore_multiband_offsets(
-        backup
-    )
-
-
-    ra2, dec2 = image_model.ImageNumerics.coordinates_evaluate
-
-    assert_allclose(ra2, ra0)
-    assert_allclose(dec2, dec0)
-
-    print(
-        "PASS: multiband offsets change image and restore correctly"
-    )
-
-def test_repeated_apply_gives_same_image():
-
-    likelihood, kwargs_lens, kwargs_source, kwargs_lens_light = make_likelihood()
-
-    model = likelihood.imSim._imageModel_list[1]
-
-    kwargs_special = {
-        "kwargs_offsets":[
+    kwargs_special_true = {
+        "kwargs_offsets": [
             {},
-            {
-                "dx":0.05,
-                "dy":-0.03,
-                "angle":0.02,
-            }
+            true_offsets,
         ]
     }
 
-    backup = likelihood._apply_multiband_offsets(
-        kwargs_special
-    )
+    kwargs_special_wrong = {
+        "kwargs_offsets": [
+            {},
+            {
+                "ra_shift": -true_offsets["ra_shift"],
+                "dec_shift": -true_offsets["dec_shift"],
+                "phi_rot": -true_offsets["phi_rot"],
+            },
+        ]
+    }
 
-    image1 = model.image(
+    logL_zero, _ = likelihood.logL(
         kwargs_lens,
         kwargs_source,
         kwargs_lens_light,
         kwargs_ps=None,
+        kwargs_special=kwargs_special_zero,
     )
 
-    likelihood._restore_multiband_offsets(
-        backup
-    )
-
-    backup = likelihood._apply_multiband_offsets(
-        kwargs_special
-    )
-
-    image2 = model.image(
+    logL_true, _ = likelihood.logL(
         kwargs_lens,
         kwargs_source,
         kwargs_lens_light,
         kwargs_ps=None,
+        kwargs_special=kwargs_special_true,
     )
 
-    assert_allclose(
-        image1,
-        image2,
+    logL_wrong, _ = likelihood.logL(
+        kwargs_lens,
+        kwargs_source,
+        kwargs_lens_light,
+        kwargs_ps=None,
+        kwargs_special=kwargs_special_wrong,
     )
 
-    likelihood._restore_multiband_offsets(
-        backup
-    )
-
-    print(
-        "PASS: repeated apply gives identical result"
-    )
+    # Verify that the same-sign offset used to generate the mock data
+    # gives a higher likelihood than both zero and the opposite offset.
+    assert logL_true > logL_zero
+    assert logL_true > logL_wrong
 
 if __name__ == "__main__":
-    test_apply_restore_multiband_offsets()
-    test_multiband_offsets_change_image_and_restore()
-    test_repeated_apply_gives_same_image()
+    pytest.main()

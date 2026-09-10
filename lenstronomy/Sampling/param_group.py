@@ -350,12 +350,19 @@ class MultiBandOffsetParam(ModelParamGroup):
     Parameter group for jointly sampling multi-band astrometric offsets.
 
     Each non-reference band has three possible parameters:
-    dx, dy, and rotation angle.
+    "ra_shift", "dec_shift", and "phi_rot".
 
     The reference band is fixed and therefore has no sampled parameters.
     """
 
     def __init__(self, on=False, num_bands=1, reference_band=0):
+        """
+        Initialize the multi-band offset parameter group.
+
+        :param on: whether multi-band offsets are sampled
+        :param num_bands: number of bands
+        :param reference_band: index of the reference band
+        """
         self._on = bool(on)
         self._num_bands = num_bands
         self._reference_band = reference_band
@@ -383,7 +390,7 @@ class MultiBandOffsetParam(ModelParamGroup):
                 else {}
             )
 
-            for param in ["dx", "dy", "angle"]:
+            for param in ["ra_shift", "dec_shift", "phi_rot"]:
                 if param not in fixed_band:
                     n_params += 1
                     names.append(
@@ -425,7 +432,7 @@ class MultiBandOffsetParam(ModelParamGroup):
                 if band < len(fixed_offsets)
                 else {}
             )
-            for param in ["dx", "dy", "angle"]:
+            for param in ["ra_shift", "dec_shift", "phi_rot"]:
                 if param not in fixed_band:
                     args.append(
                         offset.get(param, 0)
@@ -438,15 +445,12 @@ class MultiBandOffsetParam(ModelParamGroup):
         i,
         kwargs_fixed,
         kwargs_lower=None,
-        kwargs_upper=None
+        kwargs_upper=None,
     ):
         if not self.on:
             return {}, i
 
-        kwargs_offsets = [
-            {}
-            for _ in range(self._num_bands)
-        ]
+        kwargs_offsets = [{} for _ in range(self._num_bands)]
 
         fixed_offsets = kwargs_fixed.get(
             "kwargs_offsets",
@@ -478,13 +482,11 @@ class MultiBandOffsetParam(ModelParamGroup):
                 if band < len(fixed_offsets)
                 else {}
             )
-
             lower_band = (
                 lower_offsets[band]
                 if band < len(lower_offsets)
                 else {}
             )
-
             upper_band = (
                 upper_offsets[band]
                 if band < len(upper_offsets)
@@ -493,25 +495,18 @@ class MultiBandOffsetParam(ModelParamGroup):
 
             band_dict = {}
 
-            for param in ["dx", "dy", "angle"]:
+            for param in ["ra_shift", "dec_shift", "phi_rot"]:
                 if param not in fixed_band:
                     value = args[i]
                     i += 1
-                    
+
                     if param in lower_band:
-                        value = np.maximum(
-                            value,
-                            lower_band[param]
-                        )
+                        value = np.maximum(value, lower_band[param])
 
                     if param in upper_band:
-                        value = np.minimum(
-                            value,
-                            upper_band[param]
-                        )
+                        value = np.minimum(value, upper_band[param])
 
                     band_dict[param] = value
-
                 else:
                     band_dict[param] = fixed_band[param]
 
@@ -530,9 +525,9 @@ class MultiBandOffsetParam(ModelParamGroup):
                 {}
                 if band == self._reference_band
                 else {
-                    "dx": -1,
-                    "dy": -1,
-                    "angle": -0.5
+                    "ra_shift": -1,
+                    "dec_shift": -1,
+                    "phi_rot": -0.5
                 }
                 for band in range(self._num_bands)
             ]
@@ -548,9 +543,9 @@ class MultiBandOffsetParam(ModelParamGroup):
                 {}
                 if band == self._reference_band
                 else {
-                    "dx": 1,
-                    "dy": 1,
-                    "angle": 0.5
+                    "ra_shift": 1,
+                    "dec_shift": 1,
+                    "phi_rot": 0.5
                 }
                 for band in range(self._num_bands)
             ]

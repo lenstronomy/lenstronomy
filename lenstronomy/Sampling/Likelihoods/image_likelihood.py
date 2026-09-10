@@ -1,5 +1,6 @@
 import numpy as np
 from lenstronomy.Util import class_creator
+from lenstronomy.Util import util
 
 __all__ = ["ImageLikelihood"]
 
@@ -50,6 +51,7 @@ class ImageLikelihood(object):
         self._source_marg = source_marg
         self._linear_prior = linear_prior
         self._check_positive_flux = check_positive_flux
+        self.num_bands = len(multi_band_list)
 
     def logL(
         self,
@@ -71,6 +73,7 @@ class ImageLikelihood(object):
         :param kwargs_extinction: extinction parameter keyword argument list according to LightModel module
         :return: log likelihood of the data given the model, linear parameter inversion list
         """
+
         logL, param = self.imSim.likelihood_data_given_model(
             kwargs_lens,
             kwargs_source,
@@ -82,8 +85,10 @@ class ImageLikelihood(object):
             linear_prior=self._linear_prior,
             check_positive_flux=self._check_positive_flux,
         )
+
         if np.isnan(logL) is True:
             return -(10**15), param
+
         return logL, param
 
     @property

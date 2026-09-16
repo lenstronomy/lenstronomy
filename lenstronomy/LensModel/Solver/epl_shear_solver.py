@@ -373,12 +373,14 @@ def caustics_epl_shear(
     aa -= np.abs(gamma) ** 2
     bb -= 2 * cdot(gamma, gammaint_fac)
     usol = np.array(solvequadeq(cc, bb, aa)).T
-    xcr_4, ycr_4 = pol_to_cart(b * usol[:, 1] ** (-1 / t) * frac_roverR, theta)
+    u_pos = np.where(usol[:, 1] > 0, usol[:, 1], usol[:, 0])
+    xcr_4, ycr_4 = pol_to_cart(b * u_pos ** (-1 / t) * frac_roverR, theta)
     if (
         t > 1
     ):  # If t>1, get the approximate outer caustic instead (where inverse magnification = maginf).
         usol = np.array(solvequadeq(cc, bb, aa - maginf)).T
-        xcr_cut, ycr_cut = pol_to_cart(b * usol[:, 1] ** (-1 / t) * frac_roverR, theta)
+        u_pos = np.where(usol[:, 1] > 0, usol[:, 1], usol[:, 0])
+        xcr_cut, ycr_cut = pol_to_cart(b * u_pos ** (-1 / t) * frac_roverR, theta)
     else:
         usol = np.array(solvequadeq(cc, bb, aa + maginf)).T
         xcr_cut, ycr_cut = pol_to_cart(b * usol[:, 0] ** (-1 / t) * frac_roverR, theta)

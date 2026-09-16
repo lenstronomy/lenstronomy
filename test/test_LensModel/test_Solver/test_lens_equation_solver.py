@@ -369,6 +369,25 @@ class TestLensEquationSolver(object):
         grid4img = p.contains_points(points)
         assert np.all(numsols[grid4img] >= 4)
 
+    def test_caustics_t_gt_1(self):
+        kwargs = [
+            {
+                "theta_E": 1.0,
+                "e1": 0.2,
+                "e2": 0.05,
+                "center_x": 0.0,
+                "center_y": 0.0,
+                "gamma": 2.2,
+            },
+            {"gamma1": 0.03, "gamma2": 0.01, "ra_0": 0.0, "dec_0": 0.0},
+        ]
+        caus = caustics_epl_shear(kwargs, return_which="caustic")
+        cut = caustics_epl_shear(kwargs, return_which="cut")
+        assert caus.shape == (2, 500)
+        assert cut.shape == (2, 500)
+        assert np.all(np.isfinite(caus))
+        assert np.all(np.isfinite(cut))
+
     def test_analytical_sie(self):
         sourcePos_x = 0.03
         sourcePos_y = 0.0

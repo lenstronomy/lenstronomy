@@ -34,10 +34,10 @@ class Sampler(object):
         # Keep the worker-local log-likelihood state in sync on ranks that construct this class.
         set_sampler_likelihood_module(self.chain)
 
-    def _pool_and_logl(self, mpi, threadCount):
+    def _pool_and_logl(self, mpi, threadCount, **kwargs):
         """Build a pool and return the corresponding worker-safe logL callable."""
         if mpi:
-            pool = choose_pool(mpi=mpi, processes=threadCount)
+            pool = choose_pool(mpi=mpi, processes=threadCount, **kwargs)
             return pool, sampler_logl_worker
 
         if threadCount != 1:
@@ -46,10 +46,11 @@ class Sampler(object):
                 processes=threadCount,
                 initializer=set_sampler_likelihood_module,
                 initargs=(self.chain,),
+                **kwargs
             )
             return pool, sampler_logl_worker
 
-        pool = choose_pool(mpi=mpi, processes=threadCount)
+        pool = choose_pool(mpi=mpi, processes=threadCount, **kwargs)
         return pool, self.chain.logL
 
     def simplex(self, init_pos, n_iterations, method, print_key="SIMPLEX"):
@@ -94,6 +95,7 @@ class Sampler(object):
         mpi=False,
         print_key="PSO",
         verbose=True,
+        kwargs_pool=None,
     ):
         """Return the best fit for the lens model on catalogue basis with particle swarm
         optimizer.
@@ -110,6 +112,9 @@ class Sampler(object):
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
         :param verbose: suppress or turn on print statements
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
+        :type kwargs_pool: None or dict
         :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
             samples, velocity of samples])
         """
@@ -121,8 +126,11 @@ class Sampler(object):
         else:
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
-
-        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount)
+        if kwargs_pool is None:
+            kwargs_pool = {}
+        pool, logl_function = self._pool_and_logl(
+            mpi=mpi, threadCount=threadCount, **kwargs_pool
+        )
 
         if mpi is True and pool.is_master():
             print("MPI option chosen for PSO.")
@@ -174,6 +182,7 @@ class Sampler(object):
         initpos=None,
         backend_filename=None,
         start_from_backend=False,
+        kwargs_pool=None,
     ):
         """Run MCMC with emcee. For details, please have a look at the documentation of
         the emcee packager.
@@ -201,6 +210,9 @@ class Sampler(object):
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
          Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
+         or Multithreading pool.
+        :type kwargs_pool: None or dict
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
@@ -215,8 +227,11 @@ class Sampler(object):
                 self.upper_limit,
                 size=n_walkers,
             )
-
-        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount)
+        if kwargs_pool is None:
+            kwargs_pool = {}
+        pool, logl_function = self._pool_and_logl(
+            mpi=mpi, threadCount=threadCount, **kwargs_pool
+        )
 
         if backend_filename is not None:
             backend = emcee.backends.HDFBackend(
@@ -274,6 +289,7 @@ class Sampler(object):
         progress=False,
         initpos=None,
         backend_filename=None,
+        kwargs_pool=None,
         **kwargs_zeus
     ):
         """
@@ -301,6 +317,9 @@ class Sampler(object):
         :type initpos: numpy array of size num param x num walkser
         :param backend_filename: name of the HDF5 file where sampling state is saved (through zeus callback function)
         :type backend_filename: string
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
+         or Multithreading pool.
+        :type kwargs_pool: None or dict
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
@@ -391,8 +410,11 @@ class Sampler(object):
             callback_list.append(miniter)
         else:
             pass
-
-        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount)
+        if kwargs_pool is None:
+            kwargs_pool = {}
+        pool, logl_function = self._pool_and_logl(
+            mpi=mpi, threadCount=threadCount, **kwargs_pool
+        )
 
         sampler = zeus.EnsembleSampler(
             nwalkers=n_walkers,

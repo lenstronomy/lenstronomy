@@ -49,6 +49,7 @@ class AlignmentFitting(object):
         mpi=False,
         print_key="default",
         verbose=False,
+        kwargs_pool=None,
     ):
         """Returns the best fit for the lens model on catalogue basis with particle
         swarm optimizer.
@@ -60,11 +61,16 @@ class AlignmentFitting(object):
         :param threadCount:
         :param mpi:
         :param print_key:
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
+        :type kwargs_pool: None or dict
         :return:
         """
         init_pos = self.chain.get_args(self.chain.kwargs_data_init)
         lower_limit, upper_limit = self.chain.lower_upper_limit(delta_shift, delta_rot)
-        pool = choose_pool(mpi=mpi, processes=threadCount)
+        if kwargs_pool is None:
+            kwargs_pool = {}
+        pool = choose_pool(mpi=mpi, processes=threadCount, **kwargs_pool)
 
         pso = ParticleSwarmOptimizer(
             self.chain, lower_limit, upper_limit, n_particles, pool=pool

@@ -49,6 +49,7 @@ class FluxCalibration(object):
         scaling_lower_limit=0,
         scaling_upper_limit=1000,
         print_key="flux calibration",
+        kwargs_pool=None,
     ):
         """Returns the best fit for the lens model on catalogue basis with particle
         swarm optimizer.
@@ -60,10 +61,15 @@ class FluxCalibration(object):
         :param scaling_lower_limit: lower limit of the flux_scaling initialization
         :param scaling_upper_limit: upper limit of the flux_scaling initialization
         :param print_key: string, print statement
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
+        :type kwargs_pool: None or dict
         :return: multi_band_list, [chi2_list, pos_list, vel_list]
         """
         init_pos = self.chain.get_args(self.chain.multi_band_list)
-        pool = choose_pool(mpi=mpi, processes=threadCount)
+        if kwargs_pool is None:
+            kwargs_pool = {}
+        pool = choose_pool(mpi=mpi, processes=threadCount, **kwargs_pool)
         num_param = self.chain.num_param
         lower_limit = [scaling_lower_limit] * num_param
         upper_limit = [scaling_upper_limit] * num_param

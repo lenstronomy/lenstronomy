@@ -31,6 +31,7 @@ class Nautilus(object):
         thread_count=1,
         verbose=True,
         one_step=False,
+        kwargs_pool=None,
         **kwargs_nautilus
     ):
         """
@@ -42,6 +43,9 @@ class Nautilus(object):
         :param verbose: verbose statements of Nautilus
         :param one_step: boolean, if True, only runs one iteration of filling the sampler and re-training.
          This is meant for test purposes of the sampler to operate with little computational effort
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
+         or Multithreading pool.
+        :type kwargs_pool: None or dict
         :param kwargs_nautilus: additional keyword arguments for Nautilus
         :return: points, log_w, log_l, log_z
         """
@@ -57,7 +61,9 @@ class Nautilus(object):
                 "prior_type %s is not supported for Nautilus wrapper." % prior_type
             )
         # loop through prior
-        pool = choose_pool(mpi=mpi, processes=thread_count)
+        if kwargs_pool is None:
+            kwargs_pool = {}
+        pool = choose_pool(mpi=mpi, processes=thread_count, **kwargs_pool)
         sampler = Sampler(
             prior,
             likelihood=self.likelihood,

@@ -251,6 +251,7 @@ class Optimizer(object):
         threadCount=1,
         seed=None,
         minimize_method="Nelder-Mead",
+        kwargs_pool=None,
     ):
         """
 
@@ -260,13 +261,18 @@ class Optimizer(object):
         :param threadCount: integer; number of threads in multi-threading mode
         :param seed: sets a random seed for reproducibility
         :param minimize_method:  optimization algorithm to be used by scipy.optimize.minimize
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
+         or Multithreading pool.
+        :type kwargs_pool: None or dict
         :return: keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)
         """
         if seed is not None:
             np.random.seed(seed)
         if self._particle_swarm:
             if threadCount > 1:
-                pool = choose_pool(mpi=False, processes=threadCount)
+                if kwargs_pool is None:
+                    kwargs_pool = {}
+                pool = choose_pool(mpi=False, processes=threadCount, **kwargs_pool)
             else:
                 pool = None
             kwargs = self._fit_pso(n_particles, n_iterations, pool, verbose)

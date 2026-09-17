@@ -61,8 +61,8 @@ class AlignmentFitting(object):
         :param threadCount:
         :param mpi:
         :param print_key:
-        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
-         or Multithreading pool.
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
         :type kwargs_pool: None or dict
         :return:
         """

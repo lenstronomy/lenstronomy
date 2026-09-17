@@ -61,8 +61,8 @@ class FluxCalibration(object):
         :param scaling_lower_limit: lower limit of the flux_scaling initialization
         :param scaling_upper_limit: upper limit of the flux_scaling initialization
         :param print_key: string, print statement
-        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
-         or Multithreading pool.
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
         :type kwargs_pool: None or dict
         :return: multi_band_list, [chi2_list, pos_list, vel_list]
         """

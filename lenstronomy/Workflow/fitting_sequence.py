@@ -419,7 +419,13 @@ class FittingSequence(object):
         return output
 
     def pso(
-        self, n_particles, n_iterations, sigma_scale=1, print_key="PSO", threadCount=1, kwargs_pool=None,
+        self,
+        n_particles,
+        n_iterations,
+        sigma_scale=1,
+        print_key="PSO",
+        threadCount=1,
+        kwargs_pool=None,
     ):
         """Particle Swarm Optimization.
 
@@ -429,8 +435,8 @@ class FittingSequence(object):
             width in the initial settings
         :param print_key: string, printed text when executing this routine
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
-        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
-         or Multithreading pool.
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
         :type kwargs_pool: None or dict
         :return: result of the best fit, the PSO chain of the best fit parameter after
             each iteration [lnlikelihood, parameters, velocities], list of parameters in

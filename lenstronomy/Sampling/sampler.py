@@ -112,8 +112,8 @@ class Sampler(object):
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
         :param verbose: suppress or turn on print statements
-        :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
-         or Multithreading pool.
+        :param kwargs_pool: dictionary for choose_pool() definition to have access to
+            more features of the MPI or Multithreading pool.
         :type kwargs_pool: None or dict
         :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of
             samples, velocity of samples])
@@ -128,7 +128,9 @@ class Sampler(object):
             upper_start = np.minimum(upper_start, self.upper_limit)
         if kwargs_pool is None:
             kwargs_pool = {}
-        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount, **kwargs_pool)
+        pool, logl_function = self._pool_and_logl(
+            mpi=mpi, threadCount=threadCount, **kwargs_pool
+        )
 
         if mpi is True and pool.is_master():
             print("MPI option chosen for PSO.")
@@ -227,7 +229,9 @@ class Sampler(object):
             )
         if kwargs_pool is None:
             kwargs_pool = {}
-        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount, **kwargs_pool)
+        pool, logl_function = self._pool_and_logl(
+            mpi=mpi, threadCount=threadCount, **kwargs_pool
+        )
 
         if backend_filename is not None:
             backend = emcee.backends.HDFBackend(
@@ -408,7 +412,9 @@ class Sampler(object):
             pass
         if kwargs_pool is None:
             kwargs_pool = {}
-        pool, logl_function = self._pool_and_logl(mpi=mpi, threadCount=threadCount, **kwargs_pool)
+        pool, logl_function = self._pool_and_logl(
+            mpi=mpi, threadCount=threadCount, **kwargs_pool
+        )
 
         sampler = zeus.EnsembleSampler(
             nwalkers=n_walkers,

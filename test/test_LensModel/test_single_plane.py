@@ -108,6 +108,25 @@ class TestLensModel(object):
         lensModel = SinglePlane(lens_model_list=lens_model_list)
         assert lensModel.func_list[0].param_names[0] == "Rs"
 
+        lens_model_list = ["PERTURBER"]
+        profile_kwargs_list = [{"profile": "EPL", "ra_0": 0.1, "dec_0": -0.1}]
+        lens_model = SinglePlane(
+            lens_model_list=lens_model_list, profile_kwargs_list=profile_kwargs_list
+        )
+        kwargs_lens = [
+            {
+                "theta_E": 1.2,
+                "gamma": 1.7,
+                "e1": 0.2,
+                "e2": -0.07,
+                "center_x": 0,
+                "center_y": 0,
+            }
+        ]
+        alpha_x, alpha_y = lens_model.alpha(0.1, -0.1, kwargs_lens)
+        npt.assert_almost_equal(alpha_x, 0, decimal=10)
+        npt.assert_almost_equal(alpha_y, 0, decimal=10)
+
     def test_alpha_scaling(self):
         """Test the behavior of scaling the deflection angle :return:"""
         x, y = 1, 0

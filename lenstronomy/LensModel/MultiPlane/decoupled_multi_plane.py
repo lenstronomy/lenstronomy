@@ -32,9 +32,6 @@ class MultiPlaneDecoupled(MultiPlane):
         alpha_x_interp_background=None,
         alpha_y_interp_background=None,
         z_split=None,
-        perturber_model_list=None,
-        ra_0=0,
-        dec_0=0,
         use_jax=False,
     ):
         """A class for multiplane lensing in which the deflection angles at certain
@@ -66,13 +63,6 @@ class MultiPlaneDecoupled(MultiPlane):
             y-component of the deflection angle at (x,y)
         :param z_interp_list: a list of redshifts corresponding to the
             alpha_x_interp_list and alpha_y_interp_list entries
-        :param perturber_model_list: list of deflector models that are treated as
-            perturbations (subtract shear and convergence contributions at ra_0/dec_0)
-        :type perturber_model_list: None or list of bools
-        :param ra_0: RA coordinate for which perturber models have zero shear and
-            convergence contributions
-        :param dec_0: DEC coordinate for which perturber models have zero shear and
-            convergence contributions (usually center of the main deflector)
         :param use_jax: bool, if True, uses deflector profiles from jaxtronomy. Can also
             be a list of bools, selecting which models in the lens_model_list to use
             from jaxtronomy
@@ -100,9 +90,6 @@ class MultiPlaneDecoupled(MultiPlane):
             distance_ratio_sampling=distance_ratio_sampling,
             cosmology_sampling=cosmology_sampling,
             cosmology_model=cosmology_model,
-            perturber_model_list=perturber_model_list,
-            ra_0=ra_0,
-            dec_0=dec_0,
         )
 
         cosmo_bkg = Background(cosmo)

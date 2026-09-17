@@ -39,9 +39,6 @@ class LensModel(object):
         decouple_multi_plane=False,
         kwargs_multiplane_model=None,
         distance_ratio_sampling=False,
-        perturber_model_list=None,
-        ra_0=0,
-        dec_0=0,
         cosmology_sampling=False,
         cosmology_model="FlatLambdaCDM",
         use_jax=False,
@@ -80,12 +77,6 @@ class LensModel(object):
             to update T_ij value in multi-lens plane computation.
         :param cosmology_model: str, name of the cosmology model to be used for
             cosmology sampling. Default is 'FlatLambdaCDM'.
-        :param perturber_model_list: list of deflector models that are treated as perturbations
-            (subtract shear and convergence contributions at ra_0/dec_0)
-        :type perturber_model_list: None or list of bools
-        :param ra_0: RA coordinate for which perturber models have zero shear and convergence contributions
-        :param dec_0: DEC coordinate for which perturber models have zero shear and convergence contributions
-            (usually center of the main deflector)
         :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
             Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
             Only supported for MultiPlane(), MultiPlaneDecoupled(), and SinglePlane() at the moment
@@ -192,9 +183,6 @@ class LensModel(object):
                     num_z_interp=num_z_interp,
                     profile_kwargs_list=profile_kwargs_list,
                     use_jax=use_jax,
-                    perturber_model_list=perturber_model_list,
-                    ra_0=ra_0,
-                    dec_0=dec_0,
                     **kwargs_multiplane_model
                 )
                 self.type = "MultiPlaneDecoupled"
@@ -214,9 +202,6 @@ class LensModel(object):
                     distance_ratio_sampling=distance_ratio_sampling,
                     cosmology_sampling=cosmology_sampling,
                     cosmology_model=cosmology_model,
-                    perturber_model_list=perturber_model_list,
-                    ra_0=ra_0,
-                    dec_0=dec_0,
                     use_jax=use_jax,
                 )
                 self.type = "MultiPlane"
@@ -247,9 +232,6 @@ class LensModel(object):
                     z_source_convention=z_source_convention,
                     profile_kwargs_list=profile_kwargs_list,
                     use_jax=use_jax,
-                    perturber_model_list=perturber_model_list,
-                    ra_0=ra_0,
-                    dec_0=dec_0,
                 )
                 self.type = "SinglePlane"
                 if z_source is not None and z_source_convention is not None:

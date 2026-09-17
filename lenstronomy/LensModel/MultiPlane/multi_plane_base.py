@@ -23,9 +23,6 @@ class MultiPlaneBase(ProfileListBase):
         z_interp_stop=None,
         num_z_interp=100,
         profile_kwargs_list=None,
-        perturber_model_list=None,
-        ra_0=0,
-        dec_0=0,
         use_jax=False,
     ):
         """
@@ -44,12 +41,6 @@ class MultiPlaneBase(ProfileListBase):
         :param profile_kwargs_list: list of dicts, keyword arguments used to initialize profile classes
             in the same order of the lens_model_list. If any of the profile_kwargs are None, then that
             profile will be initialized using default settings.
-        :param perturber_model_list: list of deflector models that are treated as perturbations
-            (subtract shear and convergence contributions at ra_0/dec_0)
-        :type perturber_model_list: None or list of bools
-        :param ra_0: RA coordinate for which perturber models have zero shear and convergence contributions
-        :param dec_0: DEC coordinate for which perturber models have zero shear and convergence contributions
-            (usually center of the main deflector)
         :param use_jax: bool, if True, uses deflector profiles from jaxtronomy.
             Can also be a list of bools, selecting which models in the lens_model_list to use from jaxtronomy
         """
@@ -80,9 +71,6 @@ class MultiPlaneBase(ProfileListBase):
             lens_redshift_list=lens_redshift_list,
             z_source_convention=z_source_convention,
             profile_kwargs_list=profile_kwargs_list,
-            perturber_model_list=perturber_model_list,
-            ra_0=ra_0,
-            dec_0=dec_0,
             use_jax=use_jax,
         )
 

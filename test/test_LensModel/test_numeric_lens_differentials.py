@@ -450,7 +450,8 @@ class TestNumericsProfile(object):
     def test_perturber_model(self):
 
         lensModel = LensModel(
-            lens_model_list=["SIS"], perturber_model_list=[True], ra_0=10, dec_0=10
+            lens_model_list=["PERTURBER"],
+            profile_kwargs_list=[{"profile": "SIS", "ra_0": 10, "dec_0": 10}],
         )
         kwargs_sis = {"theta_E": 1, "center_x": 0, "center_y": 0}
         self.assert_differentials(

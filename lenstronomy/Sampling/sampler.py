@@ -182,6 +182,7 @@ class Sampler(object):
         initpos=None,
         backend_filename=None,
         start_from_backend=False,
+        flatten_chains=True,
         kwargs_pool=None,
     ):
         """Run MCMC with emcee. For details, please have a look at the documentation of
@@ -210,6 +211,9 @@ class Sampler(object):
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
          Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
+        :param flatten_chains: If true, flattens MCMC chains to have shape [n_run * n_walkers, ndim]. Otherwise,
+            unflattened MCMC chains will have shape [n_run, n_walkers, ndim]
+        :type flatten_chains: bool
         :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
          or Multithreading pool.
         :type kwargs_pool: None or dict
@@ -266,8 +270,8 @@ class Sampler(object):
         )
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress)
-        flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
-        dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
+        samples = sampler.get_chain(discard=n_burn, thin=1, flat=flatten_chains)
+        dist = sampler.get_log_prob(flat=flatten_chains, discard=n_burn, thin=1)
         if pool.is_master():
             print("Computing the MCMC...")
             print("Number of walkers = ", n_walkers)
@@ -275,7 +279,7 @@ class Sampler(object):
             print("Sampling iterations (in current run):", n_run_eff)
             time_end = time.time()
             print(time_end - time_start, "time taken for MCMC sampling")
-        return flat_samples, dist
+        return samples, dist
 
     def mcmc_zeus(
         self,
@@ -289,6 +293,7 @@ class Sampler(object):
         progress=False,
         initpos=None,
         backend_filename=None,
+        flatten_chains=True,
         kwargs_pool=None,
         **kwargs_zeus
     ):
@@ -317,6 +322,9 @@ class Sampler(object):
         :type initpos: numpy array of size num param x num walkser
         :param backend_filename: name of the HDF5 file where sampling state is saved (through zeus callback function)
         :type backend_filename: string
+        :param flatten_chains: If true, flattens MCMC chains to have shape [n_run * n_walkers, ndim]. Otherwise,
+            unflattened MCMC chains will have shape [n_run, n_walkers, ndim]
+        :type flatten_chains: bool
         :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
          or Multithreading pool.
         :type kwargs_pool: None or dict
@@ -438,9 +446,9 @@ class Sampler(object):
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks=callback_list)
 
-        flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
+        flat_samples = sampler.get_chain(flat=flatten_chains, thin=1, discard=n_burn)
 
-        dist = sampler.get_log_prob(flat=True, thin=1, discard=n_burn)
+        dist = sampler.get_log_prob(flat=flatten_chains, thin=1, discard=n_burn)
 
         return flat_samples, dist
 

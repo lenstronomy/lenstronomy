@@ -361,6 +361,17 @@ class TestFittingSequence(object):
         assert kwargs_set["kwargs_source"][0]["n_sersic"] == 2.993
         assert kwargs_set["kwargs_ps"][0]["ra_source"] == 0.007
 
+        # test `set_amplitudes` fitting sequence
+        # amplitudes were initialized at 1.0
+        assert kwargs_set["kwargs_source"][0]["amp"] == 1.0
+        assert kwargs_set["kwargs_lens_light"][0]["amp"] == 1.0
+        # Updates all amplitudes to values obtained from linear solver
+        fitting_list = [["set_amplitudes", {}]]
+        fittingSequence.fit_sequence(fitting_list)
+        kwargs_set = fittingSequence._updateManager.parameter_state
+        assert kwargs_set["kwargs_source"][0]["amp"] != 1.0
+        assert kwargs_set["kwargs_lens_light"][0]["amp"] != 1.0
+
         from unittest import TestCase
 
         t = TestCase()
@@ -857,6 +868,7 @@ class TestFittingSequence(object):
         kwargs_mcmc = {"sigma_scale": 1, "n_burn": 1, "n_run": 1, "n_walkers": 10}
         fitting_list.append(["emcee", kwargs_mcmc])
         kwargs_mcmc["re_use_samples"] = True
+        kwargs_mcmc["flatten_chains"] = True
         kwargs_mcmc["init_samples"] = np.array(
             [[np.random.normal(1, 0.001)] for i in range(100)]
         )

@@ -114,6 +114,9 @@ class FittingSequence(object):
             elif fitting_type == "update_settings":
                 self.update_settings(**kwargs)
 
+            elif fitting_type == "set_amplitudes":
+                self.set_amplitudes()
+
             elif fitting_type == "set_param_value":
                 self.set_param_value(**kwargs)
 
@@ -325,6 +328,7 @@ class FittingSequence(object):
         progress=True,
         backend_filename=None,
         start_from_backend=False,
+        flatten_chains=True,
         kwargs_pool=None,
         **kwargs_zeus
     ):
@@ -346,6 +350,9 @@ class FittingSequence(object):
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
          O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
+        :param flatten_chains: If true, flattens MCMC chains to have shape [n_run * n_walkers, ndim]. Otherwise,
+            unflattened MCMC chains will have shape [n_run, n_walkers, ndim]
+        :type flatten_chains: bool
         :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
          or Multithreading pool.
         :type kwargs_pool: None or dict
@@ -412,6 +419,7 @@ class FittingSequence(object):
                 initpos=initpos,
                 backend_filename=backend_filename,
                 start_from_backend=start_from_backend,
+                flatten_chains=flatten_chains,
             )
             output = [sampler_type, samples, param_list, dist]
 
@@ -844,6 +852,47 @@ class FittingSequence(object):
             change_sigma_lens_light=change_sigma_lens_light,
         )
         return 0
+
+    def set_amplitudes(self):
+        """Overwrites all current amplitude parameters with values obtained from calling
+        the linear solver on the current parameter state.
+
+        For multi-band fitting, any light models present in multiple bands will have its
+        amplitude parameter set to the result from calling the linear solver on the last
+        band that it is present in.
+        """
+
+        # Extract kwargs from current parameter state
+        kwargs_temp = self.best_fit()
+
+        kwargs_lens = kwargs_temp["kwargs_lens"]
+        kwargs_source = kwargs_temp["kwargs_source"]
+        kwargs_lens_light = kwargs_temp["kwargs_lens_light"]
+        kwargs_ps = kwargs_temp["kwargs_ps"]
+        kwargs_special = kwargs_temp["kwargs_special"]
+        kwargs_extinction = kwargs_temp["kwargs_extinction"]
+        kwargs_tracer_source = kwargs_temp["kwargs_tracer_source"]
+
+        # Call linear solver to obtain amplitudes; the function update_linear_kwargs
+        # is called inside, which automatically updates all dictionaries
+        im_sim_class = self.likelihood_class.image_likelihood.imSim
+        im_sim_class.image_linear_solve(
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+            kwargs_extinction,
+            kwargs_special,
+        )
+        self._updateManager.update_param_state(
+            kwargs_lens,
+            kwargs_source,
+            kwargs_lens_light,
+            kwargs_ps,
+            kwargs_special,
+            kwargs_extinction,
+            kwargs_tracer_source,
+        )
 
     def set_param_value(self, **kwargs):
         """Set a parameter to a specific value. `kwargs` are below.

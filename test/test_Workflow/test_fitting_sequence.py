@@ -869,6 +869,7 @@ class TestFittingSequence(object):
         kwargs_mcmc = {"sigma_scale": 1, "n_burn": 1, "n_run": 1, "n_walkers": 10}
         fitting_list.append(["emcee", kwargs_mcmc])
         kwargs_mcmc["re_use_samples"] = True
+        kwargs_mcmc["flatten_chains"] = True
         kwargs_mcmc["init_samples"] = np.array(
             [[np.random.normal(1, 0.001)] for i in range(100)]
         )

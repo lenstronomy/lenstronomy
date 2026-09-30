@@ -328,6 +328,7 @@ class FittingSequence(object):
         progress=True,
         backend_filename=None,
         start_from_backend=False,
+        flatten_chains=True,
         kwargs_pool=None,
         **kwargs_zeus
     ):
@@ -349,6 +350,9 @@ class FittingSequence(object):
         :param start_from_backend: if True, start from the state saved in `backup_filename`.
          O therwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backend: bool
+        :param flatten_chains: If true, flattens MCMC chains to have shape [n_run * n_walkers, ndim]. Otherwise,
+            unflattened MCMC chains will have shape [n_run, n_walkers, ndim]
+        :type flatten_chains: bool
         :param kwargs_pool: dictionary for choose_pool() definition to have access to more features of the MPI
          or Multithreading pool.
         :type kwargs_pool: None or dict
@@ -415,6 +419,7 @@ class FittingSequence(object):
                 initpos=initpos,
                 backend_filename=backend_filename,
                 start_from_backend=start_from_backend,
+                flatten_chains=flatten_chains,
             )
             output = [sampler_type, samples, param_list, dist]
 

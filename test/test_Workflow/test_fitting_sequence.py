@@ -372,7 +372,6 @@ class TestFittingSequence(object):
         assert kwargs_set["kwargs_source"][0]["amp"] != 1.0
         assert kwargs_set["kwargs_lens_light"][0]["amp"] != 1.0
 
-
         from unittest import TestCase
 
         t = TestCase()

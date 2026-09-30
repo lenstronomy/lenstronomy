@@ -852,13 +852,14 @@ class FittingSequence(object):
             change_sigma_lens_light=change_sigma_lens_light,
         )
         return 0
-    
+
     def set_amplitudes(self):
         """Overwrites all current amplitude parameters with values obtained from calling
-        the linear solver on the current parameter state. For multi-band fitting, any
-        light models present in multiple bands will have its amplitude parameter set
-        to the result from calling the linear solver on the last band that it is
-        present in.
+        the linear solver on the current parameter state.
+
+        For multi-band fitting, any light models present in multiple bands will have its
+        amplitude parameter set to the result from calling the linear solver on the last
+        band that it is present in.
         """
 
         # Extract kwargs from current parameter state

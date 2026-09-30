@@ -361,6 +361,18 @@ class TestFittingSequence(object):
         assert kwargs_set["kwargs_source"][0]["n_sersic"] == 2.993
         assert kwargs_set["kwargs_ps"][0]["ra_source"] == 0.007
 
+        # test `set_amplitudes` fitting sequence
+        # amplitudes were initialized at 1.0
+        assert kwargs_set["kwargs_source"][0]["amp"] == 1.0
+        assert kwargs_set["kwargs_lens_light"][0]["amp"] == 1.0
+        # Updates all amplitudes to values obtained from linear solver
+        fitting_list = [["set_amplitudes", {}]]
+        fittingSequence.fit_sequence(fitting_list)
+        kwargs_set = fittingSequence._updateManager.parameter_state
+        assert kwargs_set["kwargs_source"][0]["amp"] != 1.0
+        assert kwargs_set["kwargs_lens_light"][0]["amp"] != 1.0
+
+
         from unittest import TestCase
 
         t = TestCase()

@@ -184,6 +184,7 @@ class TestSampler(object):
             sigma_start,
             mpi=False,
             backend_filename=backup_filename,
+            flatten_chains=True,
         )
         assert len(samples_1) == n_walkers * n_run
         # 2) run a chain starting from the backup of previous run
@@ -196,8 +197,12 @@ class TestSampler(object):
             mpi=False,
             backend_filename=backup_filename,
             start_from_backend=True,
+            flatten_chains=False,
         )
-        assert len(samples_2) == len(samples_1) + n_walkers * n_run
+
+        assert len(samples_2) == len(samples_1) / n_walkers + n_run
+        assert np.shape(dist_2)[0] == n_run * 2
+        assert np.shape(dist_2)[1] == n_walkers
         assert len(dist_2) == len(samples_2)
 
         os.remove(backup_filename)  # just remove the backup file created above

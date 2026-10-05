@@ -6,6 +6,7 @@ from numpy.testing import assert_allclose
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Util import util
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
+from lenstronomy.Sampling.param_group import MultiBandOffsetParam
 
 
 # Generate simple two-band mock data
@@ -516,6 +517,117 @@ def test_correct_multiband_offsets_improve_likelihood():
     assert logL_true > logL_zero
     assert logL_true > logL_wrong
 
+def test_multiband_offset_num_params():
+    group = MultiBandOffsetParam(
+        on=True,
+        num_bands=3,
+        reference_band=0,
+    )
+
+    kwargs_fixed = {
+        "kwargs_offsets": [
+            {},
+            {"phi_rot": 0.1},
+            {},
+        ]
+    }
+
+    n_params, names = group.num_params(kwargs_fixed)
+
+    assert n_params == 5
+    assert names == [
+        "ra_shift_band_1",
+        "dec_shift_band_1",
+        "ra_shift_band_2",
+        "dec_shift_band_2",
+        "phi_rot_band_2",
+    ]
+
+
+def test_multiband_offset_set_params_without_offsets():
+    group = MultiBandOffsetParam(
+        on=True,
+        num_bands=2,
+        reference_band=0,
+    )
+
+    args = group.set_params({}, {})
+
+    assert args == [0, 0, 0]
+
+
+def test_multiband_offset_none_bounds():
+    group = MultiBandOffsetParam(
+        on=True,
+        num_bands=2,
+        reference_band=0,
+    )
+
+    kwargs, i = group.get_params(
+        [0.1, -0.2, 0.03],
+        0,
+        {},
+        kwargs_lower={"kwargs_offsets": None},
+        kwargs_upper={"kwargs_offsets": None},
+    )
+
+    assert i == 3
+    assert kwargs["kwargs_offsets"][0] == {}
+    assert kwargs["kwargs_offsets"][1] == {
+        "ra_shift": 0.1,
+        "dec_shift": -0.2,
+        "phi_rot": 0.03,
+    }
+
+
+def test_multiband_offset_fixed_and_clipped_params():
+    group = MultiBandOffsetParam(
+        on=True,
+        num_bands=2,
+        reference_band=0,
+    )
+
+    kwargs_fixed = {
+        "kwargs_offsets": [
+            {},
+            {"phi_rot": 0.05},
+        ]
+    }
+
+    kwargs_lower = {
+        "kwargs_offsets": [
+            {},
+            {
+                "ra_shift": -1.0,
+                "dec_shift": -1.0,
+            },
+        ]
+    }
+
+    kwargs_upper = {
+        "kwargs_offsets": [
+            {},
+            {
+                "ra_shift": 1.0,
+                "dec_shift": 1.0,
+            },
+        ]
+    }
+
+    kwargs, i = group.get_params(
+        [-2.0, 2.0],
+        0,
+        kwargs_fixed,
+        kwargs_lower=kwargs_lower,
+        kwargs_upper=kwargs_upper,
+    )
+
+    assert i == 2
+    assert kwargs["kwargs_offsets"][1] == {
+        "ra_shift": -1.0,
+        "dec_shift": 1.0,
+        "phi_rot": 0.05,
+    }
 
 if __name__ == "__main__":
     pytest.main()

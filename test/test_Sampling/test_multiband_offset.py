@@ -517,6 +517,7 @@ def test_correct_multiband_offsets_improve_likelihood():
     assert logL_true > logL_zero
     assert logL_true > logL_wrong
 
+
 def test_multiband_offset_num_params():
     group = MultiBandOffsetParam(
         on=True,
@@ -628,6 +629,7 @@ def test_multiband_offset_fixed_and_clipped_params():
         "dec_shift": 1.0,
         "phi_rot": 0.05,
     }
+
 
 if __name__ == "__main__":
     pytest.main()

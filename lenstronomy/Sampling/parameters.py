@@ -1032,7 +1032,6 @@ class Param(object):
 
         :return: list of fixed keyword arguments
         """
-
         return (
             self.lens_params.kwargs_fixed,
             self.source_params.kwargs_fixed,

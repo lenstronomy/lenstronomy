@@ -84,7 +84,6 @@ class JWST(object):
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
         :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: None.
         """
-
         if band == "F200W":
             self.obs = NIRCAM_F200W_band_obs
             self.arm = "short"

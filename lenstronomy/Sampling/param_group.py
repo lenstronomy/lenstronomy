@@ -102,16 +102,18 @@ class ModelParamGroup:
         in dictionary format. Combines the results for a set of arbitrarily many
         parameter groups.
 
-        :param each_group: collection of parameter groups. Should each be subclasses of ModelParamGroup.
+        :param each_group: collection of parameter groups. Should each be subclasses of
+            ModelParamGroup.
         :type each_group: list
         :param flat_args: the input array of parameters
         :type flat_args: list
         :param i: the index in `flat_args` to start at
         :type i: int
         :param args: Extra arguments to be passed to each call of `set_params()`
-        :param kwargs: Extra keyword arguments to be passed to each call of `set_params()`
-
-        :returns: As in each individual `get_params()`, a 2-tuple of (dictionary of params, new index)
+        :param kwargs: Extra keyword arguments to be passed to each call of
+            `set_params()`
+        :returns: As in each individual `get_params()`, a 2-tuple of (dictionary of
+            params, new index)
         """
         output_kwargs = {}
         for group in each_group:
@@ -220,8 +222,9 @@ class SingleParam(ModelParamGroup):
 
 
 class ArrayParam(ModelParamGroup):
-    """Helper for handling parameters which are an array of values. Examples include
-    mass_scaling, which is an array of scaling parameters, and wavelet or gaussian
+    """Helper for handling parameters which are an array of values.
+
+    Examples include mass_scaling, which is an array of scaling parameters, and wavelet or gaussian
     decompositions which have different coefficients for each mode.
 
     Subclasses should define:

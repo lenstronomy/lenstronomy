@@ -546,7 +546,6 @@ class MultiPlaneBase(ProfileListBase):
         :param z_start: starting redshift (lowest redshift)
         :return: boolean of condition
         """
-
         if inclusive:
             return z_lens >= z_start
         else:

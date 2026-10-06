@@ -293,8 +293,9 @@ class AnalyticKinematics(Anisotropy):
     def _integrand_suyu10_eq21(
         self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy
     ):
-        """Compute the integrand of Eq. 21 from Suyu et al. (2010).
+        """Compute the integrand of Eq.
 
+        21 from Suyu et al. (2010).
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model

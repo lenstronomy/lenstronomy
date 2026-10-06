@@ -206,8 +206,9 @@ class SIE(LensProfileBase):
         return pot
 
     def density_lens(self, r, theta_E, e1=0, e2=0):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: radius in angles

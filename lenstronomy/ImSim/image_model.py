@@ -51,7 +51,6 @@ class ImageModel(object):
         :param image_index: index of the band that is being modeled here.
             Primary used when coordinate frames have to be aligned between bands
         """
-
         self.type = "single-band"
         self.num_bands = 1
         self.PSF = psf_class

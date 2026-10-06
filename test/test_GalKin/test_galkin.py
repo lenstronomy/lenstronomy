@@ -254,7 +254,6 @@ class TestGalkin(object):
         We do not demand the highest level of precisions here!!! We are using the
         luminosity-weighted velocity dispersion integration calculation in this test.
         """
-
         # light profile
         light_profile_list = ["HERNQUIST"]
         Rs = 0.5

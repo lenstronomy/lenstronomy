@@ -20,7 +20,6 @@ class TestCurvedArcTanDiff(object):
 
     def test_curved_arc_round_recovery(self):
         """Test whether the curved arc parameters are satisfied in differential form."""
-
         center_x, center_y = (
             2,
             0.0,
@@ -64,7 +63,6 @@ class TestCurvedArcTanDiff(object):
 
     def test_curved_arc_recovery(self):
         """Test whether the curved arc parameters are satisfied in differential form."""
-
         center_x, center_y = (
             3,
             0,

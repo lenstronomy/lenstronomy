@@ -464,7 +464,6 @@ def update_coolest_from_lenstronomy(
     :param ending: str, ending of the name for saving the updated json file
     :return: the new json file is saved with the updated kwargs.
     """
-
     decoder = JSONSerializer(file_name, **kwargs_serializer)
     lens_coolest = decoder.load()
     available_profiles = [

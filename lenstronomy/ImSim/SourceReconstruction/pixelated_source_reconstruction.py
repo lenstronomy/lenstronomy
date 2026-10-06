@@ -42,8 +42,9 @@ class PixelatedSourceReconstruction(object):
     def __init__(
         self, data_class, psf_class, lens_model_class, source_pixel_grid_class
     ):
-        """Initializes the PixelatedSourceReconstruction class. This sets up the
-        necessary data, PSF, lens model, and source grid for subsequent source
+        """Initializes the PixelatedSourceReconstruction class.
+
+        This sets up the necessary data, PSF, lens model, and source grid for subsequent source
         reconstruction matrix generation.
 
         :param data_class: ImageData() class instance (for the observed image data)
@@ -54,7 +55,6 @@ class PixelatedSourceReconstruction(object):
             - If the source pixel grid has rotational components or non-uniform pixel widths.
             - If the PSF kernel size is improperly sized for interferometric likelihood methods.
         """
-
         self._num_pix = data_class.num_pixel_axes[0]
         self._image_data = data_class.data
         self._noise_rms = data_class.background_rms
@@ -400,10 +400,12 @@ class PixelatedSourceReconstruction(object):
         source grid.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
-        :returns: A nested list. Each element in the outer list corresponds to a single source pixel
-            within the defined source grid (ordered by their flatten 1D index). Each inner list contains
-            elements `[idx_y_lensed, idx_x_lensed, ratio_contributing]`, indicating that the source pixel at this index
-            contributes with `ratio_contributing` to the image plane pixel at `[idx_y_lensed, idx_x_lensed]` when lensed.
+        :returns: A nested list. Each element in the outer list corresponds to a single
+            source pixel within the defined source grid (ordered by their flatten 1D
+            index). Each inner list contains elements `[idx_y_lensed, idx_x_lensed,
+            ratio_contributing]`, indicating that the source pixel at this index
+            contributes with `ratio_contributing` to the image plane pixel at
+            `[idx_y_lensed, idx_x_lensed]` when lensed.
         :rtype: list
         """
         lensing_matrix = self._lens_pixel_source_of_a_rectangular_region_csc_matrix(
@@ -453,21 +455,22 @@ class PixelatedSourceReconstruction(object):
         coordinates defined by source_pixel_grid_class.
 
         This method works by ray-shooting image plane pixels back to the source plane to
-        find the corresponding source coordinate, and then interpolating the flux from the input
-        source image at that coordinate.
+        find the corresponding source coordinate, and then interpolating the flux from
+        the input source image at that coordinate.
 
-        Note that the primary beam will NOT be applied on the lensed image for interferometric data.
+        Note that the primary beam will NOT be applied on the lensed image for
+        interferometric data.
 
         :param kwargs_lens: List of keyword arguments for the lens_model_class.
-        :param image: 2D NumPy array representing the pixelated source plane image. Expected to have
-                      dimensions defined by source_pixel_grid_class.
+        :param image: 2D NumPy array representing the pixelated source plane image.
+            Expected to have dimensions defined by source_pixel_grid_class.
         :type image: numpy.ndarray
         :returns: 2D NumPy array representing the lensed image in the image plane.
         :rtype: numpy.ndarray
-        :raises ValueError: If the input `source_image` dimensions do not match the dimensions of the
-                            defined source pixel grid (`self._ny_source`, `self._nx_source`).
+        :raises ValueError: If the input `source_image` dimensions do not match the
+            dimensions of the defined source pixel grid (`self._ny_source`,
+            `self._nx_source`).
         """
-
         ny_source_check, nx_source_check = np.shape(source_image)
         if nx_source_check != self._nx_source or ny_source_check != self._ny_source:
             raise ValueError(
@@ -625,8 +628,9 @@ class PixelatedSourceReconstruction(object):
 
         :param sp1: First sparse image.
         :param sp2: Second sparse image.
-        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd dimensions,
-                       with its center at the central pixel. If None, `self._kernel` is used
+        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd
+            dimensions, with its center at the central pixel. If None, `self._kernel` is
+            used
         :returns: The result of the convolution product.
         :rtype: float
         """
@@ -660,8 +664,9 @@ class PixelatedSourceReconstruction(object):
         """Performs convolution of a sparse image with a given kernel.
 
         :param sp: A sparse image.
-        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd dimensions,
-                       with its center at the central pixel. If None, `self._kernel` is used
+        :param kernel: The 2D PSF kernel (NumPy array). Assumed to be square with odd
+            dimensions, with its center at the central pixel. If None, `self._kernel` is
+            used
         :returns: A 2D NumPy array representing the convolved image.
         :rtype: numpy.ndarray
         """

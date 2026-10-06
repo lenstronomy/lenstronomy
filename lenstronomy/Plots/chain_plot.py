@@ -33,7 +33,8 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     :type chain_list: list
     :param index: index of chain to be plotted
     :type index: int
-    :param num_average: in chains, number of steps to average over in plotting diagnostics
+    :param num_average: in chains, number of steps to average over in plotting
+        diagnostics
     :type num_average: int
     :return: plotting instance figure, axes (potentially multiple)
     """

@@ -403,8 +403,9 @@ class UpdateManager(object):
         kwargs_extinction=None,
         kwargs_tracer_source=None,
     ):
-        """Updates the temporary state of the parameters being saved. ATTENTION: Any
-        previous knowledge gets lost if you call this function.
+        """Updates the temporary state of the parameters being saved.
+
+        ATTENTION: Any previous knowledge gets lost if you call this function.
 
         :param kwargs_lens:
         :param kwargs_source:
@@ -457,11 +458,12 @@ class UpdateManager(object):
 
     @property
     def param_class(self):
-        """Creating instance of lenstronomy Param() class. It uses the keyword arguments
-        in self.kwargs_constraints as __init__() arguments, as well as
-        self.kwargs_model, and the set of kwargs_fixed___, kwargs_lower___,
-        kwargs_upper___ arguments for lens, lens_light, source, point source, extinction
-        and special parameters.
+        """Creating instance of lenstronomy Param() class.
+
+        It uses the keyword arguments in self.kwargs_constraints as __init__()
+        arguments, as well as self.kwargs_model, and the set of kwargs_fixed___,
+        kwargs_lower___, kwargs_upper___ arguments for lens, lens_light, source, point
+        source, extinction and special parameters.
 
         :return: instance of the Param class with the recent options and bounds
         """
@@ -568,11 +570,16 @@ class UpdateManager(object):
     ):
         """Updates the limits (lower and upper) of the update manager instance.
 
-        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_source_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :return: updates internal state of lower and upper limits accessible from outside
+        :param change_source_lower_limit: [[i_model, ['param_name1', 'param_name2',
+            ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_source_upper_limit: [[i_model, ['param_name1', 'param_name2',
+            ...], [value1, value2, ...]]]
+        :param change_lens_upper_limit: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :return: updates internal state of lower and upper limits accessible from
+            outside
         """
         if change_source_lower_limit is not None:
             self._source_lower = self._update_kwargs_list(
@@ -600,9 +607,12 @@ class UpdateManager(object):
         """Updates individual estimated uncertainty levels for the initialization of
         search and sampling algorithms.
 
-        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
-        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...], [value1, value2, ...]]]
+        :param change_sigma_lens: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_sigma_source: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
+        :param change_sigma_lens_light: [[i_model, ['param_name1', 'param_name2', ...],
+            [value1, value2, ...]]]
         :return: updated internal state of the spread to initialize samplers
         """
         if change_sigma_lens is not None:
@@ -776,9 +786,10 @@ class UpdateManager(object):
         return kwargs_fixed
 
     def fix_image_parameters(self, image_index=0):
-        """Fixes all parameters that are only assigned to a specific image. This allows
-        to sample only parameters that constraint by the fitting of a sub-set of the
-        images.
+        """Fixes all parameters that are only assigned to a specific image.
+
+        This allows to sample only parameters that constraint by the fitting of a sub-
+        set of the images.
 
         :param image_index: index
         :return: None

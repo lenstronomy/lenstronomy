@@ -175,8 +175,7 @@ class HernquistEllipsePotential(LensProfileBase):
     def density_lens(self, r, sigma0, Rs, e1=0, e2=0):
         """Returns the density as a function of 3D radius in lensing parameters.
 
-        This function converts the lensing definition `sigma0` into the 3D
-        density.
+        This function converts the lensing definition `sigma0` into the 3D density.
 
         :param r: 3D radius
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)
@@ -203,8 +202,9 @@ class HernquistEllipsePotential(LensProfileBase):
         return self.spherical.density_2d(x, y, rho0, Rs, center_x, center_y)
 
     def mass_2d_lens(self, r, sigma0, Rs, e1=0, e2=0):
-        """Mass enclosed projected 2D sphere of radius `r`. Same as `mass_2d` but with
-        input normalization in units of projected density.
+        """Mass enclosed projected 2D sphere of radius `r`.
+
+        Same as `mass_2d` but with input normalization in units of projected density.
 
         :param r: projected radius
         :param sigma0: :math:`\\rho_0 \\times R_s` (units of projected density)

@@ -80,7 +80,6 @@ class ConstMag(LensProfileBase):
         :param phi_G: shear orientation angle (relative to the x-axis)
         :return: lensing potential
         """
-
         # positive parity case
         if parity == 1:
             gamma = (1.0 / mu_t - 1.0 / mu_r) * 0.5
@@ -120,7 +119,6 @@ class ConstMag(LensProfileBase):
         :param phi_G: shear orientation angle (relative to the x-axis)
         :return: deflection angle (in angles)
         """
-
         # positive parity case
         if parity == 1:
             gamma = (1.0 / mu_t - 1.0 / mu_r) * 0.5
@@ -157,7 +155,6 @@ class ConstMag(LensProfileBase):
         :param phi_G: shear orientation angle (relative to the x-axis)
         :return: hessian matrix (in angles)
         """
-
         # positive parity case
         if parity == 1:
             gamma = (1.0 / mu_t - 1.0 / mu_r) * 0.5

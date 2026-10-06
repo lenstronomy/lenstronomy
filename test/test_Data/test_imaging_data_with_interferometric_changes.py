@@ -6,7 +6,6 @@ from lenstronomy.Data.imaging_data import ImageData
 def test_interferometry_likelihood():
     """Test interferometry natural weighting likelihood function, test likelihood_method
     function output."""
-
     test_data = np.zeros((5, 5))
     test_data[0, :] = 1
     test_data[:, 4] = 2

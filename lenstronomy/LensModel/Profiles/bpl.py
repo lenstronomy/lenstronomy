@@ -78,7 +78,6 @@ class BPL(LensProfileBase):
 
     def __init__(self):
         """Initialize the BPL profile."""
-
         self.bpl_major_axis = BPLMajorAxis()
         super(BPL, self).__init__()
 
@@ -96,7 +95,6 @@ class BPL(LensProfileBase):
         :param e2: eccentricity modulus
         :return: b, a, a_c, r_c, q, phi_G
         """
-
         if self._static is True:
             return (
                 self._b_static,
@@ -121,7 +119,6 @@ class BPL(LensProfileBase):
         :param e2: eccentricity modulus
         :return: b, a, a_c, r_c, q, phi_G
         """
-
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         return b, a, a_c, r_c, q, phi_G
 
@@ -138,7 +135,6 @@ class BPL(LensProfileBase):
         :param center_y: profile center
         :return: self variables set
         """
-
         self._static = True
         (
             self._b_static,
@@ -154,7 +150,6 @@ class BPL(LensProfileBase):
 
         :return: None
         """
-
         self._static = False
         for name in [
             "_b_static",
@@ -202,7 +197,6 @@ class BPL(LensProfileBase):
         :param maxiter: maximum iteration cap for internal S0/S2 series evaluation
         :return: lensing potential
         """
-
         b, a, a_c, r_c, q, phi_G = self.param_conv(b, a, a_c, r_c, e1, e2)
         x_ = x - center_x
         y_ = y - center_y
@@ -251,7 +245,6 @@ class BPL(LensProfileBase):
         :param maxiter: maximum iteration cap for internal S0 series evaluation
         :return: alpha_x, alpha_y
         """
-
         b, a, a_c, r_c, q, phi_G = self.param_conv(b, a, a_c, r_c, e1, e2)
         x_ = x - center_x
         y_ = y - center_y
@@ -303,7 +296,6 @@ class BPL(LensProfileBase):
         :param maxiter: maximum iteration cap for internal S2 series evaluation
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         b, a, a_c, r_c, q, phi_G = self.param_conv(b, a, a_c, r_c, e1, e2)
         x_ = x - center_x
         y_ = y - center_y
@@ -352,13 +344,13 @@ class BPL(LensProfileBase):
 
     @staticmethod
     def Beta_func(a):
-        """Beta function coefficient \\(B(\\alpha)\\) defined in Du et al. (2020, Eq.
-        5).
+        """Beta function coefficient \\(B(\\alpha)\\) defined in Du et al.
+
+        (2020, Eq. 5).
 
         :param a: outer slope \\(\\alpha\\)
         :return: \\(B(\\alpha)=\\mathrm{B}(1/2,(\\alpha-1)/2)\\)
         """
-
         return beta(1 / 2, (a - 1) / 2)
 
     def rho_c_from_b(self, b, a, r_c):
@@ -388,7 +380,6 @@ class BPL(LensProfileBase):
         :param e2: eccentricity component (not used)
         :return: enclosed 3D mass \\(M(<r)\\)
         """
-
         r = np.asarray(r, dtype=float)
 
         rho_c = self.rho_c_from_b(b, a, r_c)
@@ -451,7 +442,6 @@ class BPLMajorAxis(LensProfileBase):
             overridden per call
         :return: self
         """
-
         self._target_precision = float(target_precision)
         self._maxiter = int(maxiter)
         super(BPLMajorAxis, self).__init__()
@@ -485,7 +475,6 @@ class BPLMajorAxis(LensProfileBase):
         :param maxiter: maximum iteration cap for internal series (passed through)
         :return: lensing potential
         """
-
         vectorized_quad = np.vectorize(
             lambda aa, bb: quad(
                 self.integrand_psi, 0.0, 1.0, args=(aa, bb, a, a_c, b, r_c, q)
@@ -523,7 +512,6 @@ class BPLMajorAxis(LensProfileBase):
         :param maxiter: maximum iteration cap for S0 recursion
         :return: alpha_x, alpha_y
         """
-
         tp, mi = self._resolve_settings(target_precision, maxiter)
         geom = self._prepare_geometry(x, y, q)
 
@@ -587,7 +575,6 @@ class BPLMajorAxis(LensProfileBase):
         :param maxiter: maximum iteration cap for S2 recursion
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         tp, mi = self._resolve_settings(target_precision, maxiter)
         geom = self._prepare_geometry(x, y, q)
 
@@ -644,7 +631,6 @@ class BPLMajorAxis(LensProfileBase):
         :param maxiter: per-call iteration cap (or None to use default)
         :return: target_precision, maxiter
         """
-
         tp = (
             self._target_precision
             if target_precision is None
@@ -662,7 +648,6 @@ class BPLMajorAxis(LensProfileBase):
         :param q: axis ratio (minor/major)
         :return: \\(R_{\\rm el}=\\sqrt{q x^2+y^2/q}\\)
         """
-
         return np.sqrt(q * (x * x) + (y * y) / q).astype(np.float64)
 
     @staticmethod
@@ -674,7 +659,6 @@ class BPLMajorAxis(LensProfileBase):
         :param y: y-coordinate array
         :return: complex array with zeros replaced
         """
-
         Z_safe = Z.copy()
         mask0 = (x == 0) & (y == 0)
         if np.ndim(Z_safe) == 0:
@@ -691,7 +675,6 @@ class BPLMajorAxis(LensProfileBase):
         :param Z: complex array
         :return: complex array with zeros replaced
         """
-
         if np.ndim(arr) == 0:
             return (_TINY + 0j) if (np.abs(arr) == 0.0) else arr
         return np.where(np.abs(arr) == 0.0, (_TINY + 0j), arr)
@@ -704,7 +687,6 @@ class BPLMajorAxis(LensProfileBase):
         :param q: axis ratio (minor/major)
         :return: dict with keys x, y, Z, R_el, z2, invZ, invZ2, U, U_R
         """
-
         x = np.asarray(x, dtype=np.float64)
         y = np.asarray(y, dtype=np.float64)
 
@@ -762,17 +744,16 @@ class BPLMajorAxis(LensProfileBase):
         :return: True if r_c>0 and a != a_c
         """
         return (r_c > 0.0) and (a != a_c)
-
     @staticmethod
     def _kappa1_epl_like(pow_a, a):
-        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al. 2020,
-        Eq. 13).
+        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al.
+
+        2020, Eq. 13).
 
         :param pow_a: \\((b/R_{\\rm el})^{\\alpha-1}\\)
         :param a: outer slope \\(\\alpha\\)
         :return: \\(\\kappa_1\\)
         """
-
         return 0.5 * (3.0 - a) * pow_a
 
     @staticmethod
@@ -786,7 +767,6 @@ class BPLMajorAxis(LensProfileBase):
         :param U_R: \\(\\zeta^2 R_{\\rm el}^2\\) with \\(\\zeta^2=(1/q-q)/Z^2\\)
         :return: complex deflection \\(\\alpha_1\\)
         """
-
         H_a = hyp2f1(0.5, (3.0 - a) / 2.0, (5.0 - a) / 2.0, U_R)
         return base1 * pow_a * H_a
 
@@ -802,7 +782,6 @@ class BPLMajorAxis(LensProfileBase):
         :param a: outer 3D slope \\(\\alpha\\)
         :return: complex shear contribution \\(\\gamma_1^*\\)
         """
-
         return (2.0 - a) * (alpha1 * invZ) - kappa1 * (Z.conj() * invZ)
 
     # ----------------- core/break correction precompute -----------------
@@ -848,7 +827,6 @@ class BPLMajorAxis(LensProfileBase):
         :param need_S2: whether to compute \\(\\gamma_2^*\\) via S2
         :return: dict with keys among alpha2, kappa2, gamma2conj
         """
-
         out = {}
 
         # C = r_c^2 * zeta2
@@ -910,18 +888,19 @@ class BPLMajorAxis(LensProfileBase):
 
     @staticmethod
     def Beta_func(a):
-        """Beta function coefficient \\(B(\\alpha)\\) defined in Du et al. (2020, Eq.
-        5).
+        """Beta function coefficient \\(B(\\alpha)\\) defined in Du et al.
+
+        (2020, Eq. 5).
 
         :param a: outer slope \\(\\alpha\\)
         :return: \\(B(\\alpha)=\\mathrm{B}(1/2,(\\alpha-1)/2)\\)
         """
-
         return beta(1 / 2, (a - 1) / 2)
 
     def F(self, a, z):
-        """Helper function F(a, z) used in the analytic expressions (Du et al. 2020, Eq.
-        21).
+        """Helper function F(a, z) used in the analytic expressions (Du et al.
+
+        2020, Eq. 21).
 
         This is a special case of the generalized hypergeometric function \\({}_3F_2\\),
         rewritten in terms of \\({}_2F_1\\).
@@ -931,7 +910,6 @@ class BPLMajorAxis(LensProfileBase):
         :param z: complex argument (typically \\(C=r_c^2\\zeta^2\\))
         :return: F(a, z)
         """
-
         # Du+2020 Appendix: helper function F(a,z)
         if a == 0.5:
             return (spence(1 - np.sqrt(z)) - spence(1 + np.sqrt(z))) / np.sqrt(z) / 2
@@ -952,7 +930,6 @@ class BPLMajorAxis(LensProfileBase):
         :param z: complex argument
         :return: \\({}_2F_1(a,b;c;z)\\) evaluated stably
         """
-
         # "expanded" transformation for a specific parameter combination; otherwise plain 2F1
         if np.size(z) == 1:
             z = np.array([z])
@@ -968,9 +945,10 @@ class BPLMajorAxis(LensProfileBase):
     # ----------------- accelerated series S0 / S2 -----------------
 
     def S0(self, a, a_c, C, R_el, r_c, target_precision, maxiter):
-        """Series S0 used in the deflection correction term (Du et al. 2020, Eq. 22).
+        """Series S0 used in the deflection correction term (Du et al.
 
-        Internally, this uses Aitken-accelerated recursion implemented in :meth:`s0arr`.
+        2020, Eq. 22).         Internally, this uses Aitken-accelerated recursion
+        implemented in :meth:`s0arr`.
 
         :param a: outer slope \\(\\alpha\\)
         :param a_c: inner slope \\(\\alpha_c\\)
@@ -981,7 +959,6 @@ class BPLMajorAxis(LensProfileBase):
         :param maxiter: maximum iteration cap for the recursion
         :return: complex series value S0 (same broadcast shape as inputs)
         """
-
         R_in = np.asarray(R_el)
         C_in = np.asarray(C)
         scalar_out = (R_in.shape == ()) and (C_in.shape == ())
@@ -1000,9 +977,10 @@ class BPLMajorAxis(LensProfileBase):
         return result[0] if scalar_out else result
 
     def S2(self, a, a_c, C, R_el, r_c, target_precision, maxiter):
-        """Series S2 used in the shear correction term (Du et al. 2020, Eq. 26).
+        """Series S2 used in the shear correction term (Du et al.
 
-        Internally, this uses Aitken-accelerated recursion implemented in :meth:`s2arr`.
+        2020, Eq. 26).         Internally, this uses Aitken-accelerated recursion
+        implemented in :meth:`s2arr`.
 
         :param a: outer slope \\(\\alpha\\)
         :param a_c: inner slope \\(\\alpha_c\\)
@@ -1013,7 +991,6 @@ class BPLMajorAxis(LensProfileBase):
         :param maxiter: maximum iteration cap for the recursion
         :return: complex series value S2 (same broadcast shape as inputs)
         """
-
         R_in = np.asarray(R_el)
         C_in = np.asarray(C)
         scalar_out = (R_in.shape == ()) and (C_in.shape == ())
@@ -1187,8 +1164,9 @@ class BPLMajorAxis(LensProfileBase):
         return aks / c3
 
     def kappa2func(self, b, a, a_c, r_c, R_el):
-        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al. 2020,
-        Eq. 14).
+        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al.
+
+        2020, Eq. 14).
 
         :param b: lens strength parameter
         :param a: outer slope \\(\\alpha\\)
@@ -1197,7 +1175,6 @@ class BPLMajorAxis(LensProfileBase):
         :param R_el: elliptical radius \\(R_{\\rm el}\\)
         :return: \\(\\kappa_2\\) (same shape as R_el)
         """
-
         if a == a_c or r_c <= 0:
             return (
                 0.0
@@ -1268,7 +1245,6 @@ class BPLMajorAxis(LensProfileBase):
         :param r_c: break radius \\(r_c\\)
         :return: mean convergence \\(\\bar\\kappa(R)\\)
         """
-
         R = float(R)
         temp1 = (b / R) ** (alpha - 1)
         if R < r_c:
@@ -1315,7 +1291,6 @@ class BPLMajorAxis(LensProfileBase):
         :param r_c: break radius \\(r_c\\)
         :return: kappa_mean(xi) * xi
         """
-
         return self.kappa_mean(xi, alpha, alpha_c, b, r_c) * xi
 
     def integrand_psi(self, u, x, y, alpha, alpha_c, b, r_c, q):
@@ -1331,7 +1306,6 @@ class BPLMajorAxis(LensProfileBase):
         :param q: axis ratio (minor/major)
         :return: integrand value for the potential \\(\\psi\\)
         """
-
         xi = np.sqrt(u * q * (x**2 + y**2 / (1 - (1 - q**2) * u)))
         return (
             0.5

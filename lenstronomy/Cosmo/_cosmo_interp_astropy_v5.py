@@ -41,7 +41,6 @@ class CosmoInterp(object):
         d : `~astropy.units.Quantity` ['length']
             Comoving distance in Mpc between each input redshift.
         """
-
         return (
             self._cosmo.hubble_distance
             * self._integral_comoving_distance_z1z2_scalar(z1, z2)

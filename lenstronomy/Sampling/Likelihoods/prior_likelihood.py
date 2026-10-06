@@ -52,7 +52,6 @@ class PriorLikelihood(object):
         :param prior_extinction_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
 
         """
-
         (
             self._prior_lens,
             self._prior_source,

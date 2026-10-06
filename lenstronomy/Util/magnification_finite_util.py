@@ -12,7 +12,6 @@ def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=
     :return: an appropriate grid size for finite-size background magnification
         computation
     """
-
     grid_radius_arcsec = grid_size_scale * source_fwhm_parcsec**power
     return grid_radius_arcsec
 
@@ -30,7 +29,6 @@ def auto_raytracing_grid_resolution(
     :return: an appropriate grid resolution for finite-size background magnification
         computation
     """
-
     grid_resolution = grid_resolution_scale * (source_fwhm_parcsec / ref) ** power
     return grid_resolution
 
@@ -54,7 +52,6 @@ def setup_mag_finite(grid_radius_arcsec, grid_resolution, source_model, kwargs_s
     :param source_model: instance of LightModel for the source :kwargs_source: keyword
         arguments for the light profile corresponding to the desired LightModel instance
     """
-
     # setup the grid
     npix = int(2 * grid_radius_arcsec / grid_resolution)
     _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)

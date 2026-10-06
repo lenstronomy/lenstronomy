@@ -44,21 +44,27 @@ class GaussDecompositionAbstract(
         use_scipy_wofz=True,
         min_ellipticity=1e-5,
     ):
-        """Set up settings for the Gaussian decomposition. For more details about the
-        decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition.
+
+        For more details about the decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
-        :type n_sigma: ``int``
+        :type n_sigma:``int``
         :param sigma_start_mult: Lower range of logarithmically spaced sigmas
-        :type sigma_start_mult: ``float``
+        :type sigma_start_mult:``float``
         :param sigma_end_mult: Upper range of logarithmically spaced sigmas
-        :type sigma_end_mult: ``float``
+        :type sigma_end_mult:``float``
         :param precision: Numerical precision of Gaussian decomposition
-        :type precision: ``int``
-        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
-        :type use_scipy_wofz: ``bool``
-        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
-        :type min_ellipticity: ``float``
+        :type precision:``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If
+            ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set
+            ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz:``bool``
+        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum
+            ellipticity for Gaussian elliptical lensing calculation. For lower
+            ellipticity than min_ellipticity the equations for the spherical case will
+            be used.
+        :type min_ellipticity:``float``
         """
         self.gaussian_set = MultiGaussianEllipseKappa(
             use_scipy_wofz=use_scipy_wofz, min_ellipticity=min_ellipticity
@@ -126,37 +132,40 @@ class GaussDecompositionAbstract(
 
         :param kwargs: Keyword arguments
         :return: Scale size
-        :rtype: ``float``
+        :rtype:``float``
         """
 
     @abc.abstractmethod
     def get_kappa_1d(self, y, **kwargs):
-        r"""Abstract method to compute the spherical Sersic profile at y. The concrete
-        method has to defined by the child class.
+        r"""Abstract method to compute the spherical Sersic profile at y.
+
+        The concrete method has to defined by the child class.
 
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :type y:``float`` or ``numpy.array``
+        :param kwargs: Keyword arguments that are defined by the child class that are
+            particular for the convergence profile
         """
 
     def function(self, x, y, e1=0.0, e2=0.0, center_x=0.0, center_y=0.0, **kwargs):
         r"""Compute the deflection potential of a Gauss-decomposed elliptic convergence.
 
         :param x: x coordinate
-        :type x: ``float``
+        :type x:``float``
         :param y: y coordinate
-        :type y: ``float``
+        :type y:``float``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordinate of centroid
-        :type center_y: ``float``
-        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :type center_y:``float``
+        :param kwargs: Keyword arguments that are defined by the child class that are
+            particular for the convergence profile
         :return: Deflection potential
-        :rtype: ``float``
+        :rtype:``float``
         """
         amps, sigmas = self.gauss_decompose(**kwargs)
 
@@ -173,18 +182,19 @@ class GaussDecompositionAbstract(
         convergence.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
+        :type y:``float`` or ``numpy.array``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordinate of centroid
-        :type center_y: ``float``
-        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :type center_y:``float``
+        :param kwargs: Keyword arguments that are defined by the child class that are
+            particular for the convergence profile
         :return: Derivatives of deflection potential
         :rtype: tuple ``(type(x), type(x))``
         """
@@ -203,18 +213,19 @@ class GaussDecompositionAbstract(
         y` of a Gauss-decomposed elliptic Sersic convergence.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
+        :type y:``float`` or ``numpy.array``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordinate of centroid
-        :type center_y: ``float``
-        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :type center_y:``float``
+        :param kwargs: Keyword arguments that are defined by the child class that are
+            particular for the convergence profile
         :return: Hessian of deflection potential
         :rtype: tuple ``(type(x), type(x), type(x))``
         """
@@ -229,20 +240,21 @@ class GaussDecompositionAbstract(
         r"""Compute the convergence profile for Gauss-decomposed elliptic Sersic profile.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
+        :type y:``float`` or ``numpy.array``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordinate of centroid
-        :type center_y: ``float``
-        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile in the child class.
+        :type center_y:``float``
+        :param kwargs: Keyword arguments that are defined by the child class that are
+            particular for the convergence profile in the child class.
         :return: Convergence profile
-        :rtype: ``type(x)``
+        :rtype:``type(x)``
         """
         amps, sigmas = self.gauss_decompose(**kwargs)
 
@@ -356,21 +368,27 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         use_scipy_wofz=True,
         min_ellipticity=1e-5,
     ):
-        """Set up settings for the Gaussian decomposition. For more details about the
-        decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition.
+
+        For more details about the decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
-        :type n_sigma: ``int``
+        :type n_sigma:``int``
         :param sigma_start_mult: Lower range of logarithmically spaced sigmas
-        :type sigma_start_mult: ``float``
+        :type sigma_start_mult:``float``
         :param sigma_end_mult: Upper range of logarithmically spaced sigmas
-        :type sigma_end_mult: ``float``
+        :type sigma_end_mult:``float``
         :param precision: Numerical precision of Gaussian decomposition
-        :type precision: ``int``
-        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
-        :type use_scipy_wofz: ``bool``
-        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
-        :type min_ellipticity: ``float``
+        :type precision:``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If
+            ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set
+            ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz:``bool``
+        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum
+            ellipticity for Gaussian elliptical lensing calculation. For lower
+            ellipticity than min_ellipticity the equations for the spherical case will
+            be used.
+        :type min_ellipticity:``float``
         """
         super(NFWEllipseGaussDec, self).__init__(
             n_sigma=n_sigma,
@@ -458,21 +476,27 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         use_scipy_wofz=False,
         min_ellipticity=1e-5,
     ):
-        """Set up settings for the Gaussian decomposition. For more details about the
-        decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition.
+
+        For more details about the decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
-        :type n_sigma: ``int``
+        :type n_sigma:``int``
         :param sigma_start_mult: Lower range of logarithmically spaced sigmas
-        :type sigma_start_mult: ``float``
+        :type sigma_start_mult:``float``
         :param sigma_end_mult: Upper range of logarithmically spaced sigmas
-        :type sigma_end_mult: ``float``
+        :type sigma_end_mult:``float``
         :param precision: Numerical precision of Gaussian decomposition
-        :type precision: ``int``
-        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
-        :type use_scipy_wofz: ``bool``
-        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
-        :type min_ellipticity: ``float``
+        :type precision:``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If
+            ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set
+            ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz:``bool``
+        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum
+            ellipticity for Gaussian elliptical lensing calculation. For lower
+            ellipticity than min_ellipticity the equations for the spherical case will
+            be used.
+        :type min_ellipticity:``float``
         """
         super(GeneralizedNFWEllipseGaussDec, self).__init__(
             n_sigma=n_sigma,
@@ -485,8 +509,9 @@ class GeneralizedNFWEllipseGaussDec(GaussDecompositionAbstract):
         self.gnfw = GNFW(trapezoidal_integration=True, integration_steps=1000)
 
     def get_kappa_1d(self, y, **kwargs):
-        r"""Compute the spherical projected gNFW profile at y. See Keeton (2001, page
-        11).
+        r"""Compute the spherical projected gNFW profile at y.
+
+        See Keeton (2001, page 11).
 
         :param y: y coordinate
         :type y: ``float``
@@ -542,7 +567,6 @@ class GaussDecompositionAbstract3D(GaussDecompositionAbstract):
         :return: Amplitudes and standard deviations of the Gaussian components
         :rtype: tuple ``(numpy.array, numpy.array)``
         """
-
         f_sigmas, sigmas = super(GaussDecompositionAbstract3D, self).gauss_decompose(
             **kwargs
         )
@@ -555,7 +579,7 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
     """This class computes the lensing properties of an projection from a spherical
     cored-truncated NFW profile using Shajib (2019)'s Gauss decomposition method."""
 
-    param_names = ["r_s", "r_core", "r_trunc", "a", "rho_s", "center_x" "center_y"]
+    param_names = ["r_s", "r_core", "r_trunc", "a", "rho_s", "center_x"  "center_y"]
     lower_limit_default = {
         "r_s": 0,
         "r_core": 0,
@@ -583,19 +607,22 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
         precision=10,
         use_scipy_wofz=True,
     ):
-        """Set up settings for the Gaussian decomposition. For more details about the
-        decomposition parameters, see Shajib (2019).
+        """Set up settings for the Gaussian decomposition.
+
+        For more details about the decomposition parameters, see Shajib (2019).
 
         :param n_sigma: Number of Gaussian components
-        :type n_sigma: ``int``
+        :type n_sigma:``int``
         :param sigma_start_mult: Lower range of logarithmically spaced sigmas
-        :type sigma_start_mult: ``float``
+        :type sigma_start_mult:``float``
         :param sigma_end_mult: Upper range of logarithmically spaced sigmas
-        :type sigma_end_mult: ``float``
+        :type sigma_end_mult:``float``
         :param precision: Numerical precision of Gaussian decomposition
-        :type precision: ``int``
-        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
-        :type use_scipy_wofz: ``bool``
+        :type precision:``int``
+        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If
+            ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set
+            ``False`` for lower precision, but faster speed.
+        :type use_scipy_wofz:``bool``
         """
         super(CTNFWGaussDec, self).__init__(
             n_sigma=n_sigma,

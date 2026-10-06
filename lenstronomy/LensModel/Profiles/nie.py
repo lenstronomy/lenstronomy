@@ -119,8 +119,9 @@ class NIE(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
     def density_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """3d mass density at 3d radius r. This function assumes spherical
-        symmetry/ignoring the eccentricity.
+        """3d mass density at 3d radius r.
+
+        This function assumes spherical symmetry/ignoring the eccentricity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius
@@ -136,8 +137,9 @@ class NIE(LensProfileBase):
         return rho0 / (r**2 + s_scale**2)
 
     def mass_3d_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
-        """Mass enclosed a 3d radius r. This function assumes spherical
-        symmetry/ignoring the eccentricity.
+        """Mass enclosed a 3d radius r.
+
+        This function assumes spherical symmetry/ignoring the eccentricity.
 
         :param r: 3d radius
         :param theta_E: Einstein radius

@@ -12,7 +12,6 @@ class Test_adaptive_boundary_mesh:
 
     def test_splitting_centers(self):
         """Function to test the splitting centers functionality."""
-
         center = np.array([[0, 0]])
         x = center[:, 0]
         y = center[:, 1]
@@ -28,7 +27,6 @@ class Test_adaptive_boundary_mesh:
 
     def test_loop_information(self):
         """Function to test the loop information functionality."""
-
         eta = 2
         beta_0 = 50
         beta_s = 10
@@ -73,7 +71,6 @@ class Test_adaptive_boundary_mesh:
         It sets up the initial parameters and checks if the function returns the
         expected results.
         """
-
         source_position = (0, 0)
         L = 0.0004
         beta_0 = 0.0016

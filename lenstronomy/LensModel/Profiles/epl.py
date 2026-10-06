@@ -194,7 +194,6 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
         x_ = x - center_x
@@ -227,8 +226,9 @@ class EPL(LensProfileBase):
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: radius within the mass is computed
@@ -429,8 +429,9 @@ class EPLQPhi(LensProfileBase):
         return self._EPL.mass_3d_lens(r, theta_E, gamma)
 
     def density_lens(self, r, theta_E, gamma, q=None, phi=None):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: radius within the mass is computed

@@ -13,7 +13,6 @@ def observation_constructor(instrument_name, observation_name):
     :param observation_name: string, name of observation referenced in this file
     :return: instance of the SimulationAPI.data_type instance
     """
-
     if instrument_name == "LSST":
         kwargs_instrument = LSST_camera
     else:

@@ -14,8 +14,9 @@ class SourcePositionParam(SingleParam):
 
 
 class LensedPosition(ArrayParam):
-    """Represents lensed positions, possibly many. ra_image and dec_image.
+    """Represents lensed positions, possibly many.
 
+    ra_image and dec_image.
     :param num_images: integer. The number of lensed positions to model.
     """
 
@@ -42,8 +43,9 @@ class SourceAmp(SingleParam):
 
 
 class ImageAmp(ArrayParam):
-    """Observed amplification of lensed images of a point source. Can model arbitrarily
-    many magnified images.
+    """Observed amplification of lensed images of a point source.
+
+    Can model arbitrarily many magnified images.
 
     :param num_point_sources: integer. The number of lensed images without fixed
         magnification.

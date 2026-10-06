@@ -50,7 +50,6 @@ class PointMassLogScaled(LensProfileBase):
         :param log10_theta_E: log10 of the Einstein radius (in arcsec)
         :return: deflection angles
         """
-
         theta_E = self._theta_e(log10_theta_E)
         return self.point_mass.derivatives(
             x, y, theta_E, center_x=center_x, center_y=center_y

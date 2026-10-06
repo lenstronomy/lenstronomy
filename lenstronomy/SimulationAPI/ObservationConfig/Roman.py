@@ -76,7 +76,6 @@ class Roman(object):
         :param psf_type: string, type of PSF ('GAUSSIAN', 'PIXEL' supported).
         :param survey_mode: string, survey mode ('wide_area', 'time_domain_wide', 'time_domain_deep', or 'microlensing' supported). Determines exposure time and number of exposures.
         """
-
         if band == "F062":
             self.obs = F062_band_obs
         elif band == "F087":

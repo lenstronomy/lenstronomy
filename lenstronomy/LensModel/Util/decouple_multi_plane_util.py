@@ -139,7 +139,6 @@ def coordinates_and_deflections(
     :return: comoving coordinates of light rays at z_split, foreground deflection
         angles, background deflections
     """
-
     Tds = cosmo_bkg.T_xy(z_split, z_source)
     Td = cosmo_bkg.T_xy(0, z_split)
     d_xy_source = cosmo_bkg.d_xy(0, z_source)
@@ -377,7 +376,6 @@ def setup_raytracing_lensmodels(
     :return: a list of DecoupledMultiPlane lens models and corresponding keyword
         arguments
     """
-
     (
         lens_model_fixed,
         lens_model_free,

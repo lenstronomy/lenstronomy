@@ -41,7 +41,6 @@ class GaussianEllipsePotential(LensProfileBase):
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """Returns Gaussian."""
-
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y

@@ -58,39 +58,36 @@ def solve_optimal_lambda(
     """Finds the optimal regularization strength (lambda) by solving for the root of the
     log-evidence derivative using a bisection method.
 
-    The optimal lambda is typically the value where the derivative of the
-    log-evidence is zero. This function assumes that the derivative
-    `d(ln(Evidence))/d(lambda)` is monotonically decreasing and crosses zero
-    within the specified bounds.
+    The optimal lambda is typically the value where the derivative of the log-evidence
+    is zero. This function assumes that the derivative `d(ln(Evidence))/d(lambda)` is
+    monotonically decreasing and crosses zero within the specified bounds.
 
     :param derivative_function: A callable function that computes the derivative
-                                d(ln(Evidence))/d(lambda). It must accept
-                                (regularization_strength, data_matrix, regularization_matrix, data_vector)
-                                as its arguments.
+        d(ln(Evidence))/d(lambda). It must accept (regularization_strength, data_matrix,
+        regularization_matrix, data_vector) as its arguments.
     :param U: The regularization matrix (numpy.ndarray).
     :param M: The M matrix (numpy.ndarray).
     :param b: The b vector (numpy.ndarray).
-    :param initial_lower_bound: The lower bound for the search range of lambda.
-                                It is expected that `derivative_function(initial_lower_bound, ...)` > 0.
-    :param initial_upper_bound: The upper bound for the search range of lambda.
-                                It is expected that `derivative_function(initial_upper_bound, ...)` < 0.
-    :param tolerance: float, The desired absolute tolerance for the lambda value.
-                      The search stops when the width of the search interval is less than this value.
-                      Defaults to 1e-7.
+    :param initial_lower_bound: The lower bound for the search range of lambda. It is
+        expected that `derivative_function(initial_lower_bound, ...)` > 0.
+    :param initial_upper_bound: The upper bound for the search range of lambda. It is
+        expected that `derivative_function(initial_upper_bound, ...)` < 0.
+    :param tolerance: float, The desired absolute tolerance for the lambda value. The
+        search stops when the width of the search interval is less than this value.
+        Defaults to 1e-7.
     :param max_iterations: int, The maximum number of bisection iterations to perform.
-                           Defaults to 20.
+        Defaults to 20.
     :param check_initial_bounds: bool, If True, perform checks to ensure that
-                                 `initial_lower_bound` < `initial_upper_bound` and
-                                 that the derivative function returns the expected
-                                 signs at the boundaries (positive at lower, negative at upper).
-                                 Setting this to False can speed up repeated calls
-                                 if the bounds are guaranteed to be valid, but
-                                 disables critical error checking. Defaults to True.
-    :return: float, The optimized regularization strength (lambda) that maximizes the log-evidence.
-    :raises ValueError: If `check_initial_bounds` is True and `initial_lower_bound`
-                        is not strictly less than `initial_upper_bound`,
-                        or if the derivative function does not yield the expected signs
-                        at the initial bounds (i.e., the root is not bracketed).
+        `initial_lower_bound` < `initial_upper_bound` and that the derivative function
+        returns the expected signs at the boundaries (positive at lower, negative at
+        upper). Setting this to False can speed up repeated calls if the bounds are
+        guaranteed to be valid, but disables critical error checking. Defaults to True.
+    :return: float, The optimized regularization strength (lambda) that maximizes the
+        log-evidence.
+    :raises ValueError: If `check_initial_bounds` is True and `initial_lower_bound` is
+        not strictly less than `initial_upper_bound`, or if the derivative function does
+        not yield the expected signs at the initial bounds (i.e., the root is not
+        bracketed).
     """
     if check_initial_bounds:
         if not (initial_lower_bound < initial_upper_bound):

@@ -41,7 +41,6 @@ class CosmoInterp(object):
         d : `~astropy.units.Quantity`
           Comoving distance in Mpc between each input redshift.
         """
-
         f = lambda z1, z2: quad(
             self._cosmo._inv_efunc_scalar,
             z1,

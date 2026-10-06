@@ -53,7 +53,6 @@ class Multipole(LensProfileBase):
         :param r_E: float, normalizing radius (only used for the m=1, Einstein radius by default)
         :return: lensing potential
         """
-
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
 
         if m == 1:
@@ -117,7 +116,6 @@ class Multipole(LensProfileBase):
         :param r_E: float, normalizing radius (not used for Hessian)
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
         if m == 1:
@@ -217,7 +215,6 @@ class EllipticalMultipole(LensProfileBase):
             default)
         :return: lensing potential
         """
-
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
         phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
@@ -292,7 +289,6 @@ class EllipticalMultipole(LensProfileBase):
             default)
         :return: deflection angles alpha_x, alpha_y
         """
-
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
         phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses
@@ -385,7 +381,6 @@ class EllipticalMultipole(LensProfileBase):
         :param r_E: float, normalizing radius (not used for Hessian)
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         r = np.maximum(r, 0.000001)
         phi -= phi_ref  # rotate to use (polar) coordinate system aligned with the axes of the reference ellipses

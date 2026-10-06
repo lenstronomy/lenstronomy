@@ -103,7 +103,6 @@ class PSFGaussian(object):
         :param num_pix: number of pixels per axis of the kernel
         :return: 2d numpy array of kernel
         """
-
         kernel = kernel_util.kernel_gaussian(num_pix, delta_pix, self._fwhm)
         return kernel
 
@@ -165,7 +164,6 @@ class PSFMoffat(object):
         :param num_pix: number of pixels per axis of the kernel
         :return: 2d numpy array of kernel
         """
-
         kernel = kernel_util.kernel_moffat(
             num_pix=num_pix,
             delta_pix=delta_pix,

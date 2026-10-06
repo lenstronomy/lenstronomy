@@ -79,7 +79,6 @@ class Shapelets(object):
             for numerical reasons such that the polynomials in the Hermite function do
             not get unstable.
         """
-
         self._interpolation = interpolation
         self._precalc = precalc
         self._stable_cut = stable_cut
@@ -133,7 +132,6 @@ class Shapelets(object):
         :param center_y: center in y
         :return: flux surface brightness at (x, y)
         """
-
         if self._precalc:
             return amp * x[n1] * y[n2]  # / beta
         x_ = x - center_x
@@ -160,8 +158,9 @@ class Shapelets(object):
             return np.interp(x, self.x_grid, self.H_interp[n])
 
     def phi_n(self, n, x):
-        """Constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
+        """Constructs the 1-dim basis function (formula (1) in Refregier et al.
 
+        2001)
         :param n: The n'the basis function.
         :type n: int.
         :param x: 1-dim position (dimensionless)

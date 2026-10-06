@@ -81,7 +81,6 @@ class TNFW(LensProfileBase):
         :param x: r/Rs
         :return:
         """
-
         if isinstance(x, np.ndarray):
             x = np.maximum(x, self._s)
             nfwvals = np.zeros_like(x)
@@ -141,7 +140,6 @@ class TNFW(LensProfileBase):
         :param center_y: center of halo (in angular units)
         :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-
         rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         x_ = x - center_x
         y_ = y - center_y
@@ -203,7 +201,6 @@ class TNFW(LensProfileBase):
         :param r_trunc: truncation radius (angular units)
         :return: M(<r)
         """
-
         x = r * Rs**-1
         x = np.maximum(x, self._s)
         func = (
@@ -296,7 +293,6 @@ class TNFW(LensProfileBase):
         :param r_trunc: truncation radius (angular units)
         :return: mass enclosed 2d projected cylinder
         """
-
         x = R / Rs
         x = np.maximum(x, self._s)
         tau = r_trunc / Rs

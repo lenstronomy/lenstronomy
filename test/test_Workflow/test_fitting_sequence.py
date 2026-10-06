@@ -935,8 +935,8 @@ class TestFittingSequence(object):
         # samples (n_samples, n_dim), logl (n_samples,)
         samples = args_ref + 0.001 * rng.randn(20, n_dim)
         logl = -rng.uniform(1, 10, size=20)
-        samples[7] = args_ref # set maximum index to args_ref value
-        logl[7] = 0.0 # unambiguous maximum
+        samples[7] = args_ref  # set maximum index to args_ref value
+        logl[7] = 0.0  # unambiguous maximum
         kwargs_result = fittingSequence.best_fit_from_samples(samples, logl)
         npt.assert_almost_equal(
             kwargs_result["kwargs_lens"][0]["theta_E"],
@@ -948,14 +948,15 @@ class TestFittingSequence(object):
         # samples (n_steps, n_walkers, n_dim), logl (n_steps, n_walkers)
         samples = args_ref + 0.001 * rng.randn(5, 6, n_dim)
         logl = -rng.uniform(1, 10, size=(5, 6))
-        samples[3, 4] = args_ref # set maximum index to args_ref value
-        logl[3, 4] = 0.0 # unambiguous maximum
+        samples[3, 4] = args_ref  # set maximum index to args_ref value
+        logl[3, 4] = 0.0  # unambiguous maximum
         kwargs_result = fittingSequence.best_fit_from_samples(samples, logl)
         npt.assert_almost_equal(
             kwargs_result["kwargs_lens"][0]["theta_E"],
             self.kwargs_lens[0]["theta_E"],
             decimal=6,
         )
+
 
 if __name__ == "__main__":
     pytest.main()

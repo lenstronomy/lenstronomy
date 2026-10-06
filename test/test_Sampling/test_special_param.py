@@ -212,5 +212,155 @@ class TestParam(object):
         assert kwargs_new["param_scale_pow"] == [3, 4]
 
 
+def test_get_params_multiband_offset():
+    special = SpecialParam(
+        multi_band_offset=True,
+        num_bands=3,
+        reference_band=0,
+    )
+
+    args = [
+        0.10,
+        -0.20,
+        0.05,  # band 1
+        0.30,
+        0.40,
+        -0.02,  # band 2
+    ]
+
+    kwargs_special, i = special.get_params(args, 0)
+
+    assert i == len(args)
+
+    expected = [
+        {},
+        {
+            "ra_shift": 0.10,
+            "dec_shift": -0.20,
+            "phi_rot": 0.05,
+        },
+        {
+            "ra_shift": 0.30,
+            "dec_shift": 0.40,
+            "phi_rot": -0.02,
+        },
+    ]
+
+    assert kwargs_special["kwargs_offsets"] == expected
+
+
+def test_set_params_multiband_offset():
+    special = SpecialParam(
+        multi_band_offset=True,
+        num_bands=3,
+        reference_band=0,
+    )
+
+    kwargs_special = {
+        "kwargs_offsets": [
+            {},
+            {
+                "ra_shift": 0.10,
+                "dec_shift": -0.20,
+                "phi_rot": 0.05,
+            },
+            {
+                "ra_shift": 0.30,
+                "dec_shift": 0.40,
+                "phi_rot": -0.02,
+            },
+        ]
+    }
+
+    args = special.set_params(kwargs_special)
+
+    expected = [
+        0.10,
+        -0.20,
+        0.05,
+        0.30,
+        0.40,
+        -0.02,
+    ]
+
+    np.testing.assert_allclose(args, expected)
+
+
+def test_round_trip_multiband_offset():
+    special = SpecialParam(
+        multi_band_offset=True,
+        num_bands=4,
+        reference_band=1,
+    )
+
+    args = [
+        # band 0
+        0.2,
+        0.1,
+        0.05,
+        # band 1 is the reference band
+        # band 2
+        -0.4,
+        0.6,
+        -0.01,
+        # band 3
+        0.3,
+        -0.7,
+        0.15,
+    ]
+
+    kwargs_special, i = special.get_params(args, 0)
+
+    assert i == len(args)
+
+    recovered = special.set_params(kwargs_special)
+
+    np.testing.assert_allclose(recovered, args)
+
+
+def test_reference_band_is_empty_multiband_offset():
+    special = SpecialParam(
+        multi_band_offset=True,
+        num_bands=3,
+        reference_band=1,
+    )
+
+    args = [
+        0.1,
+        0.2,
+        0.01,
+        0.3,
+        0.4,
+        0.02,
+    ]
+
+    kwargs_special, i = special.get_params(args, 0)
+
+    assert i == len(args)
+    assert kwargs_special["kwargs_offsets"][1] == {}
+
+
+def test_multiband_offset_bounds():
+    special = SpecialParam(
+        multi_band_offset=True,
+        num_bands=3,
+        reference_band=0,
+    )
+
+    assert special.lower_limit["kwargs_offsets"][0] == {}
+    assert special.lower_limit["kwargs_offsets"][1] == {
+        "ra_shift": -1,
+        "dec_shift": -1,
+        "phi_rot": -0.5,
+    }
+
+    assert special.upper_limit["kwargs_offsets"][0] == {}
+    assert special.upper_limit["kwargs_offsets"][1] == {
+        "ra_shift": 1,
+        "dec_shift": 1,
+        "phi_rot": 0.5,
+    }
+
+
 if __name__ == "__main__":
     pytest.main()

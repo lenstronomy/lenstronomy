@@ -3,7 +3,7 @@ __author__ = "sibirrer"
 __all__ = ["SpecialParam"]
 
 import numpy as np
-from .param_group import ModelParamGroup, SingleParam, ArrayParam
+from .param_group import ModelParamGroup, SingleParam, ArrayParam, MultiBandOffsetParam
 import warnings
 
 # ==================================== #
@@ -266,6 +266,9 @@ class SpecialParam(object):
         num_lens_planes=1,
         cosmology_sampling=False,
         cosmology_model="FlatLambdaCDM",
+        multi_band_offset=False,
+        num_bands=1,
+        reference_band=0,
     ):
         """
 
@@ -353,6 +356,9 @@ class SpecialParam(object):
         self._tau0 = Tau0ListParam(num_tau0)
         self._z_sampling = ZSamplingParam(num_z_sampling)
         self._source_grid_offset = SourceGridOffsetParam(source_grid_offset)
+        self._multiband_offset = MultiBandOffsetParam(
+            multi_band_offset, num_bands, reference_band
+        )
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
@@ -429,4 +435,5 @@ class SpecialParam(object):
             self._source_grid_offset,
             self._distance_ratio_sampling,
             self._cosmology_param_sampling,
+            self._multiband_offset,
         ]

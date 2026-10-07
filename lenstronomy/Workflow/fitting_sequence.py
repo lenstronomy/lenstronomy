@@ -960,9 +960,14 @@ class FittingSequence(object):
         :param logl: likelihood values for each sample
         :return: kwargs_result in lenstronomy convention
         """
-        # get index of best logL sample
-        best_fit_index = np.argmax(logl)
-        best_fit_sample = samples[best_fit_index, :]
+        samples = np.asarray(samples)
+        logl = np.asarray(logl)
+
+        # get index of best logL sample, in the shape of logl
+        best_fit_index = np.unravel_index(np.argmax(logl), logl.shape)
+        # for flat input this is a 1-tuple (i,), for unflattened a 2-tuple (step, walker);
+        # indexing samples with the tuple returns the n_dim vector in both cases
+        best_fit_sample = samples[best_fit_index]
         best_fit_result = best_fit_sample.tolist()
         # get corresponding kwargs
         kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)

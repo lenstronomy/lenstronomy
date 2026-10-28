@@ -104,9 +104,10 @@ def ellipticity2phi_q(e1, e2):
 
 
 @export
-def transform_e1e2_product_average_old(x, y, e1, e2, center_x, center_y):
+def transform_e1e2_product_average_rotate(x, y, e1, e2, center_x, center_y):
     """Maps the coordinates x, y with eccentricities e1 e2 into a new elliptical
-    coordinate system such that R = sqrt(R_major * R_minor)
+    coordinate system such that R = sqrt(R_major * R_minor).
+    It does so by rotating the coordinates and then scales them.
 
     :param x: x-coordinate
     :param y: y-coordinate

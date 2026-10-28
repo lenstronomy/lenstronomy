@@ -30,7 +30,7 @@ class TestShapeletSetEllipse(object):
         kwargs_ellipse["e1"] = e1
         kwargs_ellipse["e2"] = e2
 
-        x_, y_ = param_util.transform_e1e2_product_average(
+        x_, y_ = param_util.transform_e1e2_product_average_rotate(
             x, y, e1, e2, center_x=center_x, center_y=center_y
         )
         x_ += center_x

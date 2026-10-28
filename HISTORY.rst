@@ -480,3 +480,8 @@ History
 1.14.2 (2026-07-09)
 +++++++++++++++++++
 * Minor numerics stability improvements
+
+1.14.3 (2026-10-28)
++++++++++++++++++++
+* re-definition of elliptical shapelets
+* bounds and FittingSequence improvements

@@ -99,7 +99,7 @@ class GaussDecompositionAbstract(
 
         if hasattr(self, "kwargs_cached") and self.kwargs_cached == kwargs:
             return self.amps_cached.copy(), self.sigmas_cached.copy()
-        
+
         sigma_start = self.sigma_start_mult * self.get_scale(**kwargs)
         sigma_end = self.sigma_end_mult * self.get_scale(**kwargs)
 

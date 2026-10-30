@@ -45,6 +45,8 @@ class FittingSequence(object):
         :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
          likelihood
         :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
+         Initial spreads for free parameters must be finite and positive when
+         initializing PSO particles or fresh MCMC walkers.
          The argument is organized as:
          'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
@@ -387,6 +389,7 @@ class FittingSequence(object):
                 )
         else:
             initpos = None
+            sigma_start = self._initial_sigma(param_class, sigma_scale)
 
         if sampler_type == "zeus":
             # check if zeus is specified, if not default to emcee
@@ -454,10 +457,9 @@ class FittingSequence(object):
         param_class = self.param_class
         kwargs_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(**kwargs_temp)
-        kwargs_sigma = self._updateManager.sigma_kwargs
-        sigma_start = param_class.kwargs2args(**kwargs_sigma)
-        lower_start = np.array(init_pos) - np.array(sigma_start) * sigma_scale
-        upper_start = np.array(init_pos) + np.array(sigma_start) * sigma_scale
+        sigma_start = self._initial_sigma(param_class, sigma_scale)
+        lower_start = np.array(init_pos) - sigma_start
+        upper_start = np.array(init_pos) + sigma_start
 
         # Make sure the initial positions are within the limits
         lower_limit = param_class.kwargs2args(**self._updateManager.lower_kwargs)
@@ -920,6 +922,27 @@ class FittingSequence(object):
         :return: None
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
+
+    def _initial_sigma(self, param_class, sigma_scale):
+        """Return valid initial spreads for the current free parameters."""
+        if (
+            not np.isscalar(sigma_scale)
+            or not np.isfinite(sigma_scale)
+            or sigma_scale <= 0
+        ):
+            raise ValueError("sigma_scale must be finite and strictly positive.")
+        sigma = np.array(param_class.kwargs2args(**self._updateManager.sigma_kwargs))
+        with np.errstate(over="ignore", invalid="ignore"):
+            sigma = sigma * sigma_scale
+        invalid = ~np.isfinite(sigma) | (sigma <= 0)
+        if np.any(invalid):
+            _, names = param_class.num_param()
+            invalid_names = [name for name, bad in zip(names, invalid) if bad]
+            raise ValueError(
+                "Initial sigma must be finite and strictly positive for free "
+                "parameters: " + ", ".join(invalid_names)
+            )
+        return sigma
 
     def _prepare_sampling(self, prior_type):
         if prior_type == "gaussian":

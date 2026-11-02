@@ -61,7 +61,7 @@ class ShapeletSetEllipse(object):
         :param center_y: shapelet center y
         :return: list of individual shapelet basis function responses
         """
-        x_, y_ = param_util.transform_e1e2_product_average(
+        x_, y_ = param_util.transform_e1e2_product_average_rotate(
             x, y, e1, e2, center_x=center_x, center_y=center_y
         )
         return self._shapelet_set.function_split(

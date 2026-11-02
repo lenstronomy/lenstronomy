@@ -18,7 +18,7 @@ class ShapeletsPolar(object):
     param_names = ["amp", "beta", "n", "m", "center_x", "center_y"]
     param_names_latex = {r"$I_0$", r"$\beta$", r"$n$", r"$m$", r"$x_0$", r"$y_0$"}
     lower_limit_default = {
-        "amp": 0,
+        "amp": -100,
         "beta": 0,
         "n": 0,
         "m": 0,
@@ -184,7 +184,7 @@ class ShapeletsPolarExp(object):
 
     param_names = ["amp", "beta", "n", "m", "center_x", "center_y"]
     lower_limit_default = {
-        "amp": 0,
+        "amp": -100,
         "beta": 0,
         "n": 0,
         "m": 0,
@@ -317,8 +317,8 @@ class ShapeletSetPolar(object):
     """Class to operate on entire shapelet set."""
 
     param_names = ["amp", "n_max", "beta", "center_x", "center_y"]
-    lower_limit_default = {"beta": 0, "center_x": -100, "center_y": -100}
-    upper_limit_default = {"beta": 100, "center_x": 100, "center_y": 100}
+    lower_limit_default = {"amp": -100, "beta": 0, "center_x": -100, "center_y": -100}
+    upper_limit_default = {"amp": 100, "beta": 100, "center_x": 100, "center_y": 100}
 
     def __init__(self, exponential=False):
         if exponential is True:

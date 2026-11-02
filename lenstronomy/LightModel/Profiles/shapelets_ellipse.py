@@ -7,6 +7,7 @@ class ShapeletSetEllipse(object):
 
     param_names = ["amp", "n_max", "beta", "e1", "e2", "center_x", "center_y"]
     lower_limit_default = {
+        "amp": -100,
         "beta": 0.01,
         "e1": -0.6,
         "e2": -0.6,
@@ -14,6 +15,7 @@ class ShapeletSetEllipse(object):
         "center_y": -100,
     }
     upper_limit_default = {
+        "amp": 100,
         "beta": 100,
         "e1": 0.6,
         "e2": 0.6,

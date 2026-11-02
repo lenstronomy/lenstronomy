@@ -55,7 +55,12 @@ class LightParam(object):
         self.upper_limit = kwargs_upper
         # check that n_max is fixed
         for k, model in enumerate(self.model_list):
-            if model in ["SHAPELETS", "SHAPELETS_ELLIPSE", "SHAPELETS_POLAR", "SHAPELETS_POLAR_EXP"]:
+            if model in [
+                "SHAPELETS",
+                "SHAPELETS_ELLIPSE",
+                "SHAPELETS_POLAR",
+                "SHAPELETS_POLAR_EXP",
+            ]:
                 if "n_max" not in self.kwargs_fixed[k]:
                     Warning("n_max needs to be fixed in %s." % model)
 
@@ -79,7 +84,13 @@ class LightParam(object):
             for name in param_names:
                 if name not in kwargs_fixed:
                     if (
-                        model in ["SHAPELETS", "SHAPELETS_ELLIPSE", "SHAPELETS_POLAR", "SHAPELETS_POLAR_EXP"]
+                        model
+                        in [
+                            "SHAPELETS",
+                            "SHAPELETS_ELLIPSE",
+                            "SHAPELETS_POLAR",
+                            "SHAPELETS_POLAR_EXP",
+                        ]
                         and name == "amp"
                     ):
                         if "n_max" in kwargs_fixed:
@@ -141,7 +152,13 @@ class LightParam(object):
             for name in param_names:
                 if name not in kwargs_fixed:
                     if (
-                        model in ["SHAPELETS", "SHAPELETS_ELLIPSE", "SHAPELETS_POLAR", "SHAPELETS_POLAR_EXP"]
+                        model
+                        in [
+                            "SHAPELETS",
+                            "SHAPELETS_ELLIPSE",
+                            "SHAPELETS_POLAR",
+                            "SHAPELETS_POLAR_EXP",
+                        ]
                         and name == "amp"
                     ):
                         n_max = kwargs_fixed.get("n_max", kwargs.get("n_max"))
@@ -213,7 +230,13 @@ class LightParam(object):
             for name in param_names:
                 if name not in kwargs_fixed:
                     if (
-                        model in ["SHAPELETS", "SHAPELETS_ELLIPSE", "SHAPELETS_POLAR", "SHAPELETS_POLAR_EXP"]
+                        model
+                        in [
+                            "SHAPELETS",
+                            "SHAPELETS_ELLIPSE",
+                            "SHAPELETS_POLAR",
+                            "SHAPELETS_POLAR_EXP",
+                        ]
                         and name == "amp"
                     ):
                         if "n_max" not in kwargs_fixed:

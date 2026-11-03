@@ -269,6 +269,95 @@ class TestFittingSequence(object):
             np.sum(self.psf_class.kernel_point_source), 1, decimal=6
         )
 
+    @pytest.mark.parametrize("method", ["pso", "mcmc"])
+    @pytest.mark.parametrize("sigma", [0, -0.1, np.nan, np.inf])
+    def test_invalid_initial_sigma(self, method, sigma, monkeypatch):
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = sigma
+        fitting = FittingSequence(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_constraints,
+            self.kwargs_likelihood,
+            self.kwargs_params,
+        )
+        from lenstronomy.Sampling.sampler import Sampler
+
+        def unexpected_sampling(*args, **kwargs):
+            pytest.fail("invalid sigma reached the sampler")
+
+        monkeypatch.setattr(Sampler, "pso", unexpected_sampling)
+        monkeypatch.setattr(Sampler, "mcmc_emcee", unexpected_sampling)
+        with pytest.raises(ValueError, match="sigma.*theta_E"):
+            if method == "pso":
+                fitting.pso(10, 1)
+            else:
+                fitting.mcmc(0, 1, walkerRatio=2)
+
+    @pytest.mark.parametrize("method", ["pso", "mcmc"])
+    @pytest.mark.parametrize("scale", [0, -1, np.nan, np.inf])
+    def test_invalid_sigma_scale(self, method, scale, monkeypatch):
+        fitting = FittingSequence(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_constraints,
+            self.kwargs_likelihood,
+            self.kwargs_params,
+        )
+        from lenstronomy.Sampling.sampler import Sampler
+
+        def unexpected_sampling(*args, **kwargs):
+            pytest.fail("invalid sigma_scale reached the sampler")
+
+        monkeypatch.setattr(Sampler, "pso", unexpected_sampling)
+        monkeypatch.setattr(Sampler, "mcmc_emcee", unexpected_sampling)
+        with pytest.raises(ValueError, match="sigma_scale"):
+            if method == "pso":
+                fitting.pso(10, 1, sigma_scale=scale)
+            else:
+                fitting.mcmc(0, 1, walkerRatio=2, sigma_scale=scale)
+
+    def test_fixed_parameter_zero_sigma(self, monkeypatch):
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0
+        self.kwargs_params["lens_model"][2][0]["theta_E"] = 1
+        fitting = FittingSequence(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_constraints,
+            self.kwargs_likelihood,
+            self.kwargs_params,
+        )
+        from lenstronomy.Sampling.sampler import Sampler
+
+        def sample(sampler, n_particles, n_iterations, lower, upper, **kwargs):
+            assert np.all(upper >= lower)
+            return kwargs["init_pos"], []
+
+        monkeypatch.setattr(Sampler, "pso", sample)
+        result, _, names = fitting.pso(10, 1)
+        assert result["kwargs_lens"][0]["theta_E"] == 1
+        assert "theta_E_lens0" not in names
+
+    def test_reused_mcmc_samples_ignore_sigma(self, monkeypatch):
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0
+        fitting = FittingSequence(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_constraints,
+            self.kwargs_likelihood,
+            self.kwargs_params,
+        )
+        from lenstronomy.Sampling.sampler import Sampler
+
+        def sample(*args, initpos, **kwargs):
+            assert initpos is not None
+            return initpos, np.zeros(len(initpos))
+
+        monkeypatch.setattr(Sampler, "mcmc_emcee", sample)
+        n_param, _ = fitting.param_class.num_param()
+        samples = np.ones((2, n_param))
+        result = fitting.mcmc(0, 1, n_walkers=2, init_samples=samples, sigma_scale=0)
+        npt.assert_array_equal(result[1], samples)
+
     def test_fitting_sequence(self):
         fittingSequence = FittingSequence(
             self.kwargs_data_joint,

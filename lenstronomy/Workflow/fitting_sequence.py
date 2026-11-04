@@ -597,7 +597,19 @@ class FittingSequence(object):
             )
 
         # update current best fit values
-        self._update_state(samples[-1])
+        if sampler_type == "dyPolyChord":
+            best_fit = samples[np.argmax(logL)]
+
+        elif sampler_type == "MultiNest":
+            maxima = [m.get("maximum", m["mean"]) for m in results_object["modes"]]
+            best_fit = maxima[
+                np.argmax([self.likelihood_class.logL(p) for p in maxima])
+            ]
+
+        else:  # Dynesty
+            best_fit = results_object.samples[np.argmax(logL)]
+
+        self._update_state(best_fit)
 
         output = [
             sampler_type,

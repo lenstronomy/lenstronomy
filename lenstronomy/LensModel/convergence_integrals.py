@@ -40,19 +40,25 @@ def potential_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=None
 
 @export
 def potential_from_kappa_grid_adaptive(
-    kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size, plummer_softening_length=None,
+    kappa_high_res,
+    grid_spacing,
+    low_res_factor,
+    high_res_kernel_size,
+    plummer_softening_length=None,
 ):
     """Lensing potential on the convergence grid the computation is performed as a
     convolution of the Green's function with the convergence map using FFT.
 
-    If the Plummer softening length is provided, the kernel is modified so that each pixel is treated as a Plummer sphere.
+    If the Plummer softening length is provided, the kernel is modified so that each
+    pixel is treated as a Plummer sphere.
 
     :param kappa_high_res: 2d grid of convergence values
     :param grid_spacing: scale of an individual pixel (per axis) of grid
     :param low_res_factor: lower resolution factor of larger scale kernel.
     :param high_res_kernel_size: int, size of high resolution kernel in units of
         degraded pixels
-    :param plummer_softening_length: optional, Plummer softening length in the same units of delta_pix.
+    :param plummer_softening_length: optional, Plummer softening length in the same
+        units of delta_pix.
     :return: lensing potential in a 2d grid at positions x_grid, y_grid
     """
     kappa_low_res = image_util.re_size(kappa_high_res, factor=low_res_factor)
@@ -102,7 +108,9 @@ def deflection_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=Non
     num_pix = len(kappa) * 2
     if num_pix % 2 == 0:
         num_pix += 1
-    kernel_x, kernel_y = deflection_kernel(num_pix, grid_spacing, plummer_softening_length)
+    kernel_x, kernel_y = deflection_kernel(
+        num_pix, grid_spacing, plummer_softening_length
+    )
     f_x = scp.fftconvolve(kappa, kernel_x, mode="same") / np.pi * grid_spacing**2
     f_y = scp.fftconvolve(kappa, kernel_y, mode="same") / np.pi * grid_spacing**2
     return f_x, f_y
@@ -110,20 +118,26 @@ def deflection_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=Non
 
 @export
 def deflection_from_kappa_grid_adaptive(
-    kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size, plummer_softening_length=None,
+    kappa_high_res,
+    grid_spacing,
+    low_res_factor,
+    high_res_kernel_size,
+    plummer_softening_length=None,
 ):
     """Deflection angles on the convergence grid with adaptive FFT the computation is
     performed as a convolution of the Green's function with the convergence map using
     FFT. The grid is returned in the lower resolution grid.
 
-    If the Plummer softening length is provided, the kernel is modified so that each pixel is treated as a Plummer sphere.
+    If the Plummer softening length is provided, the kernel is modified so that each
+    pixel is treated as a Plummer sphere.
 
     :param kappa_high_res: convergence values for each pixel (2-d array)
     :param grid_spacing: pixel size of high resolution grid
     :param low_res_factor: lower resolution factor of larger scale kernel.
     :param high_res_kernel_size: int, size of high resolution kernel in units of
         degraded pixels
-    :param plummer_softening_length: optional, Plummer softening length in the same units of delta_pix.
+    :param plummer_softening_length: optional, Plummer softening length in the same
+        units of delta_pix.
     :return: numerical deflection angles in x- and y- direction
     """
     kappa_low_res = image_util.re_size(kappa_high_res, factor=low_res_factor)
@@ -131,7 +145,9 @@ def deflection_from_kappa_grid_adaptive(
     if num_pix % 2 == 0:
         num_pix += 1
 
-    kernel_x, kernel_y = deflection_kernel(num_pix, grid_spacing, plummer_softening_length)
+    kernel_x, kernel_y = deflection_kernel(
+        num_pix, grid_spacing, plummer_softening_length
+    )
     grid_spacing_low_res = grid_spacing * low_res_factor
 
     kernel_low_res_x, kernel_high_res_x = kernel_util.split_kernel(
@@ -175,11 +191,13 @@ def potential_kernel(num_pix, delta_pix, plummer_softening_length=None):
     """Numerical gridded integration kernel for convergence to lensing kernel with given
     pixel size.
 
-    If the Plummer softening length is provided, the kernel is modified so that each pixel is treated as a Plummer sphere.
+    If the Plummer softening length is provided, the kernel is modified so that each
+    pixel is treated as a Plummer sphere.
 
     :param num_pix: integer; number of pixels of kernel per axis
     :param delta_pix: pixel size (per dimension in units of angle)
-    :param plummer_softening_length: optional, Plummer softening length in the same units of delta_pix.
+    :param plummer_softening_length: optional, Plummer softening length in the same
+        units of delta_pix.
     :return: kernel for lensing potential
     """
     x_shift, y_shift = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
@@ -197,15 +215,17 @@ def potential_kernel(num_pix, delta_pix, plummer_softening_length=None):
 
 @export
 def deflection_kernel(num_pix, delta_pix, plummer_softening_length=None):
-    """Numerical gridded integration kernel for convergence to deflection angle with given
-    pixel size.
+    """Numerical gridded integration kernel for convergence to deflection angle with
+    given pixel size.
 
-    If the Plummer softening length is provided, the kernel is modified so that each pixel is treated as a Plummer sphere.
+    If the Plummer softening length is provided, the kernel is modified so that each
+    pixel is treated as a Plummer sphere.
 
     :param num_pix: integer; number of pixels of kernel per axis, should be odd number
         to have a defined center
     :param delta_pix: pixel size (per dimension in units of angle)
-    :param plummer_softening_length: optional, Plummer softening length in the same units of delta_pix.
+    :param plummer_softening_length: optional, Plummer softening length in the same
+        units of delta_pix.
     :return: kernel for x-direction and kernel of y-direction deflection angles
     """
     x_shift, y_shift = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)

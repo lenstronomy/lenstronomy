@@ -202,12 +202,12 @@ def potential_kernel(num_pix, delta_pix, plummer_softening_length=None):
     """
     x_shift, y_shift = util.make_grid(num_pix=num_pix, delta_pix=delta_pix)
     r2 = x_shift**2 + y_shift**2
+    r2_max = np.max(r2)
     if plummer_softening_length is None:
-        r2_max = np.max(r2)
         r2[r2 < (delta_pix / 2) ** 2] = (delta_pix / 2) ** 2
         kernel = np.log(r2 / r2_max) / 2.0
     else:
-        kernel = np.log(1 + (r2 / plummer_softening_length**2)) / 2
+        kernel = np.log((r2 + plummer_softening_length**2) / r2_max) / 2
 
     kernel = util.array2image(kernel)
     return kernel

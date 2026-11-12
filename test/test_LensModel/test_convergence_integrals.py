@@ -32,9 +32,8 @@ class TestConvergenceIntegrals(object):
         d_f = f_[x1, y1] - f_[x2, y2]
         npt.assert_almost_equal(d_f_num, d_f, decimal=2)
 
-
         potential_plummer = convergence_integrals.potential_from_kappa_grid(
-            kappa, delta_pix, plummer_softening_length=delta_pix/2
+            kappa, delta_pix, plummer_softening_length=delta_pix / 2
         )
         d_f_plummer = potential_plummer[x1, y1] - potential_plummer[x2, y2]
         npt.assert_almost_equal(d_f_plummer, d_f_num, decimal=2)
@@ -79,7 +78,7 @@ class TestConvergenceIntegrals(object):
             kappa, delta_pix
         )
         f_x_plummer, f_y_plummer = convergence_integrals.deflection_from_kappa_grid(
-            kappa, delta_pix, plummer_softening_length=delta_pix/2
+            kappa, delta_pix, plummer_softening_length=delta_pix / 2
         )
 
         x1, y1 = 550, 500

@@ -311,13 +311,13 @@ class TestGeneralizedNFWGaussDec(object):
         kwargs1 = {"Rs": 5, "gamma_in": 0.8, "alpha_Rs": 1}
         kwargs2 = {"Rs": 5, "gamma_in": 1.1, "alpha_Rs": 1}
 
-        amps1, sigmas1 = gnfw_gauss.gauss_decompose(kwargs1)
+        amps1, sigmas1 = gnfw_gauss.gauss_decompose(**kwargs1)
         assert (
             hasattr(gnfw_gauss, "_kwargs_cached")
             and gnfw_gauss._kwargs_cached == kwargs1
         )
 
-        amps2, sigmas2 = gnfw_gauss.gauss_decompose(kwargs2)
+        amps2, sigmas2 = gnfw_gauss.gauss_decompose(**kwargs2)
         assert (
             hasattr(gnfw_gauss, "_kwargs_cached")
             and gnfw_gauss._kwargs_cached == kwargs2

@@ -288,11 +288,16 @@ class Param(object):
             source_redshift_sampling_indexes,
         )
 
-        # check how many lens planes
+        # planes as in MultiPlaneOrganizer: lens and source planes except the last one
         if self._lens_redshift_list is None:
             num_lens_planes = 0
         else:
-            num_lens_planes = len(list(set(self._lens_redshift_list)))
+            source_redshift_list = self._source_redshift_list
+            if source_redshift_list is None:
+                source_redshift_list = [kwargs_model.get("z_source", None)]
+            planes = set(self._lens_redshift_list) | set(source_redshift_list)
+            planes.discard(None)
+            num_lens_planes = len(planes) - 1
 
         # Required for JAXtronomy to initialize Image2SourceMapping class with JAXtronomy profiles
         if _jax:
@@ -593,6 +598,9 @@ class Param(object):
         kwargs_extinction, i = self.extinction_params.get_params(args, i)
         kwargs_tracer_source, i = self.tracer_source_params.get_params(args, i)
         self._update_lens_model(kwargs_special)
+        # load the distances of this sample into the lens model before the solver below
+        # uses it (otherwise it keeps the distances of the previous call)
+        self._image2SourceMapping.update_distances(kwargs_special)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(
             kwargs_lens_light, kwargs_ps

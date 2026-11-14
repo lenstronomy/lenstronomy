@@ -632,6 +632,50 @@ class TestMultiPlane(object):
             npt.assert_almost_equal(betax1, betax2)
             npt.assert_almost_equal(betay1, betay2)
 
+    def test_position_convention_unsorted(self):
+        """The physical position of a deflector given in the observed convention is
+        where the ray of its observed position crosses its plane, also when the lens
+        list is not sorted by redshift."""
+        lens_model_list = ["SIS", "SIS", "SIS", "SIS"]
+        redshift_list = [0.5, 0.9, 0.5, 0.6]
+        kwargs_lens = [
+            {"theta_E": 1, "center_x": 0, "center_y": 0},
+            {"theta_E": 0.3, "center_x": 1.8, "center_y": -0.4},
+            {"theta_E": 0.4, "center_x": 0, "center_y": 0.2},
+            {"theta_E": 0.2, "center_x": 1.0, "center_y": 0.7},
+        ]
+        multi = MultiPlane(
+            z_source=1.5,
+            lens_model_list=lens_model_list,
+            lens_redshift_list=redshift_list,
+            observed_convention_index=[1, 3],
+        )
+        kwargs_physical = multi._convention(kwargs_lens)
+
+        # lens 3 (z=0.6) is seen through the two lenses at z=0.5
+        front = MultiPlane(
+            z_source=0.6,
+            lens_model_list=["SIS", "SIS"],
+            lens_redshift_list=[0.5, 0.5],
+            z_source_convention=1.5,
+        )
+        x, y = front.ray_shooting(1.0, 0.7, [kwargs_lens[0], kwargs_lens[2]])
+        npt.assert_almost_equal(kwargs_physical[3]["center_x"], x, decimal=10)
+        npt.assert_almost_equal(kwargs_physical[3]["center_y"], y, decimal=10)
+
+        # lens 1 (z=0.9) is seen through the lenses at z=0.5 and lens 3
+        front = MultiPlane(
+            z_source=0.9,
+            lens_model_list=["SIS", "SIS", "SIS"],
+            lens_redshift_list=[0.5, 0.5, 0.6],
+            z_source_convention=1.5,
+        )
+        x, y = front.ray_shooting(
+            1.8, -0.4, [kwargs_lens[0], kwargs_lens[2], kwargs_physical[3]]
+        )
+        npt.assert_almost_equal(kwargs_physical[1]["center_x"], x, decimal=10)
+        npt.assert_almost_equal(kwargs_physical[1]["center_y"], y, decimal=10)
+
     def test_co_moving2angle_z1_z2(self):
         z_source = 1.5
         lens_model_list = ["SIS"]
@@ -680,6 +724,51 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(f_xy_z12, f_xy, decimal=5)
         npt.assert_almost_equal(f_yx_z12, f_yx, decimal=5)
         npt.assert_almost_equal(f_yy_z12, f_yy, decimal=5)
+
+
+class TestMultiPlaneCurvature(object):
+    """Empty intermediate planes must not change the ray tracing or the time delays,
+    also in curved cosmologies."""
+
+    @pytest.mark.parametrize("cosmo_interp", [False, True])
+    @pytest.mark.parametrize("Ode0", [0.7, 0.5, 0.9])
+    def test_empty_planes(self, Ode0, cosmo_interp):
+        from astropy.cosmology import LambdaCDM
+
+        cosmo = LambdaCDM(H0=70, Om0=0.3, Ode0=Ode0)
+        kwargs_sis = {"theta_E": 1.0, "center_x": 0.1, "center_y": -0.1}
+        single = MultiPlane(
+            z_source=2.0,
+            lens_model_list=["SIS"],
+            lens_redshift_list=[0.5],
+            cosmo=cosmo,
+            cosmo_interp=cosmo_interp,
+        )
+        with_empty_planes = MultiPlane(
+            z_source=2.0,
+            lens_model_list=["SIS", "SIS", "SIS"],
+            lens_redshift_list=[0.5, 0.8, 1.5],
+            cosmo=cosmo,
+            cosmo_interp=cosmo_interp,
+        )
+        kwargs_empty = {"theta_E": 0.0, "center_x": 0, "center_y": 0}
+        theta_x, theta_y = np.array([1.2, -0.7]), np.array([0.3, 0.6])
+
+        beta_x, beta_y = single.ray_shooting(theta_x, theta_y, [kwargs_sis])
+        beta_x_, beta_y_ = with_empty_planes.ray_shooting(
+            theta_x, theta_y, [kwargs_sis, kwargs_empty, kwargs_empty]
+        )
+        npt.assert_allclose(beta_x_, beta_x, rtol=1e-10)
+        npt.assert_allclose(beta_y_, beta_y, rtol=1e-10)
+        # single plane: beta = theta - alpha_reduced
+        alpha = 1.0 * (theta_x - 0.1) / np.hypot(theta_x - 0.1, theta_y + 0.1)
+        npt.assert_allclose(beta_x, theta_x - alpha, rtol=1e-10)
+
+        dt = single.arrival_time(theta_x, theta_y, [kwargs_sis])
+        dt_ = with_empty_planes.arrival_time(
+            theta_x, theta_y, [kwargs_sis, kwargs_empty, kwargs_empty]
+        )
+        npt.assert_allclose(dt_, dt, rtol=1e-8)
 
 
 class TestRaise(unittest.TestCase):

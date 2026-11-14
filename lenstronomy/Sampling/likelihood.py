@@ -7,6 +7,7 @@ from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelih
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
 from lenstronomy.Sampling.Likelihoods.kinematic_2D_likelihood import KinLikelihood
+from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 import lenstronomy.Util.class_creator as class_creator
 import numpy as np
 
@@ -287,12 +288,18 @@ class Likelihood(object):
         # has ambiguities when it comes to position likelihood, time-delay likelihood and flux ratio likelihood
         (
             lens_model_class,
-            _,
+            source_model_class,
             lens_light_model_class,
             point_source_class,
             _,
         ) = class_creator.create_class_instances(all_models=True, **kwargs_model)
         self.PointSource = point_source_class
+        if kwargs_model.get("distance_ratio_sampling", False):
+            self._image2source_mapping = Image2SourceMapping(
+                lens_model_class, source_model_class
+            )
+        else:
+            self._image2source_mapping = None
 
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(
@@ -580,4 +587,6 @@ class Likelihood(object):
                 kinematic_data=self.kinematic_data,
                 kwargs_tracer=self._kwargs_tracer,
             )
+        if self._image2source_mapping is not None:
+            self._image2source_mapping.update_distances(kwargs_special)
         # TODO remove redundancies with Param() calls updates

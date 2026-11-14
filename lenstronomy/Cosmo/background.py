@@ -1,6 +1,7 @@
 __author__ = "sibirrer"
 
 import numpy as np
+from astropy import units
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
 
@@ -72,6 +73,18 @@ class Background(object):
         D_xy = self.d_xy(z_observer, z_source)
         T_xy = D_xy * (1 + z_source)
         return T_xy
+
+    @property
+    def curvature(self):
+        """Spatial curvature K = -Omega_k (H0/c)^2.
+
+        :return: K in units of Mpc^-2
+        """
+        if isinstance(self.cosmo, CosmoInterp):
+            k = self.cosmo.k
+        else:
+            k = -self.cosmo.Ok0 / self.cosmo.hubble_distance**2
+        return float(k.to_value(units.Mpc**-2))
 
     @property
     def rho_crit(self):

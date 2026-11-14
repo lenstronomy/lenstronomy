@@ -148,11 +148,11 @@ class GeneralScalingParam(ArrayParam):
 class DistanceRatioBetaFactors(SingleParam):
     """Factors of distance ratio betas.
 
-    If there are P lens planes, then there are comb(P, 2) factor_beta parameters. The
-    parameter to be defined by the user are "factor_beta_1_2", "factor_beta_1_3",
-    "factor_beta_2_3", ...,". For further definitions of factor_beta parameters, see
-    the documentation of `lesnstronomy.ImSim.multiplane_organizer.MultiplaneOrganizer()`
-    class.
+    If there are P lens planes, then there are P - 1 factor_beta parameters, one per pair
+    of consecutive planes: "factor_beta_1_2", "factor_beta_2_3", ...,
+    "factor_beta_(P-1)_P". The distance ratios of non-consecutive planes are set by
+    these. For further definitions of factor_beta parameters, see the documentation of
+    `lenstronomy.ImSim.multiplane_organizer.MultiPlaneOrganizer()` class.
     """
 
     def __init__(self, on, num_lens_plane: int):
@@ -170,12 +170,11 @@ class DistanceRatioBetaFactors(SingleParam):
         if not self.on:
             return
 
-        for j in range(self.num_lens_plane):
-            for i in range(j):
-                param_name = f"factor_beta_{i+1}_{j+1}"
-                self.param_names[param_name] = 1
-                self._kwargs_lower[param_name] = 0
-                self._kwargs_upper[param_name] = 1000
+        for j in range(1, self.num_lens_plane):
+            param_name = f"factor_beta_{j}_{j+1}"
+            self.param_names[param_name] = 1
+            self._kwargs_lower[param_name] = 0
+            self._kwargs_upper[param_name] = 1000
 
 
 class CosmologyParam(SingleParam):

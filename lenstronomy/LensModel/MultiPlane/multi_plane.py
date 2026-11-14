@@ -202,6 +202,15 @@ class MultiPlane(object):
     def T_ij_stop(self, T_ij_stop):
         self._T_ij_stop = T_ij_stop
 
+    @property
+    def T_z_source(self):
+        """Transverse co-moving distance from the observer to z_source."""
+        return self._T_z_source
+
+    @T_z_source.setter
+    def T_z_source(self, T_z_source):
+        self._T_z_source = T_z_source
+
     def model_info(self):
         """Shows what models are being initialized and what parameters are being
         requested for.
@@ -351,6 +360,8 @@ class MultiPlane(object):
         T_ij_start=None,
         T_ij_end=None,
         check_convention=True,
+        T_z_start=None,
+        T_z_stop=None,
     ):
         """Ray-tracing through parts of the cone, starting with (x,y) in angular units
         as seen on the sky without lensing and angles (alpha_x, alpha_y) as seen at
@@ -376,6 +387,10 @@ class MultiPlane(object):
             function gets executed.
         :param check_convention: flag to check the image position convention (leave this
             alone)
+        :param T_z_start: transverse angular distance up to z_start. If not set, will
+            compute the distance each time this function gets executed.
+        :param T_z_stop: transverse angular distance up to z_stop. If not set, will
+            compute the distance each time this function gets executed.
         :return: angular position and angles at redshift z_stop
         """
         if check_convention and not self.ignore_observed_positions:
@@ -391,6 +406,8 @@ class MultiPlane(object):
             include_z_start=include_z_start,
             T_ij_start=T_ij_start,
             T_ij_end=T_ij_end,
+            T_z_start=T_z_start,
+            T_z_stop=T_z_stop,
         )
 
     def ray_shooting_partial_comoving(
@@ -746,11 +763,16 @@ class LensedLocation(object):
             sort = np.argsort(z)
 
             self._inds = inds[sort]
+        # positions of these lenses in the redshift-sorted T_z_list
+        sorted_redshift_index = list(multiplane_instance.sorted_redshift_index)
+        self._sorted_positions = [
+            sorted_redshift_index.index(ind) for ind in self._inds
+        ]
 
     def __call__(self, kwargs_lens):
         new_kwargs = deepcopy(kwargs_lens)
 
-        for ind in self._inds:
+        for ind, sorted_position in zip(self._inds, self._sorted_positions):
             theta_x = kwargs_lens[ind]["center_x"]
             theta_y = kwargs_lens[ind]["center_y"]
             zstop = self._multiplane._lens_redshift_list[ind]
@@ -766,7 +788,7 @@ class LensedLocation(object):
                 T_ij_end=None,
             )
 
-            T = self._multiplane.T_z_list[ind]
+            T = self._multiplane.T_z_list[sorted_position]
             new_kwargs[ind]["center_x"] = x / T
             new_kwargs[ind]["center_y"] = y / T
 

@@ -112,8 +112,13 @@ class TestParam(object):
         assert param_list == ["factor_beta_1_2", "factor_beta_2_3"]
         kwargs_new, _ = param.get_params(args, i=0)
         assert kwargs_new["factor_beta_1_2"] == 1
-        assert kwargs_new["factor_beta_1_3"] == 1
         assert kwargs_new["factor_beta_2_3"] == 1
+        # non-consecutive planes have no factor of their own
+        assert "factor_beta_1_3" not in kwargs_new
+
+        param = SpecialParam(distance_ratio_sampling=True, num_lens_planes=4)
+        num_param, param_list = param.num_param()
+        assert param_list == ["factor_beta_1_2", "factor_beta_2_3", "factor_beta_3_4"]
 
     def test_cosmology_parameters(self):
         kwargs_fixed = {"H0": 70}

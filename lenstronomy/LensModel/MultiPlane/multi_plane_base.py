@@ -113,6 +113,27 @@ class MultiPlaneBase(ProfileListBase):
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
             z_before = z_lens
+        self._curvature = self._cosmo_bkg.curvature
+
+    @property
+    def curvature(self):
+        """Spatial curvature K [Mpc^-2] used to propagate the rays between the
+        planes."""
+        return self._curvature
+
+    @curvature.setter
+    def curvature(self, curvature):
+        self._curvature = curvature
+
+    @property
+    def reduced2physical_factor(self):
+        """Factors D_s / D_is converting the reduced deflections of the lens planes (in
+        sorted redshift order) into physical deflections."""
+        return self._reduced2physical_factor
+
+    @reduced2physical_factor.setter
+    def reduced2physical_factor(self, reduced2physical_factor):
+        self._reduced2physical_factor = reduced2physical_factor
 
     def set_background_cosmo(self, cosmo):
         """Set the cosmology instance of the background class.
@@ -220,7 +241,9 @@ class MultiPlaneBase(ProfileListBase):
                     first_deflector = False
                 else:
                     delta_T = self._T_ij_list[i]
-                x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
+                x, y, alpha_x, alpha_y = self._ray_step_add(
+                    x, y, alpha_x, alpha_y, delta_T
+                )
                 alpha_x, alpha_y = self._add_deflection(
                     x, y, alpha_x, alpha_y, kwargs_lens, i
                 )
@@ -232,7 +255,7 @@ class MultiPlaneBase(ProfileListBase):
                 delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
         else:
             delta_T = T_ij_end
-        x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
+        x, y, alpha_x, alpha_y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
         return np.asarray(x), np.asarray(y), np.asarray(alpha_x), np.asarray(alpha_y)
 
     def ray_shooting_partial(
@@ -359,7 +382,9 @@ class MultiPlaneBase(ProfileListBase):
             z_lens = self._lens_redshift_list[index]
             if z_lens <= z_stop:
                 T_ij = self._T_ij_list[i]
-                x_new, y_new = self._ray_step(x, y, alpha_x, alpha_y, T_ij)
+                x_new, y_new, alpha_x, alpha_y = self._ray_step(
+                    x, y, alpha_x, alpha_y, T_ij
+                )
                 if i == 0:
                     pass
                 elif T_ij > 0:
@@ -382,7 +407,7 @@ class MultiPlaneBase(ProfileListBase):
         if T_ij_end is None:
             T_ij_end = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
         T_ij = T_ij_end
-        x_new, y_new = self._ray_step(x, y, alpha_x, alpha_y, T_ij)
+        x_new, y_new, alpha_x, alpha_y = self._ray_step(x, y, alpha_x, alpha_y, T_ij)
         if T_z_stop is None:
             T_z_stop = self._cosmo_bkg.T_xy(0, z_stop)
         T_j = T_z_stop
@@ -432,9 +457,10 @@ class MultiPlaneBase(ProfileListBase):
         theta_x, theta_y = self._co_moving2angle(x, y, index)
         k = self._sorted_redshift_index[index]
         potential = self.func_list[k].function(theta_x, theta_y, **kwargs_lens[k])
-        delay_days = self._lensing_potential2time_delay(
-            potential, z_lens, z_source=self._z_source_convention
-        )
+        # time-delay distance T_i T_s / T_is to z_source_convention, from the same
+        # distances as the ray tracing (which distance ratio sampling can change)
+        D_dt = self._T_z_list[index] * self._reduced2physical_factor[index]
+        delay_days = const.delay_arcsec2days(potential, D_dt)
         return -delay_days
 
     @staticmethod
@@ -455,19 +481,6 @@ class MultiPlaneBase(ProfileListBase):
         tau_ij = T_i * T_j / T_ij * const.Mpc / const.c / const.day_s * const.arcsec**2
         return tau_ij * (d_beta_x**2 + d_beta_y**2) / 2
 
-    def _lensing_potential2time_delay(self, potential, z_lens, z_source):
-        """Transforms the lensing potential (in units arcsec^2) to a gravitational time-
-        delay as measured at z=0.
-
-        :param potential: lensing potential
-        :param z_lens: redshift of the deflector
-        :param z_source: redshift of source for the definition of the lensing quantities
-        :return: gravitational time-delay in units of days
-        """
-        D_dt = self._cosmo_bkg.ddt(z_lens, z_source)
-        delay_days = const.delay_arcsec2days(potential, D_dt)
-        return delay_days
-
     def _co_moving2angle(self, x, y, index):
         """Transforms co-moving distances Mpc into angles on the sky (radian)
 
@@ -481,26 +494,34 @@ class MultiPlaneBase(ProfileListBase):
         theta_y = y / T_z
         return theta_x, theta_y
 
-    @staticmethod
-    def _ray_step(x, y, alpha_x, alpha_y, delta_T):
+    def _ray_step(self, x, y, alpha_x, alpha_y, delta_T):
         """Ray propagation with small angle approximation The difference to
         _ray_step_add() is that the previous input position (x, y) do NOT get
         overwritten and are still accessible.
+
+        In a curved universe (curvature K), the transverse co-moving position x and the
+        angle alpha = dx/dchi evolve over a radial co-moving step dchi as
+        x' = C x + S alpha and alpha' = C alpha - K S x, with S = delta_T = S_K(dchi)
+        and C = sqrt(1 - K S^2). In a flat universe this is x' = x + delta_T alpha.
 
         :param x: co-moving x-position
         :param y: co-moving y-position
         :param alpha_x: deflection angle in x-direction at (x, y)
         :param alpha_y: deflection angle in y-direction at (x, y)
         :param delta_T: transverse angular diameter distance to the next step
-        :return: co-moving position at the next step (backwards)
+        :return: co-moving position and angles at the next step (backwards)
         """
-        x_ = x + alpha_x * delta_T
-        y_ = y + alpha_y * delta_T
-        return x_, y_
+        if self._curvature == 0:
+            return x + alpha_x * delta_T, y + alpha_y * delta_T, alpha_x, alpha_y
+        cos_term = np.sqrt(1 - self._curvature * delta_T**2)
+        x_ = cos_term * x + alpha_x * delta_T
+        y_ = cos_term * y + alpha_y * delta_T
+        alpha_x_ = cos_term * alpha_x - self._curvature * delta_T * x
+        alpha_y_ = cos_term * alpha_y - self._curvature * delta_T * y
+        return x_, y_, alpha_x_, alpha_y_
 
-    @staticmethod
-    def _ray_step_add(x, y, alpha_x, alpha_y, delta_T):
-        """Ray propagation with small angle approximation The difference to _ray_step()
+    def _ray_step_add(self, x, y, alpha_x, alpha_y, delta_T):
+        """Ray propagation with small angle approximation. The difference to _ray_step()
         is that the previous input position (x, y) do get overwritten, which is faster.
 
         :param x: co-moving x-position
@@ -508,11 +529,13 @@ class MultiPlaneBase(ProfileListBase):
         :param alpha_x: deflection angle in x-direction at (x, y)
         :param alpha_y: deflection angle in y-direction at (x, y)
         :param delta_T: transverse angular diameter distance to the next step
-        :return: co-moving position at the next step (backwards)
+        :return: co-moving position and angles at the next step (backwards)
         """
-        x += alpha_x * delta_T
-        y += alpha_y * delta_T
-        return x, y
+        if self._curvature == 0:
+            x += alpha_x * delta_T
+            y += alpha_y * delta_T
+            return x, y, alpha_x, alpha_y
+        return self._ray_step(x, y, alpha_x, alpha_y, delta_T)
 
     def _add_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens, index):
         """Adds the physical deflection angle of a single lens plane to the deflection

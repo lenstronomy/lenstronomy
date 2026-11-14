@@ -73,10 +73,24 @@ class TestMultiPlaneOrganizer(object):
             "factor_beta_3_4": 6.0,
         }
 
+        # factors of non-consecutive planes are not free parameters
+        with pytest.raises(ValueError):
+            self.multi_plane_organizer._extract_beta_factors(kwargs_special)
+
+        kwargs_special = {
+            "factor_beta_1_2": 1.0,
+            "factor_beta_2_3": 3.0,
+            "factor_beta_3_4": 6.0,
+        }
         beta_factor_list = self.multi_plane_organizer._extract_beta_factors(
             kwargs_special
         )
-        npt.assert_almost_equal(beta_factor_list, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+        npt.assert_almost_equal(beta_factor_list, [1.0, 3.0, 6.0])
+        kwargs_special["factor_beta_1_3"] = 1.0
+        beta_factor_list = self.multi_plane_organizer._extract_beta_factors(
+            kwargs_special
+        )
+        npt.assert_almost_equal(beta_factor_list, [1.0, 3.0, 6.0])
 
     def test_update_lens_T_lists(self):
         """Test MultiPlaneOrganizer.update_lens_T_lists()"""
@@ -391,3 +405,181 @@ class TestMultiPlaneOrganizer(object):
                 z_source_convention=1.0,
                 cosmo=Background(cosmo=self.cosmo),
             )
+
+
+class TestSampledGeometry(object):
+    """The distances set by the factors describe one geometry: rays follow the multi-
+    plane lens equation written with the beta_ij returned by betas()."""
+
+    def setup_method(self, method):
+        self.lens_redshift_list = [0.5, 0.8, 1.5]
+        self.source_redshift_list = [1.5, 2.0]
+
+    def _mapping(self, cosmo):
+        lens_model = LensModel(
+            ["SHIFT", "SHIFT", "SHIFT"],
+            z_source=2.0,
+            lens_redshift_list=self.lens_redshift_list,
+            multi_plane=True,
+            z_source_convention=2.0,
+            distance_ratio_sampling=True,
+            cosmo=cosmo,
+        )
+        source_model = LightModel(
+            ["GAUSSIAN", "GAUSSIAN"], source_redshift_list=self.source_redshift_list
+        )
+        return Image2SourceMapping(lens_model, source_model)
+
+    @pytest.mark.parametrize("Ode0", [0.7, 0.5, 0.9])
+    @pytest.mark.parametrize("factors", [(1.0, 1.0), (0.7, 1.3), (1.2, 0.8)])
+    def test_lens_equation(self, Ode0, factors):
+        from astropy.cosmology import LambdaCDM
+
+        mapping = self._mapping(LambdaCDM(H0=70, Om0=0.3, Ode0=Ode0))
+        kwargs_special = {"factor_beta_1_2": factors[0], "factor_beta_2_3": factors[1]}
+        betas = mapping.multi_plane_organizer.betas(kwargs_special)
+        # identity valid in any FLRW cosmology
+        npt.assert_allclose(
+            1 - betas["beta_1_3"],
+            (1 - betas["beta_1_2"]) * (1 - betas["beta_2_3"]),
+            rtol=1e-10,
+        )
+
+        alpha = [0.3, -0.2, 0.1]  # constant reduced deflections of the three planes
+        kwargs_lens = [{"alpha_x": a, "alpha_y": 0.0} for a in alpha]
+        theta_x, theta_y = np.array([0.5, -1.0]), np.array([0.2, 0.4])
+
+        # undeflected rays end where they started
+        kwargs_zero = [{"alpha_x": 0.0, "alpha_y": 0.0}] * 3
+        for index_source in [0, 1]:
+            x, y = mapping.image2source(
+                theta_x, theta_y, kwargs_zero, index_source, kwargs_special
+            )
+            npt.assert_allclose(x, theta_x, rtol=1e-10)
+            npt.assert_allclose(y, theta_y, rtol=1e-10)
+
+        # plane 3 (z=1.5, first source): theta - beta_13 alpha_1 - beta_23 alpha_2
+        x, _ = mapping.image2source(theta_x, theta_y, kwargs_lens, 0, kwargs_special)
+        npt.assert_allclose(
+            x,
+            theta_x - betas["beta_1_3"] * alpha[0] - betas["beta_2_3"] * alpha[1],
+            rtol=1e-10,
+        )
+        # last source plane: beta_is = 1
+        x, _ = mapping.image2source(theta_x, theta_y, kwargs_lens, 1, kwargs_special)
+        npt.assert_allclose(x, theta_x - np.sum(alpha), rtol=1e-10)
+        x, _ = mapping._lens_model.ray_shooting(theta_x, theta_y, kwargs_lens)
+        npt.assert_allclose(x, theta_x - np.sum(alpha), rtol=1e-10)
+
+    @pytest.mark.parametrize("Ode0", [0.7, 0.5, 0.9])
+    @pytest.mark.parametrize("factors", [(0.7, 1.3), (1.2, 0.8)])
+    def test_realised_cosmology(self, Ode0, factors):
+        """The sampled distances are those of a cosmology with the planes at the sampled
+        positions: ray tracing, source mapping and arrival times agree with a lens model
+        in that cosmology without distance ratio sampling."""
+        from astropy.cosmology import LambdaCDM
+        from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
+
+        def mapping(cosmo, distance_ratio_sampling):
+            lens_model = LensModel(
+                ["SIS", "SIS", "SIS"],
+                z_source=2.0,
+                lens_redshift_list=self.lens_redshift_list,
+                multi_plane=True,
+                z_source_convention=2.0,
+                distance_ratio_sampling=distance_ratio_sampling,
+                cosmo=cosmo,
+            )
+            source_model = LightModel(
+                ["GAUSSIAN", "GAUSSIAN"],
+                source_redshift_list=self.source_redshift_list,
+            )
+            return Image2SourceMapping(lens_model, source_model)
+
+        cosmo = LambdaCDM(H0=70, Om0=0.3, Ode0=Ode0)
+        kwargs_special = {"factor_beta_1_2": factors[0], "factor_beta_2_3": factors[1]}
+        sampled = mapping(cosmo, True)
+        sampled.update_distances(kwargs_special)
+
+        organizer = sampled.multi_plane_organizer
+        chi_list = organizer._get_chi_list(kwargs_special)
+        z_list = organizer._sorted_joint_unique_redshift_list
+        D_list = [
+            organizer._radial2transverse(chi) / (1 + z)
+            for chi, z in zip(chi_list[1:], z_list[1:])
+        ]
+        cosmo_realised = CosmoInterp(
+            ang_dist_list=D_list,
+            z_list=z_list[1:],
+            Ok0=cosmo.Ok0,
+            K=Background(cosmo).curvature,
+        )
+        realised = mapping(cosmo_realised, False)
+
+        # distances set in the lens model and the source mapping
+        npt.assert_allclose(sampled.T0z_list, realised.T0z_list, rtol=1e-10)
+        npt.assert_allclose(
+            sampled._lens_model.lens_model.T_z_source,
+            realised._lens_model.lens_model.T_z_source,
+            rtol=1e-10,
+        )
+        base = sampled._lens_model.lens_model.multi_plane_base
+        base_realised = realised._lens_model.lens_model.multi_plane_base
+        npt.assert_allclose(
+            base.reduced2physical_factor,
+            base_realised.reduced2physical_factor,
+            rtol=1e-10,
+        )
+        assert base.curvature == Background(cosmo).curvature
+
+        kwargs_lens = [
+            {"theta_E": 1.0, "center_x": 0.1, "center_y": 0},
+            {"theta_E": 0.3, "center_x": 1.2, "center_y": -0.5},
+            {"theta_E": 0.2, "center_x": -0.4, "center_y": 0.6},
+        ]
+        kwargs_source = [
+            {"amp": 1, "sigma": 0.2, "center_x": 0.1, "center_y": 0.1},
+            {"amp": 2, "sigma": 0.3, "center_x": -0.1, "center_y": 0},
+        ]
+        theta_x, theta_y = np.array([0.5, -1.0, 1.4]), np.array([0.2, 0.4, -0.9])
+        for model in ["ray_shooting", "arrival_time"]:
+            npt.assert_allclose(
+                getattr(sampled._lens_model, model)(theta_x, theta_y, kwargs_lens),
+                getattr(realised._lens_model, model)(theta_x, theta_y, kwargs_lens),
+                rtol=1e-10,
+            )
+        for index_source in [0, 1]:
+            npt.assert_allclose(
+                sampled.image2source(
+                    theta_x, theta_y, kwargs_lens, index_source, kwargs_special
+                ),
+                realised.image2source(theta_x, theta_y, kwargs_lens, index_source),
+                rtol=1e-10,
+            )
+        npt.assert_allclose(
+            sampled.image_flux_joint(
+                theta_x, theta_y, kwargs_lens, kwargs_source, kwargs_special
+            ),
+            realised.image_flux_joint(theta_x, theta_y, kwargs_lens, kwargs_source),
+            rtol=1e-10,
+        )
+
+    @pytest.mark.parametrize("Ode0", [0.7, 0.5, 0.9])
+    def test_fiducial(self, Ode0):
+        """With all factors at 1, the betas are those of the fiducial cosmology."""
+        from astropy.cosmology import LambdaCDM
+
+        cosmo = LambdaCDM(H0=70, Om0=0.3, Ode0=Ode0)
+        mapping = self._mapping(cosmo)
+        betas = mapping.multi_plane_organizer.betas(
+            {"factor_beta_1_2": 1.0, "factor_beta_2_3": 1.0}
+        )
+        D = lambda z1, z2: cosmo.angular_diameter_distance(z1, z2).value
+        z1, z2, z3, zs = 0.5, 0.8, 1.5, 2.0
+        for name, (zi, zj) in {
+            "beta_1_2": (z1, z2),
+            "beta_1_3": (z1, z3),
+            "beta_2_3": (z2, z3),
+        }.items():
+            beta_fiducial = D(zi, zj) * D(0, zs) / (D(0, zj) * D(zi, zs))
+            npt.assert_allclose(betas[name], beta_fiducial, rtol=1e-8)

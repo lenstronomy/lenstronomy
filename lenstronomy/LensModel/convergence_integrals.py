@@ -95,7 +95,7 @@ def potential_from_kappa_grid_adaptive(
 
 @export
 def deflection_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=None):
-    """Deflection angle :math:`\\vec {\\alpha }}` from a convergence grid
+    """Deflection angle :math:`\\vec {\\alpha }` from a convergence grid
     :math:`\\kappa`.
 
     .. math::

@@ -24,6 +24,12 @@ def potential_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=None
 
     The computation is performed as a convolution of the Green's function with the convergence map using FFT.
     If the Plummer softening length is provided, the kernel is modified so that each pixel is treated as a Plummer sphere.
+    The Plummer sphere's density profile is such that the gravitational force is equivalent to the force used in
+    N-body cosmological simulations. the corresponding potential is
+
+    .. math::
+        \\psi ({\\vec {\\theta }})={\\frac {1}{\\pi }}\\int d^{2}\\theta ^{\\prime }
+        \\kappa ({\\vec {\\theta }}^{\\prime })\\ln (\\sqrt{|{\\vec {\\theta }}-{\\vec {\\theta }}^{\\prime }|^2 + {\\epsilon}^{2}})
 
     :param kappa: 2d grid of convergence values
     :param grid_spacing: scale of an individual pixel (per axis) of grid
@@ -99,6 +105,13 @@ def deflection_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=Non
 
     The computation is performed as a convolution of the Green's function with the convergence map using FFT.
     If the Plummer softening length is provided, the kernel is modified so that each pixel is treated as a Plummer sphere.
+    The Plummer sphere's density profile is such that the gravitational force is equivalent to the force used in
+    N-body cosmological simulations. the corresponding defection angle is
+
+    .. math::
+        {\\vec {\\alpha }}({\\vec {\\theta }})={\\frac {1}{\\pi }}
+        \\int d^{2}\\theta ^{\\prime }{\\frac {({\\vec {\\theta }}-{\\vec {\\theta }}^{\\prime })
+        \\kappa ({\\vec {\\theta }}^{\\prime })}{|{\\vec {\\theta }}-{\\vec {\\theta }}^{\\prime }|^{2} + {\\epsilon}^{2}}}
 
     :param kappa: convergence values for each pixel (2-d array)
     :param grid_spacing: scale of an individual pixel (per axis) of grid

@@ -115,7 +115,7 @@ def deflection_from_kappa_grid(kappa, grid_spacing, plummer_softening_length=Non
 
     :param kappa: convergence values for each pixel (2-d array)
     :param grid_spacing: scale of an individual pixel (per axis) of grid
-    :param plummer_softening_length: optional, Plummer softening length in the same units of delta_pix.
+    :param plummer_softening_length: optional, Plummer softening length in the same units of grid_spacing.
     :return: numerical deflection angles in x- and y- direction over the convergence grid points
     """
     num_pix = len(kappa) * 2
@@ -150,7 +150,7 @@ def deflection_from_kappa_grid_adaptive(
     :param high_res_kernel_size: int, size of high resolution kernel in units of
         degraded pixels
     :param plummer_softening_length: optional, Plummer softening length in the same
-        units of delta_pix.
+        units of grid_spacing.
     :return: numerical deflection angles in x- and y- direction
     """
     kappa_low_res = image_util.re_size(kappa_high_res, factor=low_res_factor)

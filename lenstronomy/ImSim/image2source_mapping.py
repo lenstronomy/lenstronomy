@@ -178,6 +178,16 @@ class Image2SourceMapping(object):
         plane."""
         self._T_ij_end_list = T_ij_end_list
 
+    @property
+    def T0z_list(self):
+        """List of transverse distances from the observer to the source planes (in the
+        order of the source redshift list)."""
+        return self._T0z_list
+
+    @T0z_list.setter
+    def T0z_list(self, T0z_list):
+        self._T0z_list = T0z_list
+
     def image2source(self, x, y, kwargs_lens, index_source, kwargs_special=None):
         """
         mapping of image plane to source plane coordinates
@@ -201,25 +211,36 @@ class Image2SourceMapping(object):
                 x_source = x - x_alpha * scale_factor
                 y_source = y - y_alpha * scale_factor
             else:
-                z_stop = self._source_redshift_list[index_source]
-
-                x_source = np.zeros_like(x)
-                y_source = np.zeros_like(y)
-                (
-                    x_source,
-                    y_source,
-                    alpha_x,
-                    alpha_y,
-                ) = self._lens_model.lens_model.ray_shooting_partial(
-                    x_source,
-                    y_source,
-                    x,
-                    y,
-                    0,
-                    z_stop,
-                    kwargs_lens,
-                    include_z_start=False,
-                )
+                # trace through the source planes in redshift order up to this source, with
+                # the same distances as image_flux_joint()
+                alpha_x, alpha_y = x, y
+                x_source, y_source = np.zeros_like(x), np.zeros_like(y)
+                z_start, T_z_start = 0, 0
+                for i, index in enumerate(self._sorted_source_redshift_index):
+                    z_stop = self._source_redshift_list[index]
+                    if z_stop > z_start:
+                        (
+                            x_source,
+                            y_source,
+                            alpha_x,
+                            alpha_y,
+                        ) = self._lens_model.lens_model.ray_shooting_partial(
+                            x_source,
+                            y_source,
+                            alpha_x,
+                            alpha_y,
+                            z_start,
+                            z_stop,
+                            kwargs_lens,
+                            include_z_start=False,
+                            T_ij_start=self._T_ij_start_list[i],
+                            T_ij_end=self._T_ij_end_list[i],
+                            T_z_start=T_z_start,
+                            T_z_stop=self._T0z_list[index],
+                        )
+                        z_start, T_z_start = z_stop, self._T0z_list[index]
+                    if index == index_source:
+                        break
 
         return x_source, y_source
 
@@ -276,7 +297,7 @@ class Image2SourceMapping(object):
             else:
                 alpha_x, alpha_y = x, y
                 x_source, y_source = np.zeros_like(x), np.zeros_like(y)
-                z_start = 0
+                z_start, T_z_start = 0, 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
                     if z_stop > z_start:
@@ -299,13 +320,15 @@ class Image2SourceMapping(object):
                             include_z_start=False,
                             T_ij_start=T_ij_start,
                             T_ij_end=T_ij_end,
+                            T_z_start=T_z_start,
+                            T_z_stop=self._T0z_list[index_source],
                         )
 
                     if k is None or k == i:
                         flux += self._light_model.surface_brightness(
                             x_source, y_source, kwargs_source, k=index_source
                         )
-                    z_start = z_stop
+                    z_start, T_z_start = z_stop, self._T0z_list[index_source]
             return flux
 
     def image_flux_split(self, x, y, kwargs_lens, kwargs_source, kwargs_special=None):
@@ -342,7 +365,7 @@ class Image2SourceMapping(object):
                 n_i_list = []
                 alpha_x, alpha_y = x, y
                 x_source, y_source = np.zeros_like(x), np.zeros_like(y)
-                z_start = 0
+                z_start, T_z_start = 0, 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
                     if z_stop > z_start:
@@ -365,6 +388,8 @@ class Image2SourceMapping(object):
                             include_z_start=False,
                             T_ij_start=T_ij_start,
                             T_ij_end=T_ij_end,
+                            T_z_start=T_z_start,
+                            T_z_stop=self._T0z_list[index_source],
                         )
 
                     response_i, n_i = self._light_model.functions_split(
@@ -374,7 +399,7 @@ class Image2SourceMapping(object):
                     n_i_list.append(n_i)
                     response += response_i
                     n += n_i
-                    z_start = z_stop
+                    z_start, T_z_start = z_stop, self._T0z_list[index_source]
                 n_list = self._light_model.num_param_linear_list(kwargs_source)
                 response = self._re_order_split(response, n_list)
 

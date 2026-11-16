@@ -96,6 +96,10 @@ class GaussDecompositionAbstract(
         :return: Amplitudes and standard deviations of the Gaussian components
         :rtype: tuple ``(numpy.array, numpy.array)``
         """
+
+        if hasattr(self, "_kwargs_cached") and self._kwargs_cached == kwargs:
+            return self._amps_cached.copy(), self._sigmas_cached.copy()
+
         sigma_start = self.sigma_start_mult * self.get_scale(**kwargs)
         sigma_end = self.sigma_end_mult * self.get_scale(**kwargs)
 
@@ -116,6 +120,10 @@ class GaussDecompositionAbstract(
         # weighting for trapezoid method integral
         amps[0] *= 0.5
         amps[-1] *= 0.5
+
+        self._amps_cached = amps.copy()
+        self._sigmas_cached = sigmas.copy()
+        self._kwargs_cached = kwargs
 
         return amps, sigmas
 

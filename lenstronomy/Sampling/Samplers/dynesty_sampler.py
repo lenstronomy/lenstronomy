@@ -13,9 +13,9 @@ __all__ = ["DynestySampler"]
 
 
 class DynestySampler(NestedSampler):
-    """Wrapper for dynamical nested sampling algorithm Dynesty by J.
+    """Wrapper for dynamical nested sampling algorithm Dynesty.
 
-    Speagle.
+    Dynesty is developed by J. Speagle.
         paper : https://arxiv.org/abs/1904.02180
         doc : https://dynesty.readthedocs.io/
     """
@@ -126,8 +126,8 @@ class DynestySampler(NestedSampler):
             import dynesty.utils as dyfunc
         except ImportError:
             print(
-                "Warning : dynesty not properly installed (results might be unexpected). \
-                    You can get it with $pip install dynesty."
+                "Warning : dynesty not properly installed (results might be unexpected). "
+                "You can get it with $pip install dynesty."
             )
             self._dynesty_installed = False
         else:

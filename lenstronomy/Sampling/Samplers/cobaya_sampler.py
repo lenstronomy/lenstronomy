@@ -256,7 +256,9 @@ class CobayaSampler(object):
         try:
             import cobaya
         except ImportError:
-            print("Warning : cobaya not properly installed. \
-                    You can get it with $pip install cobaya.")
+            print(
+                "Warning : cobaya not properly installed. "
+                "You can get it with $pip install cobaya."
+            )
         else:
             pass

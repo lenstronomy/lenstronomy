@@ -344,9 +344,9 @@ class BPL(LensProfileBase):
 
     @staticmethod
     def Beta_func(a):
-        """Beta function coefficient \\(B(\\alpha)\\) defined in Du et al.
+        """Beta function coefficient \\(B(\\alpha)\\).
 
-        (2020, Eq. 5).
+        Defined in Du et al. (2020, Eq. 5).
 
         :param a: outer slope \\(\\alpha\\)
         :return: \\(B(\\alpha)=\\mathrm{B}(1/2,(\\alpha-1)/2)\\)
@@ -747,9 +747,10 @@ class BPLMajorAxis(LensProfileBase):
 
     @staticmethod
     def _kappa1_epl_like(pow_a, a):
-        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al.
+        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\).
 
-        2020, Eq. 13).
+        Du et al. (2020, Eq. 13).
+
         :param pow_a: \\((b/R_{\\rm el})^{\\alpha-1}\\)
         :param a: outer slope \\(\\alpha\\)
         :return: \\(\\kappa_1\\)
@@ -888,9 +889,9 @@ class BPLMajorAxis(LensProfileBase):
 
     @staticmethod
     def Beta_func(a):
-        """Beta function coefficient \\(B(\\alpha)\\) defined in Du et al.
+        """Beta function coefficient \\(B(\\alpha)\\).
 
-        (2020, Eq. 5).
+        Defined in Du et al. (2020, Eq. 5).
 
         :param a: outer slope \\(\\alpha\\)
         :return: \\(B(\\alpha)=\\mathrm{B}(1/2,(\\alpha-1)/2)\\)
@@ -898,9 +899,9 @@ class BPLMajorAxis(LensProfileBase):
         return beta(1 / 2, (a - 1) / 2)
 
     def F(self, a, z):
-        """Helper function F(a, z) used in the analytic expressions (Du et al.
+        """Helper function F(a, z) used in the analytic expressions.
 
-        2020, Eq. 21).
+        Du et al. (2020, Eq. 21).
 
         This is a special case of the generalized hypergeometric function \\({}_3F_2\\),
         rewritten in terms of \\({}_2F_1\\).
@@ -945,10 +946,11 @@ class BPLMajorAxis(LensProfileBase):
     # ----------------- accelerated series S0 / S2 -----------------
 
     def S0(self, a, a_c, C, R_el, r_c, target_precision, maxiter):
-        """Series S0 used in the deflection correction term (Du et al.
+        """Series S0 used in the deflection correction term.
 
-        2020, Eq. 22).         Internally, this uses Aitken-accelerated recursion
-        implemented in :meth:`s0arr`.
+        Du et al. (2020, Eq. 22).
+
+        Internally, this uses Aitken-accelerated recursion implemented in :meth:`s0arr`.
 
         :param a: outer slope \\(\\alpha\\)
         :param a_c: inner slope \\(\\alpha_c\\)
@@ -977,10 +979,11 @@ class BPLMajorAxis(LensProfileBase):
         return result[0] if scalar_out else result
 
     def S2(self, a, a_c, C, R_el, r_c, target_precision, maxiter):
-        """Series S2 used in the shear correction term (Du et al.
+        """Series S2 used in the shear correction term.
 
-        2020, Eq. 26).         Internally, this uses Aitken-accelerated recursion
-        implemented in :meth:`s2arr`.
+        Du et al. (2020, Eq. 26).
+
+        Internally, this uses Aitken-accelerated recursion implemented in :meth:`s2arr`.
 
         :param a: outer slope \\(\\alpha\\)
         :param a_c: inner slope \\(\\alpha_c\\)
@@ -1164,9 +1167,10 @@ class BPLMajorAxis(LensProfileBase):
         return aks / c3
 
     def kappa2func(self, b, a, a_c, r_c, R_el):
-        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al.
+        """Core/break correction to the convergence \\(\\kappa_2(R)\\).
 
-        2020, Eq. 14).
+        Du et al. (2020, Eq. 14).
+
         :param b: lens strength parameter
         :param a: outer slope \\(\\alpha\\)
         :param a_c: inner slope \\(\\alpha_c\\)

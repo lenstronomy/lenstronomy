@@ -12,9 +12,9 @@ __all__ = ["DyPolyChordSampler"]
 
 
 class DyPolyChordSampler(NestedSampler):
-    """Wrapper for dynamical nested sampling algorithm DyPolyChord by E.
+    """Wrapper for dynamical nested sampling algorithm DyPolyChord.
 
-    Higson, M. Hobson, W. Handley, A. Lasenby.
+    DyPolyChord is developed by E. Higson, M. Hobson, W. Handley, A. Lasenby.
         papers : arXiv:1704.03459, arXiv:1804.06406
         doc : https://dypolychord.readthedocs.io
     """
@@ -195,9 +195,10 @@ class DyPolyChordSampler(NestedSampler):
         except ImportError:
             dyPolyChord = None
             pypolychord_utils = None
-            print(\
-                  "Warning : dyPolyChord not properly installed. \
-                   You can get it from : https://github.com/ejhigson/dyPolyChord")
+            print(
+                "Warning : dyPolyChord not properly installed. "
+                "You can get it from : https://github.com/ejhigson/dyPolyChord"
+            )
             dypolychord_installed = False
         else:
             dypolychord_installed = True
@@ -208,8 +209,8 @@ class DyPolyChordSampler(NestedSampler):
             from nestcheck import data_processing
         except ImportError:
             print(
-                "Warning : nestcheck not properly installed (results might be unexpected). \
-                   You can get it from : https://github.com/ejhigson/nestcheck"
+                "Warning : nestcheck not properly installed (results might be unexpected). "
+                "You can get it from : https://github.com/ejhigson/nestcheck"
             )
             nestcheck_installed = False
         else:

@@ -11,8 +11,10 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 try:
     import pymultinest
 except:
-    print("Warning : MultiNest/pymultinest not installed properly, \
-but tests will be trivially fulfilled")
+    print(
+        "Warning : MultiNest/pymultinest not installed properly, "
+        "but tests will be trivially fulfilled"
+    )
     pymultinest_installed = False
 else:
     pymultinest_installed = True

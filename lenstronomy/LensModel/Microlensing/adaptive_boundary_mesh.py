@@ -85,10 +85,12 @@ def adaptive_boundary_mesh(
     final_eta,
     kwargs_lens,
 ):
-    """Original ABM algorithm described in Meena et al.
+    """Original adaptive boundary mesh (ABM) algorithm.
 
-    2022, https://arxiv.org/abs/2203.08131     Returns list of those high resolution
-    image-plane pixels that were mapped to     within the radius :math:`\\beta_s` around
+    Described in Meena et al. (2022), https://arxiv.org/abs/2203.08131
+
+    Returns a list of those high-resolution image-plane pixels that were mapped to
+    within the radius :math:`\\beta_s` around
     the source position (:math:`\\beta_1`, :math:`\\beta_2`) in the source plane. This
     is done by first loading all image-plane pixels, ray shooting from the image plane
     to the source plane, and then checking if they are within the radius

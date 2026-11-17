@@ -464,9 +464,10 @@ class GeneralizedOM(object):
 
     @staticmethod
     def _j_beta(r, s, r_ani, beta_inf):
-        """Equation (12) in Agnello et al.
+        """J_beta function of the generalized Osipkov-Merritt anisotropy.
 
-        (2014).
+        Equation (12) in Agnello et al. (2014).
+
         :param r:
         :param s:
         :param r_ani: :param beta_inf

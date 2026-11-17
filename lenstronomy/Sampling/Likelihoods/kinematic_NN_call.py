@@ -21,9 +21,11 @@ class KinematicNN:
             self.SKiNN_installed = True
             self.generator = Generator()
         except:
-            print("Warning : SKiNN not installed properly, \
-        but tests will be trivially fulfilled. \
-                  Get SKiNN from https://github.com/mattgomer/SKiNN")
+            print(
+                "Warning : SKiNN not installed properly, "
+                "but tests will be trivially fulfilled. "
+                "Get SKiNN from https://github.com/mattgomer/SKiNN"
+            )
             self.SKiNN_installed = False
 
     def generate_map(self, input_p, verbose=False):

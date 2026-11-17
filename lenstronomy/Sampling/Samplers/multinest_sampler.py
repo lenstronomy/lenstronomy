@@ -151,8 +151,8 @@ class MultiNestSampler(NestedSampler):
             from pymultinest.analyse import Analyzer
         except:
             print(
-                "Warning : MultiNest/pymultinest not properly installed (results might be unexpected). \
-                    You can get it from : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html"
+                "Warning : MultiNest/pymultinest not properly installed (results might be unexpected). "
+                "You can get it from : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html"
             )
             self._pymultinest_installed = False
         else:

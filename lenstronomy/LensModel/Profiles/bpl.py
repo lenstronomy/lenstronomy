@@ -1163,9 +1163,7 @@ class BPLMajorAxis(LensProfileBase):
         return aks / c3
 
     def kappa2func(self, b, a, a_c, r_c, R_el):
-        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al.
-
-        2020, Eq. 14).
+        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al. 2020, Eq. 14).
 
         :param b: lens strength parameter
         :param a: outer slope \\(\\alpha\\)

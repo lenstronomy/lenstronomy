@@ -586,7 +586,7 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
     """This class computes the lensing properties of an projection from a spherical
     cored-truncated NFW profile using Shajib (2019)'s Gauss decomposition method."""
 
-    param_names = ["r_s", "r_core", "r_trunc", "a", "rho_s", "center_x" "center_y"]
+    param_names = ["r_s", "r_core", "r_trunc", "a", "rho_s", "center_x"  "center_y"]
     lower_limit_default = {
         "r_s": 0,
         "r_core": 0,

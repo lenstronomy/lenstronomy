@@ -2,6 +2,7 @@ __author__ = "sibirrer"
 
 import numpy as np
 import numpy.testing as npt
+import scipy.signal
 from lenstronomy.ImSim.Numerics.convolution import (
     MultiGaussianConvolution,
     PixelKernelConvolution,
@@ -44,6 +45,19 @@ class TestPixelKernelConvolution(object):
         pixel_conv = PixelKernelConvolution(kernel=kernel)
         npt.assert_equal(pixel_conv.pixel_kernel(), kernel)
         npt.assert_equal(pixel_conv.pixel_kernel(num_pix=3), kernel[1:-1, 1:-1])
+
+    def test_static_fft_modes(self):
+        kernel = np.zeros((3, 3))
+        kernel[1, 1] = 1
+        kernel[0, 1] = 0.5
+        pixel_conv = PixelKernelConvolution(kernel=kernel)
+        for mode in ["full", "same", "valid"]:
+            image_conv = pixel_conv._static_fft(self.model, mode=mode)
+            image_conv_scipy = scipy.signal.fftconvolve(self.model, kernel, mode=mode)
+            npt.assert_almost_equal(image_conv, image_conv_scipy, decimal=10)
+
+        with pytest.raises(ValueError, match="Acceptable mode flags"):
+            pixel_conv._static_fft(self.model, mode="invalid")
 
     def test_centroiding(self):
         """This test convolves a Gaussian source centered in a centered pixel with a

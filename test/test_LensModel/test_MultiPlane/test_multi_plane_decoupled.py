@@ -184,10 +184,8 @@ class TestMultiPlaneDecoupled(object):
         )
 
     def test_zsplit_requirements(self):
-        """
-        TODO: generalize to an arbitrary set of deflectors at different redshifts with deflection angles decoupled from
-        the line of sight
-        """
+        """TODO: generalize to an arbitrary set of deflectors at different redshifts
+        with deflection angles decoupled from the line of sight."""
         index_lens_split = [0, 1, 2]
         args = (self.lens_model_true, self.kwargs_lens_true, index_lens_split)
         npt.assert_raises(Exception, setup_lens_model, args)

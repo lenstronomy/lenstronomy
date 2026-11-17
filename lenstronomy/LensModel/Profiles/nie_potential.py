@@ -9,12 +9,17 @@ __all__ = ["NIE_POTENTIAL", "NIEPotentialMajorAxis"]
 
 
 class NIE_POTENTIAL(LensProfileBase):
-    """This class implements the elliptical potential of Eq.
+    """Elliptical potential of a non-singular isothermal ellipsoid.
 
-    (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
-    and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
-    mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
-    to find the ellipticity bounds
+    This class implements the elliptical potential of equation (67) of `Lectures on
+    Gravitational Lensing`__ and equation (1) of `Blandford & Kochanek 1987`__, mapped
+    to equation (8) of `Barnaka1998`__ to find the ellipticity bounds.
+
+    __ https://arxiv.org/pdf/astro-ph/9606001.pdf
+
+    __ http://adsabs.harvard.edu/full/1987ApJ...321..658B
+
+    __ https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html
     """
 
     param_names = ["center_x", "center_y", "theta_E", "theta_c", "e1", "e2"]
@@ -61,7 +66,6 @@ class NIE_POTENTIAL(LensProfileBase):
         :return: transformed Einstein radius, core radius, ellipticity modulus,
             orientation angle phi_G
         """
-
         eps = np.sqrt(e1**2 + e2**2)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E_conv = self._theta_q_convert(theta_E, q)
@@ -217,12 +221,17 @@ class NIE_POTENTIAL(LensProfileBase):
 
 
 class NIEPotentialMajorAxis(LensProfileBase):
-    """This class implements the elliptical potential of Eq.
+    """Elliptical potential of a non-singular isothermal ellipsoid.
 
-    (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
-    and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
-    mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
-    to find the ellipticity bounds
+    This class implements the elliptical potential of equation (67) of `Lectures on
+    Gravitational Lensing`__ and equation (1) of `Blandford & Kochanek 1987`__, mapped
+    to equation (8) of `Barnaka1998`__ to find the ellipticity bounds.
+
+    __ https://arxiv.org/pdf/astro-ph/9606001.pdf
+
+    __ http://adsabs.harvard.edu/full/1987ApJ...321..658B
+
+    __ https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html
     """
 
     param_names = ["theta_E", "theta_c", "eps", "center_x", "center_y"]

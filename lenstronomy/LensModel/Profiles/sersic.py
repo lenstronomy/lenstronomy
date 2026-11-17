@@ -78,7 +78,6 @@ class Sersic(SersicUtil, LensProfileBase):
         :param center_y: y-center
         :return:
         """
-
         n = n_sersic
         x_red = self._x_reduced(x, y, n, R_sersic, center_x, center_y)
         b = self.b_n(n)

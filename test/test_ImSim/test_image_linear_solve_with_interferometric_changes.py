@@ -1,5 +1,13 @@
-__author__ = "nan zhang"
+"""Test the linear solver for natwt (natural weighting) interferometric data.
 
+Test the _image_linear_solve function of ImageLinearFit class. The idea is to define
+data, psf, source, lens, lens light classes respectively, and run the linear solving
+inside and outside of the _image_linear_solve function. Verify the 1st and 4th output of
+_image_linear_solve. The test should be independent of the specific definitions of the
+light and lens profiles.
+"""
+
+__author__ = "nan zhang"
 import numpy as np
 import numpy.testing as npt
 import scipy.signal
@@ -12,16 +20,7 @@ from lenstronomy.PointSource.point_source import PointSource
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.Util import kernel_util
 import lenstronomy.Util.util as util
-
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
-
-"""
-Test the linear solver for natwt (natural weighting) interferometric data.
-Test the _image_linear_solve function of ImageLinearFit class.
-The idea is to define data, psf, source, lens, lens light classes respectively, and run the linear solving
-inside and outside of the _image_linear_solve function. Verify the 1st and 4th output of _image_linear_solve.
-The test should be independent of the specific definitions of the light and lens profiles.
-"""
 
 
 def test_image_linear_solve_with_primary_beam_and_interferometry_psf():

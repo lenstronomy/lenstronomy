@@ -157,7 +157,6 @@ class LightProfileAnalysis(object):
             using a numerical grid)
         :return: amplitudes, sigmas, center_x, center_y
         """
-
         center_x, center_y = analysis_util.profile_center(
             kwargs_light, center_x, center_y
         )

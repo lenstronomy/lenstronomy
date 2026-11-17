@@ -12,13 +12,13 @@ class MultiGaussian(LensProfileBase):
     """This class implements a sum of multiple circular Gaussian profiles for use in
     gravitational lensing.
 
-    Each component in the sum is a circular Gaussian potential profile defined
-    by its amplitude (`amp`) and standard deviation (`sigma`). The Gaussian
-    profiles are centered at (`center_x`, `center_y`) and are scaled by an
-    optional global factor (`scale_factor`).
+    Each component in the sum is a circular Gaussian potential profile defined by its
+    amplitude (`amp`) and standard deviation (`sigma`). The Gaussian profiles are
+    centered at (`center_x`, `center_y`) and are scaled by an optional global factor
+    (`scale_factor`).
 
-    This model can approximate more complex smooth mass distributions by
-    combining multiple Gaussians with different widths and amplitudes.
+    This model can approximate more complex smooth mass distributions by combining
+    multiple Gaussians with different widths and amplitudes.
     """
 
     param_names = ["amp", "sigma", "center_x", "center_y", "scale_factor"]
@@ -201,11 +201,10 @@ class MultiGaussian(LensProfileBase):
 class MultiGaussianEllipsePotential(LensProfileBase):
     """Implementation of a sum of elliptical Gaussian lensing potentials.
 
-    Each component is a 2D elliptical Gaussian described by an amplitude and
-    width, with ellipticity defined in the potential via parameters `e1` and
-    `e2`, which are constant across all components. The Gaussians are centered
-    at a common position (`center_x`, `center_y`) and scaled globally using
-    `scale_factor`.
+    Each component is a 2D elliptical Gaussian described by an amplitude and width, with
+    ellipticity defined in the potential via parameters `e1` and `e2`, which are
+    constant across all components. The Gaussians are centered at a common position
+    (`center_x`, `center_y`) and scaled globally using `scale_factor`.
     """
 
     param_names = ["amp", "sigma", "e1", "e2", "center_x", "center_y", "scale_factor"]

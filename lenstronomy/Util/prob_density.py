@@ -115,15 +115,15 @@ class KDE1D(object):
         :param x: position where to evaluate the density
         :return: likelihood given the sample distribution
         """
-
         dens = self._kernel.evaluate(points=x)
         return dens
 
 
 @export
 def compute_lower_upper_errors(sample, num_sigma=1):
-    """Computes the upper and lower sigma from the median value. This functions gives
-    good error estimates for skewed pdf's.
+    """Computes the upper and lower sigma from the median value.
+
+    This functions gives good error estimates for skewed pdf's.
 
     :param sample: 1-D sample
     :param num_sigma: integer, number of sigmas to be returned

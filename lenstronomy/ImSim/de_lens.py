@@ -81,7 +81,6 @@ def marginalisation_const(M_inv):
     :param M_inv: 2D covariance matrix
     :return: float
     """
-
     sign, log_det = np.linalg.slogdet(M_inv)
     if sign == 0:
         return -(10**15)

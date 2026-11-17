@@ -55,7 +55,6 @@ class TDCosmography(KinematicsAPI):
             either 'spherical', 'axi_sph' or 'axi_cyl' (default 'spherical')
         :param kwargs_kin_api: additional keyword arguments for KinematicsAPI class instance
         """
-
         if cosmo_fiducial is None:
             cosmo_fiducial = default_cosmology.get()
         if kwargs_seeing is None:

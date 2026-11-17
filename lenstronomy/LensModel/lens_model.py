@@ -337,8 +337,9 @@ class LensModel(object):
         x_source=None,
         y_source=None,
     ):
-        """Arrival time of images relative to a straight line without lensing. Negative
-        values correspond to images arriving earlier, and positive signs correspond to
+        """Arrival time of images relative to a straight line without lensing.
+
+        Negative values correspond to images arriving earlier, and positive signs correspond to
         images arriving later.
 
         :param x_image: image position
@@ -577,9 +578,10 @@ class LensModel(object):
         return f_xxx, f_xxy, f_xyy, f_yyy
 
     def set_static(self, kwargs):
-        """Set this instance to a static lens model. This can improve the speed in
-        evaluating lensing quantities at different positions but must not be used with
-        different lens model parameters!
+        """Set this instance to a static lens model.
+
+        This can improve the speed in evaluating lensing quantities at different
+        positions but must not be used with different lens model parameters!
 
         :param kwargs: lens model keyword argument list
         :return: kwargs_updated (in case of image position convention in multiplane

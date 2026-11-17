@@ -298,7 +298,6 @@ class ImageLinearFit(ImageModel):
             likelihood if so.
         :return: float, likelihood data given model
         """
-
         logL = self.Data.log_likelihood(model, self.likelihood_mask, model_error)
 
         if self._pixelbased_bool is False:
@@ -492,7 +491,6 @@ class ImageLinearFit(ImageModel):
         :param cov_param: covariance matrix of liner inversion parameters
         :return: diagonal covariance errors at the positions (x_grid, y_grid)
         """
-
         error_map = np.zeros_like(x_grid)
         basis_functions, n_source = self.SourceModel.functions_split(
             x_grid, y_grid, kwargs_source
@@ -519,7 +517,6 @@ class ImageLinearFit(ImageModel):
         :param with_amp: bool, if True, relative magnification between multiply imaged point sources are held fixed.
         :return: list of positions and amplitudes split in different basis components with applied astrometric corrections
         """
-
         ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(
             kwargs_ps, kwargs_lens, with_amp=with_amp
         )
@@ -582,8 +579,9 @@ class ImageLinearFit(ImageModel):
         kwargs_special=None,
         inv_bool=False,
     ):
-        """'interferometry_natwt' method does NOT support model_error. The
-        interferometry linear solver does the linear solving to get the optimal linear
+        """'interferometry_natwt' method does NOT support model_error.
+
+        The interferometry linear solver does the linear solving to get the optimal linear
         amplitudes and apply the marginalized amplitudes to make the model images.
 
         :param kwargs_lens: list of dicts containing lens model keyword arguments

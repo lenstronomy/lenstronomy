@@ -115,8 +115,9 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return rho0 / (x**gamma_inner * (1 + x**2) ** outer_slope)
 
     def density_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param r: 3d radios
@@ -177,8 +178,9 @@ class PseudoDoublePowerlaw(LensProfileBase):
         return m_3d
 
     def mass_3d_lens(self, r, Rs, alpha_Rs, gamma_inner, gamma_outer):
-        """Mass enclosed a 3d sphere or radius r. This function takes as input the
-        lensing parameterization.
+        """Mass enclosed a 3d sphere or radius r.
+
+        This function takes as input the lensing parameterization.
 
         :param r: 3d radius
         :param Rs: scale radius
@@ -292,7 +294,6 @@ class PseudoDoublePowerlaw(LensProfileBase):
         :param gamma_outer: logarithmic profile slope outside Rs
         :return: density normalization (characteristic density)
         """
-
         gx = self._g(1.0, gamma_inner, gamma_outer)
         rho0 = alpha_Rs / (4.0 * Rs**2 * gx / 1.0**2)
         return rho0

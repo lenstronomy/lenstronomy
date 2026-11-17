@@ -28,7 +28,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install --upgrade pytest
           python -m pip install flake8 pytest pytest-cov
-          python -m pip install codecov
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f test_requirements.txt ]; then pip install -r test_requirements.txt; fi
           python -m pip install .
@@ -41,13 +40,11 @@ jobs:
       - name: Test with pytest
         run: |
           pytest --cov=./ --cov-report=xml
-          codecov
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v5
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
 
 #      - name: Coveralls

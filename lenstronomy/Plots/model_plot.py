@@ -184,11 +184,12 @@ class ModelPlot(object):
 
     @font_size.setter
     def font_size(self, font_size):
-        """Set default font size for all texts in the subplots. Font size in individual
-        subplots can be adjusted by font_size argument in the plotting methods. Font
-        size for different text elements can be further fine-tuned by kwargs_colorbar,
-        kwargs_title, kwargs_scale_bar, and kwargs_coordinate_arrows arguments in the
-        plotting methods.
+        """Set default font size for all texts in the subplots.
+
+        Font size in individual subplots can be adjusted by font_size argument in the
+        plotting methods. Font size for different text elements can be further fine-
+        tuned by kwargs_colorbar, kwargs_title, kwargs_scale_bar, and
+        kwargs_coordinate_arrows arguments in the plotting methods.
 
         :param font_size: int, default font size for all texts in the subplots. Font
             size in individual subplots can be adjusted by font_size argument in the
@@ -221,7 +222,8 @@ class ModelPlot(object):
     ):
         """Plot data, model, and normalized residuals for all computed bands.
 
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :param kwargs_matshow: keyword arguments passed to
+            :func:`matplotlib.pyplot.matshow`
         :type kwargs_matshow: dict
         :return: 3 x n_data plot with data, model, reduced residual plots of all the
             images/bands that are being modeled
@@ -980,7 +982,8 @@ class ModelPlot(object):
         :type band_index: int
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :param kwargs_matshow: keyword arguments passed to
+            :func:`matplotlib.pyplot.matshow`
         :type kwargs_matshow: dict
         :return: plot instance of differential extinction map
         """

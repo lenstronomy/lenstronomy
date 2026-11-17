@@ -110,7 +110,6 @@ class ShapeletsPolar(object):
         :param index: int, index of list
         :return: n, m bool
         """
-
         n = self._index2n(index)
 
         num_prev = n * (n + 1) / 2

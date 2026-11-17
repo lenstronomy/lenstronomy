@@ -285,7 +285,6 @@ class TestCurvedArcSISMST(object):
 
     def test_curved_arc_recovery(self):
         """Test whether the curved arc parameters are satisfied in differential form."""
-
         ext = LensModelExtensions(LensModel(lens_model_list=["CURVED_ARC_SIS_MST"]))
         center_x, center_y = (
             1,

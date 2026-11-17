@@ -20,8 +20,9 @@ __all__ = ["MultiPool"]
 def _initializer_wrapper(actual_initializer, *rest):
     """We ignore SIGINT.
 
-    It's up to our parent to kill us in the typical condition of this arising from ``^C`` on a
-    terminal. If someone is manually killing us with that signal, well... nothing will happen.
+    It's up to our parent to kill us in the typical condition of this arising from
+    ``^C`` on a terminal. If someone is manually killing us with that signal, well...
+    nothing will happen.
     """
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     if actual_initializer is not None:
@@ -57,7 +58,6 @@ class MultiPool(Pool):
         :type initargs: iterable, optional
         :param kwargs: Extra arguments passed to the :class:`multiprocessing.pool.Pool` superclass.
         """
-
         """
         Since macOS uses fork as the default multiprocessing mode, and STARRED relies on JAX which conflicts with fork and can lead to deadlocks, I explicitly switched to spawn mode here.
         Initially, I planned to implement a conditional check—i.e., if use_starred=True in the update_psf function within psf_fitting.py, then automatically switch the multiprocessing mode to spawn.
@@ -89,23 +89,20 @@ class MultiPool(Pool):
         :meth:`multiprocessing.pool.Pool.map()`, without catching ``KeyboardInterrupt``.
 
         :param func: A function or callable object that is executed on each element of
-            the specified ``tasks`` iterable. This object must be picklable
-            (i.e. it can't be a function scoped within a function or a
-            ``lambda`` function). This should accept a single positional
-            argument and return a single object.
+            the specified ``tasks`` iterable. This object must be picklable (i.e. it
+            can't be a function scoped within a function or a ``lambda`` function). This
+            should accept a single positional argument and return a single object.
         :type func: callable
-        :param iterable: A list or iterable of tasks. Each task can be itself an iterable
-            (e.g., tuple) of values or data to pass in to the worker function.
+        :param iterable: A list or iterable of tasks. Each task can be itself an
+            iterable (e.g., tuple) of values or data to pass in to the worker function.
         :type iterable: iterable
-        :param callback: An optional callback function (or callable) that is called with the
-            result from each worker run and is executed on the master process.
-            This is useful for, e.g., saving results to a file, since the
-            callback is only called on the master thread.
+        :param callback: An optional callback function (or callable) that is called with
+            the result from each worker run and is executed on the master process. This
+            is useful for, e.g., saving results to a file, since the callback is only
+            called on the master thread.
         :type callback: callable, optional
-
         :return: A list of results from the output of each ``worker()`` call.
         """
-
         if callback is None:
             callbackwrapper = None
         else:

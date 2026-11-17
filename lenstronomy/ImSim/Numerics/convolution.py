@@ -142,7 +142,7 @@ class PixelKernelConvolution(object):
         elif mode == "valid":
             return _centered(ret, s1 - s2 + 1)
         else:
-            raise ValueError("Acceptable mode flags are 'valid',"  " 'same', or 'full'.")
+            raise ValueError("Acceptable mode flags are 'valid', 'same', or 'full'.")
 
     def _static_pre_compute(self, image):
         """Pre-compute Fourier transformed kernel and shape quantities to speed up

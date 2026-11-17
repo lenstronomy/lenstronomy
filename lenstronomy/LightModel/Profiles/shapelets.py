@@ -158,7 +158,9 @@ class Shapelets(object):
             return np.interp(x, self.x_grid, self.H_interp[n])
 
     def phi_n(self, n, x):
-        """Constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
+        """Constructs the 1-dim basis function (formula (1) in Refregier et al.
+
+        2001)
         :param n: The n'the basis function.
         :type n: int.
         :param x: 1-dim position (dimensionless)

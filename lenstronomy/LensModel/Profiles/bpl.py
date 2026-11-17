@@ -747,8 +747,9 @@ class BPLMajorAxis(LensProfileBase):
 
     @staticmethod
     def _kappa1_epl_like(pow_a, a):
-        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al. 2020, Eq. 13).
+        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al.
 
+        2020, Eq. 13).
         :param pow_a: \\((b/R_{\\rm el})^{\\alpha-1}\\)
         :param a: outer slope \\(\\alpha\\)
         :return: \\(\\kappa_1\\)
@@ -1163,8 +1164,9 @@ class BPLMajorAxis(LensProfileBase):
         return aks / c3
 
     def kappa2func(self, b, a, a_c, r_c, R_el):
-        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al. 2020, Eq. 14).
+        """Core/break correction to the convergence \\(\\kappa_2(R)\\) (Du et al.
 
+        2020, Eq. 14).
         :param b: lens strength parameter
         :param a: outer slope \\(\\alpha\\)
         :param a_c: inner slope \\(\\alpha_c\\)

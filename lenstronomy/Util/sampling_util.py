@@ -87,7 +87,7 @@ def scale_limits(lowers, uppers, scale):
 def sample_ball(p0, std, size=1, dist="uniform"):
     """Produce a ball of walkers around an initial parameter value.
 
-    this routine is from the emcee package as it became deprecated there.
+    This routine is from the emcee package, as it became deprecated there.
 
     :param p0: The initial parameter values (array).
     :param std: The axis-aligned standard deviation (array).

@@ -744,6 +744,7 @@ class BPLMajorAxis(LensProfileBase):
         :return: True if r_c>0 and a != a_c
         """
         return (r_c > 0.0) and (a != a_c)
+
     @staticmethod
     def _kappa1_epl_like(pow_a, a):
         """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al.

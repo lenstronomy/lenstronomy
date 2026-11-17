@@ -584,8 +584,7 @@ class SinglePlaneLOSFlexion(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: lensing potential in units of arcsec^2
         """
-        print(\
-              "Note: The computation of the potential ignores the LOS corrections.\
+        print("Note: The computation of the potential ignores the LOS corrections.\
               In the presence of LOS corrections, a lensing system does not always\
               derive from a potential.")
 

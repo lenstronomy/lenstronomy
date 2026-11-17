@@ -117,8 +117,7 @@ class NautilusSampler(NestedSampler):
         try:
             import nautilus
         except ImportError:
-            print(\
-                  "Warning : nautilus not properly installed. \
+            print("Warning : nautilus not properly installed. \
                   You can get it with $pip install nautilus-sampler.")
         else:
             self._nautilus = nautilus

@@ -479,17 +479,3 @@ class TestNumerics(object):
 
         kwargs = {"alpha_Rs": 4.0, "Rs": 0.5, "r_core": 0.9, "r_trunc": 3.0}
         self.assert_lens_integrals(Model, kwargs)
-
-    \
-    """
-    def test_sis(self):
-        kwargs = {'theta_E': 0.5}
-        from astrofunc.LensingProfiles.sis import SIS as Model
-        self.assert_integrals(Model, kwargs)
-
-    def test_sersic(self):
-        kwargs = {'n_sersic': .5, 'r_eff': 1.5, 'k_eff': 0.3}
-        from astrofunc.LensingProfiles.sersic import Sersic as Model
-        self.assert_integrals(Model, kwargs)
-
-    """

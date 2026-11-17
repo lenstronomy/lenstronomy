@@ -256,6 +256,7 @@ class CSEMajorAxis(LensProfileBase):
 
 class CSEMajorAxisSet(LensProfileBase):
     """A set of CSE profiles along a joint center and axis."""
+
     def __init__(self):
         self.major_axis_model = CSEMajorAxis()
         super(CSEMajorAxisSet, self).__init__()
@@ -408,6 +409,7 @@ class CSEProductAvg(LensProfileBase):
 
 class CSEProductAvgSet(LensProfileBase):
     """A set of CSE profiles along a joint center and axis."""
+
     def __init__(self):
         self.major_axis_model = CSEProductAvg()
         super(CSEProductAvgSet, self).__init__()

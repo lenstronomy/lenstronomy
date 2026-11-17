@@ -212,6 +212,7 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
     The mass centroid and orientation of the multipole term are fixed to that of the EPL
     profile
     """
+
     @property
     def to_vary_index(self):
         """The number of lens models being varied in this routine.
@@ -262,6 +263,7 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
     The mass centroid and orientation of the multipole term are fixed to that of the EPL
     profile
     """
+
     @property
     def to_vary_index(self):
         """The number of lens models being varied in this routine.
@@ -277,6 +279,7 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
         :return:
         """
         return 3
+
     def args_to_kwargs(self, args):
         thetaE, center_x, center_y, e1, e2, g1, g2 = args
         gamma = self.kwargs_lens[0]["gamma"]

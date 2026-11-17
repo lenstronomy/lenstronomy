@@ -68,13 +68,16 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
 
     @staticmethod
     def _joint_pixel_grid(multi_band_list):
-        """Joint PixelGrid() class instance. This routine only works when the individual
-        patches have the same coordinate system orientation and pixel scale.
+        """Joint PixelGrid() class instance.
 
-        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
-        :return: PixelGrid() class instance covering the entire window of the sky including all individual patches
+        This routine only works when the individual patches have the same coordinate
+        system orientation and pixel scale.
+
+        :param multi_band_list: list of imaging data configuration [[kwargs_data,
+            kwargs_psf, kwargs_numerics], [...]]
+        :return: PixelGrid() class instance covering the entire window of the sky
+            including all individual patches
         """
-
         nx, ny = 0, 0
         kwargs_data = copy.deepcopy(multi_band_list[0][0])
         kwargs_pixel_grid = {

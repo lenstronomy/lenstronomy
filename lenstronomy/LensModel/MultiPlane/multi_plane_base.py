@@ -521,8 +521,10 @@ class MultiPlaneBase(ProfileListBase):
         return x_, y_, alpha_x_, alpha_y_
 
     def _ray_step_add(self, x, y, alpha_x, alpha_y, delta_T):
-        """Ray propagation with small angle approximation. The difference to _ray_step()
-        is that the previous input position (x, y) do get overwritten, which is faster.
+        """Ray propagation with small angle approximation.
+
+        The difference to _ray_step() is that the previous input position (x, y) do get
+        overwritten, which is faster.
 
         :param x: co-moving x-position
         :param y: co-moving y-position
@@ -569,7 +571,6 @@ class MultiPlaneBase(ProfileListBase):
         :param z_start: starting redshift (lowest redshift)
         :return: boolean of condition
         """
-
         if inclusive:
             return z_lens >= z_start
         else:

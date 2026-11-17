@@ -53,7 +53,6 @@ class NestedSampler(object):
         :param u: unit hypercube, sampled by the algorithm
         :return: hypercube in parameter space
         """
-
         # MultiNest passes its own type. Make a copy of the original and create
         # a Python version.
         u_orig = u
@@ -95,7 +94,6 @@ class NestedSampler(object):
         :param x: parameter values
         :return: log-likelihood (from the likelihood module)
         """
-
         # MultiNest passes its own type.
         p = np.array([p[i] for i in range(self.n_dims)])
 

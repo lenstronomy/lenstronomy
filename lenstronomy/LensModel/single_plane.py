@@ -50,7 +50,6 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
-
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
 
@@ -69,7 +68,6 @@ class SinglePlane(ProfileListBase):
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn
             1 in Suyu et al. 2013) as a list
         """
-
         potential = self.potential(x_image, y_image, kwargs_lens, k=k)
         if x_source is None or y_source is None:
             x_source, y_source = self.ray_shooting(x_image, y_image, kwargs_lens, k=k)

@@ -44,7 +44,6 @@ class Coordinates(object):
         :type phi_rot: float or None
         :return: new Coordinate() class and pixel grid
         """
-
         if ra_shift is None and dec_shift is None and phi_rot is None:
             return False
         else:
@@ -115,7 +114,6 @@ class Coordinates(object):
         :param dec: relative DEC coordinate as defined by the coordinate frame
         :return: (x, y) pixel coordinates
         """
-
         return util.map_coord2pix(
             ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._transform_angle2pix
         )

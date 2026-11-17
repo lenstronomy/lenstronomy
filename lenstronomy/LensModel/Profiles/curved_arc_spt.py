@@ -63,12 +63,12 @@ class CurvedArcSPT(LensProfileBase):
         center_x,
         center_y,
     ):
-        """
-        ATTENTION: there may not be a global lensing potential!
+        """ATTENTION: there may not be a global lensing potential!
 
         :param x:
         :param y:
-        :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+        :param tangential_stretch: float, stretch of intrinsic source in tangential
+            direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian

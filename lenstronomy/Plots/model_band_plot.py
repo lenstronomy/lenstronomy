@@ -44,29 +44,35 @@ class ModelBandPlot(ModelBand):
     ):
         """Initialize the model-band plotting class.
 
-        :param multi_band_list: Imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
+        :param multi_band_list: Imaging data configuration [[kwargs_data, kwargs_psf,
+            kwargs_numerics], [...]]
         :type multi_band_list: list
-        :param kwargs_model: model keyword argument list for the full multi-band modeling
+        :param kwargs_model: model keyword argument list for the full multi-band
+            modeling
         :type kwargs_model: dict
         :param model: Of modeled image for the specified band
         :type model: numpy.ndarray
-        :param error_map: Of size of the image, additional error in the pixels coming from PSF uncertainties
+        :param error_map: Of size of the image, additional error in the pixels coming
+            from PSF uncertainties
         :type error_map: numpy.ndarray
         :param cov_param: covariance matrix of the linear inversion
         :type cov_param: numpy.ndarray
         :param param: 1d numpy array of the linear coefficients of this imaging band
         :type param: numpy.ndarray or list
-        :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
-         the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
+        :param kwargs_params: keyword argument of keyword argument lists of the
+            different model components selected for the imaging band, NOT including
+            linear amplitudes (not required as being overwritten by the param list)
         :type kwargs_params: dict
         :param likelihood_mask_list: 2d numpy arrays of likelihood masks (for all bands)
         :type likelihood_mask_list: list
         :param band_index: Of the band to be considered in this class
         :type band_index: int
-        :param fast_caustic: ; if True, uses fast (but less accurate) caustic calculation method
+        :param fast_caustic: ; if True, uses fast (but less accurate) caustic
+            calculation method
         :type fast_caustic: bool
-        :param linear_solver: If True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
-         that they get overwritten by the linear solver solution.
+        :param linear_solver: If True (default) fixes the linear amplitude parameters
+            'amp' (avoid sampling) such that they get overwritten by the linear solver
+            solution.
         :type linear_solver: bool
         """
         ModelBand.__init__(
@@ -1594,7 +1600,6 @@ class ModelBandPlot(ModelBand):
 
         :return:
         """
-
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
         self.model_plot(ax=axes[0, 1], image_names=True)
@@ -1710,7 +1715,8 @@ class ModelBandPlot(ModelBand):
 
         :param ax: Matplotlib axes instance
         :type ax: matplotlib.axes.Axes
-        :param kwargs_matshow: keyword arguments passed to :func:`matplotlib.pyplot.matshow`
+        :param kwargs_matshow: keyword arguments passed to
+            :func:`matplotlib.pyplot.matshow`
         :type kwargs_matshow: dict
         :return: matplotlib axis instance
         """

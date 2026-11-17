@@ -27,52 +27,64 @@ class CoordArrowKwargs(TypedDict, total=False):
 
     font_size: int
     """Font size of the arrow text."""
+
     arrow_length: float
     """Length of the coordinate arrow as a fraction of the image size."""
+
     arrowhead_size: float
     """Size of the arrowhead of the coordinate arrow as a fraction of the image size."""
     origin_x: float
     """X-origin of the coordinate arrow as a fraction of the image size."""
     origin_y: float
     """Y-origin of the coordinate arrow as a fraction of the image size."""
+
     north_letter_offset_x: float
     """X-offset of the North arrow text as a fraction of the image size."""
+
     north_letter_offset_y: float
     """Y-offset of the North arrow text as a fraction of the image size."""
+
     east_letter_offset_x: float
     """X-offset of the East arrow text as a fraction of the image size."""
+
     east_letter_offset_y: float
     """Y-offset of the East arrow text as a fraction of the image size."""
     color_north: str
     """Color of the North arrow."""
+
     color_east: str
     """Color of the East arrow."""
 
 
 class ScaleBarKwargs(TypedDict, total=False):
     """Keyword arguments for scale bar."""
-
     scale_size: float
     """Length of the scale bar in arcseconds."""
+
     text: str
     """String printed on the scale bar."""
+
     color: str
     """Color of the scale bar."""
+
     font_size: int
     """Font size of the scale bar text."""
+
     flipped: bool
     """If True, flips the scale bar to the other side."""
+
     linewidth: float
     """Line width of the scale bar."""
 
 
 class ColorBarKwargs(TypedDict, total=False):
     """Keyword arguments for color bars."""
-
     label: str
     """Label text for the colorbar."""
+
     label_font_size: int
     """Font size of the colorbar label."""
+
     tick_fontsize: int
     """Font size of the colorbar tick labels."""
 
@@ -82,16 +94,22 @@ class TitleKwargs(TypedDict, total=False):
 
     text: str
     """Text to be displayed."""
+
     color: str
     """Color of the title text."""
+
     backgroundcolor: str
     """Background color of the title text."""
+
     flipped: bool
     """If True, draw text on the right side."""
+
     font_size: int
     """Font size of the title."""
+
     x_position: float
     """X-position of the title in axes coordinates."""
+
     y_position: float
     """Y-position of the title in axes coordinates."""
 
@@ -101,8 +119,10 @@ class CausticKwargs(TypedDict, total=False):
 
     color: str
     """Color of the caustic lines."""
+
     linewidth: float
     """Line width of the caustic lines."""
+
     linestyle: str
     """Line style of the caustic lines."""
     alpha: float
@@ -113,41 +133,43 @@ class CausticKwargs(TypedDict, total=False):
 
 class CausticCriticalKwargs(CausticKwargs, total=False):
     """Keyword arguments for caustic and critical-curve plotting."""
-
     critical_curve_color: str
     """Color of the critical-curve lines."""
 
-
 class PlotKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib plot function."""
-
     color: str
     """Line color."""
     linestyle: str
     """Line style."""
+
     marker: str
     """Marker style."""
+
     markersize: float
     """Marker size."""
+
     linewidth: float
     """Line width."""
+
     alpha: float
     """Transparency."""
     label: str
     """Label for legend."""
 
-
 class QuiverKwargs(TypedDict, total=False):
     """Keyword arguments for matplotlib quiver function."""
-
     scale: float
     """Scale of the arrows."""
     headaxislength: float
     """Length of the arrow head."""
+
     headlength: float
     """Length of the arrow head in pixels."""
+
     headwidth: float
     """Width of the arrow head."""
+
     linewidth: float
     """Line width."""
     width: float
@@ -156,6 +178,7 @@ class QuiverKwargs(TypedDict, total=False):
     """Arrow pivot point."""
     color: str
     """Arrow color."""
+
     units: str
     """Units for arrow dimensions."""
 
@@ -165,10 +188,13 @@ class EllipseKwargs(TypedDict, total=False):
 
     linewidth: float
     """Line width."""
+
     fill: bool
     """Whether to fill the ellipse."""
+
     color: str
     """Color of the ellipse."""
+
     alpha: float
     """Transparency."""
     edgecolor: str
@@ -182,17 +208,21 @@ class MatshowKwargs(TypedDict, total=False):
 
     cmap: str
     """Colormap to use for the plot."""
+
     vmin: float
     """Minimum data value that corresponds to the lower end of the colormap."""
+
     vmax: float
     """Maximum data value that corresponds to the upper end of the colormap."""
+
     origin: str
     """Place the [0, 0] index of the array in the upper left or lower left corner."""
+
     extent: tuple
     """Bounding box in data coordinates."""
+
     alpha: float
     """Transparency, between 0 and 1."""
-
 
 @export
 def sqrt(inputArray, scale_min=None, scale_max=None):
@@ -207,7 +237,6 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
     :rtype: numpy array
     :return: image data array
     """
-
     imageData = np.array(inputArray, copy=True)
 
     if scale_min is None:
@@ -230,7 +259,9 @@ def show_title_text(ax, **kwargs_title: "Unpack[TitleKwargs]"):
 
     :param ax: Matplotlib axes instance
     :type ax: matplotlib.axes.Axes
-    :param kwargs_title: keyword arguments for the title, see :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this element from the plot. Set to None to exclude this element from the plot.
+    :param kwargs_title: keyword arguments for the title, see
+        :class:`~lenstronomy.Plots.plot_util.TitleKwargs`. Set to None to exclude this
+        element from the plot. Set to None to exclude this element from the plot.
     :type kwargs_title: dict
     :return: None, updates the axis in place
     """
@@ -516,7 +547,8 @@ def plot_line_set(
     :type flipped_x: bool
     :param points_only: If True, sets plotting keywords to plot single points
     :type points_only: bool without connecting lines
-    :param kwargs_plot: keyword arguments for the plot, see :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
+    :param kwargs_plot: keyword arguments for the plot, see
+        :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
     :type kwargs_plot: dict
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
@@ -550,8 +582,6 @@ def plot_line_set(
     if label is not None:
         ax.plot(-1000, -1000, label=label, *args, **kwargs_plot)
     return ax
-
-
 @export
 def image_position_plot(
     ax,
@@ -645,7 +675,8 @@ def source_position_plot(
     :type marker: str
     :param markersize: marker size for matplotlib
     :type markersize: float
-    :param kwargs_plot: keyword arguments for the plot, see :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
+    :param kwargs_plot: keyword arguments for the plot, see
+        :class:`~lenstronomy.Plots.plot_util.PlotKwargs`
     :type kwargs_plot: dict
     :return: matplotlib axis instance with images plotted on
     """

@@ -109,25 +109,28 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         elliptic Gaussian convergence profiles.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``numpy.array`` with ``dtype=float``
+        :type y:``float`` or ``numpy.array``
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2)
+            \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
+        :type amp:``numpy.array`` with ``dtype=float``
         :param sigma: Standard deviation of Gaussian
-        :type sigma: ``numpy.array`` with ``dtype=float``
+        :type sigma:``numpy.array`` with ``dtype=float``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordianate of centroid
-        :type center_y: ``float``
+        :type center_y:``float``
         :param scale_factor: Scaling factor for amplitude
-        :type scale_factor: ``float``
-        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y` for elliptical Gaussian convergence
-        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy`` array's shape equal to ``x.shape``
+        :type scale_factor:``float``
+        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial
+            f/\\partial y` for elliptical Gaussian convergence
+        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each
+            ``numpy`` array's shape equal to ``x.shape``
         """
         f_x = np.zeros_like(x, dtype=float)
         f_y = np.zeros_like(x, dtype=float)
@@ -216,25 +219,26 @@ class MultiGaussianEllipseKappa(LensProfileBase):
         profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-( x^2+y^2/q^2)/2\\sigma^2)`.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``numpy.array`` with ``dtype=float``
+        :type y:``float`` or ``numpy.array``
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2)
+            \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
+        :type amp:``numpy.array`` with ``dtype=float``
         :param sigma: Standard deviation of Gaussian
-        :type sigma: ``numpy.array`` with ``dtype=float``
+        :type sigma:``numpy.array`` with ``dtype=float``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordianate of centroid
-        :type center_y: ``float``
+        :type center_y:``float``
         :param scale_factor: Scaling factor for amplitude
-        :type scale_factor: ``float``
+        :type scale_factor:``float``
         :return: Density :math:`\\kappa` for elliptical Gaussian convergence
-        :rtype: ``float``, or ``numpy.array`` with shape equal to ``x.shape``
+        :rtype:``float``, or ``numpy.array`` with shape equal to ``x.shape``
         """
         density_2d = np.zeros_like(x, dtype=float)
 

@@ -39,7 +39,6 @@ class MGEEllipse(object):
         :param n_comp: number of Gaussian component
         :type n_comp: int > 1
         """
-
         self._mge_set = MGESet(n_comp=n_comp)
 
     @property

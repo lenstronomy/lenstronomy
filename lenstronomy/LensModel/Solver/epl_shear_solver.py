@@ -314,8 +314,9 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **kwargs):
 def caustics_epl_shear(
     kwargs_lens, num_th=500, maginf=0, sourceplane=True, return_which=None
 ):
-    """Analytically calculates the caustics of an EPL+shear lens model. Since for
-    gamma>2, the outer critical curve does not exist, the option to find the curves for
+    """Analytically calculates the caustics of an EPL+shear lens model.
+
+    Since for gamma>2, the outer critical curve does not exist, the option to find the curves for
     a set, finite magnification exists, by supplying maginf, so that the routine finds
     the curve of this magnification, rather than the true caustic.
 

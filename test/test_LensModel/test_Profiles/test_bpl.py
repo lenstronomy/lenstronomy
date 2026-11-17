@@ -169,9 +169,8 @@ class TestBPLInternals(object):
         assert np.isfinite(f_yy)
 
     def test_exhyp2f1_scalar_z_wrap_and_general_branch(self):
-        """
-        Cover exhyp2f1: (1) scalar z -> array([z]) and (2) else-branch (c-a-b != 0.5).
-        """
+        """Cover exhyp2f1: (1) scalar z -> array([z]) and (2) else-branch (c-a-b !=
+        0.5)."""
         out = self.major.exhyp2f1(a=0.25, b=0.60, c=2.00, z=0.20)  # c-a-b = 1.15 != 0.5
         # should be array-like (size 1) and finite
         _assert_finite_complex(out)

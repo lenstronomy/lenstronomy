@@ -201,8 +201,10 @@ class PointSource(object):
         self._save_cache = save_cache
 
     def _set_save_cache(self, save_cache):
-        """Set the save cache boolean to new value. This function is for use within this
-        class for temporarily set the cache within a single routine.
+        """Set the save cache boolean to new value.
+
+        This function is for use within this class for temporarily set the cache within
+        a single routine.
 
         :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: None

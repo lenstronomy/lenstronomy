@@ -73,7 +73,6 @@ class ImageLikelihood(object):
         :param kwargs_extinction: extinction parameter keyword argument list according to LightModel module
         :return: log likelihood of the data given the model, linear parameter inversion list
         """
-
         logL, param = self.imSim.likelihood_data_given_model(
             kwargs_lens,
             kwargs_source,

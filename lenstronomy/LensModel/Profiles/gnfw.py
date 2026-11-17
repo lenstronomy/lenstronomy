@@ -215,8 +215,9 @@ class GNFW(LensProfileBase):
         return rho0 * (R / Rs) ** -gamma_in * (1 + R / Rs) ** (gamma_in - 3)
 
     def density_lens(self, R, Rs, alpha_Rs, gamma_in):
-        """Computes the density at 3d radius r given lens model parameterization. The
-        integral in the LOS projection of this quantity results in the convergence
+        """Computes the density at 3d radius r given lens model parameterization.
+
+        The integral in the LOS projection of this quantity results in the convergence
         quantity.
 
         :param R: radius of interest
@@ -557,8 +558,9 @@ class GNFW(LensProfileBase):
 
     @staticmethod
     def kappa_s_to_rho0(kappa_s, Rs):
-        """Convenience function to compute rho0 from kappa_s. The returned rho_0 is
-        normalized with $\\Sigma_{\\rm crit}$.
+        """Convenience function to compute rho0 from kappa_s.
+
+        The returned rho_0 is normalized with $\\Sigma_{\\rm crit}$.
 
         :param kappa_s: convergence at `Rs`
         :type kappa_s: float

@@ -81,13 +81,13 @@ class Anisotropy(object):
     def jampy_beta(self, kwargs, symmetry="spherical"):
         """Return the anisotropy in the Jampy spectral-method format (Cappellari 2026).
 
-        The output is either a constant anisotropy value or a callable ``beta(r, theta)``.
-        The callable takes the 3D radius ``r`` and polar angle ``theta`` and returns a tuple
-        ``(beta, beta_dtheta)``, where ``beta`` is the anisotropy and ``beta_dtheta`` is its
-        angular derivative. Supported symmetry cases are ``spherical``, ``axi_sph``, and
-        ``axi_cyl``; the latter uses a smooth angular transition between the equatorial plane
-        and the symmetry axis. Note that this is different to the ``axi_cyl`` implementation
-        in (Cappellari 2008).
+        The output is either a constant anisotropy value or a callable ``beta(r,
+        theta)``. The callable takes the 3D radius ``r`` and polar angle ``theta`` and
+        returns a tuple ``(beta, beta_dtheta)``, where ``beta`` is the anisotropy and
+        ``beta_dtheta`` is its angular derivative. Supported symmetry cases are
+        ``spherical``, ``axi_sph``, and ``axi_cyl``; the latter uses a smooth angular
+        transition between the equatorial plane and the symmetry axis. Note that this is
+        different to the ``axi_cyl`` implementation in (Cappellari 2008).
 
         :param kwargs: anisotropy model parameters
         :param symmetry: either 'spherical', 'axi_sph' or 'axi_cyl'
@@ -464,8 +464,9 @@ class GeneralizedOM(object):
 
     @staticmethod
     def _j_beta(r, s, r_ani, beta_inf):
-        """Equation (12) in Agnello et al. 2014.
+        """Equation (12) in Agnello et al.
 
+        2014.
         :param r:
         :param s:
         :param r_ani: :param beta_inf

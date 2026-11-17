@@ -63,23 +63,24 @@ class GaussianEllipseKappa(LensProfileBase):
         """Compute the potential function for elliptical Gaussian convergence.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``float``
+        :type y:``float`` or ``numpy.array``
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2)
+            \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
+        :type amp:``float``
         :param sigma: Standard deviation of Gaussian
-        :type sigma: ``float``
+        :type sigma:``float``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordianate of centroid
-        :type center_y: ``float``
+        :type center_y:``float``
         :return: Potential for elliptical Gaussian convergence
-        :rtype: ``float``, or ``numpy.array`` with shape equal to ``x.shape``
+        :rtype:``float``, or ``numpy.array`` with shape equal to ``x.shape``
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -157,25 +158,26 @@ class GaussianEllipseKappa(LensProfileBase):
         :math:`\\partial f/\\partial y` at :math:`x,\\ y`.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``float``
+        :type y:``float`` or ``numpy.array``
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2)
+            \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
+        :type amp:``float``
         :param sigma: Standard deviation of Gaussian
-        :type sigma: ``float``
+        :type sigma:``float``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordianate of centroid
-        :type center_y: ``float``
-        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y`
-         for elliptical Gaussian convergence.
-        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal
-         to ``x.shape``.
+        :type center_y:``float``
+        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial
+            f/\\partial y` for elliptical Gaussian convergence.
+        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each
+            ``numpy.array``'s shape equal to ``x.shape``.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -228,24 +230,26 @@ class GaussianEllipseKappa(LensProfileBase):
         :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2/\\partial x\\partial y`.
 
         :param x: x coordinate
-        :type x: ``float`` or ``numpy.array``
+        :type x:``float`` or ``numpy.array``
         :param y: y coordinate
-        :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
-        :type amp: ``float``
+        :type y:``float`` or ``numpy.array``
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2)
+            \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
+        :type amp:``float``
         :param sigma: Standard deviation of Gaussian
-        :type sigma: ``float``
+        :type sigma:``float``
         :param e1: Ellipticity parameter 1
-        :type e1: ``float``
+        :type e1:``float``
         :param e2: Ellipticity parameter 2
-        :type e2: ``float``
+        :type e2:``float``
         :param center_x: x coordinate of centroid
-        :type center_x: ``float``
+        :type center_x:``float``
         :param center_y: y coordianate of centroid
-        :type center_y: ``float``
-        :return: Hessian :math:`A/(2 \\pi \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)` for elliptical Gaussian
-         convergence.
-        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
+        :type center_y:``float``
+        :return: Hessian :math:`A/(2 \\pi \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
+            for elliptical Gaussian convergence.
+        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array,
+            numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -385,9 +389,9 @@ class GaussianEllipseKappa(LensProfileBase):
         approximation given in Zaghloul (2017).
 
         :param z: complex number
-        :type z: ``complex`` or ``numpy.array(dtype=complex)``
+        :type z:``complex`` or ``numpy.array(dtype=complex)``
         :return: :math:`w_\\mathrm{F}(z)`
-        :rtype: ``complex``
+        :rtype:``complex``
         """
         sqrt_pi = 1 / np.sqrt(np.pi)
         i_sqrt_pi = 1j * sqrt_pi

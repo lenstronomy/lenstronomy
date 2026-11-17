@@ -54,7 +54,6 @@ class Chameleon(LensProfileBase):
         :param center_y: dec center
         :return: lensing potential
         """
-
         theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(
             alpha_1, w_c, w_t, e1, e2
         )

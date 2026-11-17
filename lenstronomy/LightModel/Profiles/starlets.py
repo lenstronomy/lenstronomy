@@ -14,9 +14,11 @@ class SLIT_Starlets(object):
     """Decomposition of an image using the Isotropic Undecimated Walevet Transform, also
     known as "starlet" or "B-spline", using the 'a trous' algorithm.
 
-    Astronomical data (galaxies, stars, ...) are often very sparsely represented in the starlet basis.
+    Astronomical data (galaxies, stars, ...) are often very sparsely represented in the
+    starlet basis.
 
-    Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
+    Based on Starck et al. :
+    https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
 
     param_names = ["amp", "n_scales", "n_pixels", "scale", "center_x", "center_y"]

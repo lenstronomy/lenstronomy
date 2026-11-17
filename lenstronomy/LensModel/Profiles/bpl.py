@@ -747,9 +747,7 @@ class BPLMajorAxis(LensProfileBase):
 
     @staticmethod
     def _kappa1_epl_like(pow_a, a):
-        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al.
-
-        2020, Eq. 13).
+        """EPL (Elliptical Power Law) convergence term \\(\\kappa_1\\) (Du et al. 2020, Eq. 13).
 
         :param pow_a: \\((b/R_{\\rm el})^{\\alpha-1}\\)
         :param a: outer slope \\(\\alpha\\)

@@ -45,8 +45,9 @@ class FittingSequence(object):
         :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
          likelihood
         :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
-         Initial spreads for free parameters must be finite and positive when
-         initializing PSO particles or fresh MCMC walkers.
+         Initial spreads for free parameters must be finite and positive when a
+         sampler draws from them (PSO, fresh emcee/zeus walkers, Cobaya, and
+         nested sampling with a Gaussian prior).
          The argument is organized as:
          'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
          'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
@@ -163,8 +164,7 @@ class FittingSequence(object):
                 param_class = self.param_class
                 kwargs_temp = self._updateManager.parameter_state
                 mean_start = param_class.kwargs2args(**kwargs_temp)
-                kwargs_sigma = self._updateManager.sigma_kwargs
-                sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma))
+                sigma_start = self._initial_sigma(param_class, sigma_scale=1)
                 # pass the likelihood and starting info to the sampler
                 sampler = CobayaSampler(self.likelihood_class, mean_start, sigma_start)
                 # run the sampler
@@ -367,8 +367,6 @@ class FittingSequence(object):
         mcmc_class = Sampler(likelihood_class=self.likelihood_class)
         kwargs_temp = self._updateManager.parameter_state
         mean_start = param_class.kwargs2args(**kwargs_temp)
-        kwargs_sigma = self._updateManager.sigma_kwargs
-        sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
         if n_walkers is None:
             if walkerRatio is None:
@@ -383,6 +381,8 @@ class FittingSequence(object):
                 print("re-using previous samples to initialize the next MCMC run.")
                 idxs = np.random.choice(len(init_samples), n_walkers)
                 initpos = init_samples[idxs]
+                # walkers start from the previous samples; no spread is drawn
+                sigma_start = None
             else:
                 raise ValueError(
                     "Can not re-use previous MCMC samples as number of parameters have changed!"
@@ -541,7 +541,7 @@ class FittingSequence(object):
         :return: list of output arguments : samples, mean inferred values, log-
             likelihood, log-evidence, error on log-evidence for each sample
         """
-        mean_start, sigma_start = self._prepare_sampling(prior_type)
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
         if sampler_type == "dyPolyChord":
             if "resume_dyn_run" in kwargs_run and kwargs_run["resume_dyn_run"] is True:
@@ -923,8 +923,29 @@ class FittingSequence(object):
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
 
-    def _initial_sigma(self, param_class, sigma_scale):
-        """Return valid initial spreads for the current free parameters."""
+    def _initial_sigma(self, param_class, sigma_scale=1):
+        """Return the validated initial spread of each free parameter.
+
+        The spreads are read from the current ``kwargs_sigma`` settings (including any
+        later updates through ``update_settings``), converted to the sampler's array
+        order of free parameters, and multiplied by ``sigma_scale``. Every sampler in
+        this class that draws starting points from these spreads (PSO, emcee, zeus,
+        Cobaya, and nested sampling with a Gaussian prior) obtains them through this
+        method, so that invalid settings fail before sampling starts with an error
+        naming the offending parameters. Fixed parameters are not part of the array and
+        are therefore not checked.
+
+        :param param_class: parameter class mapping keyword arguments to the array of
+            free parameters (usually ``self.param_class``)
+        :type param_class: ~lenstronomy.Sampling.parameters.Param
+        :param sigma_scale: factor multiplying every initial spread
+        :type sigma_scale: float
+        :return: initial spread of each free parameter, in the order of
+            ``param_class.num_param()``
+        :rtype: numpy.ndarray of shape (num_param,)
+        :raises ValueError: if ``sigma_scale`` is not a finite positive scalar, or if
+            the scaled spread of any free parameter is zero, negative, NaN or infinite
+        """
         if (
             not np.isscalar(sigma_scale)
             or not np.isfinite(sigma_scale)
@@ -944,16 +965,25 @@ class FittingSequence(object):
             )
         return sigma
 
-    def _prepare_sampling(self, prior_type):
+    def _prepare_sampling(self, prior_type, sigma_scale=1):
+        """Return the Gaussian prior means and spreads for nested sampling.
+
+        :param prior_type: 'uniform' or 'gaussian'
+        :param sigma_scale: factor that the nested sampler will apply to the spreads; it
+            is used here only to validate the scaled spreads
+        :return: (mean_start, sigma_start) as numpy arrays for a Gaussian prior, where
+            sigma_start is not yet multiplied by sigma_scale, or (None, None) for a
+            uniform prior, which does not use the spreads
+        """
         if prior_type == "gaussian":
             mean_start = self.param_class.kwargs2args(
                 **self._updateManager.parameter_state
             )
-            sigma_start = self.param_class.kwargs2args(
-                **self._updateManager.sigma_kwargs
-            )
             mean_start = np.array(mean_start)
-            sigma_start = np.array(sigma_start)
+            # validate the spreads as the sampler will use them
+            self._initial_sigma(self.param_class, sigma_scale)
+            # the nested samplers apply sigma_scale themselves
+            sigma_start = self._initial_sigma(self.param_class)
         else:
             mean_start, sigma_start = None, None
         return mean_start, sigma_start

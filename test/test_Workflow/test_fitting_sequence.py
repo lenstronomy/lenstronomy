@@ -13,6 +13,8 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.Sampling.sampler import Sampler
+from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 
 
 class TestFittingSequence(object):
@@ -268,6 +270,256 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(
             np.sum(self.psf_class.kernel_point_source), 1, decimal=6
         )
+
+    # Tests for validating the initial parameter spreads (kwargs_sigma) and the
+    # sigma_scale argument before sampling starts. Invalid settings must raise before
+    # the sampler is constructed. The test_*_sigma_handover tests replace only the
+    # sampling step with a fake that records its input, to check the exact spreads that
+    # FittingSequence hands to each sampler. All other tests use the real samplers.
+
+    def _fitting_sequence(self):
+        return FittingSequence(
+            self.kwargs_data_joint,
+            self.kwargs_model,
+            self.kwargs_constraints,
+            self.kwargs_likelihood,
+            self.kwargs_params,
+        )
+
+    @staticmethod
+    def _run_sampler(fitting, method, sigma_scale=1):
+        """Start one sampler with the minimum settings needed to get it going."""
+        if method == "pso":
+            fitting.pso(n_particles=4, n_iterations=1, sigma_scale=sigma_scale)
+        elif method in ["emcee", "zeus"]:
+            fitting.mcmc(
+                n_burn=0,
+                n_run=1,
+                walkerRatio=2,
+                sigma_scale=sigma_scale,
+                sampler_type=method,
+                progress=False,
+            )
+        elif method == "Cobaya":
+            # Cobaya has no sigma_scale argument and uses kwargs_sigma unscaled
+            fitting.fit_sequence([["Cobaya", {}]])
+        elif method == "nested_gaussian":
+            fitting.nested_sampling(
+                sampler_type="dynesty", prior_type="gaussian", sigma_scale=sigma_scale
+            )
+        else:
+            raise ValueError(method)
+
+    @pytest.mark.parametrize(
+        "method", ["pso", "emcee", "zeus", "Cobaya", "nested_gaussian"]
+    )
+    @pytest.mark.parametrize("sigma", [0, -0.1, np.nan, np.inf])
+    def test_invalid_initial_sigma(self, method, sigma):
+        """A zero, negative or non-finite spread on a free parameter (here the free lens
+        parameter theta_E) must raise a ValueError that names that parameter.
+
+        The error comes from FittingSequence._initial_sigma before the sampler is
+        constructed. The message match ensures that the test does not pass on an
+        unrelated error raised later inside a sampler.
+        """
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = sigma
+        fitting = self._fitting_sequence()
+        with pytest.raises(
+            ValueError, match="Initial sigma must be finite.*theta_E_lens0"
+        ):
+            self._run_sampler(fitting, method)
+
+    @pytest.mark.parametrize("method", ["pso", "emcee", "zeus", "nested_gaussian"])
+    @pytest.mark.parametrize("scale", [0, -1, np.nan, np.inf])
+    def test_invalid_sigma_scale(self, method, scale):
+        """A sigma_scale that is not a finite positive number must raise a ValueError
+        before sampling, even when every kwargs_sigma entry is valid."""
+        fitting = self._fitting_sequence()
+        with pytest.raises(ValueError, match="sigma_scale must be finite"):
+            self._run_sampler(fitting, method, sigma_scale=scale)
+
+    def test_initial_sigma_values(self):
+        """_initial_sigma returns kwargs_sigma in the order of the free parameters,
+        multiplied by sigma_scale, and leaves out fixed parameters."""
+        fitting = self._fitting_sequence()
+        param_class = fitting.param_class
+        _, names = param_class.num_param()
+        expected = np.array(
+            param_class.kwargs2args(**fitting._updateManager.sigma_kwargs)
+        )
+        npt.assert_array_equal(fitting._initial_sigma(param_class), expected)
+        npt.assert_array_equal(fitting._initial_sigma(param_class, 3), 3 * expected)
+        # ra_0/dec_0 of the shear and center_x of the lens light are fixed
+        assert len(expected) == len(names)
+        assert "ra_0_lens1" not in names
+        assert "center_x_lens_light0" not in names
+
+    def test_fixed_parameter_zero_sigma(self):
+        """A zero spread is allowed on a fixed parameter, because no sampler draws from
+        it.
+
+        A real (one-iteration) PSO run must succeed and keep the fixed value.
+        """
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0
+        self.kwargs_params["lens_model"][2][0]["theta_E"] = 1
+        fitting = self._fitting_sequence()
+        result, _, names = fitting.pso(n_particles=4, n_iterations=1)
+        assert result["kwargs_lens"][0]["theta_E"] == 1
+        assert "theta_E_lens0" not in names
+
+    def test_reused_mcmc_samples_ignore_sigma(self):
+        """When re_use_samples is True and init_samples is given, emcee starts its
+        walkers from those samples and draws nothing from kwargs_sigma.
+
+        An invalid spread or sigma_scale must therefore not raise in that case. This
+        test runs real emcee for one step.
+        """
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0
+        # The fixture pins the point-source parameters (lower == upper). Widen them
+        # here so that emcee accepts linearly independent walkers inside the bounds.
+        ps_init, ps_sigma, ps_fixed, _, _ = self.kwargs_params["point_source_model"]
+        ps_lower = [{k: v - 1 for k, v in kw.items()} for kw in ps_init]
+        ps_upper = [{k: v + 1 for k, v in kw.items()} for kw in ps_init]
+        self.kwargs_params["point_source_model"] = (
+            ps_init,
+            ps_sigma,
+            ps_fixed,
+            ps_lower,
+            ps_upper,
+        )
+        fitting = self._fitting_sequence()
+        param_class = fitting.param_class
+        n_param, _ = param_class.num_param()
+        start = np.array(
+            param_class.kwargs2args(**fitting._updateManager.parameter_state)
+        )
+        lower = np.array(param_class.kwargs2args(**fitting._updateManager.lower_kwargs))
+        upper = np.array(param_class.kwargs2args(**fitting._updateManager.upper_kwargs))
+        # small independent offsets around the initial state, kept inside the bounds
+        rng = np.random.default_rng(42)
+        offsets = 1e-4 * rng.standard_normal((4 * n_param, n_param))
+        init_samples = np.clip(start + offsets, lower, upper)
+        n_walkers = 2 * n_param
+        output = fitting.mcmc(
+            n_burn=0,
+            n_run=1,
+            n_walkers=n_walkers,
+            init_samples=init_samples,
+            re_use_samples=True,
+            sigma_scale=0,
+            progress=False,
+        )
+        sampler_type, samples, param_list, _ = output
+        assert sampler_type == "emcee"
+        assert samples.shape == (n_walkers, n_param)
+        assert np.all((samples >= lower) & (samples <= upper))
+        assert len(param_list) == n_param
+
+    def test_nested_sampling_priors(self):
+        """With a uniform prior, nested sampling does not use kwargs_sigma, so an
+        invalid spread must not raise.
+
+        With a Gaussian prior, the spreads are returned unscaled, because the nested
+        samplers apply sigma_scale themselves.
+        """
+        fitting = self._fitting_sequence()
+        param_class = fitting.param_class
+        expected = np.array(
+            param_class.kwargs2args(**fitting._updateManager.sigma_kwargs)
+        )
+        _, sigma = fitting._prepare_sampling("gaussian", sigma_scale=5)
+        npt.assert_array_equal(sigma, expected)
+
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0
+        fitting = self._fitting_sequence()
+        assert fitting._prepare_sampling("uniform", sigma_scale=0) == (None, None)
+
+    @pytest.mark.parametrize("method", ["emcee", "zeus"])
+    def test_mcmc_sigma_handover(self, method, monkeypatch):
+        """Fresh emcee and zeus walkers are drawn with kwargs_sigma * sigma_scale.
+
+        With a theta_E spread of 0.2 and sigma_scale=3, the sampler must receive 0.6.
+        """
+        calls = []
+
+        def _fake_mcmc(self, n_walkers, n_run, n_burn, mean_start, sigma_start, **kw):
+            calls.append(sigma_start)
+            return np.zeros((n_walkers, len(mean_start))), np.zeros(n_walkers)
+
+        monkeypatch.setattr(Sampler, "mcmc_" + method, _fake_mcmc)
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0.2
+        fitting = self._fitting_sequence()
+        fitting.mcmc(
+            n_burn=0, n_run=1, walkerRatio=2, sigma_scale=3, sampler_type=method
+        )
+        _, names = fitting.param_class.num_param()
+        npt.assert_almost_equal(calls[0][names.index("theta_E_lens0")], 0.6, decimal=10)
+
+    def test_pso_sigma_handover(self, monkeypatch):
+        """PSO particles start within init +/- kwargs_sigma * sigma_scale.
+
+        With theta_E = 1, a spread of 0.2 and sigma_scale=3, the sampler must receive
+        the range [0.4, 1.6], which lies inside the theta_E limits [0, 10].
+        """
+        calls = []
+
+        def _fake_pso(self, n_particles, n_iterations, lower, upper, init_pos, **kw):
+            calls.append((lower, upper))
+            return init_pos, []
+
+        monkeypatch.setattr(Sampler, "pso", _fake_pso)
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0.2
+        fitting = self._fitting_sequence()
+        fitting.pso(n_particles=4, n_iterations=1, sigma_scale=3)
+        _, names = fitting.param_class.num_param()
+        lower, upper = calls[0]
+        index = names.index("theta_E_lens0")
+        npt.assert_almost_equal(lower[index], 0.4, decimal=10)
+        npt.assert_almost_equal(upper[index], 1.6, decimal=10)
+
+    def test_cobaya_sigma_handover(self, monkeypatch):
+        """Cobaya receives kwargs_sigma unchanged, as it has no sigma_scale argument."""
+        calls = []
+
+        class _FakeCobayaSampler(object):
+            def __init__(self, likelihood_class, mean_start, sigma_start):
+                calls.append(sigma_start)
+                self._mean_start = mean_start
+
+            def run(self, **kwargs):
+                return {}, "mcmc", self._mean_start
+
+        monkeypatch.setattr(
+            "lenstronomy.Workflow.fitting_sequence.CobayaSampler", _FakeCobayaSampler
+        )
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0.2
+        fitting = self._fitting_sequence()
+        fitting.fit_sequence([["Cobaya", {}]])
+        _, names = fitting.param_class.num_param()
+        npt.assert_almost_equal(calls[0][names.index("theta_E_lens0")], 0.2, decimal=10)
+
+    def test_nested_sampling_sigma_handover(self, monkeypatch):
+        """The Gaussian prior width is kwargs_sigma * sigma_scale, with sigma_scale
+        applied exactly once.
+
+        The real DynestySampler is constructed, because it applies sigma_scale in its
+        constructor. Only its run() is replaced. With a theta_E spread of 0.2 and
+        sigma_scale=3, the prior width must be 0.6 (and not 1.8 from scaling twice).
+        """
+        calls = []
+
+        def _fake_run(self, kwargs_run):
+            calls.append(self.sigmas)
+            return np.array([self.means]), self.means, 0, 0, np.zeros(1), {}
+
+        monkeypatch.setattr(DynestySampler, "run", _fake_run)
+        self.kwargs_params["lens_model"][1][0]["theta_E"] = 0.2
+        fitting = self._fitting_sequence()
+        fitting.nested_sampling(
+            sampler_type="dynesty", prior_type="gaussian", sigma_scale=3
+        )
+        _, names = fitting.param_class.num_param()
+        npt.assert_almost_equal(calls[0][names.index("theta_E_lens0")], 0.6, decimal=10)
 
     def test_fitting_sequence(self):
         fittingSequence = FittingSequence(
